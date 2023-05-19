@@ -18,9 +18,10 @@ window.addEventListener('message', function (event) {
         }
 
     }
-    if (event.data.type === 'tinymce') {
+    if (event.data.type === 'TinyMCE') {
         try {
             let TinyMCEs = tinymce.activeEditor;
+            console.log(TinyMCEs)
             if (TinyMCEs) {
                 tinymce.activeEditor.execCommand('mceInsertContent', false, event.data.data);
             }
@@ -73,6 +74,7 @@ function plB(Element) {
 try {
     let TinyMCE_Element = tinymce.activeEditor
     if (TinyMCE_Element) {
+        console.log("发现TinyMCE")
         let container = TinyMCE_Element.getContainer();
         plB(container)
     }
@@ -82,6 +84,7 @@ try {
 try {
     let wangeditor_Element = editor.getEditableContainer()
     if (wangeditor_Element) {
+        console.log("发现wangeditor")
         plB(wangeditor_Element)
     }
 } catch (error) {
@@ -91,6 +94,7 @@ try {
     let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
     let ckeditor_Element_Node = ckeditor_Element.container.$
     if (ckeditor_Element_Node) {
+        console.log("发现ckeditor")
         plB(ckeditor_Element_Node)
     }
 } catch (error) {

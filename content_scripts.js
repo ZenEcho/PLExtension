@@ -597,6 +597,16 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
         }
     }
+
+    // ------------------------------------------------------------------------------------
+    // ↓↓↓***其他逻辑***↓↓↓
+    // ↓↓↓***其他逻辑***↓↓↓
+    // ↓↓↓***其他逻辑***↓↓↓
+    // ------------------------------------------------------------------------------------
+
+    /**
+     * 编辑器的初始识别和状态
+     */
     function insertContentIntoEditorState() {
         let pageText = document.body.innerText;
         let item = document.createElement('div');
@@ -698,14 +708,153 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         addJs('master_process.js');
     }
-
     chrome.storage.local.get(["AutoInsert"], function (result) {
         if (result.AutoInsert == "AutoInsert_on") {
             insertContentIntoEditorState()
         }
     })
+    /**
+     * @param {url} AutoInsert_message_content 上传成功后返回的url
+     */
+    function AutoInsertFun(AutoInsert_message_content) {
+        chrome.storage.local.get(["AutoInsert"], function (result) {
+            if (result.AutoInsert == "AutoInsert_on") {
+                let Find_Editor = false
+                let pageText = document.body.innerText;
+                let scripts = document.querySelectorAll('script');
 
+                //Discuz
+                if (pageText.toLowerCase().includes("discuz")) {
+                    let Discuz = document.getElementById("fastpostmessage")
+                    let Discuz_Interactive_reply = document.getElementById("postmessage")
+                    let Discuz_Advanced = document.getElementById("e_textarea")
+                    let Discuz_Advanced1 = document.getElementById("e_iframe")
+                    if (Discuz_Interactive_reply) {
+                        if (Find_Editor == true) { return; }
+                        //如果是回复楼层
+                        let originalContent = Discuz_Interactive_reply.value;
+                        Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                        Find_Editor = true
+                    } else if (Discuz) {
+                        if (Find_Editor == true) { return; }
+                        //如果是回复楼主
+                        let originalContent = Discuz.value;
+                        Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                        Find_Editor = true
+                    }
+                    if (Discuz_Advanced) {
+                        if (Find_Editor == true) { return; }
+                        let originalContent = Discuz_Advanced.value;
+                        Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
+                        Find_Editor = true
+                    }
 
+                    if (Discuz_Advanced1) {
+                        let bodyElement = Discuz_Advanced1.contentDocument.body;
+                        if (bodyElement) {
+                            if (Find_Editor == true) { return; }
+                            let img = document.createElement('img')
+                            img.src = AutoInsert_message_content
+                            bodyElement.appendChild(img)
+                            Find_Editor = true
+                        }
+
+                    }
+                }
+                //v2exReply
+                if (pageText.toLowerCase().includes("v2ex")) {
+                    if (pageText.toLowerCase().includes("主题创建指南")) {
+                        let reply_content_Advanced = document.getElementById("topic_content")
+                        if (reply_content_Advanced) {
+                            if (Find_Editor == true) { return; }
+                            let originalContent = reply_content_Advanced.value;
+                            reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                            Find_Editor = true
+                        }
+                    }
+
+                }
+                //nodeseek
+                if (pageText.toLowerCase().includes("nodeseek")) {
+                    let nodeseek = document.getElementById("markdown-input")
+                    if (nodeseek) {
+                        if (Find_Editor == true) { return; }
+                        let originalContent = nodeseek.value;
+                        nodeseek.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                        Find_Editor = true
+                    }
+
+                }
+                //hostevaluate
+                if (pageText.toLowerCase().includes("hostevaluate")) {
+                    let hostevaluate = document.getElementsByClassName("write-container")
+                    if (hostevaluate.length) {
+                        if (Find_Editor == true) { return; }
+                        let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
+                        let originalContent = write.value;
+                        write.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                        Find_Editor = true
+                    }
+                }
+                //Typecho
+                if (pageText.toLowerCase().includes("typecho")) {
+                    let text = document.getElementById("text")
+                    if (text) {
+                        if (Find_Editor == true) { return; }
+                        let originalContent = text.value;
+                        text.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                        Find_Editor = true
+                    }
+                }
+                //CodeMirror
+                let CodeMirror = document.querySelector(".CodeMirror");
+                if (CodeMirror) {
+                    if (Find_Editor == true) { return; }
+                    window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+                    Find_Editor = true
+                }
+                //Gutenberg Editor
+                let Gutenberg = document.getElementById("wpbody-content")
+                if (Gutenberg) {
+                    if (Find_Editor == true) { return; }
+                    window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
+                    Find_Editor = true
+                }
+                scripts.forEach(function (script) {
+                    if (Find_Editor == true) { return; }
+                    let src = script.getAttribute('src');
+                    //TinyMCE Editor
+                    if (src && src.includes('tinymce')) {
+                        window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                    //wangeditor
+                    if (src && src.includes('wangeditor')) {
+                        window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                    //ckeditor4
+                    if (src && src.includes('ckeditor4')) {
+                        window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                    //ckeditor5
+                    if (src && src.includes('ckeditor5')) {
+                        window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                });
+
+            }
+        })
+    }
+    /**
+     * 收到消息的动作
+     */
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.Tencent_COS_contextMenus) {
             let imgUrl = request.Tencent_COS_contextMenus
@@ -720,151 +869,11 @@ chrome.storage.local.get(storagelocal, function (result) {
             uploadFile(imgUrl, "Rightupload")
         }
 
-        if (request.imgssss) {
-            chrome.storage.local.get(["AutoInsert"], function (result) {
-                if (result.AutoInsert == "AutoInsert_on") {
-                    let Find_Editor = false
-                    let pageText = document.body.innerText;
-                    let scripts = document.querySelectorAll('script');
-
-                    //Discuz
-                    if (pageText.toLowerCase().includes("discuz")) {
-                        let Discuz = document.getElementById("fastpostmessage")
-                        let Discuz_Interactive_reply = document.getElementById("postmessage")
-                        let Discuz_Advanced = document.getElementById("e_textarea")
-                        let Discuz_Advanced1 = document.getElementById("e_iframe")
-                        if (Discuz_Interactive_reply) {
-                            if (Find_Editor == true) { return; }
-                            //如果是回复楼层
-                            let originalContent = Discuz_Interactive_reply.value;
-                            Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + request.imgssss + '[/img]'
-                            Find_Editor = true
-                        } else if (Discuz) {
-                            if (Find_Editor == true) { return; }
-                            //如果是回复楼主
-                            let originalContent = Discuz.value;
-                            Discuz.value = originalContent + "\n" + '[img]' + request.imgssss + '[/img]'
-                            Find_Editor = true
-                        }
-                        if (Discuz_Advanced) {
-                            if (Find_Editor == true) { return; }
-                            let originalContent = Discuz_Advanced.value;
-                            Discuz_Advanced.value = originalContent + "\n" + '[img]' + request.imgssss + '[/img]';
-                            Find_Editor = true
-                        }
-
-                        if (Discuz_Advanced1) {
-                            let bodyElement = Discuz_Advanced1.contentDocument.body;
-                            if (bodyElement) {
-                                if (Find_Editor == true) { return; }
-                                let img = document.createElement('img')
-                                img.src = request.imgssss
-                                bodyElement.appendChild(img)
-                                Find_Editor = true
-                            }
-
-                        }
-                    }
-                    //v2exReply
-                    if (pageText.toLowerCase().includes("v2ex")) {
-                        if (pageText.toLowerCase().includes("主题创建指南")) {
-                            let reply_content_Advanced = document.getElementById("topic_content")
-                            if (reply_content_Advanced) {
-                                if (Find_Editor == true) { return; }
-                                let originalContent = reply_content_Advanced.value;
-                                reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + request.imgssss + ')'
-                                Find_Editor = true
-                            }
-                        }
-
-                    }
-                    //nodeseek
-                    if (pageText.toLowerCase().includes("nodeseek")) {
-                        let nodeseek = document.getElementById("markdown-input")
-                        if (nodeseek) {
-                            if (Find_Editor == true) { return; }
-                            let originalContent = nodeseek.value;
-                            nodeseek.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + request.imgssss + ')'
-                            Find_Editor = true
-                        }
-
-                    }
-                    //hostevaluate
-                    if (pageText.toLowerCase().includes("hostevaluate")) {
-                        let hostevaluate = document.getElementsByClassName("write-container")
-                        if (hostevaluate.length) {
-                            if (Find_Editor == true) { return; }
-                            let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
-                            let originalContent = write.value;
-                            write.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + request.imgssss + ')'
-                            Find_Editor = true
-                        }
-                    }
-                    //Typecho
-                    if (pageText.toLowerCase().includes("typecho")) {
-                        let text = document.getElementById("text")
-                        if (text) {
-                            if (Find_Editor == true) { return; }
-                            let originalContent = text.value;
-                            text.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + request.imgssss + ')'
-                            Find_Editor = true
-                        }
-                    }
-                    //CodeMirror
-                    let CodeMirror = document.querySelector(".CodeMirror");
-                    if (CodeMirror) {
-                        if (Find_Editor == true) { return; }
-                        window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + request.imgssss + ')' }, '*');
-                        Find_Editor = true
-                    }
-                    //Gutenberg Editor
-                    let Gutenberg = document.getElementById("wpbody-content")
-                    if (Gutenberg) {
-                        if (Find_Editor == true) { return; }
-                        window.postMessage({ type: 'Gutenberg', data: request.imgssss }, '*');
-                        Find_Editor = true
-                    }
-
-                    scripts.forEach(function (script) {
-                        if (Find_Editor == true) { return; }
-                        let src = script.getAttribute('src');
-                        //TinyMCE Editor
-                        if (src && src.includes('tinymce')) {
-                            window.postMessage({ type: 'TinyMCE', data: `<img src="` + request.imgssss + `">` }, '*');
-                            Find_Editor = true
-                            return;
-                        }
-                        //wangeditor
-                        if (src && src.includes('wangeditor')) {
-                            window.postMessage({ type: 'wangeditor', data: `<img src="` + request.imgssss + `">` }, '*');
-                            Find_Editor = true
-                            return;
-                        }
-                        //ckeditor4
-                        if (src && src.includes('ckeditor4')) {
-                            console.log("找到ckeditor了" + src)
-                            window.postMessage({ type: 'ckeditor4', data: `<img src="` + request.imgssss + `">` }, '*');
-                            Find_Editor = true
-                            return;
-                        }
-                        //ckeditor5
-                        if (src && src.includes('ckeditor5')) {
-                            console.log("找到ckeditor了" + src)
-                            window.postMessage({ type: 'ckeditor5', data: `<img src="` + request.imgssss + `">` }, '*');
-                            Find_Editor = true
-                            return;
-                        }
-                    });
-
-                }
-            })
-
-        }
-        if (request.tesss) {
-            console.log('Message received:', request.tesss);
+        if (request.AutoInsert_message) {
+            let AutoInsert_message_content = request.AutoInsert_message
+            AutoInsertFun(AutoInsert_message_content)
         }
     });
-
 
     /**
      * @param {url} imgUrl 获取到的图片信息
@@ -928,7 +937,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
-            chrome.runtime.sendMessage({ Loudspeaker: "图片获取完成,正在执行上传;" });
             let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
             cos.uploadFile({
@@ -952,7 +960,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
-            chrome.runtime.sendMessage({ Loudspeaker: "图片获取完成,正在执行上传;" });
             let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
             oss.put(filename, file, {
@@ -972,7 +979,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
-            chrome.runtime.sendMessage({ Loudspeaker: "图片获取完成,正在执行上传;" });
             let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
             let params;
@@ -1013,6 +1019,9 @@ chrome.storage.local.get(storagelocal, function (result) {
     function LocalStorage(filename, imageUrl) {
         chrome.storage.local.get('UploadLog', function (result) {
             let UploadLog = result.UploadLog || [];
+            if (!Array.isArray(UploadLog)) {
+                UploadLog = [];
+            }
             function generateRandomKey() {
                 return new Promise(resolve => {
                     const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -1021,9 +1030,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                         key += characters.charAt(Math.floor(Math.random() * characters.length));
                     }
                     // 确保不会重复
-                    if (!Array.isArray(UploadLog)) {
-                        UploadLog = [];
-                    }
                     while (UploadLog.some(log => log.id === key)) {
                         key = '';
                         for (let i = 0; i < 6; i++) {
@@ -1049,7 +1055,10 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
                 UploadLog.push(UploadLogData);
                 chrome.storage.local.set({ 'UploadLog': UploadLog })
-                chrome.runtime.sendMessage({ Loudspeaker: "图片上传成功，前往上传日志页面即可查看" });
+                chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
+                    chrome.runtime.sendMessage({ Loudspeaker: "图片上传成功，前往上传日志页面即可查看" });
+                    AutoInsertFun(imageUrl)
+                })
             });
         });
     }

@@ -355,7 +355,7 @@ $(document).ready(function () {
       })
     });//文件删除
 
-    uploader.on("success", function (file, res) {
+    uploader.on("success", async function (file, res) {
       if ($('.LinksBox').is(':hidden')) {
         $('.LinksBox').hide().slideDown('slow'); //动画
       }
@@ -543,17 +543,16 @@ $(document).ready(function () {
       }
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let currentTabId = tabs[0].id;
-        chrome.tabs.sendMessage(currentTabId, { imgssss: imageUrl }, function (response) {
+        chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
           if (chrome.runtime.lastError) {
             //发送失败
             return;
           }
         });
       });
-
-
-      LocalStorage(file, imageUrl)
+      await LocalStorage(file, imageUrl)
     })
+
 
     uploader.on("error", function (file, err) {
       console.log(err)
@@ -853,48 +852,51 @@ $(document).ready(function () {
         break;
     }
     function LocalStorage(file, url, UploadLog) {
-      chrome.storage.local.get("UploadLog", function (result) {
-        let UploadLog = result.UploadLog || [];
-        if (!Array.isArray(UploadLog)) {
-          UploadLog = [];
-        }
-        function generateRandomKey() {
-          return new Promise(resolve => {
-            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            let key = '';
-            for (let i = 0; i < 6; i++) {
-              key += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            // 确保不会重复
-            while (UploadLog.some(log => log.id === key)) {
-              key = '';
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.get("UploadLog", function (result) {
+          let UploadLog = result.UploadLog || [];
+          if (!Array.isArray(UploadLog)) {
+            UploadLog = [];
+          }
+          function generateRandomKey() {
+            return new Promise(resolve => {
+              const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+              let key = '';
               for (let i = 0; i < 6; i++) {
                 key += characters.charAt(Math.floor(Math.random() * characters.length));
               }
+              // 确保不会重复
+              while (UploadLog.some(log => log.id === key)) {
+                key = '';
+                for (let i = 0; i < 6; i++) {
+                  key += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+              }
+              resolve(key);
+            });
+          }
+          let d = new Date();
+          generateRandomKey().then(key => {
+            let UploadLogData = {
+              key: key,
+              url: url,
+              uploadExe: options_exe,
+              upload_domain_name: options_host,
+              original_file_name: file.name,
+              img_file_size: "宽:不支持,高:不支持",
+              uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
             }
-            resolve(key);
-          });
-        }
-        let d = new Date();
-        generateRandomKey().then(key => {
-          let UploadLogData = {
-            key: key,
-            url: url,
-            uploadExe: options_exe,
-            upload_domain_name: options_host,
-            original_file_name: file.name,
-            img_file_size: "宽:不支持,高:不支持",
-            uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
-          }
-          if (typeof UploadLog !== 'object') {
-            UploadLog = JSON.parse(UploadLog);
-          }
-          UploadLog.push(UploadLogData);
-          chrome.storage.local.set({ 'UploadLog': UploadLog })
-
+            if (typeof UploadLog !== 'object') {
+              UploadLog = JSON.parse(UploadLog);
+            }
+            UploadLog.push(UploadLogData);
+            chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
+              // 数据保存完成后的回调函数
+              resolve(); // 标记操作完成
+            })
+          })
         })
-      })
-
+      });
     }
     // 实现链接按钮下划线
     $(".urlButton").click(function () {

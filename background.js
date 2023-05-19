@@ -23,6 +23,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		chrome.storage.local.set({ "Circle_dragUpload": "Circle_dragUpload_off" }) //画圆上传
 		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
 		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
+		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
 
 		chrome.storage.local.set({ "edit_uploadArea_width": 32 }) //宽度
 		chrome.storage.local.set({ "edit_uploadArea_height": 30 }) //高度
@@ -274,17 +275,19 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 							imageUrl = options_return_success_value
 							break;
 					}
-					function generateRandomKey() {
-						return new Promise(resolve => {
-							const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-							let key = '';
-							for (let i = 0; i < 6; i++) {
-								key += characters.charAt(Math.floor(Math.random() * characters.length));
-							}
-
-							// 确保不会重复
-							chrome.storage.local.get('UploadLog', function (result) {
-								let UploadLog = result.UploadLog || [];
+					chrome.storage.local.get('UploadLog', function (result) {
+						let UploadLog = result.UploadLog || [];
+						if (!Array.isArray(UploadLog)) {
+							UploadLog = [];
+						}
+						function generateRandomKey() {
+							return new Promise(resolve => {
+								const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+								let key = '';
+								for (let i = 0; i < 6; i++) {
+									key += characters.charAt(Math.floor(Math.random() * characters.length));
+								}
+								// 确保不会重复
 								while (UploadLog.some(log => log.id === key)) {
 									key = '';
 									for (let i = 0; i < 6; i++) {
@@ -292,11 +295,8 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 									}
 								}
 								resolve(key);
-							})
-						});
-					}
-					chrome.storage.local.get('UploadLog', function (result) {
-						let UploadLog = result.UploadLog || [];
+							});
+						}
 						generateRandomKey().then(key => {
 							const UploadLogData = {
 								key: key,
@@ -313,6 +313,15 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 							UploadLog.push(UploadLogData);
 							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
 								showNotification("盘络上传程序", "图片上传成功，前往上传日志页面即可查看")
+								chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+									let currentTabId = tabs[0].id;
+									chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
+										if (chrome.runtime.lastError) {
+											//发送失败
+											return;
+										}
+									});
+								});
 							})
 						});
 					});
