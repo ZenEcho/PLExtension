@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盘络上传程序配置——盘络上传程序</title>
+  <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
+  <script src="js/jquery-3.6.3.min.js"></script>
+  <link rel="stylesheet" href="css/public.css">
+  <link rel="stylesheet" href="css/options.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-icons.css">
+  <script defer src="js/cos/cos-js-sdk-v5.js"></script>
+  <script defer src="js/oss/aliyun-oss-sdk.min.js"></script>
+  <script defer src="js/s3/aws-sdk.min.js"></script>
+  <script defer src="js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script defer src="js/public.js"></script>
+  <script defer src="js/options.js"></script>
+  <script defer src="js/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div class="shadow-lg" id="header">
+    <div class="container-md ">
+      <header class="py-3">
+        <ul class="nav justify-content-end nav-pills ">
+          <li class="nav-item">
+            <a class="nav-link" href="popup.html"><i class="bi bi-upload"></i> 上传页面</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-weight: bold;" href="options.html">
+              <i class="bi bi-sliders"></i> 配置信息</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="UploadLog.html">
+              <i class="bi bi-images"></i> 上传记录</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="FAQ.html"><i class="bi bi-question-circle"></i> 常见问题</a>
+          </li>
+        </ul>
+      </header>
+    </div>
+  </div>
+
+  <div class="container-md">
+    <h1 style="margin-top: 2rem; margin-bottom: 2rem;"><a class="title-a" href="#"></a></h1>
+  </div>
+
+  <div class="container-md shadow-lg">
+    <div class="row border-bottom Config-Box">
+      <div class="Config-Box-Left">
+        <div id="options_exe">
+          <button type="button" class=" active Animation_button" id="exe_Lsky" value="Lsky"><span
+              class="Animation_button_span">兰空图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_EasyImages" value="EasyImages"><span
+              class="Animation_button_span">简单图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_ImgURL" value="ImgURL"><span
+              class="Animation_button_span">ImgURL图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_Chevereto" value="Chevereto"><span
+              class="Animation_button_span">Chevereto图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_Hellohao" value="Hellohao"><span
+              class="Animation_button_span">Hellohao图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_SM_MS" value="SM_MS"><span
+              class="Animation_button_span">SM.MS图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_Imgur" value="Imgur"><span
+              class="Animation_button_span">Imgur图床程序</span></button>
+          <button type="button" class=" Animation_button" id="exe_Tencent_COS" value="Tencent_COS"><span
+              class="Animation_button_span">腾讯云COS</span></button>
+          <button type="button" class=" Animation_button" id="exe_Aliyun_OSS" value="Aliyun_OSS"><span
+              class="Animation_button_span">阿里云OSS</span></button>
+          <button type="button" class=" Animation_button" id="exe_AWS_S3" value="AWS_S3"><span
+              class="Animation_button_span">AWS S3</span></button>
+          <button type="button" class=" Animation_button " id="exe_UserDiy" value="UserDiy"><span
+              class="Animation_button_span">自定义上传</span></button>
+        </div>
+      </div>
+      <div class="col Config-Box-Right">
+        <div class="row border-bottom Config-Box-Right-header">
+          <div class="btn-group " id="CorsButton">
+            <button type="button" class="btn btn-dark CorsButton">配置CORS代理</button>
+          </div>
+
+        </div>
+        <div class="row">
+          <form action="options" id="options-form">
+          </form>
+          <div class="container-fluid" style="border: none;">
+            <p class="text-bottom-Tips1"></p>
+            <p class="text-bottom-Tips2">提示由开发者 <a href="https://pnglog.com/" style="color: #03a9f4;" target="_blank">
+                盘络图床</a> 提供,仅供参考。正式使用请替换。</p>
+            <button type="button" class="btn btn-primary box-shadow" id="options_save"><i
+                class="bi bi-check-lg"></i>保存</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row row-cols-auto border-bottom Config-Bottom-Boxs">
+      <div id="options_Open_withDiv" class="Config-Bottom-Box">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li id="options_Open_with_Tab"><a class="dropdown-item" href="#"><i class="bi bi-window"></i>在标签页打开</a></li>
+            <li id="options_Open_with_Window"><a class="dropdown-item" href="#"><i
+                  class="bi bi-window-stack"></i>在新窗口打开</a></li>
+            <li id="options_Open_with_Inside"><a class="dropdown-item" href="#"><i
+                  class="bi bi-window-sidebar"></i>在内置页打开</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="Circle_dragUpload" class="Config-Bottom-Box">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            画圆手势拖动上传
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" value="Circle_dragUpload_Default"><i
+                  class="bi bi-battery-half"></i>默认模式(单页无动态加载的图片元素)</a></li>
+            <li><a class="dropdown-item" href="#" value="Circle_dragUpload_Power"><i
+                  class="bi bi-battery-charging"></i>增强模式(懒加载的克星,暴力到极致的图片元素读取)</a></li>
+            <li><a class="dropdown-item" href="#" value="Circle_dragUpload_off"><i
+                  class="bi bi-battery"></i>关闭(老老实实用右键上传)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="GlobalUpload" class="Config-Bottom-Box">
+        <div class="btn-group">
+          <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            本地文件全局上传
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" value="GlobalUpload_Default"><i
+                  class="bi bi-battery-half"></i>默认模式(本地文件拖拽到图标)</a></li>
+            <li><a class="dropdown-item" href="#" value="GlobalUpload_Power"><i
+                  class="bi bi-battery-charging"></i>增强模式(本地文件拖拽到浏览器任意位置)</a></li>
+            <li><a class="dropdown-item" href="#" value="GlobalUpload_off"><i
+                  class="bi bi-battery"></i>关闭(老老实实用右键上传)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="Config-Bottom-Box">
+        <button id="Sidebar_area" type="button" class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#uploadArea_Modal">侧边栏区域</button>
+      </div>
+      <div id="AutoInsert" class="Config-Bottom-Box">
+        <div class="btn-group">
+          <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+           <span style="color: red;">[新]</span>自动插入
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" value="AutoInsert_on"><i class="bi bi-battery-half"></i>开启</a>
+            </li>
+            <li><a class="dropdown-item" href="#" value="AutoInsert_off"><i class="bi bi-battery"></i>关闭</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="Config-Bottom-Box">
+        <div class="form-check form-switch" style="margin: .5rem;">
+          <input class="form-check-input" type="checkbox" role="switch" id="Right_click_menu_upload">
+          <label class="form-check-label" for="Right_click_menu_upload">右键菜单上传(需重启)</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+  </div>
+</body>
+
+</html>

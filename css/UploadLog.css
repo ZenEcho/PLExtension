@@ -1,0 +1,134 @@
+body {
+    min-width: 720px;
+}
+
+.item {
+    min-width: 270px;
+    width: 360px;
+    min-height: 104px;
+    margin: 5px;
+    background-color: white;
+}
+
+.item .FileMedia {
+    width: 100%;
+    min-height: 104px;
+    object-fit: cover;
+}
+
+.item #textarea {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    border: none;
+}
+
+.item #textarea:focus {
+    outline: none;
+    border: none;
+}
+
+.delete {
+    user-select: none;
+    width: 2rem;
+    line-height: 2rem;
+    color: red;
+    text-align: center;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+}
+
+.delete:hover {
+    color: white;
+    background-color: red;
+}
+
+.copy {
+    user-select: none;
+    width: 2rem;
+    line-height: 2rem;
+    color: black;
+    text-align: center;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 32px;
+    z-index: 999;
+}
+
+.copy:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.Image_Width_And_Height {
+    user-select: none;
+    font-size: 1rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    line-height: 2rem;
+    text-align: center;
+    display: block;
+    color: white;
+    background-color: #0000002d;
+    position: absolute;
+    top: 0;
+}
+
+.urlDate {
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.logurl {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    bottom: 0;
+    background-color: #0000002d;
+    width: 100%;
+    color: white;
+}
+
+
+.gigante {
+    border: #03a9f4 2px solid;
+}
+
+.Selected_But {
+    margin: 0px 5px 0 5px;
+}
+
+
+.head {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 0px
+}
+
+#container {
+    margin-top: calc(var(--bs-gutter-x) * .5)
+}
+
+nav {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+#Bottom_button {
+    padding-bottom: 1rem;
+}

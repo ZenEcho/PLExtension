@@ -1,0 +1,391 @@
+body {
+  padding: 0px;
+  margin: 0px;
+  min-width: 500px;
+}
+
+.container-md {
+  transition: max-width 1s ease-in-out;
+}
+
+#header {
+  z-index: 9999;
+  background-color: #1E90FF;
+  position: sticky;
+  top: 0;
+}
+
+#header .nav .nav-item a {
+  color: #eee;
+}
+
+#header .nav .nav-item a:hover {
+  font-weight: bold;
+  color: white;
+}
+
+.title-a {
+  text-shadow: 2px 2px #03a9f4;
+  text-decoration: none;
+}
+
+h1 {
+  text-align: center;
+  background: -webkit-linear-gradient(135deg,
+      #0eaf6d,
+      #ff6ac6 25%,
+      #147b96 50%,
+      #e6d205 55%,
+      #2cc4e0 60%,
+      #8b2ce0 80%,
+      #ff6384 95%,
+      #08dfb4);
+  /* 文字颜色填充设置为透明 */
+  -webkit-text-fill-color: transparent;
+  /* 背景裁剪，即让文字使用背景色 */
+  -webkit-background-clip: text;
+  /* 背景图放大一下，看着柔和一些 */
+  -webkit-background-size: 200% 100%;
+  /* 应用动画flowCss 12秒速度 无限循环 线性匀速动画*/
+  -webkit-animation: flowCss 12s infinite linear;
+}
+
+@-webkit-keyframes flowCss {
+  0% {
+    /* 移动背景位置 */
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: -400% 0;
+  }
+}
+
+h1:hover {
+  -webkit-animation: flowCss 4s infinite linear;
+}
+
+
+
+.box-shadow {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.em1 {
+  padding: 1em;
+  margin: 1em;
+}
+
+#alert {
+  z-index: 999;
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  color: black;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.alert_title {
+  width: 100%;
+  text-align: center;
+  line-height: 2rem;
+  background-color: #03a9f4;
+}
+
+.alert_title_p {
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  vertical-align: middle;
+  color: white;
+  user-select: none;
+}
+
+.alert_title_button {
+  width: 2rem;
+  float: right;
+  margin-top: -2rem;
+  border: none;
+  background-color: #ff5722;
+  height: 2rem;
+  color: white;
+}
+
+.alert_title_button:hover {
+  background-color: #ff9800;
+}
+
+.alert_content {
+  font-size: 1rem;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+  background-color: white;
+  user-select: none;
+}
+
+#alertBG {
+  z-index: 998;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0%;
+  width: 999%;
+  height: 999%;
+  background: rgb(0 0 0 / 50%);
+}
+
+
+.Animation_button {
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.Animation_button_span {
+  display: block;
+}
+
+.Animation_button::before,
+.Animation_button::after {
+  content: "";
+  width: 0;
+  height: 2px;
+  position: absolute;
+  transition: all .2s linear;
+  background: -webkit-linear-gradient(180deg,
+      #00CCFF,
+      #0099FF 50%,
+      #00CCFF);
+}
+
+.Animation_button_span::before,
+.Animation_button_span::after {
+  content: "";
+  width: 2px;
+  height: 0;
+  position: absolute;
+  transition: all .2s linear;
+  background: -webkit-linear-gradient(180deg,
+      #00CCFF,
+      #0099FF 50%,
+      #00CCFF);
+}
+
+.Animation_button:hover::before,
+.Animation_button:hover::after {
+  width: 100%
+}
+
+.Animation_button:hover .Animation_button_span::before,
+.Animation_button:hover .Animation_button_span::after {
+  height: 100%
+}
+
+.Animation_button1::before,
+.Animation_button1::after {
+  transition-delay: .2s
+}
+
+.Animation_button1 .Animation_button_span::before,
+.Animation_button1 .Animation_button_span::after {
+  transition-delay: 0s
+}
+
+.Animation_button1::before {
+  right: 0;
+  top: 0
+}
+
+.Animation_button1::after {
+  left: 0;
+  bottom: 0
+}
+
+.Animation_button1 .Animation_button_span::before {
+  left: 0;
+  top: 0
+}
+
+.Animation_button1 .Animation_button_span::after {
+  right: 0;
+  bottom: 0
+}
+
+.Animation_button1:hover::before,
+.Animation_button1:hover::after {
+  transition-delay: 0s
+}
+
+.Animation_button1:hover .Animation_button_span::before,
+.Animation_button1:hover .Animation_button_span::after {
+  transition-delay: .2s
+}
+
+.Animation_button2::before,
+.Animation_button2::after {
+  transition-delay: 0s
+}
+
+.Animation_button2 .Animation_button_span::before,
+.Animation_button2 .Animation_button_span::after {
+  transition-delay: .2s
+}
+
+.Animation_button2::before {
+  right: 0;
+  top: 0
+}
+
+.Animation_button2::after {
+  left: 0;
+  bottom: 0
+}
+
+.Animation_button2 .Animation_button_span::before {
+  left: 0;
+  top: 0
+}
+
+.Animation_button2 .Animation_button_span::after {
+  right: 0;
+  bottom: 0
+}
+
+.Animation_button2:hover::before,
+.Animation_button2:hover::after {
+  transition-delay: .2s
+}
+
+.Animation_button2:hover .Animation_button_span::before,
+.Animation_button2:hover .Animation_button_span::after {
+  transition-delay: 0s
+}
+
+.Animation_button3::after {
+  left: 0;
+  bottom: 0;
+  transition-delay: .6s
+}
+
+.Animation_button3 .Animation_button_span::after {
+  transition-delay: .4s;
+  right: 0;
+  bottom: 0
+}
+
+.Animation_button3::before {
+  right: 0;
+  top: 0;
+  transition-delay: .2s
+}
+
+.Animation_button3 .Animation_button_span::before {
+  transition-delay: 0s;
+  left: 0;
+  top: 0
+}
+
+.Animation_button3:hover::after {
+  transition-delay: 0s
+}
+
+.Animation_button3:hover .Animation_button_span::after {
+  transition-delay: .2s
+}
+
+.Animation_button3:hover::before {
+  transition-delay: .4s
+}
+
+.Animation_button3:hover .Animation_button_span::before {
+  transition-delay: .6s
+}
+
+.Animation_button4::after {
+  right: 0;
+  bottom: 0;
+  transition-duration: .4s
+}
+
+.Animation_button4 .Animation_button_span::after {
+  right: 0;
+  bottom: 0;
+  transition-duration: .4s
+}
+
+.Animation_button4::before {
+  left: 0;
+  top: 0;
+  transition-duration: .4s
+}
+
+.Animation_button4 .Animation_button_span::before {
+  left: 0;
+  top: 0;
+  transition-duration: .4s
+}
+
+.Animation_button5::after {
+  left: 0;
+  bottom: 0;
+  transition-duration: .4s
+}
+
+.Animation_button5 .Animation_button_span::after {
+  right: 0;
+  top: 0;
+  transition-duration: .4s
+}
+
+.Animation_button5::before {
+  right: 0;
+  top: 0;
+  transition-duration: .4s
+}
+
+.Animation_button5 .Animation_button_span::before {
+  left: 0;
+  bottom: 0;
+  transition-duration: .4s
+}
+
+.Animation_button6::before {
+  left: 50%;
+  top: 0;
+  transition-duration: .4s
+}
+
+.Animation_button6::after {
+  left: 50%;
+  bottom: 0;
+  transition-duration: .4s
+}
+
+.Animation_button6 .Animation_button_span::before {
+  left: 0;
+  top: 50%;
+  transition-duration: .4s
+}
+
+.Animation_button6 .Animation_button_span::after {
+  right: 0;
+  top: 50%;
+  transition-duration: .4s
+}
+
+.Animation_button6:hover::before,
+.Animation_button6:hover::after {
+  left: 0
+}
+
+.Animation_button6:hover .Animation_button_span::before,
+.Animation_button6:hover .Animation_button_span::after {
+  top: 0
+}
