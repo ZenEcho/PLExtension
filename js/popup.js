@@ -108,7 +108,6 @@ $(document).ready(function () {
     var imageUrl
     var filePreviewElements = [];
     var fileDeletePreview = [];
-    var Tencent_COS_uploadData;
     // 实现上传功能
     var uploader;
     if ($('.dropzone').length) {
@@ -232,7 +231,7 @@ $(document).ready(function () {
           <p class="p_urls">上传成功后URL将会显示在这里</p>
         </div>
         <div class="text-center selector_p_urls">
-          <span>选择</span></span>
+          <span>选择</span>
         </div>
         <div class="text-center copy">
           <span>复制</span>
@@ -282,7 +281,7 @@ $(document).ready(function () {
                 <p class="p_urls">${link}</p>
               </div>
               <div class="text-center selector_p_urls">
-                <span>选择</span></span>
+                <span>选择</span>
               </div>
               <div class="text-center copy">
                 <span>复制</span>
@@ -960,7 +959,6 @@ $(document).ready(function () {
 
     var tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
     if (tokenRequired.includes(options_exe)) {
-
       if (!options_token) {
         alert(`${options_exe}图床程序必须填写Token`);
         window.location.href = "options.html";

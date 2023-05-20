@@ -695,9 +695,8 @@ chrome.storage.local.get(storagelocal, function (result) {
             link.rel = 'stylesheet';
             (document.head || document.documentElement).appendChild(link);
         }
-
-        // 注入css
         master_processCSS('master_process.css');
+        
         function addJs(file) {
             var script = document.createElement('script');
             script.src = chrome.runtime.getURL(file);
@@ -722,7 +721,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                 let Find_Editor = false
                 let pageText = document.body.innerText;
                 let scripts = document.querySelectorAll('script');
-
                 //Discuz
                 if (pageText.toLowerCase().includes("discuz")) {
                     let Discuz = document.getElementById("fastpostmessage")
@@ -820,10 +818,11 @@ chrome.storage.local.get(storagelocal, function (result) {
                     window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
                     Find_Editor = true
                 }
+
                 scripts.forEach(function (script) {
                     if (Find_Editor == true) { return; }
                     let src = script.getAttribute('src');
-                    //TinyMCE Editor
+                    //TinyMCE 5/6 Editor
                     if (src && src.includes('tinymce')) {
                         window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                         Find_Editor = true
@@ -852,6 +851,16 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
         })
     }
+    // let test_script = document.querySelectorAll('script');
+    // test_script.forEach(function (script) {
+    //     let src = script.getAttribute('src');
+    //     //TinyMCE Editor
+    //     if (src && src.includes('tinymce')) {
+    //         console.log("tinymce")
+    //         return;
+    //     }
+
+    // });
     /**
      * 收到消息的动作
      */

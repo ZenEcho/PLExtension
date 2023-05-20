@@ -70,7 +70,7 @@ function plB(Element) {
     Element.appendChild(item)
 }
 
-//TinyMCE
+//TinyMCE 5/6
 try {
     let TinyMCE_Element = tinymce.activeEditor
     if (TinyMCE_Element) {
@@ -80,7 +80,7 @@ try {
     }
 } catch (error) {
 }
-//wangeditor
+
 try {
     let wangeditor_Element = editor.getEditableContainer()
     if (wangeditor_Element) {
