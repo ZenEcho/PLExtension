@@ -622,9 +622,10 @@ chrome.storage.local.get(storagelocal, function (result) {
                 fastpostsubmit.parentNode.appendChild(item)
             }
             if (Discuz_ReplyAdvanced) {
-                let postbox = document.getElementById("postbox")
-                postbox.appendChild(item)
+
+                Discuz_ReplyAdvanced.parentNode.parentNode.appendChild(item)
             }
+
         }
 
         //v2exReply
@@ -696,7 +697,7 @@ chrome.storage.local.get(storagelocal, function (result) {
             (document.head || document.documentElement).appendChild(link);
         }
         master_processCSS('master_process.css');
-        
+
         function addJs(file) {
             var script = document.createElement('script');
             script.src = chrome.runtime.getURL(file);
@@ -726,7 +727,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                     let Discuz = document.getElementById("fastpostmessage")
                     let Discuz_Interactive_reply = document.getElementById("postmessage")
                     let Discuz_Advanced = document.getElementById("e_textarea")
-                    let Discuz_Advanced1 = document.getElementById("e_iframe")
+                    let Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe")
                     if (Discuz_Interactive_reply) {
                         if (Find_Editor == true) { return; }
                         //如果是回复楼层
@@ -742,22 +743,19 @@ chrome.storage.local.get(storagelocal, function (result) {
                     }
                     if (Discuz_Advanced) {
                         if (Find_Editor == true) { return; }
-                        let originalContent = Discuz_Advanced.value;
-                        Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
-                        Find_Editor = true
-                    }
-
-                    if (Discuz_Advanced1) {
-                        let bodyElement = Discuz_Advanced1.contentDocument.body;
-                        if (bodyElement) {
-                            if (Find_Editor == true) { return; }
+                        if (Discuz_Advanced_iframe) {
+                            let bodyElement = Discuz_Advanced_iframe.contentDocument.body
                             let img = document.createElement('img')
                             img.src = AutoInsert_message_content
                             bodyElement.appendChild(img)
                             Find_Editor = true
+                        } else {
+                            let originalContent = Discuz_Advanced.value;
+                            Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
+                            Find_Editor = true
                         }
-
                     }
+
                 }
                 //v2exReply
                 if (pageText.toLowerCase().includes("v2ex")) {
