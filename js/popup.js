@@ -11,7 +11,10 @@ $(document).ready(function () {
     var options_source = result.options_source
     var options_imgur_post_mode = result.options_imgur_post_mode
     var options_source_select = result.options_source_select
-
+    var options_expiration_select = result.options_expiration_select || "NODEL"
+    var options_album_id = result.options_album_id
+    var options_nsfw_select = result.options_nsfw_select || 0
+    var options_permission_select = result.options_permission_select || 0
     //自定义请求
     var options_apihost = result.options_apihost
     var options_parameter = result.options_parameter
@@ -432,7 +435,7 @@ $(document).ready(function () {
           LinksMDwithlink.push('[![' + res.data.filename + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'Chevereto':
-          if (!res.status == 200) {
+          if (res.status != 200) {
             toastItem({
               toast_content: "上传成功"
             })
@@ -540,6 +543,7 @@ $(document).ready(function () {
           options_host = options_Endpoint
           break;
       }
+      console.log(res)
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let currentTabId = tabs[0].id;
         chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
@@ -602,7 +606,12 @@ $(document).ready(function () {
         uploader.on("sending", function (file, xhr, formData) {
           if (options_source_select) {
             formData.append("strategy_id", options_source_select);
+
           }
+          if (options_album_id) {
+            formData.append("album_id", options_album_id);
+          }
+          formData.append("permission", options_permission_select);
         })
         break;
       case 'EasyImages':
@@ -632,10 +641,22 @@ $(document).ready(function () {
         })
         break;
       case 'Chevereto':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token;
+        let Temporary_URL = ""
+        if (options_expiration_select != "NODEL") {
+          Temporary_URL += "&expiration=" + options_expiration_select
+        }
+        if (options_album_id) {
+          Temporary_URL += "&album_id=" + options_album_id
+        }
+        if (options_nsfw_select) {
+          Temporary_URL += "&nsfw=" + options_nsfw_select
+        }
+        console.log(Temporary_URL)
+        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token + Temporary_URL;
         uploader.options.headers = { "Authorization": options_token };
         uploader.options.paramName = 'source';
         uploader.options.acceptedFiles = 'image/*';
+        console.log(uploader.options.url)
         break;
       case 'Hellohao':
         uploader.options.url = options_proxy_server + "https://" + options_host + "/api/uploadbytoken/";

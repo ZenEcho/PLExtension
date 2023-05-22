@@ -51,8 +51,6 @@ window.addEventListener('message', function (event) {
     if (event.data.type === 'ckeditor5') {
         try {
             let ckeditor_Element = editor;
-            console.log(editor)
-            console.log("ckeditor5")
             if (ckeditor_Element) {
                 const content = ckeditor_Element.getData();
                 ckeditor_Element.setData(content + event.data.data);

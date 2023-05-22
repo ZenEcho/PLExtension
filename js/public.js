@@ -140,6 +140,10 @@ var getSave = [
   "options_source",
   "options_imgur_post_mode",
   "options_source_select",
+  "options_expiration_select", //删除时间
+  "options_album_id", //相册
+  "options_nsfw_select",//是否健康
+  "options_permission_select",//是否公开
   //自定义请求
   "options_apihost",
   "options_parameter",

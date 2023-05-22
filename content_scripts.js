@@ -551,6 +551,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         event.preventDefault();
         event.stopPropagation();
         if (!event.target.closest('#uploadAreaTips')) {
+            console.log(event.target.src)
             uploadAreaFunction(event)
         }
         uploadAreaTips.style.bottom = "-100px";
@@ -845,18 +846,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                         return;
                     }
                 });
-
             }
         })
     }
-    // let test_script = document.querySelectorAll('script');
-    // test_script.forEach(function (script) {
-    //     let src = script.getAttribute('src');
-    //     //TinyMCE Editor
-    //     if (src && src.includes('tinymce')) {
-    //         console.log("tinymce")
-    //         return;
-    //     }
 
     // });
     /**

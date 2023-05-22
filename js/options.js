@@ -12,6 +12,10 @@ $(document).ready(function () {
     var options_uid = result.options_uid
     var options_source = result.options_source
     var options_imgur_post_mode = result.options_imgur_post_mode
+    var options_expiration_select = result.options_expiration_select || "NODEL"
+    var options_album_id = result.options_album_id
+    var options_nsfw_select = result.options_nsfw_select || 0
+    var options_permission_select = result.options_permission_select || 0
 
     //自定义请求
     var options_apihost = result.options_apihost
@@ -58,23 +62,38 @@ $(document).ready(function () {
     }
 
     const html_exeLskyBox = `
-  <div class="form-group">
-    <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:pnglog.com" />
-  </div>
-  <div class="form-group">
-    <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(Lsky程序必须填写Token)</p>
-    </label>
-      <input type="text" class="form-control box-shadow" id="options_token"
-                placeholder="例如:Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5" />
-  </div>
-  <div class="form-group">
-  <label for="options_source" class="options_source">存储源选择<p class="options_uid_tips">(兰空图床程序可选存储源)</p>
-  </label>
-  <select id="options_source_select" class="form-select box-shadow" aria-label="Default select example">
-  </select>
-  </div>
+    <div class="form-group">
+      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      </label>
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:pnglog.com" />
+    </div>
+    <div class="form-group">
+      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(Lsky程序必须填写Token)</p>
+      </label>
+        <input type="text" class="form-control box-shadow" id="options_token"
+                  placeholder="例如:Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5" />
+    </div>
+    <div class="form-group">
+      <label for="options_album_id" class="options_album_id">相册选择<p class="options_album_id_tips">(选择相册)</p>
+      </label>
+      <select id="options_album_id" class="form-select box-shadow">
+      
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="options_permission" class="options_permission">隐私选择<p class="options_permission_tips">(上传的内容是否公开,默认私有)</p>
+      </label>
+      <select id="options_permission_select" class="form-select box-shadow">
+      <option selected value="0">私有</option>
+      <option value="1">公开</option>
+      </select>                
+    </div>
+    <div class="form-group">
+      <label for="options_source" class="options_source">存储源选择<p class="options_uid_tips">(兰空图床程序可选存储源)</p>
+      </label>
+      <select id="options_source_select" class="form-select box-shadow">
+      </select>
+    </div>
   `
     const html_exeLskyBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://www.lsky.pro/" target="_blank"> 兰空图床 </a>程序的网站`
 
@@ -137,7 +156,52 @@ $(document).ready(function () {
       </label>
         <input type="text" class="form-control box-shadow" id="options_token"
                   placeholder="例如:chv_Vxd5_618c6cf4dbbec416be206e4..." />
-    </div>`
+    </div>
+    <div class="form-group">
+      <label for="options_album_id" class="options_album_id">相册ID<p class="options_album_id_tips">(相册ID,默认为空)</p>
+      </label>
+        <input type="text" class="form-control box-shadow" id="options_album_id"
+                  placeholder="例如:iXnGp" />
+    </div>
+    <div class="form-group">
+      <label for="options_nsfw" class="options_nsfw">是否健康<p class="options_nsfw_tips">(上传的内容是否健康,默认健康)</p>
+      </label>
+      <select id="options_nsfw_select" class="form-select box-shadow">
+      <option selected value="0">健康</option>
+      <option value="1">不良</option>
+      </select>                
+    </div>
+    <div class="form-group">
+    <label for="options_expiration" class="options_expiration">删除时间<p class="options_expiration_tips">(删除时间,默认不自动删除)</p>
+    </label>
+    <select id="options_expiration_select" class="form-select box-shadow">
+    <option selected value="NODEL">不自动删除</option>
+    <option value="PT5M">5分钟</option>
+    <option value="PT15M">15分钟</option>
+    <option value="PT30M">30分钟</option>
+    <option value="PT1H">1小时</option>
+    <option value="PT3H">3小时</option>
+    <option value="PT6H">6小时</option>
+    <option value="PT12H">12小时</option>
+    <option value="P1D">1天</option>
+    <option value="P2D">2天</option>
+    <option value="P3D">3天</option>
+    <option value="P4D">4天</option>
+    <option value="P5D">5天</option>
+    <option value="P6D">6天</option>
+    <option value="P1W">1周</option>
+    <option value="P2W">2周</option>
+    <option value="P3W">3周</option>
+    <option value="P1M">1月</option>
+    <option value="P2M">2月</option>
+    <option value="P3M">3月</option>
+    <option value="P4M">4月</option>
+    <option value="P5M">5月</option>
+    <option value="P6M">6月</option>
+    <option value="P1Y">1年</option>
+    </select>
+    </div>
+    `
     const html_exeCheveretoBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://demo.chevereto.com/" target="_blank"> Chevereto图床 </a>程序的网站`
 
     const html_exeCORSForm = `
@@ -588,7 +652,9 @@ $(document).ready(function () {
       switch (options_exe) {
         case 'Lsky':
           $("#exe_Lsky").addClass('active');
+          $('#options_permission_select').val(options_permission_select);
           GetSource()
+          Getalbums()
           break;
         case 'EasyImages':
           $("#exe_EasyImages").addClass('active');
@@ -603,6 +669,9 @@ $(document).ready(function () {
           break;
         case 'Chevereto':
           $("#exe_Chevereto").addClass('active');
+          $("#options_album_id").val(options_album_id);
+          $('#options_expiration_select').val(options_expiration_select);
+          $('#options_nsfw_select').val(options_nsfw_select);
           break;
         case 'Hellohao':
           $("#exe_Hellohao").addClass('active');
@@ -680,7 +749,9 @@ $(document).ready(function () {
         $('#options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
+        $('#options_permission_select').val(options_permission_select);
         GetSource()
+        Getalbums()
       }
       if (prog.needUid == 2) {//EasyImages
         $('#options-form').append(prog.html_exeBox);
@@ -704,6 +775,9 @@ $(document).ready(function () {
         $('#options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
+        $("#options_album_id").val(options_album_id);
+        $('#options_expiration_select').val(options_expiration_select);
+        $('#options_nsfw_select').val(options_nsfw_select);
       }
       if (prog.needUid == 6) {//hellohao
         $('#options-form').append(prog.html_exeBox);
@@ -1125,7 +1199,7 @@ $(document).ready(function () {
             $("#options_source_select").empty();
             strategies.forEach(function (e, index) {
               $("#options_source_select").append(
-                `<option value="` + res.data.strategies[index].id + `">` + res.data.strategies[index].name + `</option>`
+                `<option value="` + e.id + `">` + e.name + `</option>`
               )
             })
             chrome.storage.local.get('options_source_select', function (data) {
@@ -1141,6 +1215,59 @@ $(document).ready(function () {
 
             });
 
+          },
+
+          function (error) {
+            $("#options_source_select").append(
+              `<option selected value="NO">无法获取存储源</option></option>`
+            )
+            console.log(error)
+          }
+        )
+      }
+    }
+    /**
+     * 获取兰空图床相册列表
+     */
+    function Getalbums() {
+      if (options_host) {//不为空时
+        sendAjax(
+          options_proxy_server + "https://" + options_host + "/api/v1/albums",
+          'GET',
+          null,
+          {
+            "Accept": "application/json",
+            "Authorization": options_token
+          },
+          function (res) {
+            let albums = res.data.data
+            $("#options_album_id").empty();
+            $("#options_album_id").append(
+              `<option selected value="">默认</option></option>`
+            )
+            albums.forEach(function (e, index) {
+              $("#options_album_id").append(
+                `<option value="` + e.id + `">` + e.name + `</option>`
+              )
+            })
+            chrome.storage.local.get('options_album_id', function (data) {
+              let selectedValue = data.options_album_id;
+              let option = $('#options_album_id option[value=' + selectedValue + ']');
+              if (option.length) {
+                // 如果没有就选择第一个
+                $('#options_album_id').val(selectedValue);
+              } else {
+                $('#options_album_id option:first').prop('selected', true);
+                chrome.storage.local.set({ 'options_album_id': $("#options_album_id").val() })
+              }
+
+            });
+          },
+          function (err) {
+            $("#options_album_id").append(
+              `<option selected value="NO">无法获取相册</option></option>`
+            )
+            console.log(err)
           }
         )
       }
@@ -1202,6 +1329,10 @@ $(document).ready(function () {
           chrome.storage.local.set({ 'options_token': $("#options_token").val() })
         }
         chrome.storage.local.set({ 'options_source_select': $("#options_source_select").val() })
+        chrome.storage.local.set({ 'options_expiration_select': $("#options_expiration_select").val() })
+        chrome.storage.local.set({ 'options_permission_select': $("#options_permission_select").val() })
+        chrome.storage.local.set({ 'options_album_id': $("#options_album_id").val() })
+        chrome.storage.local.set({ 'options_nsfw_select': $("#options_nsfw_select").val() })
         chrome.storage.local.set({ 'options_uid': $("#options_uid").val() })
         chrome.storage.local.set({ 'options_source': $("#options_source").val() })
         chrome.storage.local.set({ 'options_exe': optionsExe.attr("value") })
@@ -1893,7 +2024,7 @@ $(document).ready(function () {
           toast_content: "开启成功,请手动刷新页面再上传"
         });
         $("#AutoInsert button").addClass("btn-primary")
-      }  else if (val == "AutoInsert_off") {
+      } else if (val == "AutoInsert_off") {
         $("#AutoInsert button").addClass("btn-dark")
       }
 

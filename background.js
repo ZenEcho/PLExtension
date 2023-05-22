@@ -60,6 +60,11 @@ const getSave = [
 	"options_uid",
 	"options_source",
 	"options_imgur_post_mode",
+	"options_source_select",
+	"options_expiration_select", //删除时间
+	"options_album_id", //相册
+	"options_nsfw_select",//是否健康
+	"options_permission_select",//是否公开
 	//自定义请求
 	"options_apihost",
 	"options_parameter",
@@ -105,7 +110,11 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 		var options_token = result.options_token
 		var options_uid = result.options_uid
 		var options_source = result.options_source
-
+		var options_source_select = result.options_source_select
+		var options_expiration_select = result.options_expiration_select || "NODEL"
+		var options_album_id = result.options_album_id
+		var options_nsfw_select = result.options_nsfw_select || 0
+		var options_permission_select = result.options_permission_select || 0
 		//自定义请求
 		var options_apihost = result.options_apihost
 		var options_parameter = result.options_parameter
@@ -180,6 +189,13 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
 					optionHeaders = { "Authorization": options_token };
 					formData.append('file', file);
+					if (options_source_select) {
+						formData.append("strategy_id", options_source_select);
+					}
+					if (options_album_id) {
+						formData.append("album_id", options_album_id);
+					}
+					formData.append("permission", options_permission_select);
 					break;
 				case 'EasyImages':
 					optionsUrl = options_proxy_server + "https://" + options_host + "/api/index.php";
@@ -198,6 +214,16 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 					formData.append('smfile', file);
 					break;
 				case 'Chevereto':
+					let Temporary_URL = ""
+					if (options_expiration_select != "NODEL") {
+						Temporary_URL += "&expiration=" + options_expiration_select
+					}
+					if (options_album_id) {
+						Temporary_URL += "&album_id=" + options_album_id
+					}
+					if (options_nsfw_select) {
+						Temporary_URL += "&nsfw=" + options_nsfw_select
+					}
 					optionsUrl = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token;
 					optionHeaders = { "Authorization": options_token };
 					formData.append('source', file);
@@ -313,21 +339,23 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 							UploadLog.push(UploadLogData);
 							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
 								showNotification("盘络上传程序", "图片上传成功，前往上传日志页面即可查看")
-								chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-									let currentTabId = tabs[0].id;
-									chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
-										if (chrome.runtime.lastError) {
-											//发送失败
-											return;
-										}
-									});
-								});
 							})
+							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+								console.log(tabs)
+								let currentTabId = tabs[0].id;
+								chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
+									if (chrome.runtime.lastError) {
+										//发送失败
+										return;
+									}
+								});
+							});
 						});
 					});
 				})
 				.catch(error => {
 					console.error(error);
+					showNotification("盘络上传程序", "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" + error.toString())
 				});
 		}
 
@@ -340,21 +368,21 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 		}
 		if (options_exe == "Tencent_COS") {
 			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-				var currentTabId = tabs[0].id;
+				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { Tencent_COS_contextMenus: imgUrl })
 			});
 			return;
 		}
 		if (options_exe == "Aliyun_OSS") {
 			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-				var currentTabId = tabs[0].id;
+				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { Aliyun_OSS_contextMenus: imgUrl })
 			});
 			return;
 		}
 		if (options_exe == "AWS_S3") {
 			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-				var currentTabId = tabs[0].id;
+				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { AWS_S3_contextMenus: imgUrl })
 			});
 			return;
