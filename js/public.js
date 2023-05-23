@@ -150,6 +150,9 @@ var getSave = [
   "options_Headers",
   "options_Body",
   "options_return_success",
+   //GitHub
+  "options_owner",
+  "options_repository",
 
   //对象存储
   "options_SecretId",
@@ -339,6 +342,11 @@ chrome.storage.local.get(getSave, function (result) {
 
   if (options_exe == "UserDiy") {
     localStorage.options_webtitle = "自定义上传"
+    localStorage.options_webtitle_status = 0
+    return;
+  }
+  if (options_exe == "GitHubUP") {
+    localStorage.options_webtitle = "GitHub 上传"
     localStorage.options_webtitle_status = 0
     return;
   }

@@ -24,6 +24,10 @@ $(document).ready(function () {
     var open_json_button = result.open_json_button
     var Copy_Selected_Mode = result.Copy_Selected_Mode
 
+    //GitHub
+    var options_owner = result.options_owner
+    var options_repository = result.options_repository
+
     //对象存储
     var options_SecretId = result.options_SecretId
     var options_SecretKey = result.options_SecretKey
@@ -343,6 +347,7 @@ $(document).ready(function () {
     })
 
     uploader.on("removedfile", function (removefile) {
+
       const index = filePreviewElements.indexOf(removefile.previewElement);
       const pTag = $(".p_urls").eq(index);
       $(pTag).parent().parent().remove()
@@ -465,12 +470,12 @@ $(document).ready(function () {
           LinksMDwithlink.push('[![' + file.name + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'Imgur':
-          // imageUrl = res.data.link
-          // LinksUrl.push(res.data.link)
-          // LinksHtml.push('&lt;img src="' + res.data.link + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          // LinksBBCode.push('[img]' + res.data.link + '[/img]')
-          // LinksMarkdown.push('![' + file.name + '](' + res.data.link + ')')
-          // LinksMDwithlink.push('[![' + file.name + '](' + res.data.link + ')](' + res.data.link + ')')
+          imageUrl = res.data.link
+          LinksUrl.push(res.data.link)
+          LinksHtml.push('&lt;img src="' + res.data.link + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+          LinksBBCode.push('[img]' + res.data.link + '[/img]')
+          LinksMarkdown.push('![' + file.name + '](' + res.data.link + ')')
+          LinksMDwithlink.push('[![' + file.name + '](' + res.data.link + ')](' + res.data.link + ')')
           break;
         case 'UserDiy':
           toastItem({
@@ -541,6 +546,9 @@ $(document).ready(function () {
             toast_content: '上传完成'
           })
           options_host = options_Endpoint
+          break;
+        case 'GitHubUP':
+
           break;
       }
       console.log(res)
@@ -668,69 +676,14 @@ $(document).ready(function () {
         })
         break;
       case 'Imgur':
-        // uploader.options.url = options_proxy_server + "https://" + options_host + "/3/upload";
-        // uploader.options.headers = { "Authorization": 'Client-ID ' + options_token };
-        // if (options_imgur_post_mode == "video") {
-        //   uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
-        // } else {
-        //   uploader.options.acceptedFiles = 'image/*';
-        // }
-        // uploader.options.paramName = options_imgur_post_mode;
-
-        // uploader.options.autoProcessQueue = false
-        uploader.options.acceptedFiles = ""
-        uploader.options.maxFilesize = 5000
-        // uploader.on("addedfile", function (file) {
-        //   const fileReader = new FileReader();
-        //   fileReader.onloadend = function () {
-        //     const imageData = fileReader.result.split(',')[1]
-        //     let date = new Date();
-        //     let filename = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + file.name;
-        //     fetch("https://api.github.com/repos/ZenEcho/imgtest/contents/" + filename, {
-        //       method: 'PUT',
-        //       headers: {
-        //         'Authorization': 'token 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',
-        //         'Content-Type': 'application/vnd.github+json'
-        //       },
-        //       body: JSON.stringify({
-        //         message: 'test', // 提交的消息
-        //         content: imageData, // 文件内容（Base64编码）
-        //       })
-        //     })
-        //       .then(function (response) {
-        //         if (response.ok) {
-        //           console.log('文件上传成功！');
-        //         } else {
-        //           console.log('文件上传失败：' + response.statusText);
-        //         }
-        //       })
-        //       .catch(function (error) {
-        //         console.error('文件上传失败：', error);
-        //         console.log(error)
-        //       });
-        //   };
-        //   fileReader.readAsDataURL(file);
-        // })
-        uploader.options.method = 'PUT',
-          uploader.options.url = "https://api.github.com/repos/ZenEcho/imgtest/contents/test";
-        uploader.options.headers = { "Authorization": "token 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", "Content-Type": "application/vnd.github+json" };
-        uploader.on("sending", function (file, xhr, formData) {
-          const fileReader = new FileReader();
-          fileReader.onloadend = function () {
-            const imageData = fileReader.result.split(',')[1]
-
-            let message = JSON.stringify({ message: 'test' })
-            let content = JSON.stringify(imageData)
-            formData.append("message", "test");
-            formData.append("content", content);
-          };
-          fileReader.readAsDataURL(file);
-
-        })
-
-
-
-
+        uploader.options.url = options_proxy_server + "https://" + options_host + "/3/upload";
+        uploader.options.headers = { "Authorization": 'Client-ID ' + options_token };
+        if (options_imgur_post_mode == "video") {
+          uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
+        } else {
+          uploader.options.acceptedFiles = 'image/*';
+        }
+        uploader.options.paramName = options_imgur_post_mode;
         break;
       case 'UserDiy':
         uploader.options.url = options_proxy_server + options_apihost;
@@ -923,6 +876,57 @@ $(document).ready(function () {
             file.status = Dropzone.UPLOADING;
             uploader.emit("uploadprogress", file, percentage, 100);
           });
+        })
+        break;
+      case 'GitHubUP':
+        uploader.options.autoProcessQueue = false
+        uploader.options.acceptedFiles = ""
+        uploader.options.maxFilesize = 5000
+        uploader.on("addedfile", function (file) {
+          const fileReader = new FileReader();
+          fileReader.onloadend = function () {
+            const imageData = fileReader.result.split(',')[1]
+            let date = new Date();
+            let files = {
+              message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒",
+              content: imageData
+            };
+            $.ajax({
+              url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
+              type: 'PUT',
+              headers: {
+                'Authorization': 'Bearer ' + options_token,
+                'Content-Type': 'application/json'
+              },
+              xhr: function () {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                  if (evt.lengthComputable) {
+                    const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
+                    file.upload.progress = percentComplete;
+                    file.status = Dropzone.UPLOADING;
+                    uploader.emit("uploadprogress", file, percentComplete, 100);
+                  }
+                }, false);
+                return xhr;
+              },
+              data: JSON.stringify(files),
+              success: function (response) {
+                console.log(response)
+                file.status = Dropzone.SUCCESS
+                uploader.emit("success", file, "上传完成");
+                uploader.emit("complete", file);
+              },
+              error: function (xhr, status, error) {
+                toastItem({
+                  toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                })
+                console.error(error);
+                return;
+              }
+            });
+          };
+          fileReader.readAsDataURL(file);
         })
         break;
     }

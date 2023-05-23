@@ -25,6 +25,10 @@ $(document).ready(function () {
     var options_return_success = result.options_return_success
     var open_json_button = result.open_json_button
 
+    //GitHub
+    var options_owner = result.options_owner
+    var options_repository = result.options_repository
+
     //对象存储
     var options_SecretId = result.options_SecretId
     var options_SecretKey = result.options_SecretKey
@@ -300,6 +304,30 @@ $(document).ready(function () {
     `
     const html_exe_UserDiyBoxBottom_Tipsa = `当前配置适用于 用户自定义 的网站`
 
+    const html_exe_GitHubUP = `
+    <div class="form-group">
+      <label for="options_owner" class="options_owner">用户名<p class="options_owner_tips"><span style="color: red;">*</span>(GitHub用户名)</p>
+      </label>
+      <input type="url" class="form-control box-shadow" id="options_owner" placeholder="例如:abcd" />
+    </div>
+    <div class="form-group">
+      <label for="options_repository" class="options_repository">仓库名<p class="options_repository_tips"><span style="color: red;">*</span>(仓库名字)</p>
+      </label>
+      <input type="text" class="form-control box-shadow" id="options_repository" placeholder="例如:3596a2113fdg16f" />
+    </div>
+    <div class="form-group">
+      <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">((给文件一个温暖的家,留空为桶的根目录))</p>
+      </label>
+      <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images" />
+    </div>
+    <div class="form-group">
+      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(GitHub必须填写Token)</p>
+      </label>
+      <input type="text" class="form-control box-shadow" id="options_token" placeholder="例如:2389b" />
+    </div>
+      `
+    const html_exe_GitHubUPBoxBottom_Tipsa = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://github.com/" target="_blank"> GitHub </a>网站`
+
 
     const html_exeTencent_COS = `
   <div class="form-group">
@@ -328,7 +356,7 @@ $(document).ready(function () {
     <input type="text" class="form-control box-shadow" id="options_Region" placeholder="例如:ap-hongkong" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录;)</p>
+    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
     </label>
     <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
   </div>
@@ -386,7 +414,7 @@ $(document).ready(function () {
     <input type="text" class="form-control box-shadow" id="options_Region" placeholder="例如:oss-cn-beijing" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录;)</p>
+    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
     </label>
     <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
   </div>
@@ -443,7 +471,7 @@ $(document).ready(function () {
     <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="例如:https://{accountid}.r2.cloudflarestorage.com" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录;)</p>
+    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
     </label>
     <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
   </div>
@@ -515,6 +543,11 @@ $(document).ready(function () {
         'needUid': 11,
         'html_exeBox': html_exeAWS_S3,
         'bottomTips': html_exeAWS_S3Bottom_Tips
+      },
+      '#exe_GitHubUP': {
+        'needUid': 12,
+        'html_exeBox': html_exe_GitHubUP,
+        'bottomTips': html_exe_GitHubUPBoxBottom_Tipsa
       },
       'default': {
         'body': `
@@ -732,6 +765,13 @@ $(document).ready(function () {
           $("#options_Custom_domain_name").val(options_Custom_domain_name);
           setBucketCors()
           break;
+        case 'GitHubUP':
+          $("#exe_GitHubUP").addClass('active');
+          $("#options_owner").val(options_owner);
+          $("#options_repository").val(options_repository);
+          $("#options_UploadPath").val(options_UploadPath);
+          $("#options_token").val(options_token);
+          break;
         default:
       }
 
@@ -804,7 +844,6 @@ $(document).ready(function () {
         // JSON转换
         open_json_buttonFn()
       }
-
       if (prog.needUid == 9) {//cos
         $('#options-form').append(prog.html_exeBox);
         $("#options_SecretId").val(options_SecretId);
@@ -855,6 +894,13 @@ $(document).ready(function () {
           Close_CORS_Element()
         }
 
+      }
+      if (prog.needUid == 12) {//GitHub
+        $('#options-form').append(prog.html_exeBox);
+        $("#options_owner").val(options_owner);
+        $("#options_repository").val(options_repository);
+        $("#options_UploadPath").val(options_UploadPath);
+        $("#options_token").val(options_token);
       }
 
       //判断cors开关
@@ -1337,6 +1383,29 @@ $(document).ready(function () {
         chrome.storage.local.set({ 'options_source': $("#options_source").val() })
         chrome.storage.local.set({ 'options_exe': optionsExe.attr("value") })
         chrome.storage.local.set({ 'options_proxy_server': proxyServer.val() })
+
+        //GitHub
+        if ($('#exe_GitHubUP').hasClass('active')) {
+          chrome.storage.local.set({ 'options_owner': $("#options_owner").val() })
+          chrome.storage.local.set({ 'options_repository': $("#options_repository").val() })
+          let PathString = $("#options_UploadPath").val()
+          if (!PathString) {
+            chrome.storage.local.set({ 'options_UploadPath': "" })
+          } else {
+            if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
+              toastItem({
+                toast_content: '保存失败，上传路径不能含有特殊字符'
+              });
+              return;
+            }
+            // 检查输入字符串是否以 '/' 结尾
+            if (!PathString.endsWith('/')) {
+              PathString = PathString + '/';
+            }
+            chrome.storage.local.set({ 'options_UploadPath': PathString })
+          }
+        }
+
 
         if ($('#exe_UserDiy').hasClass('active')) {
           //自定义请求

@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+
+
+
     chrome.storage.local.get(getSave, function (result) {
         // 获取程序以及状态
         var options_exe = result.options_exe
@@ -20,13 +23,17 @@ $(document).ready(function () {
         var options_UploadPath = result.options_UploadPath
         var options_Custom_domain_name = result.options_Custom_domain_name
 
+        //GitHub
+        var options_owner = result.options_owner
+        var options_repository = result.options_repository
+
         var images
-        var imageUrlkey = []; //必须在这里初始化
+        var imageUrlkey = [] //必须在这里初始化
+        var GitHubUP_file = []; //必须在这里初始化
         var $container
         var currentPage
         var itemsPerPage
         var totalPages
-
 
         const Image_acquisition_failed = `
         <div class="alert alert-danger" role="alert">
@@ -782,6 +789,62 @@ $(document).ready(function () {
                         });
 
                         break;
+                    case 'GitHubUP':
+                        $(".PLdanger").html(
+                            `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
+                            <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片</div>`)
+                        sendAjax(
+                            options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
+                            'GET',
+                            null,
+                            {
+                                'Authorization': 'Bearer ' + options_token,
+                                'Content-Type': 'application/json'
+                            },
+                            function (res) {
+                                images = res
+                                images.forEach(function (e, i) {
+                                    let file = images[i];
+                                    if (file.type === 'file') {
+                                        // 文件名存在 file.name 字段中
+                                        console.log('文件名:', file.name);
+                                        let url = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
+                                        console.log(url);
+                                    }
+                                })
+                                console.log(images);
+                                $container = $('#container');
+                                currentPage = 1; // 当前第1页
+                                itemsPerPage = 20; // 每页20张图片
+                                totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
+
+                                $('.pagination').twbsPagination({
+                                    totalPages: totalPages,
+                                    visiblePages: 5,
+                                    onPageClick: function (event, page) {
+                                        currentPage = page;
+                                        networkRenderImages()
+                                    },
+                                    first: '首页',
+                                    prev: null,
+                                    next: null,
+                                    last: "末页",
+
+                                });
+                            },
+                            function (err) {
+                                if (err.responseJSON.message = "Not Found") {
+                                    $("#container").html(No_picture_data);
+                                } else {
+                                    console.log(err)
+                                    toastItem({
+                                        toast_content: "获取失败"
+                                    })
+                                    $("#container").html(Image_acquisition_failed);
+                                }
+                            }
+                        )
+                        break;
                     default:
                         $("#container").html('<div class="alert alert-danger" role="alert"><h4 class="alert-heading">亲亲</h4><p>真的很抱歉捏,这个图床不能获取图片噢!</p><hr><p class="mb-0"><a class="nav-link"href="options.html">换一个图床试一试吧</a></p></div>');
                         break;
@@ -797,6 +860,7 @@ $(document).ready(function () {
                         case 'Tencent_COS':
                         case 'Aliyun_OSS':
                         case 'AWS_S3':
+                        case 'GitHubUP':
                             var startIndex = (currentPage - 1) * itemsPerPage;
                             var endIndex = startIndex + itemsPerPage;
                             break;
@@ -806,7 +870,6 @@ $(document).ready(function () {
                             break;
                     }
                     let currentImages = images.slice(startIndex, endIndex);
-                    imageUrlkey = []
                     currentImages.forEach(function (imageUrl, index) {
                         let Image_Width_And_Height
                         let item_divKey;
@@ -867,6 +930,21 @@ $(document).ready(function () {
                                 item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.LastModified
+                                Image_Width_And_Height = "宽:不支持,高:不支持"
+                                break;
+                            case 'GitHubUP':
+                                imageUrlkey.push(imageUrl.sha);
+                                let fileinfo = {
+                                    path: imageUrl.path,
+                                    sha: imageUrl.sha
+                                }
+                                GitHubUP_file.push(fileinfo);
+                                console.log(GitHubUP_file)
+                                item_divKey = imageUrl.sha
+                                item_imgUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + imageUrl.name
+                                item_liImgName = imageUrl.name
+                                item_liImgSize = (imageUrl.size / 1024).toFixed(2)
+                                item_liImgDate = "GitHub不支持"
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
                                 break;
                         }
@@ -1029,6 +1107,35 @@ $(document).ready(function () {
                                         }
                                     });
                                     break;
+                                case 'GitHubUP':
+                                    sendAjax(
+                                        options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name,
+                                        'DELETE',
+                                        JSON.stringify({
+                                            message: 'Delete file', // 提交的消息
+                                            sha: item_divKey
+                                        }),
+                                        {
+                                            'Authorization': 'Bearer ' + options_token,
+                                            'Content-Type': 'application/json'
+                                        },
+                                        function (res) {
+                                            itemdelete()
+                                            toastItem({
+                                                toast_content: "删除成功"
+                                            })
+                                            if ($container.find('.item').length === 0) {
+                                                window.location.reload();
+                                            }
+                                        },
+                                        function (err) {
+                                            console.log(err)
+                                            toastItem({
+                                                toast_content: "获取失败"
+                                            })
+                                        }
+                                    )
+                                    break;
                             }
                             async function itemdelete() {
                                 // 启用删除按钮
@@ -1092,6 +1199,25 @@ $(document).ready(function () {
                             case 'Tencent_COS':
                             case 'Aliyun_OSS':
                             case 'AWS_S3':
+                                item.imagesLoaded().progress(function () {
+                                    item.find('.Image_Width_And_Height').html("点击加载宽高;")
+                                    // 获取宽高
+                                    item.find('.Image_Width_And_Height').one('click', function () {
+                                        item.find('.Image_Width_And_Height').html("加载中...")
+                                        const img = item.find('.imgs');
+                                        // 获取img元素的src属性
+                                        const src = img.attr('src');
+                                        let Width_And_Height = new Image();
+                                        Width_And_Height.src = src
+                                        Width_And_Height.onload = function () {
+                                            let width = Width_And_Height.width;
+                                            let height = Width_And_Height.height
+                                            item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
+                                        }
+                                    });
+                                });
+                                break;
+                            case 'GitHubUP':
                                 item.imagesLoaded().progress(function () {
                                     item.find('.Image_Width_And_Height').html("点击加载宽高;")
                                     // 获取宽高
@@ -1239,6 +1365,65 @@ $(document).ready(function () {
                         }
 
                     });
+                    switch (options_exe) {
+                        case 'GitHubUP':
+                            if (!GitHubUP_file.length) return;
+
+                            GitHubUP_file.forEach(function (element, index) {
+                                sendAjax(
+                                    options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + element.path,
+                                    'DELETE',
+                                    JSON.stringify({
+                                        message: 'Delete file:' + element.path, // 提交的消息
+                                        sha: element.sha
+                                    }),
+                                    {
+                                        'Authorization': 'Bearer ' + options_token,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    function (res) {
+                                        console.log(res)
+                                        completed++;
+                                        console.log("删除成功")
+                                      
+                                    },
+                                    function (error) {
+                                        toastItem({
+                                            toast_content: '删除失败,详情请打开F12查看!'
+                                        })
+                                        console.log(error);
+                                    }
+                                )
+                            })
+                            // GitHubUP_file.forEach(function (element, index) {
+                            //     sendAjax(
+                            //         options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + element.path,
+                            //         'DELETE',
+                            //         JSON.stringify({
+                            //             message: 'Delete file:' + element.path, // 提交的消息
+                            //             sha: element.sha
+                            //         }),
+                            //         {
+                            //             'Authorization': 'Bearer ' + options_token,
+                            //             'Content-Type': 'application/json'
+                            //         },
+                            //         function (res) {
+                            //             console.log(res)
+                            //             completed++;
+                            //             console.log("删除成功")
+                                      
+                            //         },
+                            //         function (error) {
+                            //             toastItem({
+                            //                 toast_content: '删除失败,详情请打开F12查看!'
+                            //             })
+                            //             console.log(error);
+                            //         }
+                            //     )
+                            // })
+
+                            break;
+                    }
                     async function deleteUrl(completed, imageUrlkey) {
                         if (completed === imageUrlkey.length) {
                             // 解除禁止
@@ -1398,6 +1583,21 @@ $(document).ready(function () {
                                         numDeleted++;
                                         Delete_Selected(selectedImgs, numDeleted, imgKey)
                                     })
+                                    break;
+                                case 'GitHubUP':
+                                    sendAjax(
+                                        options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name,
+                                        'DELETE',
+                                        null,
+                                        {
+                                            "Accept": "application/json",
+                                            "Authorization": options_token
+                                        },
+                                        function () {
+                                            numDeleted++;
+                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
+                                        }
+                                    )
                                     break;
                             }
 
