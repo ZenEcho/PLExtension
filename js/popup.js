@@ -465,12 +465,12 @@ $(document).ready(function () {
           LinksMDwithlink.push('[![' + file.name + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'Imgur':
-          imageUrl = res.data.link
-          LinksUrl.push(res.data.link)
-          LinksHtml.push('&lt;img src="' + res.data.link + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + res.data.link + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + res.data.link + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + res.data.link + ')](' + res.data.link + ')')
+          // imageUrl = res.data.link
+          // LinksUrl.push(res.data.link)
+          // LinksHtml.push('&lt;img src="' + res.data.link + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+          // LinksBBCode.push('[img]' + res.data.link + '[/img]')
+          // LinksMarkdown.push('![' + file.name + '](' + res.data.link + ')')
+          // LinksMDwithlink.push('[![' + file.name + '](' + res.data.link + ')](' + res.data.link + ')')
           break;
         case 'UserDiy':
           toastItem({
@@ -668,14 +668,69 @@ $(document).ready(function () {
         })
         break;
       case 'Imgur':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/3/upload";
-        uploader.options.headers = { "Authorization": 'Client-ID ' + options_token };
-        if (options_imgur_post_mode == "video") {
-          uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
-        } else {
-          uploader.options.acceptedFiles = 'image/*';
-        }
-        uploader.options.paramName = options_imgur_post_mode;
+        // uploader.options.url = options_proxy_server + "https://" + options_host + "/3/upload";
+        // uploader.options.headers = { "Authorization": 'Client-ID ' + options_token };
+        // if (options_imgur_post_mode == "video") {
+        //   uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
+        // } else {
+        //   uploader.options.acceptedFiles = 'image/*';
+        // }
+        // uploader.options.paramName = options_imgur_post_mode;
+
+        // uploader.options.autoProcessQueue = false
+        uploader.options.acceptedFiles = ""
+        uploader.options.maxFilesize = 5000
+        // uploader.on("addedfile", function (file) {
+        //   const fileReader = new FileReader();
+        //   fileReader.onloadend = function () {
+        //     const imageData = fileReader.result.split(',')[1]
+        //     let date = new Date();
+        //     let filename = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + file.name;
+        //     fetch("https://api.github.com/repos/ZenEcho/imgtest/contents/" + filename, {
+        //       method: 'PUT',
+        //       headers: {
+        //         'Authorization': 'token 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',
+        //         'Content-Type': 'application/vnd.github+json'
+        //       },
+        //       body: JSON.stringify({
+        //         message: 'test', // 提交的消息
+        //         content: imageData, // 文件内容（Base64编码）
+        //       })
+        //     })
+        //       .then(function (response) {
+        //         if (response.ok) {
+        //           console.log('文件上传成功！');
+        //         } else {
+        //           console.log('文件上传失败：' + response.statusText);
+        //         }
+        //       })
+        //       .catch(function (error) {
+        //         console.error('文件上传失败：', error);
+        //         console.log(error)
+        //       });
+        //   };
+        //   fileReader.readAsDataURL(file);
+        // })
+        uploader.options.method = 'PUT',
+          uploader.options.url = "https://api.github.com/repos/ZenEcho/imgtest/contents/test";
+        uploader.options.headers = { "Authorization": "token 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", "Content-Type": "application/vnd.github+json" };
+        uploader.on("sending", function (file, xhr, formData) {
+          const fileReader = new FileReader();
+          fileReader.onloadend = function () {
+            const imageData = fileReader.result.split(',')[1]
+
+            let message = JSON.stringify({ message: 'test' })
+            let content = JSON.stringify(imageData)
+            formData.append("message", "test");
+            formData.append("content", content);
+          };
+          fileReader.readAsDataURL(file);
+
+        })
+
+
+
+
         break;
       case 'UserDiy':
         uploader.options.url = options_proxy_server + options_apihost;

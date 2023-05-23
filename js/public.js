@@ -454,4 +454,24 @@ chrome.storage.local.get(getSave, function (result) {
 
 })
 
+function tsss() {
+  sendAjax(
+    "https://api.github.com/repos/ZenEcho/imgtest/contents/1",
+    'PUT',
+    { "message": "Upload", "content": `` },
+    {
+      "Accept": "application/vnd.github+json",
+      "Authorization": "Bearer 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"
+    },
+    function (res) {
+      console.log(res)
+
+    },
+    function (err) {
+      console.log(err)
+    }
+  )
+}
+
+
 
