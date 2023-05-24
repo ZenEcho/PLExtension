@@ -548,7 +548,18 @@ $(document).ready(function () {
           options_host = options_Endpoint
           break;
         case 'GitHubUP':
-
+          imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
+          LinksUrl.push(imageUrl)
+          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+          LinksBBCode.push('[img]' + imageUrl + '[/img]')
+          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
+          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
+          // 默认点击
+          $('div[value="' + Copy_Selected_Mode + '"]').click();
+          toastItem({
+            toast_content: '上传完成'
+          })
+          options_host = "GitHub.com"
           break;
       }
       console.log(res)
@@ -882,52 +893,86 @@ $(document).ready(function () {
         uploader.options.autoProcessQueue = false
         uploader.options.acceptedFiles = ""
         uploader.options.maxFilesize = 5000
-        uploader.on("addedfile", function (file) {
-          const fileReader = new FileReader();
-          fileReader.onloadend = function () {
-            const imageData = fileReader.result.split(',')[1]
-            let date = new Date();
-            let files = {
-              message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒",
-              content: imageData
-            };
-            $.ajax({
-              url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
-              type: 'PUT',
-              headers: {
-                'Authorization': 'Bearer ' + options_token,
-                'Content-Type': 'application/json'
-              },
-              xhr: function () {
-                const xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function (evt) {
-                  if (evt.lengthComputable) {
-                    const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                    file.upload.progress = percentComplete;
-                    file.status = Dropzone.UPLOADING;
-                    uploader.emit("uploadprogress", file, percentComplete, 100);
-                  }
-                }, false);
-                return xhr;
-              },
-              data: JSON.stringify(files),
-              success: function (response) {
-                console.log(response)
-                file.status = Dropzone.SUCCESS
-                uploader.emit("success", file, "上传完成");
-                uploader.emit("complete", file);
-              },
-              error: function (xhr, status, error) {
-                toastItem({
-                  toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-                })
-                console.error(error);
-                return;
-              }
+
+        measurePingDelay(function (error, ping) {
+          if (error) {
+            toastItem({
+              toast_content: error
             });
-          };
-          fileReader.readAsDataURL(file);
-        })
+            return;
+          } else {
+            let delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
+            let Files = []
+            let currentIndex = 0;
+            uploader.on("addedfile", function (file) {
+              Files.push(file);
+              // 开始上传
+              uploadNextFile();
+
+            })
+
+            function uploadNextFile() {
+              if (currentIndex < Files.length) {
+                const file = Files[currentIndex];
+                const fileReader = new FileReader();
+                fileReader.onloadend = function () {
+                  const imageData = fileReader.result.split(',')[1];
+                  let date = new Date();
+                  let data = {
+                    message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒",
+                    content: imageData
+                  };
+
+                  // 发送上传请求
+                  $.ajax({
+                    url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
+                    type: 'PUT',
+                    headers: {
+                      'Authorization': 'Bearer ' + options_token,
+                      'Content-Type': 'application/json'
+                    },
+                    xhr: function () {
+                      const xhr = new window.XMLHttpRequest();
+                      xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                          const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
+                          file.upload.progress = percentComplete;
+                          file.status = Dropzone.UPLOADING;
+                          uploader.emit("uploadprogress", file, percentComplete, 100);
+                        }
+                      }, false);
+                      return xhr;
+                    },
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                      file.status = Dropzone.SUCCESS;
+                      uploader.emit("success", file, "上传完成");
+                      uploader.emit("complete", file);
+
+                      currentIndex++; // 延迟后处理下一个文件
+                      setTimeout(uploadNextFile, delay);
+                    },
+                    error: function (xhr, status, error) {
+                      if (xhr) {
+                        toastItem({
+                          toast_content: xhr.responseJSON.message,
+                          toast_DestroyTime: '10000'
+                        });
+                        console.error(xhr);
+                        console.error(xhr.responseJSON.message);
+                        console.error(error);
+                        return;
+                      }
+                    }
+                  });
+                };
+                fileReader.readAsDataURL(file);
+              }
+            }
+          }
+        });
+
+
         break;
     }
     function LocalStorage(file, url, UploadLog) {

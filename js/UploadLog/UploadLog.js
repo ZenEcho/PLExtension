@@ -159,6 +159,7 @@ $(document).ready(function () {
             if (Browse_mode_switching_status == 0) {
                 //本地信息获取
                 images = result.UploadLog || [];
+                console.log(images);
                 $("#DeleteALL").show()
                 var keyCount = 0;
                 $(document).keyup(function (event) {
@@ -803,16 +804,16 @@ $(document).ready(function () {
                             },
                             function (res) {
                                 images = res
-                                images.forEach(function (e, i) {
-                                    let file = images[i];
-                                    if (file.type === 'file') {
-                                        // 文件名存在 file.name 字段中
-                                        console.log('文件名:', file.name);
-                                        let url = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
-                                        console.log(url);
-                                    }
-                                })
-                                console.log(images);
+                                // images.forEach(function (e, i) {
+                                //     let file = images[i];
+                                //     if (file.type === 'file') {
+                                //         // 文件名存在 file.name 字段中
+                                //         console.log('文件名:', file.name);
+                                //         let url = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
+                                //         console.log(url);
+                                //     }
+                                // })
+
                                 $container = $('#container');
                                 currentPage = 1; // 当前第1页
                                 itemsPerPage = 20; // 每页20张图片
@@ -939,7 +940,6 @@ $(document).ready(function () {
                                     sha: imageUrl.sha
                                 }
                                 GitHubUP_file.push(fileinfo);
-                                console.log(GitHubUP_file)
                                 item_divKey = imageUrl.sha
                                 item_imgUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + imageUrl.name
                                 item_liImgName = imageUrl.name
@@ -1367,60 +1367,54 @@ $(document).ready(function () {
                     });
                     switch (options_exe) {
                         case 'GitHubUP':
-                            if (!GitHubUP_file.length) return;
+                            measurePingDelay(function (error, ping) {
+                                if (error) {
+                                    toastItem({
+                                        toast_content: error
+                                    });
+                                    return;
+                                } else {
+                                    if (!GitHubUP_file.length) return;
+                                    let delay = Math.floor(ping / 2);
+                                    console.log('理论通讯延迟：' + delay + 'ms');
+                                    function deleteFileWithDelay() {
+                                        if (completed < GitHubUP_file.length) {
+                                            let element = GitHubUP_file[completed];
+                                            sendAjax(
+                                                options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path,
+                                                'DELETE',
+                                                JSON.stringify({
+                                                    message: 'Delete file:' + element.path,
+                                                    sha: element.sha
+                                                }),
+                                                {
+                                                    'Authorization': 'Bearer ' + options_token,
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                function (res) {
+                                                    toastItem({
+                                                        toast_content: '删除成功'
+                                                    });
+                                                    completed++; // 延迟后处理下一个文件
+                                                    deleteUrl(completed, GitHubUP_file)
+                                                    // 使用 setTimeout 来添加延迟
+                                                    setTimeout(deleteFileWithDelay, delay);
 
-                            GitHubUP_file.forEach(function (element, index) {
-                                sendAjax(
-                                    options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + element.path,
-                                    'DELETE',
-                                    JSON.stringify({
-                                        message: 'Delete file:' + element.path, // 提交的消息
-                                        sha: element.sha
-                                    }),
-                                    {
-                                        'Authorization': 'Bearer ' + options_token,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    function (res) {
-                                        console.log(res)
-                                        completed++;
-                                        console.log("删除成功")
-                                      
-                                    },
-                                    function (error) {
-                                        toastItem({
-                                            toast_content: '删除失败,详情请打开F12查看!'
-                                        })
-                                        console.log(error);
+                                                },
+                                                function (error) {
+                                                    toastItem({
+                                                        toast_content: '删除失败，请查看控制台！'
+                                                    });
+                                                    console.log(error);
+                                                }
+                                            );
+                                        }
                                     }
-                                )
-                            })
-                            // GitHubUP_file.forEach(function (element, index) {
-                            //     sendAjax(
-                            //         options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + element.path,
-                            //         'DELETE',
-                            //         JSON.stringify({
-                            //             message: 'Delete file:' + element.path, // 提交的消息
-                            //             sha: element.sha
-                            //         }),
-                            //         {
-                            //             'Authorization': 'Bearer ' + options_token,
-                            //             'Content-Type': 'application/json'
-                            //         },
-                            //         function (res) {
-                            //             console.log(res)
-                            //             completed++;
-                            //             console.log("删除成功")
-                                      
-                            //         },
-                            //         function (error) {
-                            //             toastItem({
-                            //                 toast_content: '删除失败,详情请打开F12查看!'
-                            //             })
-                            //             console.log(error);
-                            //         }
-                            //     )
-                            // })
+                                    deleteFileWithDelay();
+                                }
+                            });
+
+
 
                             break;
                     }
@@ -1487,10 +1481,21 @@ $(document).ready(function () {
                     let selectedImgs = $(".gigante");
                     let imgKey = []
                     selectedImgs.each(function () {
-                        imgKey.push($(this).attr("key"));
+                        if (options_exe == "GitHubUP") {
+                            let json = {
+                                sha: $(this).attr("key"),
+                                path: options_UploadPath + $(this).find('li').eq(0).text()
+                            }
+                            imgKey.push(json);
+
+                        } else {
+                            imgKey.push($(this).attr("key"));
+                        }
+
                     });
                     if (imgKey.length) {
                         let numDeleted = 0;  // 记录已经删除的图片数量
+
                         imgKey.forEach(function (element, index) {
                             switch (options_exe) {
                                 case 'Lsky':
@@ -1584,24 +1589,55 @@ $(document).ready(function () {
                                         Delete_Selected(selectedImgs, numDeleted, imgKey)
                                     })
                                     break;
-                                case 'GitHubUP':
-                                    sendAjax(
-                                        options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name,
-                                        'DELETE',
-                                        null,
-                                        {
-                                            "Accept": "application/json",
-                                            "Authorization": options_token
-                                        },
-                                        function () {
-                                            numDeleted++;
-                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
-                                        }
-                                    )
-                                    break;
                             }
 
                         });
+                        switch (options_exe) {
+                            case 'GitHubUP':
+                                measurePingDelay(function (error, ping) {
+                                    if (error) {
+                                        toastItem({
+                                            toast_content: error
+                                        });
+                                        return;
+                                    } else {
+                                        if (!imgKey.length) return;
+                                        let delay = Math.floor(ping / 2);
+                                        function deleteFileWithDelay() {
+                                            if (numDeleted < imgKey.length) {
+                                                let element = imgKey[numDeleted];
+                                                sendAjax(
+                                                    options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path,
+                                                    'DELETE',
+                                                    JSON.stringify({
+                                                        message: 'Delete file:' + element.path,
+                                                        sha: element.sha
+                                                    }),
+                                                    {
+                                                        'Authorization': 'Bearer ' + options_token,
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    function (res) {
+                                                        numDeleted++; // 延迟后处理下一个文件
+                                                        Delete_Selected(selectedImgs, numDeleted, imgKey)
+                                                        // 使用 setTimeout 来添加延迟
+                                                        setTimeout(deleteFileWithDelay, delay);
+                                                    },
+                                                    function (error) {
+                                                        toastItem({
+                                                            toast_content: '删除失败，请查看控制台！'
+                                                        });
+                                                        console.log(error);
+                                                    }
+                                                );
+                                            }
+                                        }
+                                        deleteFileWithDelay();
+                                    }
+                                });
+
+                                break;
+                        }
                     }
                 })
                 async function Delete_Selected(selectedImgs, numDeleted, imgKey) {
@@ -1769,5 +1805,3 @@ $(document).ready(function () {
     })
 
 });
-
-

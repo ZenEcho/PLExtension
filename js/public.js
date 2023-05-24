@@ -150,7 +150,7 @@ var getSave = [
   "options_Headers",
   "options_Body",
   "options_return_success",
-   //GitHub
+  //GitHub
   "options_owner",
   "options_repository",
 
@@ -462,23 +462,43 @@ chrome.storage.local.get(getSave, function (result) {
 
 })
 
-function tsss() {
-  sendAjax(
-    "https://api.github.com/repos/ZenEcho/imgtest/contents/1",
-    'PUT',
-    { "message": "Upload", "content": `` },
-    {
-      "Accept": "application/vnd.github+json",
-      "Authorization": "Bearer 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"
-    },
-    function (res) {
-      console.log(res)
+// function tsss() {
+//   sendAjax(
+//     "https://api.github.com/repos/ZenEcho/imgtest/contents/1",
+//     'PUT',
+//     { "message": "Upload", "content": `` },
+//     {
+//       "Accept": "application/vnd.github+json",
+//       "Authorization": "Bearer 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"
+//     },
+//     function (res) {
+//       console.log(res)
 
-    },
-    function (err) {
-      console.log(err)
+//     },
+//     function (err) {
+//       console.log(err)
+//     }
+//   )
+// }
+
+function measurePingDelay(callback) {
+  let startTime = new Date().getTime();
+  let url = 'https://github.com'; // GitHub的网址
+  let xhr = new XMLHttpRequest();
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      let endTime = new Date().getTime();
+      let delay = endTime - startTime;
+      callback(null, delay);
     }
-  )
+  };
+  xhr.onerror = function () {
+    callback(new Error('无法连接到GitHub'), null);
+  };
+
+  xhr.open('GET', url, true);
+  xhr.send();
 }
 
 
