@@ -38,9 +38,30 @@ window.addEventListener('message', function (event) {
         }
 
     }
+    if (event.data.type === 'ckeditor') {
+        try {
+            let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
+            console.log(ckeditor_Element)
+            if (ckeditor_Element) {
+                ckeditor_Element.insertHtml(event.data.data);
+            }
+            return;
+        } catch (error) {
+        }
+        try {
+            let ckeditor_Element = editor;
+            if (ckeditor_Element) {
+                const content = ckeditor_Element.getData();
+                ckeditor_Element.setData(content + event.data.data);
+            }
+            return;
+        } catch (error) {
+        }
+    }
     if (event.data.type === 'ckeditor4') {
         try {
             let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
+            console.log(ckeditor_Element)
             if (ckeditor_Element) {
                 ckeditor_Element.insertHtml(event.data.data);
             }
@@ -70,27 +91,27 @@ function plB(Element) {
 
 //TinyMCE 5/6
 try {
-    let TinyMCE_Element = tinymce.activeEditor
-    if (TinyMCE_Element) {
+    let TinyMCE_Elements = tinymce.activeEditor
+    if (TinyMCE_Elements) {
         console.log("发现TinyMCE")
-        let container = TinyMCE_Element.getContainer();
+        let container = TinyMCE_Elements.getContainer();
         plB(container)
     }
 } catch (error) {
 }
 
 try {
-    let wangeditor_Element = editor.getEditableContainer()
-    if (wangeditor_Element) {
+    let wangeditor_Elements = editor.getEditableContainer()
+    if (wangeditor_Elements) {
         console.log("发现wangeditor")
-        plB(wangeditor_Element)
+        plB(wangeditor_Elements)
     }
 } catch (error) {
 }
 //ckeditor 4
 try {
-    let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
-    let ckeditor_Element_Node = ckeditor_Element.container.$
+    let ckeditor_Elements = Object.values(CKEDITOR.instances)[0];
+    let ckeditor_Element_Node = ckeditor_Elements.container.$
     if (ckeditor_Element_Node) {
         console.log("发现ckeditor")
         plB(ckeditor_Element_Node)

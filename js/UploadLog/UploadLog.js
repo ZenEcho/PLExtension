@@ -793,7 +793,7 @@ $(document).ready(function () {
                     case 'GitHubUP':
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
-                            <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片</div>`)
+                            <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,GitHub设有缓存删除有5分钟的延迟</div>`)
                         sendAjax(
                             options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
                             'GET',
@@ -1406,6 +1406,8 @@ $(document).ready(function () {
                                                         toast_content: '删除失败，请查看控制台！'
                                                     });
                                                     console.log(error);
+                                                    $('.overlay').remove();
+                                                    $('body').css('overflow', 'auto');
                                                 }
                                             );
                                         }

@@ -845,6 +845,12 @@ chrome.storage.local.get(storagelocal, function (result) {
                         Find_Editor = true
                         return;
                     }
+                    //ckeditor4/5
+                    if (src && src.includes('ckeditor')) {
+                        window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
                 });
             }
         })

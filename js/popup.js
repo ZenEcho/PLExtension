@@ -901,76 +901,98 @@ $(document).ready(function () {
             });
             return;
           } else {
-            let delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
+            let delay
+            if (ping > "200") {
+              delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
+            } else {
+              delay = 100
+            }
+
             let Files = []
-            let currentIndex = 0;
+            let Upload_Index = 0;
             uploader.on("addedfile", function (file) {
+              if (file.size > uploader.options.maxFilesize * 1024 * 1024) { return; }
               Files.push(file);
               // 开始上传
               uploadNextFile();
+              $(".dz-remove").remove()
 
             })
-
             function uploadNextFile() {
-              if (currentIndex < Files.length) {
-                const file = Files[currentIndex];
-                const fileReader = new FileReader();
-                fileReader.onloadend = function () {
-                  const imageData = fileReader.result.split(',')[1];
-                  let date = new Date();
-                  let data = {
-                    message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒",
-                    content: imageData
-                  };
-
-                  // 发送上传请求
-                  $.ajax({
-                    url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
-                    type: 'PUT',
-                    headers: {
-                      'Authorization': 'Bearer ' + options_token,
-                      'Content-Type': 'application/json'
-                    },
-                    xhr: function () {
-                      const xhr = new window.XMLHttpRequest();
-                      xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                          const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                          file.upload.progress = percentComplete;
-                          file.status = Dropzone.UPLOADING;
-                          uploader.emit("uploadprogress", file, percentComplete, 100);
-                        }
-                      }, false);
-                      return xhr;
-                    },
-                    data: JSON.stringify(data),
-                    success: function (response) {
-                      file.status = Dropzone.SUCCESS;
-                      uploader.emit("success", file, "上传完成");
-                      uploader.emit("complete", file);
-
-                      currentIndex++; // 延迟后处理下一个文件
-                      setTimeout(uploadNextFile, delay);
-                    },
-                    error: function (xhr, status, error) {
-                      if (xhr) {
-                        toastItem({
-                          toast_content: xhr.responseJSON.message,
-                          toast_DestroyTime: '10000'
-                        });
-                        console.error(xhr);
-                        console.error(xhr.responseJSON.message);
-                        console.error(error);
-                        return;
-                      }
+              if (Upload_Index < Files.length) {
+                const file = Files[Upload_Index];
+                let date = new Date();
+                let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
+                // 查询是否冲突
+                sendAjax(
+                  options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
+                  'GET',
+                  null,
+                  {
+                    'Authorization': 'Bearer ' + options_token,
+                    'Content-Type': 'application/json'
+                  },
+                  function (res) {
+                    if (res) {
+                      data.sha = res.sha
+                      Upload_method()
                     }
-                  });
-                };
-                fileReader.readAsDataURL(file);
+                  },
+                  function (err) {
+                    Upload_method()
+                  }
+                )
+                //
+                function Upload_method() {
+                  const fileReader = new FileReader();
+                  fileReader.onloadend = function () {
+                    const imageData = { content: fileReader.result.split(',')[1] }
+                    data.content = fileReader.result.split(',')[1]
+                    // 发送上传请求
+                    $.ajax({
+                      url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + file.name,
+                      type: 'PUT',
+                      headers: {
+                        'Authorization': 'Bearer ' + options_token,
+                        'Content-Type': 'application/json'
+                      },
+                      xhr: function () {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                          if (evt.lengthComputable) {
+                            const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
+                            file.upload.progress = percentComplete;
+                            file.status = Dropzone.UPLOADING;
+                            uploader.emit("uploadprogress", file, percentComplete, 100);
+                          }
+                        }, false);
+                        return xhr;
+                      },
+                      data: JSON.stringify(data),
+                      success: function (response) {
+                        file.status = Dropzone.SUCCESS;
+                        uploader.emit("success", file, "上传完成");
+                        uploader.emit("complete", file);
+
+                        Upload_Index++; // 延迟后处理下一个文件
+                        setTimeout(uploadNextFile, delay);
+                      },
+                      error: function (xhr, status, error) {
+                        if (xhr) {
+                          console.error(xhr);
+                          console.error(xhr.responseJSON.message);
+                          return;
+                        }
+                      }
+                    });
+                  };
+                  fileReader.readAsDataURL(file);
+                }
+
               }
             }
           }
-        });
+        }), 'https://github.com';
 
 
         break;
