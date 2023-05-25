@@ -992,7 +992,7 @@ $(document).ready(function () {
               }
             }
           }
-        }), 'https://github.com';
+        }, 'https://github.com');
 
 
         break;

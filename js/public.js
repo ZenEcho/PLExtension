@@ -473,7 +473,7 @@ function measurePingDelay(callback, getUrl) {
     }
   };
   xhr.onerror = function () {
-    callback(new Error('无法连接到GitHub'), null);
+    callback(new Error('无法连接到')+getUrl, null);
   };
 
   xhr.open('GET', getUrl, true);
