@@ -1,6 +1,6 @@
 {
   "name": "盘络上传",
-  "version": "1.0.9.11",
+  "version": "1.0.9.2",
   "manifest_version": 3,
   "description": "盘络上传程序，是一款免费的上传程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,等程序的文件上传",
   "homepage_url": "https://fileup.dev/",
@@ -21,6 +21,7 @@
         "<all_urls>"
       ],
       "js": [
+        "js/jquery-3.6.3.min.js",
         "js/cos/cos-js-sdk-v5.js",
         "js/oss/aliyun-oss-sdk.min.js",
         "js/s3/aws-sdk.min.js",

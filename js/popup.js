@@ -803,16 +803,12 @@ $(document).ready(function () {
               await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
               await delayUpload(file, index + 1);
             }
-
             // 监听文件添加事件
             uploader.on("addedfiles", function (files) {
               // 调用延迟上传函数开始上传
               delayUpload(files, 0);
               $(".dz-remove").remove()
             });
-
-
-
           }
         }, options_Custom_domain_name)
 
@@ -904,16 +900,12 @@ $(document).ready(function () {
               await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
               await delayUpload(file, index + 1);
             }
-
             // 监听文件添加事件
             uploader.on("addedfiles", function (files) {
               // 调用延迟上传函数开始上传
               delayUpload(files, 0);
               $(".dz-remove").remove()
             });
-
-
-
           }
         }, options_Custom_domain_name)
 
@@ -942,13 +934,9 @@ $(document).ready(function () {
             toast_content: error
           });
         }
-
-
         uploader.options.autoProcessQueue = false
         uploader.options.acceptedFiles = ""
         uploader.options.maxFilesize = 5000
-
-
         measurePingDelay((error, ping) => {
           if (error) {
             toastItem({
@@ -1125,8 +1113,6 @@ $(document).ready(function () {
                       currentFile.status = Dropzone.SUCCESS;
                       uploader.emit("success", currentFile, "上传完成");
                       uploader.emit("complete", currentFile);
-
-
                     },
                     error: function (xhr, status, error) {
                       if (xhr) {
@@ -1153,8 +1139,6 @@ $(document).ready(function () {
 
           }
         }, 'https://github.com');
-
-
         break;
     }
     function LocalStorage(file, url, UploadLog) {
@@ -1373,6 +1357,4 @@ $(document).ready(function () {
   }) // chrome.storage.local.get
   animation_button('.Animation_button')// 设置按钮动画
   $('.container-md').hide().fadeIn('slow'); //全局动画
-
-
 })

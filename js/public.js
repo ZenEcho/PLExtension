@@ -71,7 +71,7 @@ function toastItem(options) {
   options = Object.assign({
     toast_title: "盘络程序",
     toast_content: "你好世界",
-    toast_DestroyTime: '5000'
+    toast_DestroyTime: '8000'
   }, options);
 
   let existingToast = $(`.toast-body:contains("${options.toast_content}")`);
