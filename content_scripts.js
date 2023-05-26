@@ -551,7 +551,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         event.preventDefault();
         event.stopPropagation();
         if (!event.target.closest('#uploadAreaTips')) {
-            console.log(event.target.src)
             uploadAreaFunction(event)
         }
         uploadAreaTips.style.bottom = "-100px";
@@ -574,12 +573,14 @@ chrome.storage.local.get(storagelocal, function (result) {
      * 上传逻辑
      */
     function uploadAreaFunction(event) {
+        let startTime = new Date().getTime();
         let files = event.dataTransfer.files;
         if (files.length > 0) {
             let base64Strings = [];
-            for (let i = 0; i < files.length; i++) {
+            for (let i = 0; i < files.length; setTimeout(() => { i++ }, 5000)) {
                 if (options_exe == "Tencent_COS" || options_exe == 'Aliyun_OSS' || options_exe == 'AWS_S3') {
-                    uploadFile(files[i], "GlobalUpload")
+                    // uploadFile(files[i], "GlobalUpload")
+                    console.log(files[i])
                 } else {
                     (function (file) {
                         var reader = new FileReader();
@@ -594,7 +595,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                         reader.readAsBinaryString(file);
                     })(files[i]);
                 }
-                console.log("全局上传执行成功")
+                let endTime = new Date().getTime();
+                let delay = endTime - startTime;
+                console.log("全局上传执行成功:" + delay)
             }
         }
     }

@@ -159,7 +159,6 @@ $(document).ready(function () {
             if (Browse_mode_switching_status == 0) {
                 //本地信息获取
                 images = result.UploadLog || [];
-                console.log(images);
                 $("#DeleteALL").show()
                 var keyCount = 0;
                 $(document).keyup(function (event) {
@@ -804,16 +803,6 @@ $(document).ready(function () {
                             },
                             function (res) {
                                 images = res
-                                // images.forEach(function (e, i) {
-                                //     let file = images[i];
-                                //     if (file.type === 'file') {
-                                //         // 文件名存在 file.name 字段中
-                                //         console.log('文件名:', file.name);
-                                //         let url = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
-                                //         console.log(url);
-                                //     }
-                                // })
-
                                 $container = $('#container');
                                 currentPage = 1; // 当前第1页
                                 itemsPerPage = 20; // 每页20张图片
@@ -1375,8 +1364,14 @@ $(document).ready(function () {
                                     return;
                                 } else {
                                     if (!GitHubUP_file.length) return;
-                                    let delay = Math.floor(ping / 2);
-                                    console.log('理论通讯延迟：' + delay + 'ms');
+                                    let delay
+                                    if (ping > 300) { //大于
+                                        delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
+                                    } else if (ping < 150) { //小于
+                                        delay = 150
+                                    } else {
+                                        delay = ping
+                                    }
                                     function deleteFileWithDelay() {
                                         if (completed < GitHubUP_file.length) {
                                             let element = GitHubUP_file[completed];
@@ -1414,7 +1409,7 @@ $(document).ready(function () {
                                     }
                                     deleteFileWithDelay();
                                 }
-                            });
+                            }, 'https://github.com');
 
 
 
@@ -1497,7 +1492,6 @@ $(document).ready(function () {
                     });
                     if (imgKey.length) {
                         let numDeleted = 0;  // 记录已经删除的图片数量
-
                         imgKey.forEach(function (element, index) {
                             switch (options_exe) {
                                 case 'Lsky':
@@ -1604,7 +1598,14 @@ $(document).ready(function () {
                                         return;
                                     } else {
                                         if (!imgKey.length) return;
-                                        let delay = Math.floor(ping / 2);
+                                        let delay
+                                        if (ping > 300) { //大于
+                                            delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
+                                        } else if (ping < 150) { //小于
+                                            delay = 150
+                                        } else {
+                                            delay = ping
+                                        }
                                         function deleteFileWithDelay() {
                                             if (numDeleted < imgKey.length) {
                                                 let element = imgKey[numDeleted];
@@ -1636,7 +1637,7 @@ $(document).ready(function () {
                                         }
                                         deleteFileWithDelay();
                                     }
-                                });
+                                }, 'https://github.com');
 
                                 break;
                         }
