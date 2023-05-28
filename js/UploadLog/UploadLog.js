@@ -799,24 +799,28 @@ $(document).ready(function () {
                             },
                             function (res) {
                                 images = res
-                                $container = $('#container');
-                                currentPage = 1; // 当前第1页
-                                itemsPerPage = 20; // 每页20张图片
-                                totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
+                                if (!images.length) {
+                                    $("#container").html(No_picture_data);
+                                } else {
+                                    $container = $('#container');
+                                    currentPage = 1; // 当前第1页
+                                    itemsPerPage = 20; // 每页20张图片
+                                    totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
+                                    $('.pagination').twbsPagination({
+                                        totalPages: totalPages,
+                                        visiblePages: 5,
+                                        onPageClick: function (event, page) {
+                                            currentPage = page;
+                                            networkRenderImages()
+                                        },
+                                        first: '首页',
+                                        prev: null,
+                                        next: null,
+                                        last: "末页",
 
-                                $('.pagination').twbsPagination({
-                                    totalPages: totalPages,
-                                    visiblePages: 5,
-                                    onPageClick: function (event, page) {
-                                        currentPage = page;
-                                        networkRenderImages()
-                                    },
-                                    first: '首页',
-                                    prev: null,
-                                    next: null,
-                                    last: "末页",
+                                    });
+                                }
 
-                                });
                             },
                             function (err) {
                                 if (err.responseJSON.message = "Not Found") {

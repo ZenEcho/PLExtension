@@ -95,12 +95,12 @@ chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
 chrome.contextMenus.onClicked.addListener(function (info) {
 	if (info.menuItemId === "upload_imagea") {
 		const imgUrl = info.srcUrl;
-		Fetch_Upload(imgUrl, null, "Rightupload")
+		Fetch_Upload(imgUrl, null, "Rightupload", () => { })
 	}
 
 });
 
-async function Fetch_Upload(imgUrl, data, MethodName) {
+async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 
 	chrome.storage.local.get(getSave, function (result) {
 		var options_exe = result.options_exe
@@ -340,9 +340,14 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
 								showNotification("盘络上传程序", "图片上传成功，前往上传日志页面即可查看")
 							})
+							callback(res, null);
 							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-								console.log(tabs)
-								let currentTabId = tabs[0].id;
+								let currentTabId
+								try {
+									currentTabId = tabs[0].id;
+								} catch (error) {
+								}
+
 								chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
 									if (chrome.runtime.lastError) {
 										//发送失败
@@ -355,6 +360,7 @@ async function Fetch_Upload(imgUrl, data, MethodName) {
 				})
 				.catch(error => {
 					console.error(error);
+					callback(null, new Error('上传失败,请检查错误报告!'));
 					showNotification("盘络上传程序", "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" + error.toString())
 				});
 		}
@@ -425,20 +431,28 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	//拖拽上传
 	if (request.Circle_dragUpload) {
 		const imgUrl = request.Circle_dragUpload;
-		Fetch_Upload(imgUrl, null, "Circle_dragUpload")
+		Fetch_Upload(imgUrl, null, "Circle_dragUpload", () => { })
 	}
 	//全局上传
 	if (request.GlobalUpload) {
-		request.GlobalUpload.forEach(function (base64String) {
-			let binaryData = atob(base64String);
-			// 将二进制数据转换为Blob对象
-			let array = new Uint8Array(binaryData.length);
-			for (var i = 0; i < binaryData.length; i++) {
-				array[i] = binaryData.charCodeAt(i);
+		let base64String = request.GlobalUpload
+		function processBase64String(index) {
+			if (index < base64String.length) {
+				let binaryData = atob(base64String[index]);
+				let array = new Uint8Array(binaryData.length);
+				for (var i = 0; i < binaryData.length; i++) {
+					array[i] = binaryData.charCodeAt(i);
+				}
+				let blob = new Blob([array], { type: 'image/jpeg' });
+				Fetch_Upload(null, blob, "GlobalUpload", () => {
+					setTimeout(function () {
+						processBase64String(index + 1);
+					}, 150);
+				})
+
 			}
-			let blob = new Blob([array], { type: 'image/jpeg' });
-			Fetch_Upload(null, blob, "GlobalUpload")
-		});
+		}
+		processBase64String(0)
 	}
 
 	// if (request.action === "openPopup") {

@@ -38,9 +38,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     var options_token = result.options_token
     var options_owner = result.options_owner
     var options_repository = result.options_repository
-    console.log(options_token)
-    console.log(options_owner)
-    console.log(options_repository)
     //对象存储
     var options_SecretId = result.options_SecretId
     var options_SecretKey = result.options_SecretKey
@@ -578,39 +575,54 @@ chrome.storage.local.get(storagelocal, function (result) {
         uploadAreaTips.style.bottom = "-100px";
         uploadAreaTips.innerText = '';
     }
+
     /**
      * 上传逻辑
      */
+
     function uploadAreaFunction(event) {
         let files = event.dataTransfer.files;
         if (files.length > 0) {
-            let base64Strings = [];
-            for (let i = 0; i < files.length; i++) {
-                if (options_exe == "Tencent_COS" || options_exe == 'Aliyun_OSS' || options_exe == 'AWS_S3') {
-                    uploadFile(files[i], "GlobalUpload")
-                    console.log(files[i])
-                } else {
+            if (options_exe === "Tencent_COS" || options_exe === 'Aliyun_OSS' || options_exe === 'AWS_S3' || options_exe === 'GitHubUP') {
+                function processFile(fileIndex) {
+                    if (fileIndex < files.length) {
+                        let file = files[fileIndex];
+                        if (options_exe == 'GitHubUP') {
+                            let reader = new FileReader();
+                            reader.onload = function () {
+                                uploadFile(btoa(reader.result), "GlobalUpload");
+                            };
+                            reader.readAsBinaryString(file);
+                        } else {
+                            //Tencent_COS,Aliyun_OSS,AWS_S3
+                            uploadFile(file, "GlobalUpload");
+                        }
+                        setTimeout(function () {
+                            processFile(fileIndex + 1);
+                        }, 150);
+                        console.log("全局上传执行成功");
+                    }
+                }
+                processFile(0)
+            } else {
+                let base64Strings = [];
+                for (let i = 0; i < files.length; i++) {
                     (function (file) {
-                        var reader = new FileReader();
+                        let reader = new FileReader();
                         reader.onload = function () {
-                            if (options_exe == 'GitHubUP') {
-                                uploadFile(btoa(reader.result), "GlobalUpload")
-                                console.log(btoa(reader.result))
-                            } else {
-                                // 将二进制数据编码为base64字符串并存储在数组中
-                                base64Strings.push(btoa(reader.result));
-                                if (base64Strings.length == files.length) {
-                                    chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
-                                }
+                            // 将二进制数据编码为base64字符串并存储在数组中
+                            base64Strings.push(btoa(reader.result));
+                            if (base64Strings.length == files.length) {
+                                chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
                             }
                         }
                         // 读取当前文件的内容
                         reader.readAsBinaryString(file);
                     })(files[i]);
+                    console.log("全局上传执行成功")
                 }
-
-                console.log("全局上传执行成功")
             }
+
         }
     }
 
@@ -743,7 +755,12 @@ chrome.storage.local.get(storagelocal, function (result) {
                     let Discuz = document.getElementById("fastpostmessage")
                     let Discuz_Interactive_reply = document.getElementById("postmessage")
                     let Discuz_Advanced = document.getElementById("e_textarea")
-                    let Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe")
+                    let Discuz_Advanced_iframe
+                    try {
+                        Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe")
+                    } catch (error) {
+
+                    }
                     if (Discuz_Interactive_reply) {
                         if (Find_Editor == true) { return; }
                         //如果是回复楼层
@@ -1052,51 +1069,39 @@ chrome.storage.local.get(storagelocal, function (result) {
                     'Authorization': 'Bearer ' + options_token,
                     'Content-Type': 'application/json'
                 },
-            }).then(res => {
-                if (res.sha) {
-                    data.sha = res.sha
-                }
-                Upload_method()
-            }).catch(error => {
-                console.log(error)
-                chrome.runtime.sendMessage({ Loudspeaker: "查询失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
-                return;
             })
+                .then(response => response.json())
+                .then(res => {
+                    console.log(res)
+                    if (res.sha) {
+                        data.sha = res.sha
+                    }
+                    Upload_method()
+                }).catch(error => {
+                    console.log(error)
+                    chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+                    return;
+                })
             function Upload_method() {
-                console.log(data)
-                $.ajax({
-                    url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema,
-                    type: 'PUT',
+                fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema, {
+                    method: 'PUT',
                     headers: {
                         'Authorization': 'Bearer ' + options_token,
                         'Content-Type': 'application/json'
                     },
-                    data: JSON.stringify(data),
-                    success: function (response) {
-                        console.log(response)
-                    },
-                    error: function (xhr, status, error) {
-                        if (xhr) {
-                            console.error(xhr);
-                            console.error(xhr.responseJSON.message);
-                            return;
-                        }
-                    }
-                });
-                // fetch("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + filename, {
-                //     method: 'PUT',
-                //     headers: {
-                //         'Authorization': 'Bearer ' + options_token,
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify(data)
-                // }).then(res => {
-                //     console.log(res)
-                // }).catch(error => {
-                //     console.log(error)
-                //     chrome.runtime.sendMessage({ Loudspeaker: "查询失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
-                //     return;
-                // })
+                    body: JSON.stringify(data),
+                })
+                    .then(response => response.json())
+                    .then(res => {
+                        console.log(res)
+                        options_host = "GitHub.com"
+                        imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + UrlImgNema
+                        LocalStorage(UrlImgNema, imageUrl)
+                    }).catch(error => {
+                        console.log(error)
+                        chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+                        return;
+                    })
             }
 
         }

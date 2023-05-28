@@ -564,7 +564,11 @@ $(document).ready(function () {
       }
       console.log(res)
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        let currentTabId = tabs[0].id;
+        let currentTabId
+        try {
+          currentTabId = tabs[0].id;
+        } catch (error) {
+        }
         chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
           if (chrome.runtime.lastError) {
             //发送失败
@@ -590,28 +594,32 @@ $(document).ready(function () {
           })
           break;
         case 'EasyImages':
-          console.log(err)
           break;
         case 'ImgURL':
-          console.log(err)
+
           break;
         case 'SM_MS':
-          console.log(err)
+
           break;
         case 'Chevereto':
-          console.log(err)
+
           toastItem({
             toast_content: err.error.message
           })
           break;
         case 'Hellohao':
-          console.log(err)
+
           break;
         case 'Imgur':
-          console.log(err)
+
           break;
         case 'UserDiy':
-          console.log(err)
+
+          break;
+        case 'GitHubUP':
+          toastItem({
+            toast_content: err.responseJSON.message
+          })
           break;
       }
     })
@@ -1087,7 +1095,7 @@ $(document).ready(function () {
               async function Upload_method() {
                 const fileReader = new FileReader();
                 fileReader.onloadend = function () {
-                  data.content = fileReader.result.split(',')[1]
+                  data.content = btoa(fileReader.result)
                   // 发送上传请求
                   $.ajax({
                     url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
@@ -1116,15 +1124,14 @@ $(document).ready(function () {
                     },
                     error: function (xhr, status, error) {
                       if (xhr) {
-                        console.error(xhr);
-                        console.error(xhr.responseJSON.message);
+                        uploader.emit("error", currentFile, xhr);
                         return;
                       }
                     }
                   });
 
                 };
-                fileReader.readAsDataURL(currentFile);
+                fileReader.readAsBinaryString(currentFile);
                 // 延迟一段时间后上传下一个文件
                 await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
                 await delayUpload(file, index + 1);
