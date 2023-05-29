@@ -338,7 +338,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                     let imgUrl = event.target.src;
                     console.log("拖拽url:" + imgUrl);
                     if (options_exe == "Tencent_COS" || options_exe == "Aliyun_OSS" || options_exe == "AWS_S3" || options_exe == 'GitHubUP') {
-                        uploadFile(imgUrl, "Circle_dragUpload")
+                        uploadFile(imgUrl, "Circle_dragUpload", null)
                     } else {
                         chrome.runtime.sendMessage({ Circle_dragUpload: imgUrl });
                     }
@@ -590,16 +590,22 @@ chrome.storage.local.get(storagelocal, function (result) {
                         if (options_exe == 'GitHubUP') {
                             let reader = new FileReader();
                             reader.onload = function () {
-                                uploadFile(btoa(reader.result), "GlobalUpload");
+                                uploadFile(btoa(reader.result), "GlobalUpload", () => {
+                                    setTimeout(function () {
+                                        processFile(fileIndex + 1);
+                                    }, 150);
+                                });
                             };
                             reader.readAsBinaryString(file);
                         } else {
                             //Tencent_COS,Aliyun_OSS,AWS_S3
-                            uploadFile(file, "GlobalUpload");
+                            uploadFile(file, "GlobalUpload", "GlobalUpload", () => {
+                                setTimeout(function () {
+                                    processFile(fileIndex + 1);
+                                }, 150);
+                            });
                         }
-                        setTimeout(function () {
-                            processFile(fileIndex + 1);
-                        }, 150);
+
                         console.log("全局上传执行成功");
                     }
                 }
@@ -916,7 +922,7 @@ chrome.storage.local.get(storagelocal, function (result) {
      * @param {url} imgUrl 获取到的图片信息
      * @param {*} MethodName 上传模式名称
      */
-    function uploadFile(imgUrl, MethodName) {
+    function uploadFile(imgUrl, MethodName, callback) {
         if (MethodName == "GlobalUpload") {
             if (options_exe == "Tencent_COS") {
                 Cos_uploadFile(imgUrl)
@@ -932,51 +938,42 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
         }
         if (MethodName == "Circle_dragUpload" || MethodName == "Rightupload") {
-            fetch(options_proxy_server + imgUrl)
-                .then(res => {
-                    return res.blob()
-                })
-                .then(blob => {
-                    if (options_exe == "Tencent_COS") {
-                        Cos_uploadFile(blob)
+            (async () => {
+                try {
+                    const res = await fetch(options_proxy_server + imgUrl);
+                    const blob = await res.blob();
+                    blobUP(blob)
+                } catch (error) {
+                    console.log("获取失败，再次尝试...");
+                    try {
+                        const res = await fetch("https://cors-anywhere.pnglog.com/" + imgUrl);
+                        const blob = await res.blob();
+                        blobUP(blob)
+                    } catch (error) {
+                        chrome.runtime.sendMessage({ Loudspeaker: "上传失败，请打开 DevTools 查看报错并根据常见问题进行报错排除" });
+                        console.log(error);
+                        return;
                     }
-                    if (options_exe == "Aliyun_OSS") {
-                        Oos_uploadFile(blob)
-                    }
-                    if (options_exe == "AWS_S3") {
-                        S3_uploadFile(blob)
-                    }
-                    if (options_exe == "GitHubUP") {
-                        GitHub_uploadFile(blob)
-                    }
-
-                })
-                .catch(error => {
-                    console.log("获取失败，再次尝试...")
-                    fetch("https://cors-anywhere.pnglog.com/" + imgUrl)
-                        .then(res => {
-                            return res.blob()
-                        })
-                        .then(blob => {
-                            if (options_exe == "Tencent_COS") {
-                                Cos_uploadFile(blob)
-                            }
-                            if (options_exe == "Aliyun_OSS") {
-                                Oos_uploadFile(blob)
-                            }
-                            if (options_exe == "AWS_S3") {
-                                S3_uploadFile(blob)
-                            }
-                            if (options_exe == "GitHubUP") {
-                                GitHub_uploadFile(blob)
-                            }
-                        })
-                        .catch(error => {
-                            chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
-                            console.log(error)
-                            return;
-                        })
-                })
+                }
+            })()
+            function blobUP(blob) {
+                if (options_exe == "Tencent_COS") {
+                    Cos_uploadFile(blob)
+                }
+                if (options_exe == "Aliyun_OSS") {
+                    Oos_uploadFile(blob)
+                }
+                if (options_exe == "AWS_S3") {
+                    S3_uploadFile(blob)
+                }
+                if (options_exe == "GitHubUP") {
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        GitHub_uploadFile(btoa(reader.result));
+                    };
+                    reader.readAsBinaryString(blob);
+                }
+            }
         }
 
         function Cos_uploadFile(blob) {
@@ -1094,11 +1091,13 @@ chrome.storage.local.get(storagelocal, function (result) {
                     .then(response => response.json())
                     .then(res => {
                         console.log(res)
+                        callback(res, null);
                         options_host = "GitHub.com"
                         imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + UrlImgNema
                         LocalStorage(UrlImgNema, imageUrl)
                     }).catch(error => {
                         console.log(error)
+                        callback(null, new Error('上传失败,请检查错误报告!'));
                         chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
                         return;
                     })

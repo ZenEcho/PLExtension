@@ -412,8 +412,6 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					})
 			})
 
-
-
 	})
 
 
