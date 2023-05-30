@@ -1,0 +1,250 @@
+.popup-Select {
+  user-select: none;
+  padding: .6rem;
+  text-align: center;
+  border-radius: .6rem .6rem 0px 0px;
+}
+
+.popup-Select:hover {
+  background-color: #eee;
+}
+
+.LinksBox {
+  display: none;
+}
+
+
+textarea:focus {
+  outline: none;
+  border: #03a9f4 1px solid;
+
+}
+
+.dropzone {
+  border: none;
+  transition: min-height 1s ease-in-out;
+}
+
+.dz-button {
+  transition: margin-top 1s ease-in-out;
+}
+
+
+
+
+@media screen and (min-height: 480px) {
+  .dropzone {
+    min-height: 296px;
+  }
+
+  .dz-button {
+    margin-top: 0px;
+    transition: margin-top 0.5s ease-in-out;
+  }
+
+}
+
+@media screen and (min-height: 680px) {
+  .dropzone {
+    min-height: 420px;
+  }
+
+  .dz-button {
+    margin-top: 50px;
+    transition: margin-top 0.3s ease-in-out;
+  }
+}
+
+@media screen and (min-height: 780px) {
+  .dropzone {
+    min-height: 520px;
+  }
+
+  .dz-button {
+    margin-top: 90px;
+    transition: margin-top 0.3s ease-in-out;
+  }
+}
+
+@media screen and (min-height: 880px) {
+  .dropzone {
+    min-height: 620px;
+  }
+
+  .dz-button {
+    margin-top: 140px;
+    transition: margin-top 0.3s ease-in-out;
+  }
+
+}
+
+@media screen and (max-width: 780px) {
+  #ButtonBox {
+    width: 100%;
+  }
+
+  .p_urls {
+    word-break: break-word;
+  }
+
+  .selector_p_urls {
+    width: 2.5rem;
+  }
+
+  .copy {
+    width: 2.5rem;
+  }
+}
+
+/* 当屏幕像素大于等于768时，设置 #ButtonBox 的宽度为9rem */
+@media screen and (min-width: 768px) {
+  #ButtonBox {
+    width: 9rem;
+    border-right: 1px solid #eee;
+  }
+}
+
+.dropzone .icon {
+  width: 10rem;
+  height: 10rem;
+  -webkit-user-drag: none;
+}
+
+.dropzone .dz-preview {
+  margin: .5rem;
+}
+
+.dropzone .dz-preview .dz-image {
+  width: 200px;
+  height: 200px;
+
+}
+
+.dropzone .dz-preview .dz-image img {
+  width: 100%;
+  height: 100%;
+
+}
+
+.dz-remove {
+  text-decoration: none;
+  color: #000;
+}
+
+fieldset {
+  margin-top: 20px;
+  border: .2rem rgba(0, 0, 0, 0.3) solid;
+}
+
+.pure-form {
+  /* width: 100%; */
+}
+
+/* #ButtonBox {
+  border-right: #eee 1px solid;
+  width: 9rem;
+} */
+
+.urlButton {
+  overflow: hidden;
+  user-select: none;
+  padding: .6rem;
+}
+
+.urlButton:hover {
+  background-color: #eee;
+}
+
+.Check {
+  border-bottom: .1rem #03a9f4 solid;
+}
+
+.textFrame {
+  padding: .5rem .5rem;
+}
+
+.int_urls {
+  width: 100%;
+  min-height: 100px;
+  border-radius: 5px;
+}
+
+.p_urls {
+  font-size: 1rem;
+  padding: .5rem .8rem;
+  border-radius: 5px 0px 0px 5px;
+  margin: 0px;
+  background-color: #eee;
+
+}
+
+.p_urls:hover {
+  box-shadow: 0 0.2rem 1rem var(--bs-info-border-subtle), 0 0px 1rem var(--bs-info-bg-subtle);
+}
+
+.IMGpreview {
+  box-shadow: 0 0.2rem 1rem var(--bs-info-border-subtle), 0 0px 1rem var(--bs-info-bg-subtle);
+}
+
+
+.delete {
+  user-select: none;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 2rem;
+  line-height: 2rem;
+  color: #2196f3;
+  text-align: center;
+  display: block;
+  background-color: #eee;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.delete:hover {
+  color: white;
+  background-color: red;
+}
+
+.copy {
+  user-select: none;
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2196f3;
+  color: white;
+}
+
+.copy:hover {
+  background-color: #03a9f4;
+
+}
+
+.selector_p_urls {
+  user-select: none;
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+  border-radius: 0px 5px 5px 0px;
+}
+
+.selector_p_urls:hover {
+  background-color: #e4e4e4;
+}
+
+.selector_p_urls_Click {
+  background-color: #e0e0e0;
+}
+
+.dz-remove {
+  font-size: 1rem;
+}
+
+.Upload_Return_Box {
+  display: flex;
+  margin: .5rem 0px;
+}

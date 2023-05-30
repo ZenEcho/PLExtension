@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盘络上传程序</title>
+  <link rel="stylesheet" href="css/dropzone.css">
+  <link rel="stylesheet" href="css/popup.css">
+  <link rel="stylesheet" href="css/public.css">
+  <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-icons.css">
+  <script defer src="js/jquery-3.6.3.min.js"></script>
+  <script defer src="js/cos/cos-js-sdk-v5.js"></script>
+  <script defer src="js/oss/aliyun-oss-sdk.min.js"></script>
+  <script defer src="js/s3/aws-sdk.min.js"></script>
+  <script defer src="js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script defer src="js/dropzone.js"></script>
+  <script defer src="js/public.js"></script>
+  <script defer src="js/popup.js"></script>
+</head>
+
+<body class="bg-light">
+  <div class="shadow-lg" id="header">
+    <div class="container-md">
+      <header class="py-3">
+        <ul class="nav justify-content-end nav-pills ">
+          <li class="nav-item">
+            <a class="nav-link" style="font-weight: bold;" href="popup.html"><i class="bi bi-upload"></i> 上传页面</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="options.html">
+              <i class="bi bi-sliders"></i> 配置信息</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="UploadLog.html">
+              <i class="bi bi-images"></i> 上传记录</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="FAQ.html"><i class="bi bi-question-circle"></i> 常见问题</a>
+          </li>
+        </ul>
+      </header>
+    </div>
+
+  </div>
+  <div class="container-md">
+    <h1 style="margin-top: 2rem; margin-bottom: 2rem;"><a class="title-a" href="#"></a></h1>
+    <p class="text-center text-bg-danger" id="Upload_Warning"></p>
+    <!-- 上传框 -->
+    <div class="Animation_button">
+      <form class="dropzone shadow-lg p-3 mb-5 bg-body-tertiary rounded Animation_button_span"
+        enctype="multipart/form-data" method="post" action=" ">
+      </form>
+    </div>
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded LinksBox">
+      <div class="row">
+        <div class="text-center" id="ButtonBox">
+          <div id="popup_URL" class="urlButton Check" value="URL">URL</div>
+          <div id="popup_HTML" class="urlButton" value="HTML">HTML</div>
+          <div id="popup_BBCode" class="urlButton" value="BBCode">BBCode</div>
+          <div id="popup_Markdown" class="urlButton" value="Markdown">Markdown</div>
+          <div id="popup_MDwithlink" class="urlButton" value="MD with link">MD with link</div>
+        </div>
+        <div class="col">
+          <div class="border-bottom text-center" style="display: flex; justify-content: flex-end;">
+            <div id="popup-Select-All" class="popup-Select"><i class="bi bi-check-circle-fill"></i>全选</div>
+            <div id="popup-Select-cancel" class="popup-Select"><i class="bi bi-check-circle"></i>取消</div>
+            <div id="popup-Copy-Selected" class="popup-Select"><i class="bi bi-clipboard2-check-fill"></i>复制选中</div>
+          </div>
+
+          <div id="textFrame" class="textFrame">
+            <div class="Upload_Return_Box">
+              <div class="col">
+                <p class="p_urls">上传成功后URL将会显示在这里</p>
+              </div>
+              <div class="text-center selector_p_urls">
+                <span>选择</span></span>
+              </div>
+              <div class="text-center copy">
+                <span>复制</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="em1 LinksBox">
+      <ul class="ul">
+        <p>当前使用的是：<span class="exeinfo_p"></span>，上传失败报错了？请先打开浏览器的开发者工具(按F12)查看错误信息，然后查看<a target="_blank"
+            style="color: red;" href="FAQ.html">【常见问题】</a></p>
+        <p>禁止上传色情/反动/暴力违规违反 <span style="color: #03a9f4;">TOS</span> 的图片！造成的一切恶果由图片上传者承担</p>
+        <li>我们有权删除我们认为不合适的图片</li>
+        <li>不得利用本网站从事任何非法活动</li>
+        <li>对于违规行为, 我们保留举报或公布相关用户信息权利</li>
+      </ul>
+    </div>
+  </div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+</body>
+
+</html>

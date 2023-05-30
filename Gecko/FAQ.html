@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盘络上传程序常见问题——盘络上传程序</title>
+  <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-icons.css">
+  <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="css/public.css">
+  <style>
+    body {
+      min-width: 750px;
+      font-size: 1rem;
+    }
+
+
+    img {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <div class="shadow-lg" id="header">
+    <div class="container-md ">
+      <header class="py-3">
+        <ul class="nav justify-content-end nav-pills ">
+          <li class="nav-item">
+            <a class="nav-link" href="popup.html"><i class="bi bi-upload"></i> 上传页面</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="options.html">
+              <i class="bi bi-sliders"></i> 配置信息</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="UploadLog.html">
+              <i class="bi bi-images"></i> 上传记录</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-weight: bold;" href="FAQ.html"><i class="bi bi-question-circle"></i>
+              常见问题</a>
+          </li>
+        </ul>
+      </header>
+    </div>
+  </div>
+
+  <div class="container-md" style="margin-top:calc(var(--bs-gutter-x) * .5) ;">
+
+
+    <p>使用Ctrl+F快速搜索</p>
+    <p> 请使用开发者工具(F12)查看错误代码</p>
+    <div class="row ">
+      <div class="col-4 ">
+        <nav id="faq_key" class="h-100 flex-column align-items-stretch pe-4 border-end">
+          <nav class="nav nav-pills flex-column">
+            <a class="nav-link" href="#item-1">常见问题</a>
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link ms-3 my-1" href="#item-1-1">错误代码：服务器返回 0 代码</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-2">错误代码：Unauthenticated或者[object Object]</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-3">Uncaught SyntaxError: Unexpected token '←', "←br /→←b→"...
+                is not valid JSON</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-4">....CORS policy: Response to preflight request doesn't pass
+                access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-5">为什么右键上传/粘贴上传的图片本地记录找不到？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-6">画圆手势拖动上传默认模式和增强模式有什么区别？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-7">为什么画圆识别成功了，还需要拖拽到框框里才能上传这么麻烦？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-8">本地文件全局上传默认模式和增强模式有什么区别？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-9">S3支持都支持那些商家？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-10">对象存储是否支持普通文件上传？</a>
+              <a class="nav-link ms-3 my-1" href="#item-1-11">自动插入现在支持网站？</a>
+            </nav>
+            <a class="nav-link" href="#item-2">Token获取</a>
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link ms-3 my-1" href="#item-2-1">简单图床Token获取</a>
+              <a class="nav-link ms-3 my-1" href="#item-2-2">imgurl图床Token、UID获取</a>
+              <a class="nav-link ms-3 my-1" href="#item-2-3">imgur图床Client-ID获取</a>
+            </nav>
+            <a class="nav-link" href="#item-2">S3兼容</a>
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link ms-3 my-1" href="#item-3-1">AWS S3 对接</a>
+              <a class="nav-link ms-3 my-1" href="#item-3-2">S3兼容——R2对接</a>
+              <a class="nav-link ms-3 my-1" href="#item-3-3">S3兼容——七牛对接</a>
+            </nav>
+            <a class="nav-link" href="#item-3">使用教程</a>
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link ms-3 my-1" href="#item-4-1">画圈手势上传使用方法</a>
+              <a class="nav-link ms-3 my-1" href="#item-4-2">全局上传使用方法</a>
+            </nav>
+          </nav>
+        </nav>
+      </div>
+
+      <div class="col-8 box-shadow">
+        <div data-bs-spy="scroll" data-bs-target="faq_key" data-bs-smooth-scroll="true" tabindex="0">
+          <div id="item-1-1" class="p-3 border-bottom ">
+            <h4 style="color:#03a9f4;">错误代码：服务器返回 0 代码</h4>
+            <p>一般情况下这个错误表示上传服务器域名错误,会出现在域名是兰空图床程序,而用户选择了简单图床程序的时候出现错误。</p>
+          </div>
+          <div id="item-1-2" class="p-3 border-bottom ">
+            <h4 style="color:#03a9f4;">错误代码：Unauthenticated或者[object Object]</h4>
+            <p>这个表示身份验证错误,请检查Token值或者UID值</p>
+          </div>
+          <div id="item-1-3" class="p-3 border-bottom ">
+            <h4 style="color:#03a9f4;">Uncaught SyntaxError: Unexpected token '←', "←br /→←b→"... is not valid JSON</h4>
+            <p>简单图床的身份验证错误,请检查Token值</p>
+          </div>
+          <div id="item-1-4" class="p-3 border-bottom ">
+            <h4 style="color:#03a9f4;">....CORS policy: Response to preflight request doesn't pass access control check:
+              No
+              'Access-Control-Allow-Origin' header is present on the requested resource.</h4>
+            <p>表示服务器未启用跨域(CORS)处理解决办法</p>
+            <p>1.如果是用户请联系服务商管理员</p>
+            <p>2.如果是服务商管理员请查看对应的图床程序api手册,或者联系图床程序作者进行协作处理</p>
+            <p>3.<span style="color: red;">*</span>使用cors代理上传。<span>部署自己的cors代理<a
+                  href="https://github.com/Rob--W/cors-anywhere">https://github.com/Rob--W/cors-anywhere</a>,或者使用临时代理：<a
+                  href="https://cors-anywhere.herokuapp.com/">https://cors-anywhere.herokuapp.com/</a></span></p>
+            <p>4.<span style="color: red;">*</span>关闭浏览器的跨域(CORS)处理:在浏览器快捷键的启动路径后面插入(请注意空格)"<code
+                style="color: red;"> --disable-web-security --user-data-dir=F:\edge\data</code>"F:\edge\data为用户配置数据路径，可以自定义。
+            </p>
+            <p><img src="https://cdn-us.imgs.moe/2023/01/28/63d5301d4b6e7.png"></p>
+          </div>
+          <div id="item-1-5" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">为什么右键上传/粘贴上传的图片本地记录找不到，或者上传失败？</h4>
+            <p>如果是右键上传，可能就是单纯的失败了，原因很多，建议多试一下或者在扩展里重新开关一下插件。</p>
+            <p>如果是粘贴的网络资源，也没见上传成功提示说明该图片资源类型不是image类型。所以没有上传，程序上是可以转换的但是没做因为如果使用转换将可以上传很多不是图片的文件。</p>
+          </div>
+          <div id="item-1-6" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">画圆手势拖动上传默认模式和增强模式有什么区别？</h4>
+            <p>默认模式：这个模式会在打开网页的时候检测页面的图片(img标签)元素并绑定手势动作,对于后来加载的网页则没有效果。</p>
+            <p>增强模式：非常暴力的检测页面所有节点的刷新动态,如果页面刷新数据过于庞大如百度图片页面,会绑定出海量的图片元素。所有效果也是最好的,就没有失效的情况！</p>
+            <p>更具体的区别可以在页面按F12打开控制台查看执行次数</p>
+          </div>
+          <div id="item-1-7" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">为什么画圆识别成功了，还需要拖拽到框框里才能上传这么麻烦？</h4>
+            <p>因为会触发bug如果拖拽过快就会被秒识别成功,直接跳过手势步骤所以才加了这个规则</p>
+            </p>
+          </div>
+          <div id="item-1-8" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">本地文件全局上传默认模式和增强模式有什么区别？</h4>
+            <p>不建议与画圆手势拖动上传同时开启,除非你能分辨他们的区别</p>
+            <p>默认模式：只支持本地文件拖拽到右下角的图标进行上传,或者拖拽到提示框中取消上传</p>
+            <p>增强模式：允许拖拽到浏览器页面的任意位置进行上传,除了页面内的上传框,或者拖拽到提示框中取消上传</p>
+          </div>
+          <div id="item-1-9" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">S3支持都支持那些商家？</h4>
+            <p>理论支持所有S3兼容的对象存储</p>
+          </div>
+          <div id="item-1-10" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">对象存储是否支持普通文件上传？</h4>
+            <p>是的目前对象存储已实现文件上传，最大每次5G</p>
+          </div>
+          <div id="item-1-11" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">自动插入现在支持网站？</h4>
+            <table class="table">
+              <thead>
+                <h2 class="text-center">目前支持(经测试的)</h2>
+              </thead>
+              <tbody>
+                <tr class="table-active">
+                  <th scope="row">/</th>
+                  <td>回复楼主</td>
+                  <td>回复楼层</td>
+                  <td>发帖</td>
+                </tr>
+                <tr class="table-info">
+                  <th scope="row">程序</th>
+                  </th>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">Discuz程序论坛3.4</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">Xiuno程序论坛</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">typecho博客</th>
+                  <td>无</td>
+                  <td>无</td>
+                  <td>支持(文章)</td>
+                </tr>
+                <tr>
+                  <th scope="row">WordPress博客(6.2以上)</th>
+                  <td>无</td>
+                  <td>无</td>
+                  <td>支持(古腾堡)</td>
+                </tr>
+                <tr class="table-info">
+                  <th scope="row">编辑器</th>
+                  </th>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">CodeMirror</th>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">TinyMCE 5/6</th>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">wangEditor</th>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">ckEditor4/5</th>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">古腾堡</th>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                  <td>理论支持</td>
+                </tr>
+                <tr class="table-info">
+                  <th scope="row">站点</th>
+                  </th>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">GitHub</th>
+                  <td>无</td>
+                  <td>无</td>
+                  <td>支持(在线编辑)</td>
+                </tr>
+                <tr>
+                  <th scope="row">v2ex</th>
+                  <td>不支持</td>
+                  <td>不支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">liyuans</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">nodeseek</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">hostevaluate</th>
+                  <td>不支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">hostloc</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">52破解</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">52辅助</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">mcbbs</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">藏宝湾</th>
+                  <td>支持</td>
+                  <td>支持</td>
+                  <td>支持</td>
+                </tr>
+                <tr>
+                  <th scope="row">大佬论坛</th>
+                  <td>支持(高级回复)</td>
+                  <td>不支持</td>
+                  <td>支持</td>
+                </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+          <div id="item-2-1" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">简单图床Token获取</h4>
+            <p><img src="https://cdn-us.imgs.moe/2023/01/28/63d530212db83.png" loading="lazy"></p>
+          </div>
+          <div id="item-2-2" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">imgurl图床Token、UID获取</h4>
+            <p><img src="https://cdn-us.imgs.moe/2023/01/28/63d5301f5e7c4.png" loading="lazy"></p>
+          </div>
+          <div id="item-2-3" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">imgur图床Client-ID获取</h4>
+            <p>点击<a style="color: #03a9f4;" href="https://api.imgur.com/oauth2/addclient"
+                target="_blank">注册Client-ID</a></p>
+            <p><img src="https://cdn-us.imgs.moe/2023/01/28/63d5301faef17.png" loading="lazy"></p>
+            <p>按照实际情况填写</p>
+          </div>
+          <div id="item-3-1" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">AWS S3 对接</h4>
+            <h5>1.创建对象存储：</h5>
+            <p><a href="https://s3.console.aws.amazon.com/s3/bucket/create">点击跳转创建</a></p>
+            <p><img src="https://cdn-us.imgs.moe/2023/05/02/64507e124673f.png" loading="lazy"></p>
+            <p>创建的时候注意上述圈出内容即可</p>
+            <p><img src="https://cdn-us.imgs.moe/2023/05/02/64507efba82ce.png" loading="lazy"></p>
+            <p>这是创建完成后的样子,记住桶名称和区域</p>
+            <h5>2.创建密钥：</h5>
+            <p><img src="https://cdn-us.imgs.moe/2023/05/02/64507fd7f0c70.png" loading="lazy"></p>
+            <p>注意请妥善保存密钥</p>
+            <h5>3.最后的填写：</h5>
+            <p><img src="https://cdn-us.imgs.moe/2023/05/02/64508138546f2.png" loading="lazy"></p>
+          </div>
+          <div id="item-3-2" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">S3兼容——R2对接</h4>
+            <h5>1.创建桶：</h5>
+            <p><img src="https://r2.pnglog.com/2022/11/09/636b160544729.png" loading="lazy"></p>
+            <p>记得开启Cloudflare R2 的公开访问权限</p>
+            <h5>2.获取密钥</h5>
+            <p>R2主页点击，管理R2 api令牌进行创建</p>
+            <p><img src="https://r2.pnglog.com/2022/11/09/636b186a60036.png" loading="lazy"></p>
+            <p>选择编辑权限，因为需要修改和删除</p>
+            <p><img src="https://r2.pnglog.com/2022/11/09/636b186bb31c8.png" loading="lazy"></p>
+            <h5>最后填写：</h5>
+            <p><img src="https://cdn-us.imgs.moe/2023/05/02/6450a3f47f288.png" loading="lazy"></p>
+          </div>
+          <div id="item-3-3" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">S3兼容——七牛对接</h4>
+            <p>待编写</p>
+          </div>
+          <div id="item-4-1" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">画圈手势上传使用方法</h4>
+            <p><img src="https://cdn-us.imgs.moe/2023/03/26/64205f59cb4b7.gif" loading="lazy"></p>
+          </div>
+          <div id="item-4-2" class="p-3 border-bottom">
+            <h4 style="color:#03a9f4;">全局上传使用方法</h4>
+            <p><img src="https://cdn-us.imgs.moe/2023/03/26/64205f777b118.gif" loading="lazy"></p>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/jquery-3.6.3.min.js"></script>
+  <script src="/js/faq.js"></script>
+</body>
+
+</html>

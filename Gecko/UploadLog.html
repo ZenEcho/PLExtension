@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盘络上传程序记录——盘络上传程序</title>
+  <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/public.css">
+  <link rel="stylesheet" href="css/UploadLog.css">
+  <script src="js/jquery-3.6.3.min.js"></script>
+  <script src="js/cos/cos-js-sdk-v5.js"></script>
+  <script src="js/oss/aliyun-oss-sdk.min.js"></script>
+  <script src="js/s3/aws-sdk.min.js"></script>
+  <script src="js/UploadLog/masonry.pkgd.js"></script>
+  <script src="js/UploadLog/imagesloaded.pkgd.min.js"></script>
+  <script src="js/UploadLog/jquery.twbsPagination.min.js"></script>
+  <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+  <div class="shadow-lg" id="header">
+    <div class="container-md">
+      <header class="py-3">
+        <ul class="nav justify-content-end nav-pills ">
+          <li class="nav-item">
+            <a class="nav-link" href="popup.html"><i class="bi bi-upload"></i> 上传页面</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="options.html">
+              <i class="bi bi-sliders"></i> 配置信息</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-weight: bold;" href="UploadLog.html">
+              <i class="bi bi-images"></i> 上传记录</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="FAQ.html"><i class="bi bi-question-circle"></i> 常见问题</a>
+          </li>
+        </ul>
+      </header>
+    </div>
+  </div>
+  <div class="container-fluid shadow-lg" style="padding-top: 2rem;">
+    <div class="container-md PLdanger">
+    </div>
+    <div class="container-md border-bottom head">
+      <div class="Selected_But">
+        <button id="Browse_mode_switch_button" type="button" class="btn btn-dark" data-bs-toggle="popover"
+          data-bs-trigger="hover focus" data-bs-content="现在是浏览本地图片模式呢！">切换到本地</button>
+      </div>
+      <div class="Selected_But">
+        <button type="button" class="btn btn-outline-primary" id="Select_All"><i
+            class="bi bi-check-circle-fill"></i>全选</button>
+      </div>
+      <div class="Selected_But">
+        <button type="button" class="btn btn-outline-primary" id="Select_cancel"><i
+            class="bi bi-check-circle"></i>取消</button>
+      </div>
+
+      <div class="btn-group Selected_But">
+        <button type="button" class="btn btn-outline-primary" id="Copy_Selected"><i
+            class="bi bi-clipboard2-check-fill"></i>复制选中</button>
+        <button id="dropdown-button" type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
+          data-bs-toggle="dropdown" aria-expanded="false"></button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" value="URL">URL</a></li>
+          <li><a class="dropdown-item" href="#" value="HTML">HTML</a></li>
+          <li><a class="dropdown-item" href="#" value="BBCode">BBCode</a></li>
+          <li><a class="dropdown-item" href="#" value="Markdown">Markdown</a></li>
+          <li><a class="dropdown-item" href="#" value="MD with link">MD with link</a></li>
+        </ul>
+      </div>
+
+      <div class="Selected_But">
+        <button type="button" class="btn btn-outline-primary" id="Delete_Selected"><i
+            class="bi bi-x-circle-fill"></i>删除选中</button>
+      </div>
+
+    </div>
+    <!-- 图片 -->
+    <div id="container" class="container-fluid">
+
+    </div>
+
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">最前</a></li>
+        <li class="page-item"><a class="page-link" href="#">L</a></li>
+        <li class="page-item"><a class="page-link" href="#">O</a></li>
+        <li class="page-item"><a class="page-link" href="#">V</a></li>
+        <li class="page-item"><a class="page-link" href="#">E</a></li>
+        <li class="page-item"><a class="page-link" href="#">最后</a></li>
+      </ul>
+    </nav>
+
+
+
+    <div class="d-grid gap-2 col-6 mx-auto" id="Bottom_button">
+      <button type="button" class="btn btn-primary" id="deleteUrl" data-bs-toggle="popover"
+        data-bs-trigger="hover focus" data-bs-content="只能清除当前页噢！">清除本页记录</button>
+      <button type="button" class="btn btn-primary" id="DeleteALL" data-bs-toggle="popover"
+        data-bs-trigger="hover focus" data-bs-content="这是一个方便的快捷的一键清空日志按钮">一键清空日志</button>
+    </div>
+  </div>
+
+
+  <div class="fixed-bottom">
+  </div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+  <script src="js/UploadLog/UploadLog.js"></script>
+  <script src="js/public.js"></script>
+</body>
+
+</html>
