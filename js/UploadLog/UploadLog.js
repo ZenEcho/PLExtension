@@ -356,6 +356,7 @@ $(document).ready(function () {
                                 case 'Tencent_COS':
                                 case 'Aliyun_OSS':
                                 case 'AWS_S3':
+                                case 'GitHubUP':
                                     item.imagesLoaded().progress(function () {
                                         item.find('.Image_Width_And_Height').html("点击加载宽高;")
                                         // 获取宽高
@@ -788,7 +789,7 @@ $(document).ready(function () {
                     case 'GitHubUP':
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
-                            <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,GitHub设有缓存删除有5分钟的延迟</div>`)
+                            <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,删除可能会有缓存</div>`)
                         sendAjax(
                             options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
                             'GET',
@@ -1198,24 +1199,6 @@ $(document).ready(function () {
                             case 'Tencent_COS':
                             case 'Aliyun_OSS':
                             case 'AWS_S3':
-                                item.imagesLoaded().progress(function () {
-                                    item.find('.Image_Width_And_Height').html("点击加载宽高;")
-                                    // 获取宽高
-                                    item.find('.Image_Width_And_Height').one('click', function () {
-                                        item.find('.Image_Width_And_Height').html("加载中...")
-                                        const img = item.find('.imgs');
-                                        // 获取img元素的src属性
-                                        const src = img.attr('src');
-                                        let Width_And_Height = new Image();
-                                        Width_And_Height.src = src
-                                        Width_And_Height.onload = function () {
-                                            let width = Width_And_Height.width;
-                                            let height = Width_And_Height.height
-                                            item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
-                                        }
-                                    });
-                                });
-                                break;
                             case 'GitHubUP':
                                 item.imagesLoaded().progress(function () {
                                     item.find('.Image_Width_And_Height').html("点击加载宽高;")

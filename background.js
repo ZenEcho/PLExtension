@@ -95,13 +95,15 @@ chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
 chrome.contextMenus.onClicked.addListener(function (info) {
 	if (info.menuItemId === "upload_imagea") {
 		const imgUrl = info.srcUrl;
-		Fetch_Upload(imgUrl, null, "Rightupload", () => { })
+		Fetch_Upload(imgUrl, null, "Rightupload")
 	}
 
 });
 
 async function Fetch_Upload(imgUrl, data, MethodName, callback) {
-
+	if (typeof callback !== 'function') {
+		callback = function () { };
+	}
 	chrome.storage.local.get(getSave, function (result) {
 		var options_exe = result.options_exe
 		var options_proxy_server_state = result.options_proxy_server_state
@@ -247,14 +249,6 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 						formData.append(key, options_Body[key]);
 					}
 					break;
-				case 'UserDiy':
-					optionsUrl = options_proxy_server + options_apihost;
-					formData.append(options_parameter, file);
-					optionHeaders = options_Headers;
-					for (var key in options_Body) {
-						formData.append(key, options_Body[key]);
-					}
-					break;
 			}
 			fetch(optionsUrl, {
 				method: 'POST',
@@ -345,15 +339,16 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								let currentTabId
 								try {
 									currentTabId = tabs[0].id;
+									chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
+										if (chrome.runtime.lastError) {
+											//发送失败
+											return;
+										}
+									});
 								} catch (error) {
 								}
 
-								chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
-									if (chrome.runtime.lastError) {
-										//发送失败
-										return;
-									}
-								});
+
 							});
 						});
 					});
@@ -393,6 +388,13 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			});
 			return;
 		}
+		if (options_exe == "GitHubUP") {
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				let currentTabId = tabs[0].id;
+				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: imgUrl })
+			});
+			return;
+		}
 		fetch(options_proxy_server + imgUrl)
 			.then(res => res.blob())
 			.then(blob => {
@@ -422,14 +424,14 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
  * sender发送信息页面以及它的详细信息
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	//拖拽上传
+	//大喇叭
 	if (request.Loudspeaker) {
 		showNotification("盘络上传程序", request.Loudspeaker)
 	}
 	//拖拽上传
 	if (request.Circle_dragUpload) {
 		const imgUrl = request.Circle_dragUpload;
-		Fetch_Upload(imgUrl, null, "Circle_dragUpload", () => { })
+		Fetch_Upload(imgUrl, null, "Circle_dragUpload")
 	}
 	//全局上传
 	if (request.GlobalUpload) {

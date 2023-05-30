@@ -316,7 +316,7 @@ $(document).ready(function () {
       <input type="text" class="form-control box-shadow" id="options_repository" placeholder="例如:3596a2113fdg16f" />
     </div>
     <div class="form-group">
-      <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">((给文件一个温暖的家,留空为桶的根目录))</p>
+      <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为根目录)</p>
       </label>
       <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images" />
     </div>

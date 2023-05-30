@@ -1073,24 +1073,44 @@ $(document).ready(function () {
               let date = new Date();
               let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
               // 查询是否冲突
-              sendAjax(
-                options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
-                'GET',
-                null,
-                {
-                  'Authorization': 'Bearer ' + options_token,
-                  'Content-Type': 'application/json'
-                },
-                function (res) {
-                  if (res) {
-                    data.sha = res.sha
+              try {
+                sendAjax(
+                  options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
+                  'GET',
+                  null,
+                  {
+                    'Authorization': 'Bearer ' + options_token,
+                    'Content-Type': 'application/json'
+                  },
+                  function (res) {
+                    if (res.sha) {
+                      data.sha = res.sha
+                    }
                     Upload_method()
                   }
-                },
-                function (err) {
-                  Upload_method()
+                )
+              } catch (error) {
+                try {
+                  sendAjax(
+                    "https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
+                    'GET',
+                    null,
+                    {
+                      'Authorization': 'Bearer ' + options_token,
+                      'Content-Type': 'application/json'
+                    },
+                    function (res) {
+                      if (res.sha) {
+                        data.sha = res.sha
+                      }
+                      Upload_method()
+                    }
+                  )
+                } catch (error) {
+
                 }
-              )
+              }
+
               //
               async function Upload_method() {
                 const fileReader = new FileReader();
