@@ -466,30 +466,36 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 
-chrome.action.onClicked.addListener(function (tab) {
-	chrome.storage.local.get(["browser_Open_with"], function (result) {
-		browser_Open_with = result.browser_Open_with
-		if (browser_Open_with == 1) {
-			// 在标签页打开
-			chrome.tabs.create({
-				'url': ('popup.html')
-			});
-		}
-		if (browser_Open_with == 2) {
-			// 在新窗口打开
-			chrome.windows.create({
-				type: "popup",
-				url: "popup.html",
-				width: 1024,
-				height: 730
-			});
-		}
-		if (browser_Open_with === 3) {
-			// 在内置页打开
-			chrome.action.setPopup({
-				popup: "popup.html"
-			});
-		}
-	});
+// chrome.action.onClicked.addListener(function (tab) {
+// 	chrome.storage.local.get(["browser_Open_with"], function (result) {
+// 		console.log(result)
+// 		browser_Open_with = result.browser_Open_with
+// 		if (browser_Open_with == 1) {
+// 			// 在标签页打开
+// 			chrome.tabs.create({
+// 				'url': ('popup.html')
+// 			});
+// 		}
+// 		if (browser_Open_with == 2) {
+// 			// 在新窗口打开
+// 			chrome.windows.create({
+// 				type: "popup",
+// 				url: "popup.html",
+// 				width: 1024,
+// 				height: 730
+// 			});
+// 		}
+// 		if (browser_Open_with === 3) {
+// 			// 在内置页打开
+// 			chrome.action.setPopup({
+// 				popup: "popup.html"
+// 			});
+// 		}
+// 	});
 
+// });
+
+
+chrome.action.onClicked.addListener(() => {
+	console.log("Hello from the extension!");
 });

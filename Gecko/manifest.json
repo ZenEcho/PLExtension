@@ -10,7 +10,10 @@
     "64": "icons/logo64.png",
     "128": "icons/logo128.png"
   },
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "background": {
     "scripts": [
       "background.js"
@@ -49,7 +52,7 @@
   "action": {
     "default_title": "盘洛上传程序",
     "default_icon": "icons/logo128.png",
-    "default_popup": ""
+    "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
