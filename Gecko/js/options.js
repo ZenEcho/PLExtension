@@ -2000,7 +2000,10 @@ $(document).ready(function () {
     chrome.runtime.reload();
   });
   $('#options_Open_with_Inside').click(function () {
-    alert('使用内置页打开，第一使用需要点击两次插件！')
+    toastItem({
+      toast_content: '因为API适配问题，改设置被禁止!'
+    })
+    return;
     chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
       // 打开方式为：在内置页打开
     });

@@ -17,7 +17,8 @@
   "background": {
     "scripts": [
       "background.js"
-    ]
+    ],
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -51,9 +52,10 @@
   ],
   "action": {
     "default_title": "盘洛上传程序",
-    "default_icon": "icons/logo128.png",
-    "default_popup": "popup.html"
+    "default_icon": "icons/logo128.png"
+
   },
+  
   "permissions": [
     "storage",
     "contextMenus",

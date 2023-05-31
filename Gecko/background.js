@@ -14,9 +14,9 @@ function showNotification(title, message, onClickCallback) {
 var browser_Open_with
 chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason === "install") {
-		chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
-			chrome.action.setPopup({
-				popup: "popup.html"
+		chrome.storage.local.set({ 'browser_Open_with': 1 }, function () {
+			chrome.tabs.create({
+				'url': ('popup.html')
 			});
 			console.log("安装初始中...");
 		});
@@ -466,36 +466,33 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 
-// chrome.action.onClicked.addListener(function (tab) {
-// 	chrome.storage.local.get(["browser_Open_with"], function (result) {
-// 		console.log(result)
-// 		browser_Open_with = result.browser_Open_with
-// 		if (browser_Open_with == 1) {
-// 			// 在标签页打开
-// 			chrome.tabs.create({
-// 				'url': ('popup.html')
-// 			});
-// 		}
-// 		if (browser_Open_with == 2) {
-// 			// 在新窗口打开
-// 			chrome.windows.create({
-// 				type: "popup",
-// 				url: "popup.html",
-// 				width: 1024,
-// 				height: 730
-// 			});
-// 		}
-// 		if (browser_Open_with === 3) {
-// 			// 在内置页打开
-// 			chrome.action.setPopup({
-// 				popup: "popup.html"
-// 			});
-// 		}
-// 	});
+chrome.action.onClicked.addListener(function (tab) {
+	chrome.storage.local.get(["browser_Open_with"], function (result) {
+		browser_Open_with = result.browser_Open_with
+		if (browser_Open_with == 1) {
+			// 在标签页打开
+			chrome.tabs.create({
+				'url': ('popup.html')
+			});
+		}
+		if (browser_Open_with == 2) {
+			// 在新窗口打开
+			chrome.windows.create({
+				type: "popup",
+				url: "popup.html",
+				width: 1024,
+				height: 730
+			});
+		}
+		if (browser_Open_with === 3) {
+			// 在内置页打开
+			// 火狐bug太多禁止该方法
+			chrome.action.setPopup({
+				popup: "popup.html"
+			});
+		}
+	});
 
-// });
-
-
-chrome.action.onClicked.addListener(() => {
-	console.log("Hello from the extension!");
 });
+
+
