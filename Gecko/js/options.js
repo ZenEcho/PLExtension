@@ -1670,7 +1670,7 @@ $(document).ready(function () {
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="uploadArea_ModalLabel">区域设置 </h1>&nbsp<span
-                style="font-size: 10px; color: #333;">同时关闭手势和全局上传时,侧边栏才会关闭</span>
+                style="font-size: 10px; color: #333;">关闭全局上传,侧边栏也会关闭</span>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
         
@@ -2010,38 +2010,6 @@ $(document).ready(function () {
     chrome.runtime.reload();
   });
 
-
-  chrome.storage.local.get(["Circle_dragUpload"], function (result) {
-    if ($('a[value="' + result.Circle_dragUpload + '"]').length) {
-      $('a[value="' + result.Circle_dragUpload + '"]').addClass("active")
-    } else {
-      chrome.storage.local.set({ "Circle_dragUpload": "Circle_dragUpload_Default" })
-      $('a[value="Circle_dragUpload_Default"]').addClass("active")
-    }
-    if (result.Circle_dragUpload == "Circle_dragUpload_Default") {
-      $("#Circle_dragUpload button").addClass("btn-primary")
-    } else if (result.Circle_dragUpload == "Circle_dragUpload_Power") {
-      $("#Circle_dragUpload button").addClass("btn-danger")
-    } else if (result.Circle_dragUpload == "Circle_dragUpload_off") {
-      $("#Circle_dragUpload button").addClass("btn-dark")
-    }
-
-    $('#Circle_dragUpload .dropdown-item').click(function () {
-      let val = $(this).attr("value")
-      $("#Circle_dragUpload button").removeClass("btn-primary btn-danger btn-dark")
-      if (val == "Circle_dragUpload_Default") {
-        $("#Circle_dragUpload button").addClass("btn-primary")
-      } else if (val == "Circle_dragUpload_Power") {
-        $("#Circle_dragUpload button").addClass("btn-danger")
-      } else if (val == "Circle_dragUpload_off") {
-        $("#Circle_dragUpload button").addClass("btn-dark")
-      }
-      chrome.storage.local.set({ "Circle_dragUpload": val })
-      $('#Circle_dragUpload .dropdown-item').removeClass("active")
-      $(this).addClass("active")
-    });
-  })
-
   chrome.storage.local.get(["GlobalUpload"], function (result) {
     if ($('a[value="' + result.GlobalUpload + '"]').length) {
       $('a[value="' + result.GlobalUpload + '"]').addClass("active")
@@ -2051,8 +2019,6 @@ $(document).ready(function () {
     }
     if (result.GlobalUpload == "GlobalUpload_Default") {
       $("#GlobalUpload button").addClass("btn-primary")
-    } else if (result.GlobalUpload == "GlobalUpload_Power") {
-      $("#GlobalUpload button").addClass("btn-danger")
     } else if (result.GlobalUpload == "GlobalUpload_off") {
       $("#GlobalUpload button").addClass("btn-dark")
     }
@@ -2063,8 +2029,6 @@ $(document).ready(function () {
       $("#GlobalUpload button").removeClass("btn-primary btn-danger btn-dark")
       if (val == "GlobalUpload_Default") {
         $("#GlobalUpload button").addClass("btn-primary")
-      } else if (val == "GlobalUpload_Power") {
-        $("#GlobalUpload button").addClass("btn-danger")
       } else if (val == "GlobalUpload_off") {
         $("#GlobalUpload button").addClass("btn-dark")
       }

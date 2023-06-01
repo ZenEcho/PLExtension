@@ -5,7 +5,6 @@ let storagelocal = [
     "options_exe",
     "options_proxy_server",
     "options_proxy_server_state",
-    "Circle_dragUpload",
     "GlobalUpload",
     "edit_uploadArea_width",
     "edit_uploadArea_height",
@@ -27,7 +26,7 @@ let storagelocal = [
     "options_UploadPath",
     "options_Custom_domain_name",
 ]
-var uploadArea_status = 2;
+var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
     var imageUrl
@@ -50,14 +49,7 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     let Animation_time; // 定义多少秒关闭iframe
     let iframe_mouseover = false // 定义iframe状态
-    var Circle_dragUpload = result.Circle_dragUpload //获取本地Circle_dragUpload值
     var GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
-
-    var uploadPrompt = document.createElement('div');// 定义手势提示
-    uploadPrompt.id = "PNG_upload_prompt";// 给提示div添加id
-    let Circle_DragUp = false // 定义手势是否完成
-    var startX, startY, lastX, lastY, direction;
-
 
     var uploadArea = document.createElement('div'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
@@ -91,12 +83,14 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     const maxZIndex = Math.pow(2, 31) - 1; //设置index
     uploadArea.style.zIndex = maxZIndex.toString();
-    uploadPrompt.style.zIndex = maxZIndex.toString();
     uploadAreaTips.style.zIndex = maxZIndex.toString();
     iframe.style.zIndex = maxZIndex.toString();
 
     // 判断跨域开关
     if (options_proxy_server_state == 0) {
+        options_proxy_server = ""
+    }
+    if (!options_proxy_server) {
         options_proxy_server = ""
     }
 
@@ -235,7 +229,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             break;
     }
 
-
     /**
      * 实现根据侧边栏宽度切换logo
      */
@@ -246,21 +239,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     } else if (edit_uploadArea_width > 64) {//大于
         uploadArea.style.background = "url(" + PNGlogo64 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
     }
-
-    /**
-     * 实现手势模式
-     */
-    switch (Circle_dragUpload) {
-        case 'Circle_dragUpload_Default':
-            DragImg();
-            break;
-        case 'Circle_dragUpload_Power':
-            DragImg();
-            break;
-        case 'Circle_dragUpload_off':
-            uploadArea_status = uploadArea_status - 1
-            break;
-    }
     /**
      * 实现全局上传模式
      */
@@ -270,9 +248,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     switch (GlobalUpload) {
         case 'GlobalUpload_Default':
             uploadArea.addEventListener("drop", uploadArea_drop_Default);// 拖拽到元素
-            break;
-        case 'GlobalUpload_Power':
-            document.addEventListener("drop", uploadArea_drop_Power); // 拖拽到文档
             break;
         case 'GlobalUpload_off':
             uploadArea_status = uploadArea_status - 1
@@ -329,33 +304,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     document.addEventListener("dragend", function (event) {
         uploadAreaTips.style.bottom = "-100px";
         uploadAreaTips.innerText = '';
-        /**
-        * 判断是否成功拖拽到提示框里
-        */
-        if (Circle_dragUpload != "Circle_dragUpload_off") {
-            if (uploadPrompt && isMouseInElement(event.clientX, event.clientY, uploadPrompt)) {
-                if (Circle_DragUp === true) {
-                    let imgUrl = event.target.src;
-                    console.log("拖拽url:" + imgUrl);
-                    if (options_exe == "Tencent_COS" || options_exe == "Aliyun_OSS" || options_exe == "AWS_S3" || options_exe == 'GitHubUP') {
-                        uploadFile(imgUrl, "Circle_dragUpload", () => {
-                            console.log("执行成功")
-                        })
-                    } else {
-                        chrome.runtime.sendMessage({ Circle_dragUpload: imgUrl });
-                    }
-
-                }
-
-            } else {
-                uploadPrompt.remove();
-                Circle_DragUp = false
-                console.log("取消上传");
-                return;
-            }
-            uploadPrompt.remove();
-            Circle_DragUp = false
-        }
     });
     // 添加鼠标移出iframe的事件监听器
     iframe.addEventListener('mouseout', function () {
@@ -386,74 +334,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         document.getElementsByClassName("insertContentIntoEditorPrompt").remove()
     }
     // ------------------------------------------------------------------------------------
-    // ↓↓↓***画圆拖拽***↓↓↓
-    // ↓↓↓***画圆拖拽***↓↓↓
-    // ↓↓↓***画圆拖拽***↓↓↓
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * 画圆开始初始化拖拽数据
-     */
-    function handleDragStart(event) {
-        if (event.target.tagName === 'IMG') {
-            // 拖动开始
-            startX = event.clientX;
-            startY = event.clientY;
-            lastX = startX;
-            lastY = startY;
-            direction = null;
-        }
-
-    }
-    /**
-     * 拖拽的过程逻辑，判断手势是否成功
-     */
-    function handleDrag(event) {
-        if (event.target.tagName === 'IMG') {
-            // 拖动过程中
-            let currentX = event.clientX;
-            let currentY = event.clientY;
-
-            let diffX = currentX - lastX;
-            let diffY = currentY - lastY;
-            if (direction === null && Circle_DragUp == false) {
-                if (diffY > 2 && diffX > 4) {
-                    direction = "down";
-
-                }
-            } else if (direction === "down") {
-                if (diffY < -2 && diffX < -4) {
-                    direction = null
-                    uploadPrompt.innerText = '手势识别成功,移到此上传,松开取消';
-                    document.body.appendChild(uploadPrompt);
-                    Circle_DragUp = true
-                    return;
-                }
-            }
-            lastX = currentX;
-            lastY = currentY;
-        }
-
-    }
-
-    /**
-     * 设置提示框的范围
-     */
-    function isMouseInElement(mouseX, mouseY, element) {
-        // 判断鼠标位置是否在元素内
-        let rect = element.getBoundingClientRect();
-        return mouseX >= rect.left && mouseX <= rect.right && mouseY >= rect.top && mouseY <= rect.bottom;
-    }
-    /**
-     * 初始化载入函数逻辑
-     */
-    function DragImg() {
-        document.addEventListener("dragstart", handleDragStart);
-        document.addEventListener("drag", handleDrag);
-    }
-
-
-    // ------------------------------------------------------------------------------------
     // ↓↓↓***全局上传***↓↓↓
     // ↓↓↓***全局上传***↓↓↓
     // ↓↓↓***全局上传***↓↓↓
@@ -463,9 +343,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         switch (GlobalUpload) {
             case 'GlobalUpload_Default':
                 uploadAreaTips.innerText = '默认模式:不支持在线资源获取,移到此取消上传';
-                break;
-            case 'GlobalUpload_Power':
-                uploadAreaTips.innerText = '增强模式:不支持在线资源获取,移到此取消上传';
                 break;
             case 'GlobalUpload_off':
                 break;
@@ -504,36 +381,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                         break;
                 }
                 break;
-            case 'GlobalUpload_Power':
-                event.preventDefault();
-                event.stopPropagation();
-                uploadAreaTips.style.bottom = "10px";
-                switch (edit_uploadArea_Left_or_Right) {
-                    case "Left":
-                        uploadArea.style.left = "-" + edit_uploadArea_width + "px"
-                        break;
-                    case "Right":
-                        uploadArea.style.right = "-" + edit_uploadArea_width + "px"
-                        break;
-                }
-                break;
             case 'GlobalUpload_off':
                 break;
         }
-        if (Circle_DragUp == true) {
-            uploadAreaTips.style.bottom = "-100px";
-            uploadAreaTips.innerText = '';
-            switch (edit_uploadArea_Left_or_Right) {
-                case "Left":
-                    uploadArea.style.left = "-" + edit_uploadArea_width + "px"
-                    break;
-                case "Right":
-                    uploadArea.style.right = "-" + edit_uploadArea_width + "px"
-                    break;
-            }
-        }
-
-
     }
     /**
      *  拖拽到uploadAreaTips就取消上传
@@ -566,72 +416,76 @@ chrome.storage.local.get(storagelocal, function (result) {
         uploadAreaTips.innerText = '';
     }
     /**
-     * 增强模式拖拽到文档就上传uploadAreaFunction(event)
-     */
-    function uploadArea_drop_Power(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!event.target.closest('#uploadAreaTips')) {
-            uploadAreaFunction(event)
-        }
-        uploadAreaTips.style.bottom = "-100px";
-        uploadAreaTips.innerText = '';
-    }
-
-    /**
      * 上传逻辑
      */
 
     function uploadAreaFunction(event) {
-        let files = event.dataTransfer.files;
-        if (files.length > 0) {
-            if (options_exe === "Tencent_COS" || options_exe === 'Aliyun_OSS' || options_exe === 'AWS_S3' || options_exe === 'GitHubUP') {
-                function processFile(fileIndex) {
-                    if (fileIndex < files.length) {
-                        let file = files[fileIndex];
-                        if (options_exe == 'GitHubUP') {
-                            let reader = new FileReader();
-                            reader.onload = function () {
-                                uploadFile(btoa(reader.result), "GlobalUpload", () => {
+        if (event.dataTransfer.types.includes('text/uri-list')) {
+            // 拖拽的是网络资源（URL）
+            let htmlData = event.dataTransfer.getData('text/html');
+            // 解析HTML数据为DOM树
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(htmlData, 'text/html');
+            // 在DOM树中查找img标签并获取src属性
+            let imgTags = doc.getElementsByTagName('img');
+            if (imgTags.length > 0) {
+                let src = imgTags[0].getAttribute('src');
+                console.log('提取到的img标签的src属性:', src);
+                chrome.runtime.sendMessage({ Drag_Upload: src });
+                doc = null; // 删除DOM树，释放资源
+
+            }
+        } else if (event.dataTransfer.types.includes('Files')) {
+            // 拖拽的是本地资源（文件）
+            let files = event.dataTransfer.files;
+            if (files.length > 0) {
+                if (options_exe === "Tencent_COS" || options_exe === 'Aliyun_OSS' || options_exe === 'AWS_S3' || options_exe === 'GitHubUP') {
+                    function processFile(fileIndex) {
+                        if (fileIndex < files.length) {
+                            let file = files[fileIndex];
+                            if (options_exe == 'GitHubUP') {
+                                let reader = new FileReader();
+                                reader.onload = function () {
+                                    uploadFile(btoa(reader.result), "GlobalUpload", () => {
+                                        setTimeout(function () {
+                                            processFile(fileIndex + 1);
+                                        }, 150);
+                                    });
+                                };
+                                reader.readAsBinaryString(file);
+                            } else {
+                                //Tencent_COS,Aliyun_OSS,AWS_S3
+                                uploadFile(file, "GlobalUpload", () => {
                                     setTimeout(function () {
                                         processFile(fileIndex + 1);
                                     }, 150);
                                 });
-                            };
-                            reader.readAsBinaryString(file);
-                        } else {
-                            //Tencent_COS,Aliyun_OSS,AWS_S3
-                            uploadFile(file, "GlobalUpload", () => {
-                                setTimeout(function () {
-                                    processFile(fileIndex + 1);
-                                }, 150);
-                            });
-                        }
+                            }
 
-                        console.log("全局上传执行成功");
+                            console.log("全局上传执行成功");
+                        }
+                    }
+                    processFile(0)
+                } else {
+                    let base64Strings = [];
+                    for (let i = 0; i < files.length; i++) {
+                        (function (file) {
+                            let reader = new FileReader();
+                            reader.onload = function () {
+                                // 将二进制数据编码为base64字符串并存储在数组中
+                                base64Strings.push(btoa(reader.result));
+                                if (base64Strings.length == files.length) {
+                                    chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
+                                }
+                                console.log("全局上传执行成功")
+                            }
+                            // 读取当前文件的内容
+                            reader.readAsBinaryString(file);
+
+                        })(files[i]);
                     }
                 }
-                processFile(0)
-            } else {
-                let base64Strings = [];
-                for (let i = 0; i < files.length; i++) {
-                    (function (file) {
-                        let reader = new FileReader();
-                        reader.onload = function () {
-                            // 将二进制数据编码为base64字符串并存储在数组中
-                            base64Strings.push(btoa(reader.result));
-                            if (base64Strings.length == files.length) {
-                                chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
-                            }
-                            console.log("全局上传执行成功")
-                        }
-                        // 读取当前文件的内容
-                        reader.readAsBinaryString(file);
-
-                    })(files[i]);
-                }
             }
-
         }
     }
 
@@ -897,7 +751,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         })
     }
 
-    // });
     /**
      * 收到消息的动作
      */
@@ -916,7 +769,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         if (request.GitHubUP_contextMenus) {
             let imgUrl = request.GitHubUP_contextMenus
-            uploadFile(imgUrl, "Rightupload")
+            uploadFile(imgUrl.url, imgUrl.Metho)
         }
         if (request.AutoInsert_message) {
             let AutoInsert_message_content = request.AutoInsert_message
@@ -943,7 +796,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                 uploadFunctions[options_exe](imgUrl);
             };
         }
-        if (MethodName == "Circle_dragUpload" || MethodName == "Rightupload") {
+        if (MethodName == "Drag_Upload" || MethodName == "Rightupload") {
             (async () => {
                 try {
                     const res = await fetch(options_proxy_server + imgUrl);

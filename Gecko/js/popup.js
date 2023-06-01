@@ -563,19 +563,7 @@ $(document).ready(function () {
           break;
       }
       console.log(res)
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        let currentTabId
-        try {
-          currentTabId = tabs[0].id;
-        } catch (error) {
-        }
-        chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
-          if (chrome.runtime.lastError) {
-            //发送失败
-            return;
-          }
-        });
-      });
+      chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(file, imageUrl)
     })
 
@@ -1074,44 +1062,44 @@ $(document).ready(function () {
               let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
               // 查询是否冲突
               try {
-                sendAjax(
-                  options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
-                  'GET',
-                  null,
-                  {
+                fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name, {
+                  method: 'GET',
+                  headers: {
                     'Authorization': 'Bearer ' + options_token,
                     'Content-Type': 'application/json'
                   },
-                  function (res) {
+                })
+                  .then(response => response.json())
+                  .then(res => {
                     if (res.sha) {
                       data.sha = res.sha
                     }
                     Upload_method()
-                  }
-                )
+                  })
               } catch (error) {
+                console.log("第二次尝试...")
                 try {
-                  sendAjax(
-                    "https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
-                    'GET',
-                    null,
-                    {
+                  fetch("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name, {
+                    method: 'GET',
+                    headers: {
                       'Authorization': 'Bearer ' + options_token,
                       'Content-Type': 'application/json'
                     },
-                    function (res) {
+                  })
+                    .then(response => response.json())
+                    .then(res => {
                       if (res.sha) {
                         data.sha = res.sha
                       }
                       Upload_method()
-                    }
-                  )
+                    })
                 } catch (error) {
-
+                  console.log(error)
+                  toastItem({
+                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                  })
                 }
               }
-
-              //
               async function Upload_method() {
                 const fileReader = new FileReader();
                 fileReader.onloadend = function () {

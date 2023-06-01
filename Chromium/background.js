@@ -20,7 +20,6 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			});
 			console.log("安装初始中...");
 		});
-		chrome.storage.local.set({ "Circle_dragUpload": "Circle_dragUpload_off" }) //画圆上传
 		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
 		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
 		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
@@ -391,7 +390,7 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		if (options_exe == "GitHubUP") {
 			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: imgUrl })
+				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: { url: imgUrl, Metho: MethodName }, })
 			});
 			return;
 		}
@@ -424,14 +423,16 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
  * sender发送信息页面以及它的详细信息
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+	console.log(request)
 	//大喇叭
 	if (request.Loudspeaker) {
 		showNotification("盘络上传程序", request.Loudspeaker)
 	}
 	//拖拽上传
-	if (request.Circle_dragUpload) {
-		const imgUrl = request.Circle_dragUpload;
-		Fetch_Upload(imgUrl, null, "Circle_dragUpload")
+	// Circle_dragUpload
+	if (request.Drag_Upload) {
+		const imgUrl = request.Drag_Upload;
+		Fetch_Upload(imgUrl, null, "Drag_Upload")
 	}
 	//全局上传
 	if (request.GlobalUpload) {
@@ -454,15 +455,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 		processBase64String(0)
 	}
-
-	// if (request.action === "openPopup") {
-	// 	chrome.windows.create({
-	// 		url: chrome.runtime.getURL("UploadLog.html"),
-	// 		type: "popup",
-	// 		width: 1024,
-	// 		height: 730,
-	// 	});
-	// }
 });
 
 

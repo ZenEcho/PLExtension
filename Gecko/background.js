@@ -20,7 +20,6 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			});
 			console.log("安装初始中...");
 		});
-		chrome.storage.local.set({ "Circle_dragUpload": "Circle_dragUpload_off" }) //画圆上传
 		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
 		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
 		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
@@ -391,7 +390,7 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		if (options_exe == "GitHubUP") {
 			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: imgUrl })
+				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: { url: imgUrl, Metho: MethodName }, })
 			});
 			return;
 		}
@@ -429,9 +428,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		showNotification("盘络上传程序", request.Loudspeaker)
 	}
 	//拖拽上传
-	if (request.Circle_dragUpload) {
-		const imgUrl = request.Circle_dragUpload;
-		Fetch_Upload(imgUrl, null, "Circle_dragUpload")
+	// Circle_dragUpload
+	if (request.Drag_Upload) {
+		const imgUrl = request.Drag_Upload;
+		Fetch_Upload(imgUrl, null, "Drag_Upload")
 	}
 	//全局上传
 	if (request.GlobalUpload) {
@@ -454,15 +454,24 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 		processBase64String(0)
 	}
-
-	// if (request.action === "openPopup") {
-	// 	chrome.windows.create({
-	// 		url: chrome.runtime.getURL("UploadLog.html"),
-	// 		type: "popup",
-	// 		width: 1024,
-	// 		height: 730,
-	// 	});
-	// }
+	//自动插入，中间件转发
+	if (request.Middleware_AutoInsert_message) {
+		let AutoInsert_message_content = request.Middleware_AutoInsert_message
+		//向当前选项卡发送消息
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			let currentTabId
+			try {
+				currentTabId = tabs[0].id;
+			} catch (error) {
+			}
+			chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: AutoInsert_message_content }, function (response) {
+				if (chrome.runtime.lastError) {
+					//发送失败
+					return;
+				}
+			});
+		});
+	}
 });
 
 
@@ -486,7 +495,6 @@ chrome.action.onClicked.addListener(function (tab) {
 		}
 		if (browser_Open_with === 3) {
 			// 在内置页打开
-			// 火狐bug太多禁止该方法
 			chrome.action.setPopup({
 				popup: "popup.html"
 			});
