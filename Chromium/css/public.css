@@ -9,7 +9,7 @@ body {
 }
 
 #header {
-  z-index: 9999;
+  z-index: 9990;
   background-color: #1E90FF;
   position: sticky;
   top: 0;

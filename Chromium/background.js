@@ -346,8 +346,6 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
 									});
 								} catch (error) {
 								}
-
-
 							});
 						});
 					});
@@ -423,7 +421,6 @@ async function Fetch_Upload(imgUrl, data, MethodName, callback) {
  * sender发送信息页面以及它的详细信息
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	console.log(request)
 	//大喇叭
 	if (request.Loudspeaker) {
 		showNotification("盘络上传程序", request.Loudspeaker)
@@ -454,6 +451,21 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			}
 		}
 		processBase64String(0)
+	}
+	if (request.Functional_Demonstration) {
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			let currentTabId
+			try {
+				currentTabId = tabs[0].id;
+				chrome.tabs.sendMessage(currentTabId, { Paste_Upload_Start: "粘贴上传开始" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			} catch (error) {
+			}
+		});
 	}
 });
 

@@ -154,7 +154,6 @@ $(document).ready(function () {
         dictMaxFilesExceeded: "您不能上传更多啦......",
       });
     }
-
     //剪切板上传
     document.addEventListener("paste", function (e) {
       const Copy_Url = e.clipboardData.getData("text")
@@ -165,6 +164,14 @@ $(document).ready(function () {
       const urlRegExp = /^(http|https):\/\/[^\s]+$/;
       if (urlRegExp.test(Copy_Url)) {
         async function clipboard_Request_Success(blob) {
+          if (Simulated_upload == true) {
+            toastItem({
+              toast_content: '共享你学会了粘贴上传'
+            })
+            Simulated_upload == false;
+            chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
+            return;
+          }
           if (blob.type.indexOf("image") != -1) {//如果是图片文件时
             const Copy_Img = new File([blob], `pasted_image_` + new Date().getTime() + `.png`, { type: 'image/png' });
             toastItem({
@@ -1384,4 +1391,42 @@ $(document).ready(function () {
   }) // chrome.storage.local.get
   animation_button('.Animation_button')// 设置按钮动画
   $('.container-md').hide().fadeIn('slow'); //全局动画
+  var Simulated_upload = false//模拟上传
+
+  function showIntro() {
+    $("#overlay").fadeIn();
+    $("#introBox").fadeIn();
+
+  }  // 关闭蒙层和介绍框
+  function closeIntro() {
+    $("#overlay").fadeOut();
+    $("#introBox").fadeOut();
+
+    $(".Functional_animation").addClass("active")
+
+    Simulated_upload = true;  //模拟上传开启
+
+    /**
+     * 剪切板数据
+     */
+    let $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val("https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png").select();
+    document.execCommand("copy");
+    $temp.remove();
+  }
+
+  // 绑定按钮的点击事件
+  $("#Functional_animation_closeBtn").click(closeIntro);
+
+
+  let Black_curtain = false
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.Paste_Upload_Start) {
+      if (Black_curtain == true) { return; }
+      // 禁止活动
+      Black_curtain = true
+      showIntro();
+    }
+  });
 })

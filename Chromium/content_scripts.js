@@ -262,7 +262,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         /**
          * 实现点击侧边栏弹出框架
          */
-        if (event.target.closest('#uploadArea') || event.target.closest('.insertContentIntoEditorPrompt')) {
+        if (event.target.closest('#uploadArea') || event.target.closest('.insertContentIntoEditorPrompt') || event.target.closest('.Function_Start_button')) {
             //点击元素打开
             let iframesrc = iframe.src
             if (!iframesrc) {
@@ -1042,4 +1042,22 @@ chrome.storage.local.get(storagelocal, function (result) {
             });
         });
     }
+
+    window.addEventListener('message', function (event) {
+        if (event.data.type === 'Detect_installation_status') {
+            // 收到盘络扩展网站传来的信息
+            let Function_Start_button = document.getElementById("Function_Start_button")
+            Function_Start_button.innerText = "Let's go"
+            Function_Start_button.classList.add("Function_Start_button");
+
+            Function_Start_button.addEventListener('click', (e) => {
+                setTimeout(() => {
+                    // window.postMessage({ type: 'Functional_Demonstration', data: "asdasdaa" }, '*');
+                    chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
+                }, 800); // 延迟1秒执行
+            })
+
+        }
+    });
+
 })
