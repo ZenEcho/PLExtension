@@ -61,6 +61,8 @@ chrome.storage.local.get(storagelocal, function (result) {
     var PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
     var PNGlogo32 = chrome.runtime.getURL("icons/logo32.png");
     var PNGlogo64 = chrome.runtime.getURL("icons/logo64.png");
+    var PNGlogo128 = chrome.runtime.getURL("icons/logo128.png");
+    var finger = chrome.runtime.getURL("icons/dh/t.png");
     document.body.appendChild(uploadArea);
     document.body.appendChild(uploadAreaTips);
 
@@ -279,25 +281,28 @@ chrome.storage.local.get(storagelocal, function (result) {
             iframe_mouseover = true
             uploadArea.style.display = "none"
         } else {
-            uploadAreaTips.style.bottom = "-100px";
-            uploadAreaTips.innerText = '';
-            clearTimeout(Animation_time);
-            //如果iframe_mouseover是打开状态
-            if (iframe_mouseover == true) {
-                iframe_mouseover = false
-                switch (edit_uploadArea_Left_or_Right) {
-                    case "Left":
-                        iframe.style.left = "-800px"
-                        break;
-                    case "Right":
-                        iframe.style.right = "-800px"
-                        break;
-                }
-                uploadArea.style.display = "block"
-            }
+            iframeHide()
         }
 
     });
+    function iframeHide() {
+        uploadAreaTips.style.bottom = "-100px";
+        uploadAreaTips.innerText = '';
+        clearTimeout(Animation_time);
+        //如果iframe_mouseover是打开状态
+        if (iframe_mouseover == true) {
+            iframe_mouseover = false
+            switch (edit_uploadArea_Left_or_Right) {
+                case "Left":
+                    iframe.style.left = "-800px"
+                    break;
+                case "Right":
+                    iframe.style.right = "-800px"
+                    break;
+            }
+            uploadArea.style.display = "block"
+        }
+    }
     /**
      * 拖拽结束的事件
      */
@@ -420,6 +425,10 @@ chrome.storage.local.get(storagelocal, function (result) {
      */
 
     function uploadAreaFunction(event) {
+        if (Simulated_upload == true) {
+            Right_click_menu_animations()
+            return;
+        }
         if (event.dataTransfer.types.includes('text/uri-list')) {
             // 拖拽的是网络资源（URL）
             let htmlData = event.dataTransfer.getData('text/html');
@@ -755,6 +764,7 @@ chrome.storage.local.get(storagelocal, function (result) {
      * 收到消息的动作
      */
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+
         if (request.Tencent_COS_contextMenus) {
             let imgUrl = request.Tencent_COS_contextMenus
             uploadFile(imgUrl, "Rightupload")
@@ -775,13 +785,26 @@ chrome.storage.local.get(storagelocal, function (result) {
             let AutoInsert_message_content = request.AutoInsert_message
             AutoInsertFun(AutoInsert_message_content)
         }
+        if (request.Paste_Upload_end) {
+            Drag_upload_animations()
+        }
+        if (request.Drag_upload_end) {
+            Right_click_menu_animations()
+        }
+        if (request.Right_click_menu_end) {
+            End_presentation()
+        }
     });
-
+    var Simulated_upload = false//模拟上传
     /**
      * @param {url} imgUrl 获取到的图片信息
      * @param {*} MethodName 上传模式名称
      */
     function uploadFile(imgUrl, MethodName, callback) {
+        if (Simulated_upload == true) {
+            Right_click_menu_animations()
+            return;
+        }
         if (typeof callback !== 'function') {
             callback = function () { };
         }
@@ -1057,7 +1080,80 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }, 800); // 延迟1秒执行
             })
 
+            //返回fileup信息，演示开始了，状态回正
+            window.postMessage({ type: 'Detect_installation_ok', data: "我已经开始演示了,你可以回正信息了!" }, '*');
         }
+
     });
 
+    function Drag_upload_animations() {
+        alert("真棒👍!你已经学会“粘贴上传”啦,那我们进行下一步“拖拽上传”吧!");
+        iframeHide()
+        let sectionDom = document.getElementById("section2")
+        if (!sectionDom.querySelector(".Functional_animation")) {
+            sectionDom.insertAdjacentHTML("beforeend", `
+            <img style="width: 128px;" src="${PNGlogo128}" alt="">
+            <div class="Functional_animation">
+                <div class="animation_finger"></div>
+                <span>拖拽图片上传</span>
+            </div>`);
+        }
+        let Functional_animation = document.getElementsByClassName("Functional_animation")
+        let animation_finger = document.getElementsByClassName("animation_finger")
+
+        let h1Element = sectionDom.querySelector("h1");
+        h1Element.style.width = "28rem"
+        h1Element.setAttribute("data-text", "拖拽上传演示...");
+        h1Element.innerText = "拖拽上传演示"
+
+        let spanElement = Functional_animation[0].querySelector("span");
+        spanElement.textContent = "拖拽图片上传";
+        animation_finger[0].style.backgroundImage = `url(` + finger + `)`
+        Functional_animation[0].style.left = "0%";
+        setTimeout(() => {
+            Functional_animation[0].style.left = "95%";
+        }, 2600)
+        Simulated_upload = true;  //模拟上传开启
+    }
+    function Right_click_menu_animations() {
+        alert("真棒👍,你已经学会“拖拽上传”啦!,我们开启下一节“右键上传的演示吧”")
+        iframeHide()
+        let sectionDom = document.getElementById("section2")
+        if (!sectionDom.querySelector(".Functional_animation")) {
+            sectionDom.insertAdjacentHTML("beforeend", `
+            <img style="width: 128px;" src="${PNGlogo128}" alt="">
+            <div class="Functional_animation">
+                <div class="animation_finger"></div>
+                <span>拖拽图片上传</span>
+            </div>`);
+        }
+
+        let Functional_animation = document.getElementsByClassName("Functional_animation")
+        let animation_finger = document.getElementsByClassName("animation_finger")
+
+        let h1Element = sectionDom.querySelector("h1");
+        h1Element.style.width = "28rem"
+        h1Element.setAttribute("data-text", "右键上传演示...");
+        h1Element.innerText = "右键上传演示"
+
+        Functional_animation[0].style.left = "0%";
+        let spanElement = Functional_animation[0].querySelector("span");
+        spanElement.textContent = "右键盘络上传";
+        animation_finger[0].style.backgroundImage = `url(` + finger + `)`
+        Functional_animation[0].style.left = "0%";
+
+
+        chrome.runtime.sendMessage({ Right_click_menu_Start: "右键上传开启" });
+    }
+    function End_presentation() {
+        alert("真棒👍,恭喜你学会“右键上传”啦。本次演示到此结束,更多内容请关注盘络官网")
+        let sectionDom = document.getElementById("section2")
+        let h1Element = sectionDom.querySelector("h1");
+        h1Element.style.width = "28rem"
+        h1Element.setAttribute("data-text", "演示完毕了...");
+        h1Element.innerText = "演示完毕了"
+
+        sectionDom.querySelector(".Functional_animation").remove()
+        sectionDom.querySelector("img").remove()
+    }
 })

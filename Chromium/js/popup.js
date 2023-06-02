@@ -169,7 +169,24 @@ $(document).ready(function () {
               toast_content: '共享你学会了粘贴上传'
             })
             Simulated_upload == false;
-            chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
+            if (Animation_auto_Start == true) {
+              $(".Functional_animation ").remove()
+              chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                let currentTabId
+                try {
+                  currentTabId = tabs[0].id;
+                } catch (error) {
+                }
+                chrome.tabs.sendMessage(currentTabId, { Paste_Upload_end: "粘贴上传结束,拖拽上传开始" }, function (response) {
+                  if (chrome.runtime.lastError) {
+                    //发送失败
+                    return;
+                  }
+                });
+              });
+            } else {
+              showIntro()
+            }
             return;
           }
           if (blob.type.indexOf("image") != -1) {//如果是图片文件时
@@ -1392,20 +1409,22 @@ $(document).ready(function () {
   animation_button('.Animation_button')// 设置按钮动画
   $('.container-md').hide().fadeIn('slow'); //全局动画
   var Simulated_upload = false//模拟上传
-
+  var Animation_auto_Start = true
   function showIntro() {
     $("#overlay").fadeIn();
     $("#introBox").fadeIn();
+  }
 
-  }  // 关闭蒙层和介绍框
-  function closeIntro() {
+  // 关闭蒙层和介绍框
+  function Animation_auto() {
     $("#overlay").fadeOut();
     $("#introBox").fadeOut();
-
-    $(".Functional_animation").addClass("active")
-
+    $(".Functional_animation").removeClass("active")
+    setTimeout(() => {
+      $(".Functional_animation").addClass("active")
+    }, 2000)
     Simulated_upload = true;  //模拟上传开启
-
+    Animation_auto_Start = true; //自动演示
     /**
      * 剪切板数据
      */
@@ -1416,8 +1435,66 @@ $(document).ready(function () {
     $temp.remove();
   }
 
+  function closeIntro() {
+    $("#overlay").fadeOut();
+    $("#introBox").fadeOut();
+    Simulated_upload = false;
+  }
+
   // 绑定按钮的点击事件
-  $("#Functional_animation_closeBtn").click(closeIntro);
+  $("#Animation_auto_Btn").click(Animation_auto);
+
+  $("#Animation_close_Btn").click(closeIntro);
+
+  $("#Animation_Paste_Upload_Btn").click(() => {
+    $("#overlay").fadeOut();
+    $("#introBox").fadeOut();
+
+    $(".Functional_animation").addClass("active")
+
+    Simulated_upload = true;  //模拟上传开启
+    Animation_auto_Start = false; //自动演示
+
+    /**
+     * 剪切板数据
+     */
+    let $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val("https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png").select();
+    document.execCommand("copy");
+    $temp.remove();
+
+  });
+  $("#Animation_Drag_upload_Btn").click(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      let currentTabId
+      try {
+        currentTabId = tabs[0].id;
+      } catch (error) {
+      }
+      chrome.tabs.sendMessage(currentTabId, { Paste_Upload_end: "粘贴上传结束,拖拽上传开始" }, function (response) {
+        if (chrome.runtime.lastError) {
+          //发送失败
+          return;
+        }
+      });
+    });
+  });
+  $("#Functional_Right_click_menu_Btn").click(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      let currentTabId
+      try {
+        currentTabId = tabs[0].id;
+      } catch (error) {
+      }
+      chrome.tabs.sendMessage(currentTabId, { Drag_upload_end: "拖拽上传结束,右键上传开始" }, function (response) {
+        if (chrome.runtime.lastError) {
+          //发送失败
+          return;
+        }
+      });
+    });
+  });
 
 
   let Black_curtain = false

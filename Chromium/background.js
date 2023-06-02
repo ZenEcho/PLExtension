@@ -99,7 +99,24 @@ chrome.contextMenus.onClicked.addListener(function (info) {
 
 });
 
-async function Fetch_Upload(imgUrl, data, MethodName, callback) {
+function Fetch_Upload(imgUrl, data, MethodName, callback) {
+	console.log(Simulated_upload)
+	if (Simulated_upload == true) {
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			let currentTabId
+			try {
+				currentTabId = tabs[0].id;
+				chrome.tabs.sendMessage(currentTabId, { Right_click_menu_end: "右键上传结束" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			} catch (error) {
+			}
+		});
+		return;
+	}
 	if (typeof callback !== 'function') {
 		callback = function () { };
 	}
@@ -452,6 +469,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 		processBase64String(0)
 	}
+	//演示模式
 	if (request.Functional_Demonstration) {
 		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 			let currentTabId
@@ -467,8 +485,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			}
 		});
 	}
+	if (request.Right_click_menu_Start) {
+		Simulated_upload = true
+		console.log(Simulated_upload)
+	}
 });
-
+var Simulated_upload = false//模拟上传
 
 chrome.action.onClicked.addListener(function (tab) {
 	chrome.storage.local.get(["browser_Open_with"], function (result) {
