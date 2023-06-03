@@ -100,7 +100,6 @@ chrome.contextMenus.onClicked.addListener(function (info) {
 });
 
 function Fetch_Upload(imgUrl, data, MethodName, callback) {
-	console.log(Simulated_upload)
 	if (Simulated_upload == true) {
 		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 			let currentTabId
@@ -487,7 +486,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 	if (request.Right_click_menu_Start) {
 		Simulated_upload = true
-		console.log(Simulated_upload)
+	}
+	if (request.End_presentation) {
+		Simulated_upload = false
 	}
 });
 var Simulated_upload = false//模拟上传

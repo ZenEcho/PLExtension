@@ -1408,6 +1408,7 @@ $(document).ready(function () {
   }) // chrome.storage.local.get
   animation_button('.Animation_button')// 设置按钮动画
   $('.container-md').hide().fadeIn('slow'); //全局动画
+  
   var Simulated_upload = false//模拟上传
   var Animation_auto_Start = true
   function showIntro() {
@@ -1447,6 +1448,8 @@ $(document).ready(function () {
   $("#Animation_close_Btn").click(closeIntro);
 
   $("#Animation_Paste_Upload_Btn").click(() => {
+    alert("未开放")
+    return;
     $("#overlay").fadeOut();
     $("#introBox").fadeOut();
 
@@ -1466,6 +1469,8 @@ $(document).ready(function () {
 
   });
   $("#Animation_Drag_upload_Btn").click(() => {
+    alert("未开放")
+    return;
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       let currentTabId
       try {
@@ -1481,6 +1486,8 @@ $(document).ready(function () {
     });
   });
   $("#Functional_Right_click_menu_Btn").click(() => {
+    alert("未开放")
+    return;
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       let currentTabId
       try {
@@ -1495,7 +1502,6 @@ $(document).ready(function () {
       });
     });
   });
-
 
   let Black_curtain = false
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {

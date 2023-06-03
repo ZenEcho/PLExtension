@@ -1155,5 +1155,10 @@ chrome.storage.local.get(storagelocal, function (result) {
 
         sectionDom.querySelector(".Functional_animation").remove()
         sectionDom.querySelector("img").remove()
+        setTimeout(() => {
+            chrome.runtime.sendMessage({ End_presentation: "演示结束" });
+        }, 2600)
+
+
     }
 })
