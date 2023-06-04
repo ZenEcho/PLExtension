@@ -1393,7 +1393,7 @@ $(document).ready(function () {
   let Simulated_upload = false//模拟上传
 
   function showIntro() {
-    if ($("#overlay")) {
+    if ($("#overlay").length == 0) {
       $("body").append(`
     <div id="overlay">
       <div id="introBox">
@@ -1411,7 +1411,7 @@ $(document).ready(function () {
             <h2>01</h2>
             <div class="content">
               <h3>粘贴上传</h3>
-              <p>“粘贴上传”便捷的文件上传功能，支持直接粘贴图片数据、图片链接或本地文件到上传框，实现快速上传。省去了繁琐的选择步骤，只需简单复制并粘贴，即可将文件上传。
+              <p>"粘贴上传"便捷的文件上传功能，支持直接粘贴图片数据、图片链接或本地文件到上传框，实现快速上传。省去了繁琐的选择步骤，只需简单复制并粘贴，即可将文件上传。
               </p>
               <a href="#" id="Animation_Paste_Upload_Btn">开始演示</a>
             </div>
