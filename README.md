@@ -1,7 +1,8 @@
 <p align="center">
   <img alt="logo" src="https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png" height="200" />
-  <h1 align="center">盘络上传扩展程序</h1>
 </p>
+ 
+ # 盘络上传扩展程序
 
 [官网地址](https://fileup.dev/)
 
@@ -17,10 +18,32 @@
 ![Edge](https://img.shields.io/badge/Chromium-Edge-blue?style=for-the-badge&logo=microsoftedge)
 ![Firefox](https://img.shields.io/badge/Gecko-Firefox-blue?style=for-the-badge&logo=firefoxbrowser)
 
+-------------
+
+### 功能演示
+
+[演示地址](https://fileup.dev/#page3) (如果检测不到扩展,请鼠标向上滚动再向下回到演示页)
+
+- **粘贴上传**
+
+"粘贴上传"便捷的文件上传功能，支持直接粘贴图片数据、图片链接或本地文件到上传框，实现快速上传。省去了繁琐的选择步骤，只需简单复制并粘贴，即可将文件上传。
+
+- **拖拽上传**
+
+"拖拽上传"是便捷的文件上传方式。只需将文件从本地拖动到指定区域即可完成上传，还可以快速拖拽多个文件或频繁上传文件，提高工作效率，为用户带来便利和舒适的上传体验。
+
+- **右键上传**
+
+"右键上传"是浏览器右键菜单中的便捷文件上传方式。用户只需在网页上对着图片右键点击，选择上传选项，即可完成文件上传。用户可以在浏览网页的同时，快速上传图片。
+
+-------------
+
 ### 下载
 - Edge：[商店链接](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
 - Chrome：[商店链接](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
 - Firefox: 待添加
+
+-------------
 
 ### 问题反馈
  [插件交流反馈群](https://t.me/pnglog)
