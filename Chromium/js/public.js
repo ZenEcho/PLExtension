@@ -484,3 +484,47 @@ function measurePingDelay(callback, getUrl) {
   xhr.open('GET', getUrl, true);
   xhr.send();
 }
+
+
+// // 发送请求获取最新的release
+fetch(`https://api.github.com/repos/ZenEcho/PLExtension/releases/latest`)
+  .then(response => response.json())
+  .then(data => {
+    let localVersion = chrome.runtime.getManifest().version; //本地
+    let remoteVersion = data.name; //远程
+    let result = compareVersions(localVersion, remoteVersion);
+    if (result === -1) {
+      $("#VERSION").text("有新版本:" + data.name)
+      $("#VERSION").css({ "color": "red" })
+      console.log('远程版本较新');
+    } else if (result === 1) {
+      console.log('本地版本较新');
+    } else {
+      console.log('版本号相等');
+    }
+  })
+  .catch(error => {
+    console.error('请求出错:', error);
+  });
+
+function compareVersions(localVersion, remoteVersion) {
+  // 将本地版本号和远程版本号拆分为部分
+  let localParts = localVersion.split('.');
+  let remoteParts = remoteVersion.split('.');
+  console.log(localParts)
+  console.log(remoteParts)
+  // 比较每个部分的数值
+  for (let i = 0; i < Math.max(localParts.length, remoteParts.length); i++) {
+    let localNum = parseInt(localParts[i] || 0); // 如果部分不存在，则假设为0
+    let remoteNum = parseInt(remoteParts[i] || 0); // 如果部分不存在，则假设为0
+
+    if (localNum < remoteNum) {
+      return -1; // 本地版本号较小
+    } else if (localNum > remoteNum) {
+      return 1; // 本地版本号较大
+    }
+  }
+
+  return 0; // 版本号相等
+}
+
