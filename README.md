@@ -1,122 +1,26 @@
-支持：兰空图床程序,简单图床程序,Chevereto图床程序,AWS S3,或者是自定义上传等...
--
-**#1.0.9.1更新:**
+<p align="center">
+  <img alt="logo" src="https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png" height="200" />
+  <h1 align="center">盘络上传扩展程序</h1>
+</p>
 
-一.新增自动插入功能(默认开启)
+[官网地址](https://fileup.dev/)
 
-二.新增页面插入提示，当页面有”😍盘络“按钮时表示该页面受支持的，”😭盘络“时表示页面受支持但是无法插入。如果没有按钮表示不受支持或按钮初始化失败，具体支持详细查看（https://fileup.dev/#page2/3）
-三.修复bug
+### 介绍
+- 盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,GitHub等程序的文件上传
+- 兼容Chromium内核，Gecko内核浏览器；
+- 目前支持的上传程序：[兰空图床](https://www.lsky.pro/),[简单图床](https://github.com/icret/EasyImages2.0),[imgurl图床](https://www.imgurl.org/),[chevereto图床](https://chevereto.com/),[hellohao图床](https://hellohao.cn/),[sm.ms图床](https://sm.ms/),[imgur图床](https://imgur.com/),[腾讯云cos](https://cloud.tencent.com/product/cos),[阿里云oss](https://www.aliyun.com/product/oss),[AWS S3](https://aws.amazon.com/cn/s3/),[GitHub](https://github.com/);
+- 支持实时预览、图片（跨域）上传、预格式代码/[编辑框插入](https://fileup.dev/#page2/3)。
+- 支持浏览器常驻侧边栏，侧边栏拖拽上传，浏览器右键菜单上传，上传页面支持粘贴上传/拖拽上传，均支持本地与url转存;
+- 兼容主流的浏览器Chrome，Edge，Firefox；
 
-#已知BUG:
+![Chrome](https://img.shields.io/badge/Chromium-chrome-blue?style=for-the-badge&logo=googlechrome)
+![Edge](https://img.shields.io/badge/Chromium-Edge-blue?style=for-the-badge&logo=microsoftedge)
+![Firefox](https://img.shields.io/badge/Gecko-Firefox-blue?style=for-the-badge&logo=firefoxbrowser)
 
-对象存储上传速度过快导致本地记录失败(解决中)
+### 下载
+- Edge：[商店链接](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
+- Chrome：[商店链接](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
+- Firefox: 待添加
 
-手势上传与全局上传会被鼠标手势插件影响(待解决)
-
-—————————————
-
-**1.0.9更新:**
-
-一.新增腾讯云对象存储(COS)功能(本地直传,不经服务器)
-
-二.新增阿里云对象存储(OSS)功能(本地直传,不经服务器)
-
-三.新增AWS S3对象存储(S3)并支持S3接口兼容(本地直传,不经服务器)
-
-四.上传记录页面重构，支持对象存储的字符串读取如html,javascript,python,cpp,txt等字符串文本读取,支持MP3,MP4流媒体展示,压缩包,office等文件的识别!
-
-五.腾讯云,阿里云,S3对象存储支持一键设置CORS,其中腾讯云,阿里云支持访问权限设置。
-
-六.优化画圈手势上传逻辑
-
-七.新增对象存储均支持手势和全局以及右键上传！
-
-八.修复已知BUG(真的修复了，但是我又忘了具体是哪个)
-
-#已知BUG:
-
-对象存储上传速度过快导致本地记录失败
-
-手势上传与全局上传会被鼠标手势插件影响
-
-—————————————
-
-**1.0.8.1更新:**
-
-新增侧边栏设置功能
-
-优化页面侧边栏效果
-
-美化程序UI
-
-修复已知bug
-
-—————————————
-
-**1.0.8更新:**
-
-新增画圈手势上传功能
-
-新增全局本地上传功能
-
-新增右键上传开关
-
-新增全选，选中复制，选中删除等功能
-
-修复上传页面的多重执行造成的性能bug
-
-优化上传逻辑，减少重复性代码，响应号召减少碳排放
-
-优化程序UI,包含上传页面，配置页面，常见问题
-
-—————————————
-
-**1.0.7更新:**
-
-新增自定义上传配置信息
-
-新增windows通知提示
-
-修复上传页删除图片时链接框出错的问题
-
-修复配置页面样式不统一的问题
-
-—————————————
-
-**1.0.6更新:**
-
-新增新的UI交互
-
-新增上传日志可以读取图床相册功能
-
-优化上传成功后的UI，点击图片时对应的URL常亮
-
-优化Hellohao图床程序，从邮箱密码改成Token
-
-允许读取服务器相册的图床：兰空，SM，Hellohao
-
-—————————————
-
-**1.0.5更新:**
-
-更换了主题
-
-修复了BUG
-
-—————————————
-
-**1.0.4更新：**
-
-新增右键上传到图床功能
-
-新增图片上传记录功能
-
-还修复了乱七八糟的问题
-
-—————————————
-
-**1.0.3更新：**
-
-优化上传逻辑
-
-修复FAQ页面图片异常
+### 问题反馈
+ [插件交流反馈群](https://t.me/pnglog)
