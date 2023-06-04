@@ -266,25 +266,28 @@ chrome.storage.local.get(storagelocal, function (result) {
          */
         if (event.target.closest('#uploadArea') || event.target.closest('.insertContentIntoEditorPrompt') || event.target.closest('.Function_Start_button')) {
             //点击元素打开
-            let iframesrc = iframe.src
-            if (!iframesrc) {
-                iframe.src = popupUrl
-            }
-            switch (edit_uploadArea_Left_or_Right) {
-                case "Left":
-                    iframe.style.left = "1px"
-                    break;
-                case "Right":
-                    iframe.style.right = "1px"
-                    break;
-            }
-            iframe_mouseover = true
-            uploadArea.style.display = "none"
+            iframeShow()
         } else {
             iframeHide()
         }
 
     });
+    function iframeShow() {
+        let iframesrc = iframe.src
+        if (!iframesrc) {
+            iframe.src = popupUrl
+        }
+        switch (edit_uploadArea_Left_or_Right) {
+            case "Left":
+                iframe.style.left = "1px"
+                break;
+            case "Right":
+                iframe.style.right = "1px"
+                break;
+        }
+        iframe_mouseover = true
+        uploadArea.style.display = "none"
+    }
     function iframeHide() {
         uploadAreaTips.style.bottom = "-100px";
         uploadAreaTips.innerText = '';
@@ -426,21 +429,8 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     function uploadAreaFunction(event) {
         if (Simulated_upload == true) {
-            confetti({
-                particleCount: 200,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-
-            });
-            confetti({
-                particleCount: 200,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-
-            });
             let confirm_input = confirm("真棒👍,你已经学会“拖拽上传”啦!,我们开启下一节“右键上传”的演示吧")
+            Simulated_upload = false //恢复上传
             confetti({
                 particleCount: 200,
                 angle: 60,
@@ -457,6 +447,9 @@ chrome.storage.local.get(storagelocal, function (result) {
             });
             if (confirm_input == true) {
                 chrome.runtime.sendMessage({ Demonstration_middleware: "Drag_upload_100" });
+            } else {
+                iframeShow()
+                chrome.runtime.sendMessage({ Demonstration_middleware: "closeIntro" });
             }
             return;
         }
@@ -835,7 +828,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
             if (request.Demonstration_middleware == "Right_click_0") {
                 Right_click_menu_animations()
-
                 chrome.runtime.sendMessage({ Demonstration_middleware: "Right_click_1" });
             }
             if (request.Demonstration_middleware == "Right_click_100") {
@@ -844,10 +836,19 @@ chrome.storage.local.get(storagelocal, function (result) {
                     chrome.runtime.sendMessage({ Demonstration_middleware: "demonstrate_end" });
                 }, 2600)
             }
-        }
+            if (request.Demonstration_middleware == "closeIntro") {
+                Simulated_upload = false;  //模拟上传关闭
+                let sectionDom = document.getElementById("section2")
+                let h1Element = sectionDom.querySelector("h1");
+                h1Element.style.width = "40rem"
+                h1Element.setAttribute("data-text", "功能展示,准备👌了吗");
+                h1Element.innerText = "功能展示,准备"
 
+                sectionDom.querySelector(".Functional_animation").remove()
+                sectionDom.querySelector("img").remove()
+            }
+        }
     });
-    var Simulated_upload = false//模拟上传
     /**
      * @param {url} imgUrl 获取到的图片信息
      * @param {*} MethodName 上传模式名称
@@ -1117,23 +1118,19 @@ chrome.storage.local.get(storagelocal, function (result) {
             });
         });
     }
-
+    var Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
             // 收到盘络扩展网站传来的信息
             let Function_Start_button = document.getElementById("Function_Start_button")
             Function_Start_button.innerText = "Let's go"
             Function_Start_button.classList.add("Function_Start_button");
-
             Function_Start_button.addEventListener('click', (e) => {
                 setTimeout(() => {
-                    // window.postMessage({ type: 'Functional_Demonstration', data: "点击上传演示" }, '*');
                     chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
                 }, 800); // 延迟1秒执行
             })
 
-            //返回fileup信息，演示开始了，状态回正
-            window.postMessage({ type: 'Detect_installation_ok', data: "我已经开始演示了,你可以回正信息了!" }, '*');
         }
 
     });
@@ -1194,7 +1191,7 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     }
     function End_presentation() {
-        alert("真棒👍,恭喜你学会“右键上传”啦。本次演示到此结束,更多内容请关注盘络官网")
+        alert("本次演示到此结束,更多内容请关注盘络官网")
         let end = Date.now() + (3 * 1000);
         let colors = ['#ff0000', '#ff7f00'];
         (function frame() {

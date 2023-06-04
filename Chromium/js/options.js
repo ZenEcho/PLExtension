@@ -321,7 +321,7 @@ $(document).ready(function () {
       <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(GitHub必须填写Token)</p>
+      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(GitHub必须填写Token,获取<a style="color: #03a9f4;" href="https://github.com/settings/tokens" target="_blank"> Token </a>)</p>
       </label>
       <input type="text" class="form-control box-shadow" id="options_token" placeholder="例如:2389b" />
     </div>

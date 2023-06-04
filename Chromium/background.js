@@ -105,7 +105,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			let currentTabId
 			try {
 				currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { Right_click_menu_end: "右键上传结束" }, function (response) {
+				chrome.tabs.sendMessage(currentTabId, { Demonstration_middleware: "Right_click_100" }, function (response) {
 					if (chrome.runtime.lastError) {
 						//发送失败
 						return;
@@ -468,6 +468,93 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 		processBase64String(0)
 	}
+	//自动插入，中间件转发
+	if (request.Middleware_AutoInsert_message) {
+		let AutoInsert_message_content = request.Middleware_AutoInsert_message
+		//向当前选项卡发送消息
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			let currentTabId
+			try {
+				currentTabId = tabs[0].id;
+			} catch (error) {
+			}
+			chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: AutoInsert_message_content }, function (response) {
+				if (chrome.runtime.lastError) {
+					//发送失败
+					return;
+				}
+			});
+		});
+	}
+	//演示动画中间转发
+	if (request.Demonstration_middleware) {
+
+		/**
+		 * 粘贴演示完成
+		 */
+		if (request.Demonstration_middleware == "Paste_Upload_100") {
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				let currentTabId
+				try {
+					currentTabId = tabs[0].id;
+				} catch (error) {
+				}
+				//拖拽开启
+				chrome.tabs.sendMessage(currentTabId, { Demonstration_middleware: "Drag_upload_0" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			});
+		}
+		/**	
+		 * 拖拽演示完成
+		 */
+		if (request.Demonstration_middleware == "Drag_upload_100") {
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				let currentTabId
+				try {
+					currentTabId = tabs[0].id;
+				} catch (error) {
+				}
+				//右键开启
+				chrome.tabs.sendMessage(currentTabId, { Demonstration_middleware: "Right_click_0" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			});
+		}
+		/**右键上传开始 */
+		if (request.Demonstration_middleware == "Right_click_1") {
+			Simulated_upload = true
+		}
+		/**表演结束 */
+		if (request.Demonstration_middleware == "demonstrate_end") {
+			Simulated_upload = false
+		}
+
+		// 关闭演示
+		if (request.Demonstration_middleware == "closeIntro") {
+			Simulated_upload = false
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				let currentTabId
+				try {
+					currentTabId = tabs[0].id;
+				} catch (error) {
+				}
+				// 告诉content_scripts.js关闭演示
+				chrome.tabs.sendMessage(currentTabId, { Demonstration_middleware: "closeIntro" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			});
+		}
+	}
 	//演示模式
 	if (request.Functional_Demonstration) {
 		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -483,12 +570,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			} catch (error) {
 			}
 		});
-	}
-	if (request.Right_click_menu_Start) {
-		Simulated_upload = true
-	}
-	if (request.End_presentation) {
-		Simulated_upload = false
 	}
 });
 var Simulated_upload = false//模拟上传

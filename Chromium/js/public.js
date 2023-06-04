@@ -472,13 +472,15 @@ function measurePingDelay(callback, getUrl) {
       callback(null, delay);
     }
   };
-  xhr.onerror = function () {
-    callback(new Error('无法连接到')+getUrl, null);
+  xhr.onerror = () => {
+    let corsUrl = 'https://cors-anywhere.pnglog.com/https://' + getUrl;
+    xhr.onerror = () => {
+      callback(new Error('无法连接到') + getUrl, null);
+    };
+    xhr.open('GET', corsUrl, true);
+    xhr.send();
   };
 
   xhr.open('GET', getUrl, true);
   xhr.send();
 }
-
-
-

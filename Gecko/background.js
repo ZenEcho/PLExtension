@@ -535,6 +535,25 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		if (request.Demonstration_middleware == "demonstrate_end") {
 			Simulated_upload = false
 		}
+
+		// 关闭演示
+		if (request.Demonstration_middleware == "closeIntro") {
+			Simulated_upload = false
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				let currentTabId
+				try {
+					currentTabId = tabs[0].id;
+				} catch (error) {
+				}
+				// 告诉content_scripts.js关闭演示
+				chrome.tabs.sendMessage(currentTabId, { Demonstration_middleware: "closeIntro" }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
+			});
+		}
 	}
 	//演示模式
 	if (request.Functional_Demonstration) {
