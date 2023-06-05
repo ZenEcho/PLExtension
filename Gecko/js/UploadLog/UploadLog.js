@@ -1678,7 +1678,6 @@ $(document).ready(function () {
                     `)
                 if (imageUrl.PLFileType == "image") {
                     item.find(".imgs").attr("src", item_imgUrl)
-
                 } else if (imageUrl.PLFileType == "ae") {
                     item.find(".imgs").attr("src", "./icons/fileicon/ae.png")
                 } else if (imageUrl.PLFileType == "ai") {
