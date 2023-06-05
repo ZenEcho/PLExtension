@@ -3,7 +3,6 @@ body {
 }
 
 .item {
-    min-width: 270px;
     width: 360px;
     min-height: 104px;
     margin: 5px;
