@@ -80,6 +80,18 @@ window.addEventListener('message', function (event) {
         }
 
     }
+    if (event.data.type === 'HaloEditor') {
+        try {
+            let HaloEditor_Element = document.querySelector('.ProseMirror');
+            if (HaloEditor_Element) {
+                HaloEditor_Element.focus();
+                document.execCommand('insertImage', false, event.data.data);
+            }
+        } catch (error) {
+        }
+
+    }
+
 });
 
 function plB(Element) {

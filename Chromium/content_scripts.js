@@ -614,6 +614,13 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
 
         }
+        //halo
+        let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
+        if (HaloEditorElement.length) {
+            let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
+            HaloEditorHeader.appendChild(item)
+        }
+
         function master_processCSS(file) {
             var link = document.createElement('link');
             link.href = chrome.runtime.getURL(file);
@@ -745,7 +752,14 @@ chrome.storage.local.get(storagelocal, function (result) {
                     window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
                     Find_Editor = true
                 }
-
+                //halo
+                let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
+                if (HaloEditorElement.length) {
+                    if (Find_Editor == true) { return; }
+                    window.postMessage({ type: 'HaloEditor', data: AutoInsert_message_content }, '*');
+                    Find_Editor = true;
+                    console.log("halo")
+                }
                 scripts.forEach(function (script) {
                     if (Find_Editor == true) { return; }
                     let src = script.getAttribute('src');
