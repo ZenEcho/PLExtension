@@ -41,7 +41,7 @@
 ### 下载
 - Edge：[商店链接](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
 - Chrome：[商店链接](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
-- Firefox: 待添加
+- Firefox: [商店链接](https://addons.mozilla.org/zh-CN/firefox/addon/plextension/)
 
 -------------
 
