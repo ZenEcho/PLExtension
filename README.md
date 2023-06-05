@@ -48,6 +48,13 @@
 ### 问题反馈
  [插件交流反馈群](https://t.me/pnglog)
 
+#### 火狐浏览器注意
+
+**火狐浏览器如果想开启侧边栏和编辑框自动插入，请开启存取您在所有网站的数据功能**
+![image](https://github.com/ZenEcho/PlExtend/assets/56901101/949459aa-c1d0-4dba-917d-cee94f4249e7)
+![image](https://github.com/ZenEcho/PlExtend/assets/56901101/de2a1759-8ead-430e-9084-eba3cd67a867)
+![Snipaste_2023-06-05_13-55-12](https://github.com/ZenEcho/PlExtend/assets/56901101/fbc90d41-4cf5-4b7d-890d-6c4478cd1c27)
+
 
 ### 版本更新:
 
