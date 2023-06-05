@@ -554,6 +554,7 @@ $(document).ready(function () {
       <div class="alert alert-secondary" role="alert">
         <h4 class="alert-heading">嗨，你好朋友</h4>
         <p> 一定要选择一个图床程序进行图床配置哦</p>
+        <button id="Firefox_permission_settings" type="button" class="btn btn-primary">火狐浏览器权限设置</button>
         <hr>
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
       <!-- 按钮 -->
@@ -675,6 +676,9 @@ $(document).ready(function () {
       if (!prog) {
         prog = optionsProg["default"]
         $("#options-form").append(prog.body)
+        $("#Firefox_permission_settings").click(() => {
+          browser.runtime.openOptionsPage();
+        })
       } else {
         $('#options-form').append(prog.html_exeBox);
         Edit_Box_Animation()

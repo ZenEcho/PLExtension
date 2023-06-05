@@ -350,7 +350,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     function document_dragstart(event) {
         switch (GlobalUpload) {
             case 'GlobalUpload_Default':
-                uploadAreaTips.innerText = '默认模式:不支持在线资源获取,移到此取消上传';
+                uploadAreaTips.innerText = '默认模式:移到此取消上传';
                 break;
             case 'GlobalUpload_off':
                 break;
