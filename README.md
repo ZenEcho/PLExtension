@@ -14,9 +14,9 @@
 - 支持浏览器常驻侧边栏，侧边栏拖拽上传，浏览器右键菜单上传，上传页面支持粘贴上传/拖拽上传，均支持本地与url转存;
 - 兼容主流的浏览器Chrome，Edge，Firefox；
 
-![Chrome](https://img.shields.io/badge/Chromium-chrome-blue?style=for-the-badge&logo=googlechrome)
-![Edge](https://img.shields.io/badge/Chromium-Edge-blue?style=for-the-badge&logo=microsoftedge)
-![Firefox](https://img.shields.io/badge/Gecko-Firefox-blue?style=for-the-badge&logo=firefoxbrowser)
+[![Chrome](https://img.shields.io/badge/Chromium-chrome-blue?style=for-the-badge&logo=googlechrome)](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
+[![Edge](https://img.shields.io/badge/Chromium-Edge-blue?style=for-the-badge&logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
+[![Firefox](https://img.shields.io/badge/Gecko-Firefox-blue?style=for-the-badge&logo=firefoxbrowser)](https://addons.mozilla.org/zh-CN/firefox/addon/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0)
 
 -------------
 
@@ -41,7 +41,7 @@
 ## 下载
 - Edge：[商店链接](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
 - Chrome：[商店链接](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
-- Firefox: [商店链接](https://addons.mozilla.org/zh-CN/firefox/addon/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/)
+- Firefox: [商店链接](https://addons.mozilla.org/zh-CN/firefox/addon/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0)
 
 -------------
 
