@@ -6,7 +6,7 @@
 
 [官网地址](https://fileup.dev/)
 
-### 介绍
+## 介绍
 - 盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,GitHub等程序的文件上传
 - 兼容Chromium内核，Gecko内核浏览器；
 - 目前支持的上传程序：[兰空图床](https://www.lsky.pro/),[简单图床](https://github.com/icret/EasyImages2.0),[imgurl图床](https://www.imgurl.org/),[chevereto图床](https://chevereto.com/),[hellohao图床](https://hellohao.cn/),[sm.ms图床](https://sm.ms/),[imgur图床](https://imgur.com/),[腾讯云cos](https://cloud.tencent.com/product/cos),[阿里云oss](https://www.aliyun.com/product/oss),[AWS S3](https://aws.amazon.com/cn/s3/),[GitHub](https://github.com/);
@@ -20,7 +20,7 @@
 
 -------------
 
-### 功能演示
+## 功能演示
 
 [演示地址](https://fileup.dev/#page3) (如果检测不到扩展,请鼠标向上滚动再向下回到演示页)
 
@@ -38,27 +38,31 @@
 
 -------------
 
-### 下载
+## 下载
 - Edge：[商店链接](https://microsoftedge.microsoft.com/addons/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/knmklgmbbbaadnfokcokobnlihdiiloe)
 - Chrome：[商店链接](https://chrome.google.com/webstore/detail/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/lhbncdbejjjbbljkdplddajgmeconcnk)
 - Firefox: [商店链接](https://addons.mozilla.org/zh-CN/firefox/addon/%E7%9B%98%E7%BB%9C%E4%B8%8A%E4%BC%A0/)
 
 -------------
 
-### 问题反馈
+## 问题反馈
  [插件交流反馈群](https://t.me/pnglog)
 
-#### 火狐浏览器注意
+### 火狐浏览器注意
 
 **火狐浏览器如果想开启侧边栏和编辑框自动插入，请开启存取您在所有网站的数据功能**
 ![image](https://github.com/ZenEcho/PlExtend/assets/56901101/949459aa-c1d0-4dba-917d-cee94f4249e7)
 ![image](https://github.com/ZenEcho/PlExtend/assets/56901101/de2a1759-8ead-430e-9084-eba3cd67a867)
 ![Snipaste_2023-06-05_13-55-12](https://github.com/ZenEcho/PlExtend/assets/56901101/fbc90d41-4cf5-4b7d-890d-6c4478cd1c27)
 
+## 效果图:
+![上传页面](https://github.com/ZenEcho/PlExtend/assets/56901101/2ca6d569-49ef-4bcd-880c-c2811db13fe0)
+![配置信息](https://github.com/ZenEcho/PlExtend/assets/56901101/abc988e5-b3be-4fdb-bcf3-64919b015207)
+![上传记录](https://github.com/ZenEcho/PlExtend/assets/56901101/b9df44f3-a1e6-4de3-8c5f-0e69e6659fb3)
 
-### 版本更新:
+## 版本更新:
 
-#1.1.0更新:
+### 1.1.0更新:
 
 一.新增GitHub上传
 
@@ -94,7 +98,7 @@
 
 —————————————
 
-#1.0.9.1更新:
+### 1.0.9.1更新:
 
 一.新增自动插入功能(默认开启)
 
@@ -110,7 +114,7 @@
 
 —————————————
 
-1.0.9更新:
+### 1.0.9更新:
 
 一.新增腾讯云对象存储(COS)功能(本地直传,不经服务器)
 
@@ -135,3 +139,5 @@
 手势上传与全局上传会被鼠标手势插件影响
 
 —————————————
+
+
