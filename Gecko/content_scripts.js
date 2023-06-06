@@ -614,6 +614,13 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
 
         }
+        //halo
+        let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
+        if (HaloEditorElement.length) {
+            let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
+            HaloEditorHeader.appendChild(item)
+        }
+        
         function master_processCSS(file) {
             var link = document.createElement('link');
             link.href = chrome.runtime.getURL(file);
@@ -776,6 +783,16 @@ chrome.storage.local.get(storagelocal, function (result) {
                     //ckeditor4/5
                     if (src && src.includes('ckeditor')) {
                         window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                    //Halo
+                    if (src && src.includes('halo')) {
+                        let HaloEditor_Element = document.querySelector('.ProseMirror');
+                        if (HaloEditor_Element) {
+                            HaloEditor_Element.focus();
+                            document.execCommand('insertImage', false, AutoInsert_message_content);
+                        }
                         Find_Editor = true
                         return;
                     }

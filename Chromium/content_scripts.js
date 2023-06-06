@@ -752,14 +752,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                     window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
                     Find_Editor = true
                 }
-                //halo
-                let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
-                if (HaloEditorElement.length) {
-                    if (Find_Editor == true) { return; }
-                    window.postMessage({ type: 'HaloEditor', data: AutoInsert_message_content }, '*');
-                    Find_Editor = true;
-                    console.log("halo")
-                }
                 scripts.forEach(function (script) {
                     if (Find_Editor == true) { return; }
                     let src = script.getAttribute('src');
@@ -790,6 +782,16 @@ chrome.storage.local.get(storagelocal, function (result) {
                     //ckeditor4/5
                     if (src && src.includes('ckeditor')) {
                         window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                        Find_Editor = true
+                        return;
+                    }
+                    //Halo
+                    if (src && src.includes('halo')) {
+                        let HaloEditor_Element = document.querySelector('.ProseMirror');
+                        if (HaloEditor_Element) {
+                            HaloEditor_Element.focus();
+                            document.execCommand('insertImage', false, AutoInsert_message_content);
+                        }
                         Find_Editor = true
                         return;
                     }
