@@ -67,6 +67,9 @@
 ![上传页面.png](https://cdn-us.imgs.moe/2023/06/06/647f22c08ea2a.png)
 ![配置信息.png](https://cdn-us.imgs.moe/2023/06/06/647f22c096444.png)
 
+## 经过测试的自动插入程序
+[自动插入](https://cdn-us.imgs.moe/2023/06/06/647f35e087f3e.png)
+
 ## 版本更新:
 
 ### 1.1.0更新:
