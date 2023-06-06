@@ -51,14 +51,21 @@
 ### 火狐浏览器注意
 
 **火狐浏览器如果想开启侧边栏和编辑框自动插入，请开启存取您在所有网站的数据功能**
-![image](https://github.com/ZenEcho/PlExtend/assets/56901101/949459aa-c1d0-4dba-917d-cee94f4249e7)
-![image](https://github.com/ZenEcho/PlExtend/assets/56901101/de2a1759-8ead-430e-9084-eba3cd67a867)
-![Snipaste_2023-06-05_13-55-12](https://github.com/ZenEcho/PlExtend/assets/56901101/fbc90d41-4cf5-4b7d-890d-6c4478cd1c27)
+
+![火狐跳转到设置权限页面1.png](https://cdn-us.imgs.moe/2023/06/06/647f2530db9d1.png)
+
+**或者**
+
+![火狐跳转到设置权限页面2.png](https://cdn-us.imgs.moe/2023/06/06/647f253097adf.png)
+
+**设置权限**
+
+![火狐设置权限.png](https://cdn-us.imgs.moe/2023/06/06/647f25307843e.png)
 
 ## 效果图:
-![上传页面](https://github.com/ZenEcho/PlExtend/assets/56901101/2ca6d569-49ef-4bcd-880c-c2811db13fe0)
-![配置信息](https://github.com/ZenEcho/PlExtend/assets/56901101/abc988e5-b3be-4fdb-bcf3-64919b015207)
-![上传记录](https://github.com/ZenEcho/PlExtend/assets/56901101/b9df44f3-a1e6-4de3-8c5f-0e69e6659fb3)
+![上传记录.png](https://cdn-us.imgs.moe/2023/06/06/647f22c071273.png)
+![上传页面.png](https://cdn-us.imgs.moe/2023/06/06/647f22c08ea2a.png)
+![配置信息.png](https://cdn-us.imgs.moe/2023/06/06/647f22c096444.png)
 
 ## 版本更新:
 
