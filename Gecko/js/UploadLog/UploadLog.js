@@ -237,18 +237,23 @@ $(document).ready(function () {
                         let endIndex = startIndex + itemsPerPage;
                         let currentImages = images.slice(startIndex, endIndex);
                         currentImages.forEach(function (imageUrl, index) {
+                            // if (!imageUrl.url) {
+                            //     // 如果发现没有url就删除这项数据，并刷新
+                            //     images.splice(imageUrl, 1)
+                            //     chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) })// 因为异步可能会失败!
+                            //     return;
+                            // }
+                            if (/^https?:\/\/.+\..+$/.test(imageUrl.url)) {  // regex test to check if url is valid
+                                imageUrl.url;
+                            } else {
+                                imageUrl.url = 'icons/err512.png';
+                            }
                             const fileExtension = imageUrl.url.toLowerCase().match(/\.[0-9a-z]+$/);
                             if (fileExtension && fileTypeMap.hasOwnProperty(fileExtension[0])) {
                                 imageUrl.PLFileType = fileTypeMap[fileExtension[0]];
                             } else {
                                 imageUrl.PLFileType = null;
                             }
-                            if (/^https?:\/\/.+\..+$/.test(imageUrl.url)) {  // regex test to check if url is valid
-                                imageUrl.url;
-                            } else {
-                                imageUrl.url = 'icons/err512.png';
-                            }
-
                             let item = $(`
                                 <div class="item shadow-lg bg-body-tertiary" key=`+ imageUrl.key + `>
                                 

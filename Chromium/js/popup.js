@@ -509,18 +509,17 @@ $(document).ready(function () {
               }
             }
           }
-          const options_return_success_value = res;
-          options_return_success.split('.').forEach(function (prop) {
-            if (options_return_success_value) {
-              options_return_success_value = options_return_success_value[prop];
-            }
-          });
+          let options_return_success_value = res;
+          for (let property of options_return_success.split('.')) {
+            options_return_success_value = options_return_success_value[property];
+          }
           imageUrl = options_return_success_value
           LinksUrl.push(options_return_success_value)
           LinksHtml.push('&lt;img src="' + options_return_success_value + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
           LinksBBCode.push('[img]' + options_return_success_value + '[/img]')
           LinksMarkdown.push('![' + file.name + '](' + options_return_success_value + ')')
           LinksMDwithlink.push('[![' + file.name + '](' + options_return_success_value + ')](' + options_return_success_value + ')')
+          options_host = options_apihost
           break;
         case 'Tencent_COS':
           imageUrl = options_Custom_domain_name + filename
