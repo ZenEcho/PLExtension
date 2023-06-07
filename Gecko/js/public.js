@@ -473,7 +473,7 @@ function measurePingDelay(callback, getUrl) {
     }
   };
   xhr.onerror = () => {
-    let corsUrl = 'https://cors-anywhere.pnglog.com/https://' + getUrl;
+    let corsUrl = 'https://cors-anywhere.pnglog.com/' + getUrl;
     xhr.onerror = () => {
       callback(new Error('无法连接到') + getUrl, null);
     };
