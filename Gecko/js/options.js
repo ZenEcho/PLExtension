@@ -488,6 +488,16 @@ $(document).ready(function () {
     </div>
     `
 
+    const html_exe_Telegra_ph = `
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">你好</h4>
+      <p>Telegra.ph是一个匿名上传图片的平台,因此无法追踪或删除上传的内容,请确保您上传的内容不会侵犯他人的权利或违反任何法律法规.</p>
+      <hr>
+      <p class="mb-0">感谢使用,盘络上传扩展!</p>
+    </div>
+      `
+    const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷，但跑起来就会生风`
+
     var optionsProg = {
       '#exe_Lsky': {
         'needUid': 1,
@@ -548,6 +558,11 @@ $(document).ready(function () {
         'needUid': 12,
         'html_exeBox': html_exe_GitHubUP,
         'bottomTips': html_exe_GitHubUPBoxBottom_Tipsa
+      },
+      '#exe_Telegra_ph': {
+        'needUid': 13,
+        'html_exeBox': html_exe_Telegra_ph,
+        'bottomTips': html_exe_Telegra_phBoxBottom_Tipsa
       },
       'default': {
         'body': `
@@ -776,6 +791,9 @@ $(document).ready(function () {
           $("#options_UploadPath").val(options_UploadPath);
           $("#options_token").val(options_token);
           break;
+        case 'Telegra_ph':
+          $("#exe_Telegra_ph").addClass('active');
+          break;
         default:
       }
 
@@ -905,6 +923,9 @@ $(document).ready(function () {
         $("#options_repository").val(options_repository);
         $("#options_UploadPath").val(options_UploadPath);
         $("#options_token").val(options_token);
+      }
+      if (prog.needUid == 13) {//GitHub
+        $('#options-form').append(prog.html_exeBox);
       }
 
       //判断cors开关
@@ -1365,7 +1386,11 @@ $(document).ready(function () {
           }, 2000);
           return;
         }
-        chrome.storage.local.set({ 'options_host': $("#options_host").val() })
+        if ($('#exe_Telegra_ph').hasClass('active')) {
+          chrome.storage.local.set({ 'options_host': "telegra.ph" })
+        } else {
+          chrome.storage.local.set({ 'options_host': $("#options_host").val() })
+        }
         if ($('#exe_Lsky').hasClass('active')) {
           let string = $("#options_token").val()
           let pattern = /^Bearer\s/;
@@ -1409,8 +1434,6 @@ $(document).ready(function () {
             chrome.storage.local.set({ 'options_UploadPath': PathString })
           }
         }
-
-
         if ($('#exe_UserDiy').hasClass('active')) {
           //自定义请求
           chrome.storage.local.set({ 'options_apihost': $("#options_apihost").val() })

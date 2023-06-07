@@ -461,7 +461,6 @@ $(document).ready(function () {
             toastItem({
               toast_content: "上传成功"
             })
-
           } else {
             res.image.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
           }
@@ -576,6 +575,20 @@ $(document).ready(function () {
             toast_content: '上传完成'
           })
           options_host = "GitHub.com"
+          break;
+        case 'Telegra_ph':
+          if (res.error) {
+            toastItem({
+              toast_content: res.error
+            })
+            return;
+          }
+          imageUrl = `https://telegra.ph/` + res[0].src
+          LinksUrl.push(imageUrl)
+          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+          LinksBBCode.push('[img]' + imageUrl + '[/img]')
+          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
+          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
           break;
       }
       console.log(res)
@@ -1170,6 +1183,13 @@ $(document).ready(function () {
 
           }
         }, 'https://github.com');
+        break;
+      case 'Telegra_ph':
+        uploader.options.maxFilesize = 5
+        uploader.options.url = options_proxy_server + "https://" + options_host + "/upload";
+        uploader.options.headers = { "Accept": "application/json" };
+        uploader.options.paramName = 'file';
+        uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.tif,.bmp,.ico,.psd,.webp';
         break;
     }
     function LocalStorage(file, url, UploadLog) {

@@ -186,9 +186,6 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		if (!options_proxy_server) {
 			options_proxy_server = ""
 		}
-
-
-
 		async function Img_Request_Success(blob) {
 			showNotification("盘络上传程序", "图片获取完成,正在执行上传;")
 			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
@@ -264,6 +261,11 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 						formData.append(key, options_Body[key]);
 					}
 					break;
+				case 'Telegra_ph':
+					optionsUrl = options_proxy_server + "https://" + options_host + "/upload";
+					optionHeaders = { "Accept": "application/json" };
+					formData.append("file", file);
+					break;
 			}
 			fetch(optionsUrl, {
 				method: 'POST',
@@ -308,6 +310,13 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								}
 							});
 							imageUrl = options_return_success_value
+							break;
+						case 'Telegra_ph':
+							if (res.error) {
+								showNotification("盘络上传程序", res.error)
+								return;
+							}
+							imageUrl = `https://telegra.ph/` + res[0].src
 							break;
 					}
 					chrome.storage.local.get('UploadLog', function (result) {
