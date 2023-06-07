@@ -432,7 +432,7 @@ $(document).ready(function () {
           toastItem({
             toast_content: res.msg
           })
-          if (!res.msg) {
+          if (res.msg) {
             res.data.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
           }
           imageUrl = res.data.url
