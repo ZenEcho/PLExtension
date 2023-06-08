@@ -457,12 +457,8 @@ $(document).ready(function () {
           LinksMDwithlink.push('[![' + res.data.filename + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'Chevereto':
-          if (res.status != 200) {
-            toastItem({
-              toast_content: "上传成功"
-            })
-          } else {
-            res.image.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+          if (!res.image.url) {
+            res.image.url = "服务器响应成功,但无法正确获取到url链接"
           }
           imageUrl = res.image.url
           LinksUrl.push(res.image.url)

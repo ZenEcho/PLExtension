@@ -325,6 +325,9 @@ $(document).ready(function () {
       </label>
       <input type="text" class="form-control box-shadow" id="options_token" placeholder="例如:2389b" />
     </div>
+    <div class="alert alert-warning" role="alert">
+      GitHub 是一个代码托管平台，在 GitHub 存储图片不符合它的设计初衷，建议及时删除不必要的图片文件。
+    </div>
       `
     const html_exe_GitHubUPBoxBottom_Tipsa = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://github.com/" target="_blank"> GitHub </a>网站`
 
@@ -491,7 +494,7 @@ $(document).ready(function () {
     const html_exe_Telegra_ph = `
     <div class="alert alert-success" role="alert">
       <h4 class="alert-heading">你好</h4>
-      <p>Telegra.ph是一个匿名上传图片的平台,因此无法追踪或删除上传的内容,请确保您上传的内容不会侵犯他人的权利或违反任何法律法规.</p>
+      <p>Telegra.ph是一个匿名上传图片的平台,因此无法删除上传的内容,请确保上传的内容是有价值的.</p>
       <hr>
       <p class="mb-0">感谢使用,盘络上传扩展!</p>
     </div>

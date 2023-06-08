@@ -357,30 +357,23 @@ $(document).ready(function () {
                                 $(this).find('.Image_Width_And_Height').hide();
                                 $container.masonry('layout');
                             });
-                            switch (options_exe) {
-                                case 'Tencent_COS':
-                                case 'Aliyun_OSS':
-                                case 'AWS_S3':
-                                case 'GitHubUP':
-                                    item.imagesLoaded().progress(function () {
-                                        item.find('.Image_Width_And_Height').html("点击加载宽高;")
-                                        // 获取宽高
-                                        item.find('.Image_Width_And_Height').one('click', function () {
-                                            item.find('.Image_Width_And_Height').html("加载中...")
-                                            const img = item.find('.imgs');
-                                            // 获取img元素的src属性
-                                            const src = img.attr('src');
-                                            let Width_And_Height = new Image();
-                                            Width_And_Height.src = src
-                                            Width_And_Height.onload = function () {
-                                                let width = Width_And_Height.width;
-                                                let height = Width_And_Height.height
-                                                item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
-                                            }
-                                        });
-                                    });
-                                    break;
-                            }
+                            item.imagesLoaded().progress(function () {
+                                item.find('.Image_Width_And_Height').html("点击加载宽高;")
+                                // 获取宽高
+                                item.find('.Image_Width_And_Height').one('click', function () {
+                                    item.find('.Image_Width_And_Height').html("加载中...")
+                                    const img = item.find('.imgs');
+                                    // 获取img元素的src属性
+                                    const src = img.attr('src');
+                                    let Width_And_Height = new Image();
+                                    Width_And_Height.src = src
+                                    Width_And_Height.onload = function () {
+                                        let width = Width_And_Height.width;
+                                        let height = Width_And_Height.height
+                                        item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
+                                    }
+                                });
+                            });
                             $container.imagesLoaded().progress(function () {
                                 $container.masonry({
                                     itemSelector: '.item',
