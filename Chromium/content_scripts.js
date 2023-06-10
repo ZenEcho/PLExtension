@@ -274,8 +274,10 @@ chrome.storage.local.get(storagelocal, function (result) {
     });
     function iframeShow() {
         let iframesrc = iframe.src
+        let Time = 400
         if (!iframesrc) {
             iframe.src = popupUrl
+            Time = 700
         }
         switch (edit_uploadArea_Left_or_Right) {
             case "Left":
@@ -285,6 +287,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                 iframe.style.right = "1px"
                 break;
         }
+        setTimeout(() => {
+            chrome.runtime.sendMessage({ Immortal_Spell_Immobilize: "天灵灵,地灵灵,老君显灵,仙术·定" });
+        }, Time);
         iframe_mouseover = true
         uploadArea.style.display = "none"
     }
