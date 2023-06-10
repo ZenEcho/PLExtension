@@ -285,9 +285,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                 iframe.style.right = "1px"
                 break;
         }
-        // 让上传页面聚焦
-        chrome.runtime.sendMessage({ iframe_focus: "天灵灵,地灵灵,太上老君快显灵,嘿苔" });
-        // iframe.focus();
         iframe_mouseover = true
         uploadArea.style.display = "none"
     }
