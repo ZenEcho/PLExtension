@@ -1518,5 +1518,8 @@ $(document).ready(function () {
       Black_curtain = true
       showIntro();
     }
+    if (request.iframe_focus) {
+      $(".dropzone ").click();
+    }
   });
 })
