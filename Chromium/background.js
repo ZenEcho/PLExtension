@@ -580,22 +580,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			}
 		});
 	}
-	//仙术
-	if (request.Immortal_Spell_Immobilize) {
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-			let currentTabId
-			try {
-				currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { iframe_focus: "乖乖站好噢!" }, function (response) {
-					if (chrome.runtime.lastError) {
-						//发送失败
-						return;
-					}
-				});
-			} catch (error) {
-			}
-		});
-	}
 });
 var Simulated_upload = false//模拟上传
 

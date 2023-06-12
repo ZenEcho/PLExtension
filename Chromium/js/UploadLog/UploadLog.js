@@ -151,7 +151,7 @@ $(document).ready(function () {
                 });
             }
         }
-        function GetPicture_Library() {
+        (() => {
             if (Browse_mode_switching_status == 0) {
                 //本地信息获取
                 images = result.UploadLog || [];
@@ -484,6 +484,7 @@ $(document).ready(function () {
                     })
                 }
             } else {
+                $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
                 switch (options_exe) {
                     case 'Lsky':
@@ -654,7 +655,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：腾讯云COS限制仅能加载最新1000张图片</div>`)
-
+                        $(".options_UploadPath").val(options_UploadPath)
                         function getBucket(marker) {
                             cos.getBucket({
                                 Bucket: options_Bucket,
@@ -668,11 +669,11 @@ $(document).ready(function () {
                                     $("#container").html(Image_acquisition_failed);
                                 } else {
                                     images = data.Contents
-                                    for (let i = images.length - 1; i >= 0; i--) {
-                                        if (images[i].Key.endsWith('/')) {
-                                            images.splice(i, 1);
-                                        }
-                                    }
+                                    // for (let i = images.length - 1; i >= 0; i--) {
+                                    //     if (images[i].Key.endsWith('/')) {
+                                    //         images.splice(i, 1);
+                                    //     }
+                                    // }
                                     if (!images.length) {
                                         $("#container").html(No_picture_data);
                                     } else {
@@ -703,7 +704,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：阿里云OSS限制仅能加载最新1000张图片</div>`)
-                            $(".options_UploadPath").val(options_UploadPath)
+                        $(".options_UploadPath").val(options_UploadPath)
                         async function list() {
                             try {
                                 const result = await oss.listV2({
@@ -746,6 +747,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：AWS S3限制仅能加载最新1000张图片</div>`)
+                        $(".options_UploadPath").val(options_UploadPath)
                         const params = {
                             Bucket: options_Bucket,
                             Prefix: options_UploadPath,
@@ -758,7 +760,7 @@ $(document).ready(function () {
                                 $("#container").html(Image_acquisition_failed);
                             } else {
                                 images = data.Contents
-                                images = data.Contents.filter(obj => !obj.Key.endsWith('/'));
+                                // images = data.Contents.filter(obj => !obj.Key.endsWith('/'));
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
@@ -766,7 +768,6 @@ $(document).ready(function () {
                                     currentPage = 1; // 当前第1页
                                     itemsPerPage = 20; // 每页20张图片
                                     totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
-
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
@@ -789,6 +790,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,删除可能会有缓存</div>`)
+                        $(".options_UploadPath").val(options_UploadPath)
                         sendAjax(
                             options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
                             'GET',
@@ -900,7 +902,8 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
                                 item_imgUrl = options_Custom_domain_name + imageUrl.Key
-                                item_liImgName = imageUrl.Key.split('/').pop()
+                                item_liImgName = imageUrl.Key
+                                // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.LastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -911,6 +914,8 @@ $(document).ready(function () {
                                 item_imgUrl = options_Custom_domain_name + imageUrl.name
                                 item_liImgName = imageUrl.name
                                 // item_liImgName = imageUrl.name.split('/').pop()
+                                if (imageUrl.name == options_UploadPath) {
+                                }
                                 item_liImgSize = (imageUrl.size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.lastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -919,7 +924,8 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
                                 item_imgUrl = options_Custom_domain_name + imageUrl.Key
-                                item_liImgName = imageUrl.Key.split('/').pop()
+                                item_liImgName = imageUrl.Key
+                                // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.LastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -971,7 +977,6 @@ $(document).ready(function () {
                                 <span>`+ Image_Width_And_Height + `</span>
                             </div>
                         </div>`);
-
                         set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize)
                         $container.append(item);
 
@@ -1147,13 +1152,68 @@ $(document).ready(function () {
                         });
                         // 点击选中
                         item.find('.FileMedia').click(function () {
-                            $(this).parent().toggleClass('gigante');
-                            console.log(options_UploadPath)
-                            console.log(imageUrl.name)
-                            if (!imageUrl.name.split('/').pop()) {
-                                chrome.storage.local.set({ 'options_UploadPath': imageUrl.name }, function () {
-                                    window.location.reload();
-                                })
+                            if (Select_mode === 1) {
+                                $(this).parent().toggleClass('gigante');
+                            } else {
+                                if (!item_liImgName.split('/').pop() || item_divType == "dir") {
+                                    let val = item_liImgName
+                                    if (!item_liImgName.endsWith('/')) {
+                                        val = item_liImgName + '/'
+                                    }
+                                    chrome.storage.local.set({ 'options_UploadPath': val }, function () {
+                                        window.location.reload();
+                                    })
+                                } else {
+                                    // 创建弹出窗口的容器元素
+                                    const overlayElement = $(`
+                                    <div class="overlay">
+                                        <div class="close-button">×</div>
+                                        <div class="zoomdiv">
+                                            <div class="zoom-button zoom-in">+</div>
+                                            <div class="zoom-button zoom-out">-</div>
+                                            <div class="zoom-button rotate-button">&#x21bb;</div>
+                                        </div>
+                                        <img src="${item_imgUrl}">
+                                    </div>
+                                    `);
+
+                                    // 将容器元素添加到文档主体中
+                                    $('body').append(overlayElement);
+
+                                    // 点击关闭按钮时，移除弹出窗口
+                                    overlayElement.find('.close-button').click(() => {
+                                        overlayElement.remove();
+                                    });
+
+                                    // 点击放大按钮时，增加图片尺寸
+                                    overlayElement.find('.zoomdiv .zoom-button.zoom-in').on('click', function () {
+                                        var currentWidth = overlayElement.find('img').width();
+                                        var currentHeight = overlayElement.find('img').height();
+                                        overlayElement.find('img').css({
+                                            width: currentWidth * 1.1,
+                                            height: currentHeight * 1.1
+                                        });
+                                    });
+
+                                    // 点击缩小按钮时，减小图片尺寸
+                                    overlayElement.find('.zoomdiv .zoom-button.zoom-out').on('click', function () {
+                                        var currentWidth = overlayElement.find('img').width();
+                                        var currentHeight = overlayElement.find('img').height();
+                                        overlayElement.find('img').css({
+                                            width: currentWidth / 1.1,
+                                            height: currentHeight / 1.1
+                                        });
+                                    });
+                                    // 跟踪当前的旋转角度
+                                    let currentRotation = 0;
+                                    // 点击旋转按钮时，旋转图片
+                                    overlayElement.find('.rotate-button').on('click', function () {
+                                        currentRotation += 90;
+                                        overlayElement.find('img').css({
+                                            transform: `rotate(${currentRotation}deg)`
+                                        });
+                                    });
+                                }
                             }
                         });
                         // 点击复制
@@ -1432,6 +1492,21 @@ $(document).ready(function () {
                         }
                     }
                 })
+                //选择
+                let Select_mode = 0
+                $("#Select_mode").click(function () {
+                    if (Select_mode === 0) {
+                        Select_mode = 1;
+                        $("#Select_mode").toggleClass("btn-primary")
+                        $("#Select_mode").css({ "color": "white" })
+                        toastItem({ toast_content: "已开启:选择模式" })
+                    } else {
+                        Select_mode = 0;
+                        $("#Select_mode").toggleClass("btn-primary")
+                        $("#Select_mode").css({ "color": "" })
+                        toastItem({ toast_content: "已关闭:选择模式" })
+                    }
+                })
                 //全选
                 $("#Select_All").click(function () {
                     $("#container .item").toggleClass('gigante');
@@ -1480,7 +1555,6 @@ $(document).ready(function () {
                     }
 
                 })
-
                 //删除选中
                 $("#Delete_Selected").click(function () {
                     let selectedImgs = $(".gigante");
@@ -1677,11 +1751,17 @@ $(document).ready(function () {
                         }, 2000);
                     }
                 }
-                $("#options_UploadPath").click(()=>{
+                $("#options_UploadPath").click(() => {
                     chrome.storage.local.set({ 'options_UploadPath': $(".options_UploadPath").val() }, function () {
                         window.location.reload();
                     })
                 })
+                $('.options_UploadPath').keydown(function (event) {
+                    if (event.key === 'Enter') {
+                        // 触发与按钮相同的点击事件
+                        $('#options_UploadPath').trigger('click');
+                    }
+                });
             }
 
             function set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize) {
@@ -1787,10 +1867,7 @@ $(document).ready(function () {
                     }
                 }
             }
-        }
-
-        GetPicture_Library()
-
+        })()
         $(".dropdown-item").click(function () {
             const value = $(this).attr("value");
             toastItem({ toast_content: "复制模式为:" + value })
@@ -1802,14 +1879,12 @@ $(document).ready(function () {
             let targetElement = $('a[value="' + Copy_Selected_Mode + '"]');
             targetElement.addClass("active")
         });
-
         $("#DeleteALL").click(function () {
             localStorage.UploadLog = "[]"
             chrome.storage.local.set({ 'UploadLog': [] }, function () {
                 window.location.reload();
             })
         })
-
         $("#Browse_mode_switch_button").click(function () {
             window.location.reload();
             if ($(this).hasClass("btn-dark")) {

@@ -794,7 +794,9 @@ $(document).ready(function () {
                   const progress = Math.round((progressData.loaded / progressData.total) * 100);
                   currentFile.upload.progress = progress;
                   currentFile.status = Dropzone.UPLOADING;
-                  uploader.emit("uploadprogress", file, progress, 100);
+                  console.log(progressData)
+                  console.log(progress)
+                  uploader.emit("uploadprogress", currentFile, progress, 100);
                 }
               }, function (err, data) {
                 if (data) {
@@ -1507,9 +1509,6 @@ $(document).ready(function () {
       // 禁止活动
       Black_curtain = true
       showIntro();
-    }
-    if (request.iframe_focus) {
-      $(".dropzone ").click();
     }
   });
 })
