@@ -283,7 +283,7 @@ $(document).ready(function () {
                                     if (typeof images !== 'object') {
                                         images = JSON.parse(images);
                                     }
-                                    const index = images.findIndex(img => img.url === imageUrl.url);
+                                    const index = images.findIndex(key => key.key === imageUrl.key);
                                     if (index !== -1) {
                                         images.splice(index, 1);
                                         item.remove()

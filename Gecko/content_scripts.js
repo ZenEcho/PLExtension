@@ -620,7 +620,7 @@ chrome.storage.local.get(storagelocal, function (result) {
             let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
             HaloEditorHeader.appendChild(item)
         }
-        
+
         function master_processCSS(file) {
             var link = document.createElement('link');
             link.href = chrome.runtime.getURL(file);
@@ -752,7 +752,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                     window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
                     Find_Editor = true
                 }
-
                 scripts.forEach(function (script) {
                     if (Find_Editor == true) { return; }
                     let src = script.getAttribute('src');
@@ -1236,8 +1235,10 @@ chrome.storage.local.get(storagelocal, function (result) {
         h1Element.style.width = "28rem"
         h1Element.setAttribute("data-text", "演示完毕了...");
         h1Element.innerText = "演示完毕了"
-
-        sectionDom.querySelector(".Functional_animation").remove()
-        sectionDom.querySelector("img").remove()
+        try {
+            sectionDom.querySelector(".Functional_animation").remove()
+            sectionDom.querySelector("img").remove()
+        } catch (error) {
+        }
     }
 })

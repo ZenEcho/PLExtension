@@ -141,7 +141,7 @@ $(document).ready(function () {
       </div>
     `,
         // autoProcessQueue: false, //自动上传
-        parallelUploads: 20, //上传个数限制
+        parallelUploads: 1, // 每次上传1个
         dictDefaultMessage: SvgData + `<p>点击上传 / 拖拽上传 / 粘贴上传</p>` + UserBox,
         dictFallbackMessage: "您的浏览器不支持拖拽......",
         dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
@@ -380,6 +380,7 @@ $(document).ready(function () {
     });//文件删除
 
     uploader.on("success", async function (file, res) {
+      console.log(res)
       if ($('.LinksBox').is(':hidden')) {
         $('.LinksBox').hide().slideDown('slow'); //动画
       }
@@ -402,19 +403,10 @@ $(document).ready(function () {
           LinksMDwithlink.push(res.data.links.markdown_with_link)
           break;
         case 'EasyImages':
-          if (res.indexOf('Warning') === -1) {
-            if (typeof res !== 'object') {
-              try {
-                var res = JSON.parse(res);
-              } catch (error) {
-                alert('返回的数据无法转换为JSON,请联系作者进行错误修正!');
-                return;
-              }
-            }
+          if (res.message) {
             toastItem({
-              toast_content: res.result
+              toast_content: res.message
             })
-          } else {
             var res = {};
             toastItem({
               toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
@@ -587,11 +579,9 @@ $(document).ready(function () {
           LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
           break;
       }
-      console.log(res)
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(file, imageUrl)
     })
-
 
     uploader.on("error", function (file, err) {
       console.log(err)
