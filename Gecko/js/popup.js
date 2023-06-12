@@ -141,7 +141,7 @@ $(document).ready(function () {
       </div>
     `,
         // autoProcessQueue: false, //自动上传
-        parallelUploads: 20, //上传个数限制
+        parallelUploads: 1, //上传个数限制
         dictDefaultMessage: SvgData + `<p>点击上传 / 拖拽上传 / 粘贴上传</p>` + UserBox,
         dictFallbackMessage: "您的浏览器不支持拖拽......",
         dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
