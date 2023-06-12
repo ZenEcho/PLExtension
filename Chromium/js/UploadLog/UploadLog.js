@@ -703,6 +703,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：阿里云OSS限制仅能加载最新1000张图片</div>`)
+                            $(".options_UploadPath").val(options_UploadPath)
                         async function list() {
                             try {
                                 const result = await oss.listV2({
@@ -908,7 +909,8 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.name); // 删除图片的服务器key值
                                 item_divKey = imageUrl.name
                                 item_imgUrl = options_Custom_domain_name + imageUrl.name
-                                item_liImgName = imageUrl.name.split('/').pop()
+                                item_liImgName = imageUrl.name
+                                // item_liImgName = imageUrl.name.split('/').pop()
                                 item_liImgSize = (imageUrl.size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.lastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -1146,6 +1148,13 @@ $(document).ready(function () {
                         // 点击选中
                         item.find('.FileMedia').click(function () {
                             $(this).parent().toggleClass('gigante');
+                            console.log(options_UploadPath)
+                            console.log(imageUrl.name)
+                            if (!imageUrl.name.split('/').pop()) {
+                                chrome.storage.local.set({ 'options_UploadPath': imageUrl.name }, function () {
+                                    window.location.reload();
+                                })
+                            }
                         });
                         // 点击复制
                         item.find('.copy').click(function () {
@@ -1668,6 +1677,11 @@ $(document).ready(function () {
                         }, 2000);
                     }
                 }
+                $("#options_UploadPath").click(()=>{
+                    chrome.storage.local.set({ 'options_UploadPath': $(".options_UploadPath").val() }, function () {
+                        window.location.reload();
+                    })
+                })
             }
 
             function set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize) {
