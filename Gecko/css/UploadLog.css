@@ -111,6 +111,17 @@ body {
     margin: 0px 5px 0 5px;
 }
 
+@media screen and (max-width: 992px) {
+
+    .Selected_But button,
+    span {
+        font-size: 12px;
+    }
+
+    .Selected_But span {
+        font-size: 12px;
+    }
+}
 
 .head {
     display: flex;
@@ -130,4 +141,88 @@ nav {
 
 #Bottom_button {
     padding-bottom: 1rem;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9991;
+}
+
+.overlay img,
+video,
+textarea {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    transition: transform .5s ease-in-out;
+}
+
+.overlay img {
+    position: absolute;
+}
+
+.overlay video {
+    position: absolute;
+}
+
+
+.close-button {
+    user-select: none;
+    position: absolute;
+    top: 0;
+    right: 0em;
+    background-color: #999;
+    width: 2em;
+    color: #fff;
+    font-size: 2em;
+    cursor: pointer;
+    z-index: 9992;
+    text-align: center;
+    border-radius: 0px 0px 0px 1em;
+}
+
+.close-button:hover {
+    background-color: #8f8f8f;
+}
+
+.zoomdiv {
+    position: absolute;
+    bottom: 5px;
+    display: flex;
+}
+
+.zoom-button {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+    user-select: none;
+    z-index: 9992;
+}
+
+.zoom-button:hover {
+    background-color: #eee;
+}
+
+.zoom-in {
+    font-size: 20px;
+}
+
+.zoom-out {
+    font-size: 26px;
 }

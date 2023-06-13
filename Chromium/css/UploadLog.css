@@ -111,6 +111,17 @@ body {
     margin: 0px 5px 0 5px;
 }
 
+@media screen and (max-width: 992px) {
+
+    .Selected_But button,
+    span {
+        font-size: 12px;
+    }
+
+    .Selected_But span {
+        font-size: 12px;
+    }
+}
 
 .head {
     display: flex;
@@ -164,6 +175,7 @@ textarea {
 
 
 .close-button {
+    user-select: none;
     position: absolute;
     top: 0;
     right: 0em;

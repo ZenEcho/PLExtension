@@ -151,7 +151,8 @@ $(document).ready(function () {
                 });
             }
         }
-        function GetPicture_Library() {
+        let Time_sorting = 0
+        function Program_Start_Execution() {
             if (Browse_mode_switching_status == 0) {
                 //本地信息获取
                 images = result.UploadLog || [];
@@ -207,6 +208,25 @@ $(document).ready(function () {
                 if (typeof images !== 'object') {
                     images = JSON.parse(images);
                 }
+
+                // 将日期字符串转换为日期对象的辅助函数
+                function parseDate(dateString) {
+                    var parts = dateString.match(/(\d+)/g);
+                    return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                }
+
+                // 根据uploadTime属性进行排序
+                images.sort(function (a, b) {
+                    var dateA = parseDate(a.uploadTime);
+                    var dateB = parseDate(b.uploadTime);
+                    if (Time_sorting == 0) {
+                        return dateB - dateA; // 降序排序
+                    } else {
+                        return dateA - dateB; // 降序排序
+                    }
+
+                });
+
                 if (!images.length) {
                     $("#container").html(No_picture_data);
                 } else {
@@ -255,7 +275,7 @@ $(document).ready(function () {
                                 imageUrl.PLFileType = null;
                             }
                             let item = $(`
-                                <div class="item shadow-lg bg-body-tertiary" key=`+ imageUrl.key + `>
+                                <div class="item shadow-lg bg-body-tertiary" key=`+ imageUrl.key + ` type=` + imageUrl.PLFileType + `>
                                 
                                     <ul class="logurl" style="display: none">
                                         <li>上传程序: `+ imageUrl.uploadExe + `</li>
@@ -307,7 +327,11 @@ $(document).ready(function () {
 
                             // 点击选中
                             item.find('.FileMedia').click(function () {
-                                $(this).parent().toggleClass('gigante');
+                                if (Select_mode === 1) {
+                                    $(this).parent().toggleClass('gigante');
+                                } else {
+                                    OverlayProject(item, imageUrl.url)
+                                }
                             });
 
                             // 点击复制
@@ -388,9 +412,23 @@ $(document).ready(function () {
                         $container.masonry({});
                         $container.masonry('reloadItems')
                     }
-
+                    //选择
+                    let Select_mode = 0
+                    $("#Select_mode").click(function () {
+                        if (Select_mode === 0) {
+                            Select_mode = 1;
+                            $("#Select_mode").toggleClass("btn-primary")
+                            $("#Select_mode").css({ "color": "white" })
+                            toastItem({ toast_content: "已开启:选择模式" })
+                        } else {
+                            Select_mode = 0;
+                            $("#Select_mode").toggleClass("btn-primary")
+                            $("#Select_mode").css({ "color": "" })
+                            toastItem({ toast_content: "已关闭:选择模式" })
+                        }
+                    })
+                    // 清除本页记录
                     $("#deleteUrl").click(function () {
-                        // 清除本页记录
                         let delete_startIndex = (currentPage - 1) * itemsPerPage; // 开始下引=（当前页数-1） * 图片展示数量(10)
                         let Number_of_page_pictures = $("#container .item").length //获取当前页的图片数量
                         let delete_endIndex = delete_startIndex + Number_of_page_pictures; // 结束下引= 开始下引+当前页的图片数量
@@ -484,6 +522,7 @@ $(document).ready(function () {
                     })
                 }
             } else {
+                $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
                 switch (options_exe) {
                     case 'Lsky':
@@ -654,7 +693,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：腾讯云COS限制仅能加载最新1000张图片</div>`)
-
+                        $(".options_UploadPath").val(options_UploadPath)
                         function getBucket(marker) {
                             cos.getBucket({
                                 Bucket: options_Bucket,
@@ -668,11 +707,11 @@ $(document).ready(function () {
                                     $("#container").html(Image_acquisition_failed);
                                 } else {
                                     images = data.Contents
-                                    for (let i = images.length - 1; i >= 0; i--) {
-                                        if (images[i].Key.endsWith('/')) {
-                                            images.splice(i, 1);
-                                        }
-                                    }
+                                    // for (let i = images.length - 1; i >= 0; i--) {
+                                    //     if (images[i].Key.endsWith('/')) {
+                                    //         images.splice(i, 1);
+                                    //     }
+                                    // }
                                     if (!images.length) {
                                         $("#container").html(No_picture_data);
                                     } else {
@@ -703,6 +742,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：阿里云OSS限制仅能加载最新1000张图片</div>`)
+                        $(".options_UploadPath").val(options_UploadPath)
                         async function list() {
                             try {
                                 const result = await oss.listV2({
@@ -745,6 +785,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：AWS S3限制仅能加载最新1000张图片</div>`)
+                        $(".options_UploadPath").val(options_UploadPath)
                         const params = {
                             Bucket: options_Bucket,
                             Prefix: options_UploadPath,
@@ -757,7 +798,7 @@ $(document).ready(function () {
                                 $("#container").html(Image_acquisition_failed);
                             } else {
                                 images = data.Contents
-                                images = data.Contents.filter(obj => !obj.Key.endsWith('/'));
+                                // images = data.Contents.filter(obj => !obj.Key.endsWith('/'));
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
@@ -765,7 +806,6 @@ $(document).ready(function () {
                                     currentPage = 1; // 当前第1页
                                     itemsPerPage = 20; // 每页20张图片
                                     totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
-
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
@@ -788,6 +828,7 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                             <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,删除可能会有缓存</div>`)
+                        $(".options_UploadPath").val(options_UploadPath)
                         sendAjax(
                             options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
                             'GET',
@@ -899,7 +940,8 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
                                 item_imgUrl = options_Custom_domain_name + imageUrl.Key
-                                item_liImgName = imageUrl.Key.split('/').pop()
+                                item_liImgName = imageUrl.Key
+                                // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.LastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -908,7 +950,10 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.name); // 删除图片的服务器key值
                                 item_divKey = imageUrl.name
                                 item_imgUrl = options_Custom_domain_name + imageUrl.name
-                                item_liImgName = imageUrl.name.split('/').pop()
+                                item_liImgName = imageUrl.name
+                                // item_liImgName = imageUrl.name.split('/').pop()
+                                if (imageUrl.name == options_UploadPath) {
+                                }
                                 item_liImgSize = (imageUrl.size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.lastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -917,7 +962,8 @@ $(document).ready(function () {
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
                                 item_imgUrl = options_Custom_domain_name + imageUrl.Key
-                                item_liImgName = imageUrl.Key.split('/').pop()
+                                item_liImgName = imageUrl.Key
+                                // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.LastModified
                                 Image_Width_And_Height = "宽:不支持,高:不支持"
@@ -951,7 +997,7 @@ $(document).ready(function () {
                             imageUrl.PLFileType = null;
                         }
                         const item = $(`
-                        <div class="item shadow-lg bg-body-tertiary" key=`+ item_divKey + ` type=` + item_divType + `>
+                        <div class="item shadow-lg bg-body-tertiary" key=`+ item_divKey + ` type=` + imageUrl.PLFileType + `>
                             
                             <ul class="logurl" style="display: none">
                                 <li>`+ item_liImgName + `</li>
@@ -969,10 +1015,8 @@ $(document).ready(function () {
                                 <span>`+ Image_Width_And_Height + `</span>
                             </div>
                         </div>`);
-
                         set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize)
                         $container.append(item);
-
                         // 给删除按钮添加点击事件
                         item.find('.delete').one('click', function () {
                             // 从瀑布流容器中删除图片元素
@@ -1143,9 +1187,25 @@ $(document).ready(function () {
 
                             }
                         });
+
                         // 点击选中
                         item.find('.FileMedia').click(function () {
-                            $(this).parent().toggleClass('gigante');
+                            if (Select_mode === 1) {
+                                $(this).parent().toggleClass('gigante');
+                            } else {
+                                if (!item_liImgName.split('/').pop() || item.attr("type") == "dir") {
+                                    let val = item_liImgName
+                                    if (!item_liImgName.endsWith('/')) {
+                                        val = item_liImgName + '/'
+                                    }
+                                    chrome.storage.local.set({ 'options_UploadPath': val }, function () {
+                                        window.location.reload();
+                                    })
+                                } else {
+                                    OverlayProject(item, item_imgUrl)
+                                }
+
+                            }
                         });
                         // 点击复制
                         item.find('.copy').click(function () {
@@ -1423,6 +1483,21 @@ $(document).ready(function () {
                         }
                     }
                 })
+                //选择
+                let Select_mode = 0
+                $("#Select_mode").click(function () {
+                    if (Select_mode === 0) {
+                        Select_mode = 1;
+                        $("#Select_mode").toggleClass("btn-primary")
+                        $("#Select_mode").css({ "color": "white" })
+                        toastItem({ toast_content: "已开启:选择模式" })
+                    } else {
+                        Select_mode = 0;
+                        $("#Select_mode").toggleClass("btn-primary")
+                        $("#Select_mode").css({ "color": "" })
+                        toastItem({ toast_content: "已关闭:选择模式" })
+                    }
+                })
                 //全选
                 $("#Select_All").click(function () {
                     $("#container .item").toggleClass('gigante');
@@ -1471,7 +1546,6 @@ $(document).ready(function () {
                     }
 
                 })
-
                 //删除选中
                 $("#Delete_Selected").click(function () {
                     let selectedImgs = $(".gigante");
@@ -1668,6 +1742,17 @@ $(document).ready(function () {
                         }, 2000);
                     }
                 }
+                $("#options_UploadPath").click(() => {
+                    chrome.storage.local.set({ 'options_UploadPath': $(".options_UploadPath").val() }, function () {
+                        window.location.reload();
+                    })
+                })
+                $('.options_UploadPath').keydown(function (event) {
+                    if (event.key === 'Enter') {
+                        // 触发与按钮相同的点击事件
+                        $('#options_UploadPath').trigger('click');
+                    }
+                });
             }
 
             function set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize) {
@@ -1711,7 +1796,7 @@ $(document).ready(function () {
                     item.find(".imgs").remove()
                     item.find(".Image_Width_And_Height").remove()
                     item.append(`
-                    <video controls class="video FileMedia" src="`+ item_imgUrl + `" PLlink=` + item_imgUrl + `></video>
+                    <video  class="video FileMedia" src="`+ item_imgUrl + `" PLlink=` + item_imgUrl + ` ></video>
                     `)
                     item.find(".logurl").css("position", "relative")
                 }
@@ -1740,13 +1825,11 @@ $(document).ready(function () {
                                 break;
                         }
                     } else {
+                        item.find("#textarea").val("点击标题栏或编辑框加载文本")
+                    }
+                    item.find(".logurl").one('click', function () {
                         get_item_imgUrl_text()
-                    }
-                    if (xhr_512_state == false) {
-                        item.find(".logurl").one('click', function () {
-                            get_item_imgUrl_text()
-                        })
-                    }
+                    })
                     function get_item_imgUrl_text() {
                         item.find("#textarea").val("文件加载中:0%")
                         let xhr = new XMLHttpRequest();
@@ -1773,10 +1856,209 @@ $(document).ready(function () {
                     }
                 }
             }
+            function OverlayProject(item, item_imgUrl) {
+                // 创建弹出窗口的容器元素
+                const overlayElement = $(`
+            <div class="overlay">
+            <div class="close-button">×</div>
+            <div class="zoomdiv">
+                <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
+                <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
+                <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
+                <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
+                <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
+                <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
+            </div>
+            </div>
+            `);
+
+                // 将容器元素添加到文档主体中
+                $('body').append(overlayElement);
+                $("body").css('overflow', 'hidden');
+                if (item.attr("type") == "video") {
+                    overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
+                } else if (item.attr("type") == "editable") {
+                    overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
+                    get_item_imgUrl_text();
+                } else {
+                    overlayElement.append(`<img src="${item_imgUrl}">`);
+                }
+
+                // 点击关闭按钮时，移除弹出窗口
+                overlayElement.find('.close-button').click(() => {
+                    overlayElement.remove();
+                    $("body").css('overflow', '');
+                });
+                // 点击关闭按钮时，移除弹出窗口
+                overlayElement.find('.repeat-button').click(() => {
+                    overlayElement.find('img, video, textarea').css({
+                        width: "90%",
+                        height: "90%",
+                        top: "",
+                        left: "",
+                        transform: ``,
+                    });
+                });
+
+                // 点击放大按钮时，增加图片尺寸
+                overlayElement.find('.zoomdiv .zoom-button.zoom-in').on('click', function () {
+                    const currentWidth = overlayElement.find('img, video, textarea').width();
+                    const currentHeight = overlayElement.find('img, video, textarea').height();
+                    overlayElement.find('img, video, textarea').css({
+                        width: currentWidth * 1.1,
+                        height: currentHeight * 1.1
+                    });
+                });
+
+                // 点击缩小按钮时，减小图片尺寸
+                overlayElement.find('.zoomdiv .zoom-button.zoom-out').on('click', function () {
+                    const currentWidth = overlayElement.find('img, video, textarea').width();
+                    const currentHeight = overlayElement.find('img, video, textarea').height();
+                    overlayElement.find('img, video, textarea').css({
+                        width: currentWidth / 1.1,
+                        height: currentHeight / 1.1
+                    });
+                });
+
+                // 跟踪当前的旋转角度
+                overlayElement.data('rotation', 0);
+                // 点击旋转按钮时，旋转图片
+                overlayElement.find('.rotate-button').on('click', function () {
+                    let rotation = overlayElement.data('rotation') + 90;
+                    if (rotation > 270) {
+                        overlayElement.data('rotation', 0);
+                        rotation = 0;
+                    }
+                    overlayElement.data('rotation', rotation);
+                    overlayElement.find('img, video, textarea').css({
+                        transform: `rotateZ(${rotation}deg)`
+                    });
+                });
+                // 垂直翻转
+                let rotateDownUp = 0
+                overlayElement.find('.rotate-down-up').on('click', function () {
+                    if (rotateDownUp == 0) {
+                        overlayElement.find('img, video, textarea').css({
+                            transform: `rotateX(180deg)`
+                        });
+                        rotateDownUp = 1
+                    } else {
+                        overlayElement.find('img, video, textarea').css({
+                            transform: `rotateX(0deg)`
+                        });
+                        rotateDownUp = 0
+                    }
+
+                });
+                // 水平翻转
+                let rotateLeftRight = 0
+                overlayElement.find('.rotate-left-right').on('click', function () {
+                    if (rotateLeftRight == 0) {
+                        overlayElement.find('img, video, textarea').css({
+                            transform: `rotateY(180deg)`
+                        });
+                        rotateLeftRight = 1
+                    } else {
+                        overlayElement.find('img, video, textarea').css({
+                            transform: `rotateY(0deg)`
+                        });
+                        rotateLeftRight = 0
+                    }
+                });
+
+                // 监听鼠标滚轮事件
+                overlayElement.on('wheel', 'img, video', function (e) {
+                    e.preventDefault();
+
+                    const zoomAmount = e.originalEvent.deltaY > 0 ? 0.9 : 1.1; // 根据滚动方向确定缩放比例
+                    const element = $(this);
+
+                    // 获取当前元素的宽度和高度
+                    let width = element.width();
+                    let height = element.height();
+
+                    // 获取鼠标相对于元素的偏移量
+                    const mouseX = e.clientX - element.offset().left;
+                    const mouseY = e.clientY - element.offset().top;
+
+                    // 计算缩放后的宽度和高度
+                    width *= zoomAmount;
+                    height *= zoomAmount;
+
+                    // 获取当前滚动条的位置
+                    const scrollX = $(window).scrollLeft();
+                    const scrollY = $(window).scrollTop();
+
+                    // 计算缩放后鼠标指向的位置相对于文档的偏移量
+                    const offsetX = ((mouseX + scrollX) * zoomAmount) - mouseX - scrollX;
+                    const offsetY = ((mouseY + scrollY) * zoomAmount) - mouseY - scrollY;
+
+                    // 设置缩放后的宽度和高度，并考虑鼠标指向的位置的偏移量
+                    element.width(width).css({
+                        top: `-=${offsetY}px`,
+                        left: `-=${offsetX}px`
+                    });
+                    element.height(height);
+                });
+
+                // 监听鼠标按下事件
+                overlayElement.find('img, video').on('mousedown', function (e) {
+                    e.preventDefault();
+                    const element = $(this);
+                    const initialMouseX = e.clientX;
+                    const initialMouseY = e.clientY;
+                    const initialElementX = element.offset().left;
+                    const initialElementY = element.offset().top;
+                    const scrollX = $(window).scrollLeft();
+                    const scrollY = $(window).scrollTop();
+                    // 监听鼠标移动事件
+                    $(document).on('mousemove', function (e) {
+                        const offsetX = e.clientX - initialMouseX;
+                        const offsetY = e.clientY - initialMouseY;
+                        // 计算元素的新位置
+                        const newElementX = initialElementX + offsetX - scrollX;
+                        const newElementY = initialElementY + offsetY - scrollY;
+                        // 设置元素的新位置
+                        element.css({
+                            left: newElementX + 'px',
+                            top: newElementY + 'px'
+                        });
+                    });
+                    // 监听鼠标松开事件
+                    $(document).on('mouseup', function () {
+                        // 停止监听鼠标移动和松开事件
+                        $(document).off('mousemove');
+                        $(document).off('mouseup');
+                    });
+                });
+                // 获取文本
+                function get_item_imgUrl_text() {
+                    overlayElement.find("textarea").val("文件加载中:0%")
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', item_imgUrl, true);
+                    xhr.responseType = 'text';
+                    xhr.onprogress = function (event) {
+                        if (event.lengthComputable) {
+                            var percentComplete = Math.floor((event.loaded / event.total) * 100);
+                            overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');
+                        } else {
+                            overlayElement.find("textarea").val('已加载:' + (event.loaded / 1024).toFixed(2) + "KB");
+                        }
+                    };
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            let responseText = xhr.response;
+                            overlayElement.find("textarea").val(responseText)
+                        } else {
+                            overlayElement.find("textarea").val("文件获取失败!")
+                        }
+                    };
+
+                    xhr.send();
+                }
+            }
         }
-
-        GetPicture_Library()
-
+        Program_Start_Execution()
         $(".dropdown-item").click(function () {
             const value = $(this).attr("value");
             toastItem({ toast_content: "复制模式为:" + value })
@@ -1788,14 +2070,12 @@ $(document).ready(function () {
             let targetElement = $('a[value="' + Copy_Selected_Mode + '"]');
             targetElement.addClass("active")
         });
-
         $("#DeleteALL").click(function () {
             localStorage.UploadLog = "[]"
             chrome.storage.local.set({ 'UploadLog': [] }, function () {
                 window.location.reload();
             })
         })
-
         $("#Browse_mode_switch_button").click(function () {
             window.location.reload();
             if ($(this).hasClass("btn-dark")) {
@@ -1813,6 +2093,24 @@ $(document).ready(function () {
                 $(this).addClass('btn-dark');
             }
         })
+        
+        $("#Time_sorting").click(function () {
+            if (Time_sorting == 0) {
+                Time_sorting = 1
+                $("#Time_sorting").css({
+                    "background-color": "#0d6efd",
+                    "color": "#fff"
+                })
+                Program_Start_Execution()
+            } else {
+                Time_sorting = 0
+                $("#Time_sorting").css({
+                    "background-color": "",
+                    "color": ""
+                })
+                Program_Start_Execution()
+            }
+        });
     })
 
 });
