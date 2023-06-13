@@ -307,7 +307,206 @@ $(document).ready(function () {
 
                             // 点击选中
                             item.find('.FileMedia').click(function () {
-                                $(this).parent().toggleClass('gigante');
+                                if (Select_mode === 1) {
+                                    $(this).parent().toggleClass('gigante');
+                                } else {
+                                    // 创建弹出窗口的容器元素
+                                    const overlayElement = $(`
+                                    <div class="overlay">
+                                    <div class="close-button">×</div>
+                                    <div class="zoomdiv">
+                                        <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
+                                        <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
+                                        <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
+                                        <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
+                                        <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
+                                        <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
+                                    </div>
+                                    </div>
+                                     `);
+
+                                    // 将容器元素添加到文档主体中
+                                    $('body').append(overlayElement);
+                                    $("body").css('overflow', 'hidden');
+                                    if (item.attr("type") == "video") {
+                                        overlayElement.append(`<video src="${imageUrl.url}" controls></video>`);
+                                    } else if (item.attr("type") == "editable") {
+                                        overlayElement.append(`<textarea  PLlink="${imageUrl.url}"></textarea>`);
+                                        get_item_imgUrl_text();
+                                    } else {
+                                        overlayElement.append(`<img src="${imageUrl.url}">`);
+                                    }
+
+                                    // 点击关闭按钮时，移除弹出窗口
+                                    overlayElement.find('.close-button').click(() => {
+                                        overlayElement.remove();
+                                        $("body").css('overflow', '');
+                                    });
+                                    // 点击关闭按钮时，移除弹出窗口
+                                    overlayElement.find('.repeat-button').click(() => {
+                                        overlayElement.find('img, video, textarea').css({
+                                            width: "90%",
+                                            height: "90%",
+                                            top: "",
+                                            left: "",
+                                            transform: ``,
+                                        });
+                                    });
+
+                                    // 点击放大按钮时，增加图片尺寸
+                                    overlayElement.find('.zoomdiv .zoom-button.zoom-in').on('click', function () {
+                                        const currentWidth = overlayElement.find('img, video, textarea').width();
+                                        const currentHeight = overlayElement.find('img, video, textarea').height();
+                                        overlayElement.find('img, video, textarea').css({
+                                            width: currentWidth * 1.1,
+                                            height: currentHeight * 1.1
+                                        });
+                                    });
+
+                                    // 点击缩小按钮时，减小图片尺寸
+                                    overlayElement.find('.zoomdiv .zoom-button.zoom-out').on('click', function () {
+                                        const currentWidth = overlayElement.find('img, video, textarea').width();
+                                        const currentHeight = overlayElement.find('img, video, textarea').height();
+                                        overlayElement.find('img, video, textarea').css({
+                                            width: currentWidth / 1.1,
+                                            height: currentHeight / 1.1
+                                        });
+                                    });
+
+                                    // 跟踪当前的旋转角度
+                                    overlayElement.data('rotation', 0);
+                                    // 点击旋转按钮时，旋转图片
+                                    overlayElement.find('.rotate-button').on('click', function () {
+                                        let rotation = overlayElement.data('rotation') + 90;
+                                        if (rotation > 270) {
+                                            overlayElement.data('rotation', 0);
+                                            rotation = 0;
+                                        }
+                                        overlayElement.data('rotation', rotation);
+                                        overlayElement.find('img, video, textarea').css({
+                                            transform: `rotateZ(${rotation}deg)`
+                                        });
+                                    });
+                                    // 垂直翻转
+                                    let rotateDownUp = 0
+                                    overlayElement.find('.rotate-down-up').on('click', function () {
+                                        if (rotateDownUp == 0) {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateX(180deg)`
+                                            });
+                                            rotateDownUp = 1
+                                        } else {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateX(0deg)`
+                                            });
+                                            rotateDownUp = 0
+                                        }
+
+                                    });
+                                    // 水平翻转
+                                    let rotateLeftRight = 0
+                                    overlayElement.find('.rotate-left-right').on('click', function () {
+                                        if (rotateLeftRight == 0) {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateY(180deg)`
+                                            });
+                                            rotateLeftRight = 1
+                                        } else {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateY(0deg)`
+                                            });
+                                            rotateLeftRight = 0
+                                        }
+                                    });
+                                    // 监听鼠标滚轮事件
+                                    overlayElement.on('mousewheel DOMMouseScroll', 'img, video', function (e) {
+                                        e.preventDefault();
+                                        const zoomAmount = e.originalEvent.deltaY > 0 ? 0.9 : 1.1; // 根据滚动方向确定缩放比例
+                                        const element = $(this);
+
+                                        // 获取当前元素的宽度和高度
+                                        let width = element.width();
+                                        let height = element.height();
+
+                                        // 获取鼠标相对于元素的偏移量
+                                        const mouseX = e.clientX - element.offset().left;
+                                        const mouseY = e.clientY - element.offset().top;
+
+                                        // 计算缩放后的宽度和高度
+                                        width *= zoomAmount;
+                                        height *= zoomAmount;
+
+                                        // 获取当前滚动条的位置
+                                        const scrollX = $(window).scrollLeft();
+                                        const scrollY = $(window).scrollTop();
+
+                                        // 计算缩放后鼠标指向的位置相对于文档的偏移量
+                                        const offsetX = ((mouseX + scrollX) * zoomAmount) - mouseX - scrollX;
+                                        const offsetY = ((mouseY + scrollY) * zoomAmount) - mouseY - scrollY;
+
+                                        // 设置缩放后的宽度和高度，并考虑鼠标指向的位置的偏移量
+                                        element.width(width).css({
+                                            top: `-=${offsetY}px`,
+                                            left: `-=${offsetX}px`
+                                        });
+                                        element.height(height);
+                                    });
+                                    // 监听鼠标按下事件
+                                    overlayElement.find('img, video').on('mousedown', function (e) {
+                                        e.preventDefault();
+                                        const element = $(this);
+                                        const initialMouseX = e.clientX;
+                                        const initialMouseY = e.clientY;
+                                        const initialElementX = element.offset().left;
+                                        const initialElementY = element.offset().top;
+                                        const scrollX = $(window).scrollLeft();
+                                        const scrollY = $(window).scrollTop();
+                                        // 监听鼠标移动事件
+                                        $(document).on('mousemove', function (e) {
+                                            const offsetX = e.clientX - initialMouseX;
+                                            const offsetY = e.clientY - initialMouseY;
+                                            // 计算元素的新位置
+                                            const newElementX = initialElementX + offsetX - scrollX;
+                                            const newElementY = initialElementY + offsetY - scrollY;
+                                            // 设置元素的新位置
+                                            element.css({
+                                                left: newElementX + 'px',
+                                                top: newElementY + 'px'
+                                            });
+                                        });
+                                        // 监听鼠标松开事件
+                                        $(document).on('mouseup', function () {
+                                            // 停止监听鼠标移动和松开事件
+                                            $(document).off('mousemove');
+                                            $(document).off('mouseup');
+                                        });
+                                    });
+                                    // 获取文本
+                                    function get_item_imgUrl_text() {
+                                        overlayElement.find("textarea").val("文件加载中:0%")
+                                        let xhr = new XMLHttpRequest();
+                                        xhr.open('GET', imageUrl.url, true);
+                                        xhr.responseType = 'text';
+                                        xhr.onprogress = function (event) {
+                                            if (event.lengthComputable) {
+                                                var percentComplete = Math.floor((event.loaded / event.total) * 100);
+                                                overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');
+                                            } else {
+                                                overlayElement.find("textarea").val('已加载:' + (event.loaded / 1024).toFixed(2) + "KB");
+                                            }
+                                        };
+                                        xhr.onload = function () {
+                                            if (xhr.status === 200) {
+                                                let responseText = xhr.response;
+                                                overlayElement.find("textarea").val(responseText)
+                                            } else {
+                                                overlayElement.find("textarea").val("文件获取失败!")
+                                            }
+                                        };
+
+                                        xhr.send();
+                                    }
+                                }
                             });
 
                             // 点击复制
@@ -388,9 +587,23 @@ $(document).ready(function () {
                         $container.masonry({});
                         $container.masonry('reloadItems')
                     }
-
+                    //选择
+                    let Select_mode = 0
+                    $("#Select_mode").click(function () {
+                        if (Select_mode === 0) {
+                            Select_mode = 1;
+                            $("#Select_mode").toggleClass("btn-primary")
+                            $("#Select_mode").css({ "color": "white" })
+                            toastItem({ toast_content: "已开启:选择模式" })
+                        } else {
+                            Select_mode = 0;
+                            $("#Select_mode").toggleClass("btn-primary")
+                            $("#Select_mode").css({ "color": "" })
+                            toastItem({ toast_content: "已关闭:选择模式" })
+                        }
+                    })
+                    // 清除本页记录
                     $("#deleteUrl").click(function () {
-                        // 清除本页记录
                         let delete_startIndex = (currentPage - 1) * itemsPerPage; // 开始下引=（当前页数-1） * 图片展示数量(10)
                         let Number_of_page_pictures = $("#container .item").length //获取当前页的图片数量
                         let delete_endIndex = delete_startIndex + Number_of_page_pictures; // 结束下引= 开始下引+当前页的图片数量
@@ -1167,29 +1380,51 @@ $(document).ready(function () {
                                     // 创建弹出窗口的容器元素
                                     const overlayElement = $(`
                                     <div class="overlay">
-                                        <div class="close-button">×</div>
-                                        <div class="zoomdiv">
-                                            <div class="zoom-button zoom-in">+</div>
-                                            <div class="zoom-button zoom-out">-</div>
-                                            <div class="zoom-button rotate-button">&#x21bb;</div>
-                                        </div>
-                                        <img src="${item_imgUrl}">
+                                    <div class="close-button">×</div>
+                                    <div class="zoomdiv">
+                                        <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
+                                        <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
+                                        <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
+                                        <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
+                                        <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
+                                        <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
+                                    </div>
                                     </div>
                                     `);
 
                                     // 将容器元素添加到文档主体中
                                     $('body').append(overlayElement);
+                                    $("body").css('overflow', 'hidden');
+                                    if (item.attr("type") == "video") {
+                                        overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
+                                    } else if (item.attr("type") == "editable") {
+                                        overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
+                                        get_item_imgUrl_text();
+                                    } else {
+                                        overlayElement.append(`<img src="${item_imgUrl}">`);
+                                    }
 
                                     // 点击关闭按钮时，移除弹出窗口
                                     overlayElement.find('.close-button').click(() => {
                                         overlayElement.remove();
+                                        $("body").css('overflow', '');
+                                    });
+                                    // 点击关闭按钮时，移除弹出窗口
+                                    overlayElement.find('.repeat-button').click(() => {
+                                        overlayElement.find('img, video, textarea').css({
+                                            width: "90%",
+                                            height: "90%",
+                                            top: "",
+                                            left: "",
+                                            transform: ``,
+                                        });
                                     });
 
                                     // 点击放大按钮时，增加图片尺寸
                                     overlayElement.find('.zoomdiv .zoom-button.zoom-in').on('click', function () {
-                                        var currentWidth = overlayElement.find('img').width();
-                                        var currentHeight = overlayElement.find('img').height();
-                                        overlayElement.find('img').css({
+                                        const currentWidth = overlayElement.find('img, video, textarea').width();
+                                        const currentHeight = overlayElement.find('img, video, textarea').height();
+                                        overlayElement.find('img, video, textarea').css({
                                             width: currentWidth * 1.1,
                                             height: currentHeight * 1.1
                                         });
@@ -1197,22 +1432,148 @@ $(document).ready(function () {
 
                                     // 点击缩小按钮时，减小图片尺寸
                                     overlayElement.find('.zoomdiv .zoom-button.zoom-out').on('click', function () {
-                                        var currentWidth = overlayElement.find('img').width();
-                                        var currentHeight = overlayElement.find('img').height();
-                                        overlayElement.find('img').css({
+                                        const currentWidth = overlayElement.find('img, video, textarea').width();
+                                        const currentHeight = overlayElement.find('img, video, textarea').height();
+                                        overlayElement.find('img, video, textarea').css({
                                             width: currentWidth / 1.1,
                                             height: currentHeight / 1.1
                                         });
                                     });
+
                                     // 跟踪当前的旋转角度
-                                    let currentRotation = 0;
+                                    overlayElement.data('rotation', 0);
                                     // 点击旋转按钮时，旋转图片
                                     overlayElement.find('.rotate-button').on('click', function () {
-                                        currentRotation += 90;
-                                        overlayElement.find('img').css({
-                                            transform: `rotate(${currentRotation}deg)`
+                                        let rotation = overlayElement.data('rotation') + 90;
+                                        if (rotation > 270) {
+                                            overlayElement.data('rotation', 0);
+                                            rotation = 0;
+                                        }
+                                        overlayElement.data('rotation', rotation);
+                                        overlayElement.find('img, video, textarea').css({
+                                            transform: `rotateZ(${rotation}deg)`
                                         });
                                     });
+                                    // 垂直翻转
+                                    let rotateDownUp = 0
+                                    overlayElement.find('.rotate-down-up').on('click', function () {
+                                        if (rotateDownUp == 0) {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateX(180deg)`
+                                            });
+                                            rotateDownUp = 1
+                                        } else {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateX(0deg)`
+                                            });
+                                            rotateDownUp = 0
+                                        }
+
+                                    });
+                                    // 水平翻转
+                                    let rotateLeftRight = 0
+                                    overlayElement.find('.rotate-left-right').on('click', function () {
+                                        if (rotateLeftRight == 0) {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateY(180deg)`
+                                            });
+                                            rotateLeftRight = 1
+                                        } else {
+                                            overlayElement.find('img, video, textarea').css({
+                                                transform: `rotateY(0deg)`
+                                            });
+                                            rotateLeftRight = 0
+                                        }
+                                    });
+
+                                    // 监听鼠标滚轮事件
+                                    overlayElement.on('mousewheel DOMMouseScroll', 'img, video', function (e) {
+                                        e.preventDefault();
+                                        const zoomAmount = e.originalEvent.deltaY > 0 ? 0.9 : 1.1; // 根据滚动方向确定缩放比例
+                                        const element = $(this);
+
+                                        // 获取当前元素的宽度和高度
+                                        let width = element.width();
+                                        let height = element.height();
+
+                                        // 获取鼠标相对于元素的偏移量
+                                        const mouseX = e.clientX - element.offset().left;
+                                        const mouseY = e.clientY - element.offset().top;
+
+                                        // 计算缩放后的宽度和高度
+                                        width *= zoomAmount;
+                                        height *= zoomAmount;
+
+                                        // 获取当前滚动条的位置
+                                        const scrollX = $(window).scrollLeft();
+                                        const scrollY = $(window).scrollTop();
+
+                                        // 计算缩放后鼠标指向的位置相对于文档的偏移量
+                                        const offsetX = ((mouseX + scrollX) * zoomAmount) - mouseX - scrollX;
+                                        const offsetY = ((mouseY + scrollY) * zoomAmount) - mouseY - scrollY;
+
+                                        // 设置缩放后的宽度和高度，并考虑鼠标指向的位置的偏移量
+                                        element.width(width).css({
+                                            top: `-=${offsetY}px`,
+                                            left: `-=${offsetX}px`
+                                        });
+                                        element.height(height);
+                                    });
+                                    // 监听鼠标按下事件
+                                    overlayElement.find('img, video').on('mousedown', function (e) {
+                                        e.preventDefault();
+                                        const element = $(this);
+                                        const initialMouseX = e.clientX;
+                                        const initialMouseY = e.clientY;
+                                        const initialElementX = element.offset().left;
+                                        const initialElementY = element.offset().top;
+                                        const scrollX = $(window).scrollLeft();
+                                        const scrollY = $(window).scrollTop();
+                                        // 监听鼠标移动事件
+                                        $(document).on('mousemove', function (e) {
+                                            const offsetX = e.clientX - initialMouseX;
+                                            const offsetY = e.clientY - initialMouseY;
+                                            // 计算元素的新位置
+                                            const newElementX = initialElementX + offsetX - scrollX;
+                                            const newElementY = initialElementY + offsetY - scrollY;
+                                            // 设置元素的新位置
+                                            element.css({
+                                                left: newElementX + 'px',
+                                                top: newElementY + 'px'
+                                            });
+                                        });
+                                        // 监听鼠标松开事件
+                                        $(document).on('mouseup', function () {
+                                            // 停止监听鼠标移动和松开事件
+                                            $(document).off('mousemove');
+                                            $(document).off('mouseup');
+                                        });
+                                    });
+                                    // 获取文本
+                                    function get_item_imgUrl_text() {
+                                        overlayElement.find("textarea").val("文件加载中:0%")
+                                        let xhr = new XMLHttpRequest();
+                                        xhr.open('GET', item_imgUrl, true);
+                                        xhr.responseType = 'text';
+                                        xhr.onprogress = function (event) {
+                                            if (event.lengthComputable) {
+                                                var percentComplete = Math.floor((event.loaded / event.total) * 100);
+                                                overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');
+                                            } else {
+                                                overlayElement.find("textarea").val('已加载:' + (event.loaded / 1024).toFixed(2) + "KB");
+                                            }
+                                        };
+                                        xhr.onload = function () {
+                                            if (xhr.status === 200) {
+                                                let responseText = xhr.response;
+                                                overlayElement.find("textarea").val(responseText)
+                                            } else {
+                                                overlayElement.find("textarea").val("文件获取失败!")
+                                            }
+                                        };
+
+                                        xhr.send();
+                                    }
                                 }
                             }
                         });
@@ -1803,14 +2164,16 @@ $(document).ready(function () {
                 }
                 if (imageUrl.PLFileType == "video" || imageUrl.PLFileType == "music") {
                     item.find(".imgs").remove()
+                    item.attr("type", "video")
                     item.find(".Image_Width_And_Height").remove()
                     item.append(`
-                    <video controls class="video FileMedia" src="`+ item_imgUrl + `" PLlink=` + item_imgUrl + `></video>
+                    <video  class="video FileMedia" src="`+ item_imgUrl + `" PLlink=` + item_imgUrl + ` ></video>
                     `)
                     item.find(".logurl").css("position", "relative")
                 }
                 if (imageUrl.PLFileType == "editable") {
                     item.find(".imgs").remove()
+                    item.attr("type", "editable")
                     item.find(".Image_Width_And_Height").remove()
                     item.find(".logurl").css("position", "relative")
                     item.append(`
@@ -1834,13 +2197,11 @@ $(document).ready(function () {
                                 break;
                         }
                     } else {
+                        item.find("#textarea").val("点击标题栏或编辑框加载文本")
+                    }
+                    item.find(".logurl").one('click', function () {
                         get_item_imgUrl_text()
-                    }
-                    if (xhr_512_state == false) {
-                        item.find(".logurl").one('click', function () {
-                            get_item_imgUrl_text()
-                        })
-                    }
+                    })
                     function get_item_imgUrl_text() {
                         item.find("#textarea").val("文件加载中:0%")
                         let xhr = new XMLHttpRequest();
