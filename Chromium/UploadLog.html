@@ -58,19 +58,19 @@
           data-bs-trigger="hover focus" data-bs-content="现在是浏览本地图片模式呢！">切换到本地</button>
       </div>
       <div class="Selected_But">
-        <button type="button" class="btn btn-outline-primary" id="Select_mode"><i
-            class="bi bi-ui-checks-grid"></i> 选择</button>
+        <button type="button" class="btn btn-outline-primary" id="Select_mode"><i class="bi bi-ui-checks-grid"></i>
+          选择</button>
       </div>
       <div class="Selected_But">
-        <button type="button" class="btn btn-outline-primary" id="Select_All"><i
-            class="bi bi-check-circle-fill"></i> 全选</button>
+        <button type="button" class="btn btn-outline-primary" id="Select_All"><i class="bi bi-check-circle-fill"></i>
+          全选</button>
       </div>
       <div class="Selected_But">
-        <button type="button" class="btn btn-outline-primary" id="Select_cancel"><i
-            class="bi bi-check-circle"></i> 取消</button>
+        <button type="button" class="btn btn-outline-primary" id="Select_cancel"><i class="bi bi-check-circle"></i>
+          取消</button>
       </div>
 
-      <div class="btn-group Selected_But">
+      <div class="btn-group Selected_But Copy_Selected">
         <button type="button" class="btn btn-outline-primary" id="Copy_Selected"><i
             class="bi bi-clipboard2-check-fill"></i> 复制选中</button>
         <button id="dropdown-button" type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
@@ -85,10 +85,30 @@
       </div>
 
       <div class="Selected_But">
-        <button type="button" class="btn btn-outline-primary" id="Delete_Selected"><i
-            class="bi bi-x-circle-fill"></i> 删除选中</button>
+        <button type="button" class="btn btn-outline-primary" id="Delete_Selected"><i class="bi bi-x-circle-fill"></i>
+          删除选中</button>
       </div>
 
+    </div>
+    <div class="container-md head">
+      <div class="btn-group Selected_But" role="group" id="Time_sorting">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-filter-circle"></i> 时间排序
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" value="First"><i class="bi bi-sort-down"></i> 最先排前</a></li>
+          <li><a class="dropdown-item" href="#" value="Last"><i class="bi bi-sort-down-alt"></i> 最后排前</a></li>
+        </ul>
+      </div>
+      <div class="btn-group Selected_But" role="group" id="Size_sorting">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-filter-circle"></i> 大小排序
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" value="First"><i class="bi bi-sort-down"></i> 最大排前</a></li>
+          <li><a class="dropdown-item" href="#" value="Last"><i class="bi bi-sort-down-alt"></i> 最小排前</a></li>
+        </ul>
+      </div>
     </div>
     <!-- 图片 -->
     <div id="container" class="container-fluid">

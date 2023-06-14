@@ -194,10 +194,10 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			// 自定义上传属性
 			let optionsUrl
 			let optionHeaders
-
-			/**
-			 * 上传到图床
-			 */
+			console.log(file)
+			// /**
+			//  * 上传到图床
+			//  */
 			switch (options_exe) {
 				case 'Lsky':
 					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";

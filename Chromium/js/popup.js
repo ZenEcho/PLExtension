@@ -1212,6 +1212,7 @@ $(document).ready(function () {
               uploadExe: options_exe,
               upload_domain_name: options_host,
               original_file_name: file.name,
+              file_size: file.size,
               img_file_size: "宽:不支持,高:不支持",
               uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
             }
@@ -1219,6 +1220,7 @@ $(document).ready(function () {
               UploadLog = JSON.parse(UploadLog);
             }
             UploadLog.push(UploadLogData);
+            console.log(UploadLog)
             chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
               // 数据保存完成后的回调函数
               resolve(); // 标记操作完成
