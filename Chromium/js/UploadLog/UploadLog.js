@@ -54,12 +54,12 @@ $(document).ready(function () {
         if (Browse_mode_switching_status == 1) {
             // 开启
             $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是图床服务器的图片噢!点一下就换成加载本地图片啦!')
-            $("#Browse_mode_switch_button").html("切换到本地")
+            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到本地")
             $("#Browse_mode_switch_button").removeClass("btn-dark");
             $("#Browse_mode_switch_button").addClass('btn-danger');
         } else {
             $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是本地图片噢!点一下就可以加载图床服务器上的图片了')
-            $("#Browse_mode_switch_button").html("切换到图床")
+            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到图床")
             $("#Browse_mode_switch_button").removeClass("btn-danger")
             $("#Browse_mode_switch_button").addClass('btn-dark');
         }
@@ -2316,13 +2316,13 @@ $(document).ready(function () {
             if ($(this).hasClass("btn-dark")) {
                 // 开启
                 $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是图床服务器的图片噢!点一下就换成加载本地图片啦!')
-                $("#Browse_mode_switch_button").html("切换到本地")
+                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到本地")
                 chrome.storage.local.set({ 'Browse_mode_switching_status': 1 })
                 $(this).removeClass("btn-dark");
                 $(this).addClass('btn-danger');
             } else {
                 $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是本地图片噢!点一下就可以加载图床服务器上的图片了')
-                $("#Browse_mode_switch_button").html("切换到图床")
+                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到图床")
                 chrome.storage.local.set({ 'Browse_mode_switching_status': 0 })
                 $(this).removeClass("btn-danger")
                 $(this).addClass('btn-dark');

@@ -111,18 +111,6 @@ body {
     margin: 0px 5px 0 5px;
 }
 
-@media screen and (max-width: 992px) {
-
-    .Selected_But button,
-    span {
-        font-size: 12px;
-    }
-
-    .Selected_But span {
-        font-size: 12px;
-    }
-}
-
 .head {
     display: flex;
     justify-content: flex-end;

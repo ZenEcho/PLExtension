@@ -392,94 +392,38 @@ $(document).ready(function () {
           toastItem({
             toast_content: res.message
           })
-          if (!res.message) {
-            res.data.links.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
           imageUrl = res.data.links.url
-          LinksUrl.push(res.data.links.url)
-          LinksHtml.push(res.data.links.html)
-          LinksBBCode.push(res.data.links.bbcode)
-          LinksMarkdown.push(res.data.links.markdown)
-          LinksMDwithlink.push(res.data.links.markdown_with_link)
           break;
         case 'EasyImages':
-          if (res.message) {
-            toastItem({
-              toast_content: res.message
-            })
-            var res = {};
-            toastItem({
-              toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-            })
-            res.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
+          toastItem({
+            toast_content: res.message
+          })
           imageUrl = res.url
-          LinksUrl.push(res.url)
-          LinksHtml.push('&lt;img src="' + res.url + '" alt="' + res.srcName + '" title="' + res.srcName + '" /&gt;')
-          LinksBBCode.push('[img]' + res.url + '[/img]')
-          LinksMarkdown.push('![' + res.srcName + '](' + res.url + ')')
-          LinksMDwithlink.push('[![' + res.srcName + '](' + res.url + ')](' + res.url + ')')
           break;
         case 'ImgURL':
           toastItem({
             toast_content: res.msg
           })
-          if (res.msg) {
-            res.data.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
           imageUrl = res.data.url
-          LinksUrl.push(res.data.url)
-          LinksHtml.push('&lt;img src="' + res.data.url + '" alt="' + res.data.client_name + '" title="' + res.data.client_name + '" /&gt;')
-          LinksBBCode.push('[img]' + res.data.url + '[/img]')
-          LinksMarkdown.push('![' + res.data.client_name + '](' + res.data.url + ')')
-          LinksMDwithlink.push('[![' + res.data.client_name + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'SM_MS':
           toastItem({
             toast_content: res.message
           })
-          if (!res.message) {
-            res.data.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
           imageUrl = res.data.url
-          LinksUrl.push(res.data.url)
-          LinksHtml.push('&lt;img src="' + res.data.url + '" alt="' + res.data.filename + '" title="' + res.data.filename + '" /&gt;')
-          LinksBBCode.push('[img]' + res.data.url + '[/img]')
-          LinksMarkdown.push('![' + res.data.filename + '](' + res.data.url + ')')
-          LinksMDwithlink.push('[![' + res.data.filename + '](' + res.data.url + ')](' + res.data.url + ')')
           break;
         case 'Chevereto':
-          if (!res.image.url) {
-            res.image.url = "服务器响应成功,但无法正确获取到url链接"
-          }
           imageUrl = res.image.url
-          LinksUrl.push(res.image.url)
-          LinksHtml.push('&lt;img src="' + res.image.url + '" alt="' + res.image.original_filename + '" title="' + res.image.original_filename + '" /&gt;')
-          LinksBBCode.push('[img]' + res.image.url + '[/img]')
-          LinksMarkdown.push('![' + res.image.original_filename + '](' + res.image.url + ')')
-          LinksMDwithlink.push('[![' + res.image.original_filename + '](' + res.image.url + ')](' + res.image.url + ')')
           break;
         case 'Hellohao':
           toastItem({
             toast_content: res.info
           })
-          if (!res.info) {
-            res.data.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
           imageUrl = res.data.url
-          LinksUrl.push(res.data.url)
-          LinksHtml.push('&lt;img src="' + res.data.url + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + res.data.url + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + res.data.url + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + res.data.url + ')](' + res.data.url + ')')
+
           break;
         case 'Imgur':
           imageUrl = res.data.link
-          LinksUrl.push(res.data.link)
-          LinksHtml.push('&lt;img src="' + res.data.link + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + res.data.link + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + res.data.link + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + res.data.link + ')](' + res.data.link + ')')
           break;
         case 'UserDiy':
           toastItem({
@@ -501,22 +445,10 @@ $(document).ready(function () {
             options_return_success_value = options_return_success_value[property];
           }
           imageUrl = options_return_success_value
-          LinksUrl.push(options_return_success_value)
-          LinksHtml.push('&lt;img src="' + options_return_success_value + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + options_return_success_value + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + options_return_success_value + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + options_return_success_value + ')](' + options_return_success_value + ')')
           options_host = options_apihost
           break;
         case 'Tencent_COS':
           imageUrl = options_Custom_domain_name + filename
-          LinksUrl.push(imageUrl)
-          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + imageUrl + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
-          // 默认点击
-          $('div[value="' + Copy_Selected_Mode + '"]').click();
           toastItem({
             toast_content: '上传完成'
           })
@@ -524,13 +456,6 @@ $(document).ready(function () {
           break;
         case 'Aliyun_OSS':
           imageUrl = options_Custom_domain_name + filename
-          LinksUrl.push(imageUrl)
-          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + imageUrl + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
-          // 默认点击
-          $('div[value="' + Copy_Selected_Mode + '"]').click();
           toastItem({
             toast_content: '上传完成'
           })
@@ -538,13 +463,6 @@ $(document).ready(function () {
           break;
         case 'AWS_S3':
           imageUrl = options_Custom_domain_name + filename
-          LinksUrl.push(imageUrl)
-          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + imageUrl + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
-          // 默认点击
-          $('div[value="' + Copy_Selected_Mode + '"]').click();
           toastItem({
             toast_content: '上传完成'
           })
@@ -552,44 +470,27 @@ $(document).ready(function () {
           break;
         case 'GitHubUP':
           imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
-          LinksUrl.push(imageUrl)
-          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + imageUrl + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
-          // 默认点击
-          $('div[value="' + Copy_Selected_Mode + '"]').click();
           toastItem({
             toast_content: '上传完成'
           })
           options_host = "GitHub.com"
           break;
         case 'Telegra_ph':
-          if (res.error) {
-            toastItem({
-              toast_content: res.error
-            })
-            return;
-          }
           imageUrl = `https://telegra.ph/` + res[0].src
-          LinksUrl.push(imageUrl)
-          LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + imageUrl + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
           break;
         case 'imgdd':
-          if (!res.url) {
-            res.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-          }
           imageUrl = res.url
-          LinksUrl.push(res.url)
-          LinksHtml.push('&lt;img src="' + res.url + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-          LinksBBCode.push('[img]' + res.url + '[/img]')
-          LinksMarkdown.push('![' + file.name + '](' + res.url + ')')
-          LinksMDwithlink.push('[![' + file.name + '](' + res.url + ')](' + res.url + ')')
           break;
       }
+      if (!imageUrl) {
+        imageUrl = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+      }
+      LinksUrl.push(imageUrl)
+      LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+      LinksBBCode.push('[img]' + imageUrl + '[/img]')
+      LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
+      LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
+
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(file, imageUrl)
     })
@@ -1196,7 +1097,7 @@ $(document).ready(function () {
         uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.bmp,.webp';
         break;
     }
-    function LocalStorage(file, url, UploadLog) {
+    function LocalStorage(file, url) {
       return new Promise((resolve, reject) => {
         chrome.storage.local.get("UploadLog", function (result) {
           let UploadLog = result.UploadLog || [];

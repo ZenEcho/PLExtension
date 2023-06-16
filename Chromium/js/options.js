@@ -505,7 +505,7 @@ $(document).ready(function () {
       <div class="form-group">
         <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
         </label>
-        <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:imgdd.com" disabled="true" value="imgdd.com"/>
+        <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:imgdd.com" value="imgdd.com"/>
       </div>
     `
 
@@ -810,6 +810,7 @@ $(document).ready(function () {
           break;
         case 'imgdd':
           $("#exe_imgdd").addClass('active');
+          $('#options_host').attr("disabled", true)
           break;
         default:
       }
@@ -941,13 +942,12 @@ $(document).ready(function () {
         $("#options_UploadPath").val(options_UploadPath);
         $("#options_token").val(options_token);
       }
-      if (prog.needUid == 13) {//GitHub
+      if (prog.needUid == 13) {//Tg
         $('#options-form').append(prog.html_exeBox);
       }
       if (prog.needUid == 14) {//imgdd
         $('#options-form').append(prog.html_exeBox);
         $('#options_host').val("imgdd.com")
-        $("#options_token").val(options_token);
         $('#options_host').attr("disabled", true)
       }
 
