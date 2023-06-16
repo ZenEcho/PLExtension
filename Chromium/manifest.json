@@ -1,8 +1,8 @@
 {
   "name": "盘络上传",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "manifest_version": 3,
-  "description": "盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,等程序的文件上传",
+  "description": "盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,IMGDD,chevereto,阿里云oss,AWS S3,等程序的文件上传",
   "homepage_url": "https://fileup.dev/",
   "icons": {
     "16": "icons/logo16.png",

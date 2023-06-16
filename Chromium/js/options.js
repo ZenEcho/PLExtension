@@ -501,6 +501,16 @@ $(document).ready(function () {
       `
     const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷，但跑起来就会生风`
 
+    const html_exe_imgdd = `
+      <div class="form-group">
+        <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+        </label>
+        <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:imgdd.com" disabled="true" value="imgdd.com"/>
+      </div>
+    `
+
+    const html_exe_imgddBoxBottom_Tips = `该图床无需配置，直接使用即可`
+
     var optionsProg = {
       '#exe_Lsky': {
         'needUid': 1,
@@ -566,6 +576,11 @@ $(document).ready(function () {
         'needUid': 13,
         'html_exeBox': html_exe_Telegra_ph,
         'bottomTips': html_exe_Telegra_phBoxBottom_Tipsa
+      },
+      "#exe_imgdd": {
+        'needUid': 14,
+        'html_exeBox': html_exe_imgdd,
+        'bottomTips': html_exe_imgddBoxBottom_Tips
       },
       'default': {
         'body': `
@@ -793,6 +808,9 @@ $(document).ready(function () {
         case 'Telegra_ph':
           $("#exe_Telegra_ph").addClass('active');
           break;
+        case 'imgdd':
+          $("#exe_imgdd").addClass('active');
+          break;
         default:
       }
 
@@ -925,6 +943,12 @@ $(document).ready(function () {
       }
       if (prog.needUid == 13) {//GitHub
         $('#options-form').append(prog.html_exeBox);
+      }
+      if (prog.needUid == 14) {//imgdd
+        $('#options-form').append(prog.html_exeBox);
+        $('#options_host').val("imgdd.com")
+        $("#options_token").val(options_token);
+        $('#options_host').attr("disabled", true)
       }
 
       //判断cors开关
