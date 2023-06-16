@@ -2031,7 +2031,7 @@ $(document).ready(function () {
   });
   $('#options_Open_with_Inside').click(function () {
     toastItem({
-      toast_content: '因为API适配问题，改设置被禁止!'
+      toast_content: '因为API适配问题，该设置被禁止!'
     })
     return;
     chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {

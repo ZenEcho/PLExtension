@@ -920,7 +920,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                 if (options_exe == "GitHubUP") {
                     let reader = new FileReader();
                     reader.onload = function () {
-                        GitHub_uploadFile(btoa(reader.result));
+                        GitHub_uploadFile(btoa(reader.result), blob);
                     };
                     reader.readAsBinaryString(blob);
                 }
@@ -943,7 +943,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                     callback(data, null);
                     imageUrl = options_Custom_domain_name + filename
                     options_host = options_Bucket
-                    LocalStorage(filename, imageUrl)
+                    LocalStorage(filename, imageUrl, file)
                 }
                 if (err) {
                     console.error(err);
@@ -966,7 +966,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                 callback(result, null);
                 imageUrl = options_Custom_domain_name + filename
                 options_host = options_Endpoint
-                LocalStorage(filename, imageUrl)
+                LocalStorage(filename, imageUrl, file)
             }).catch((err) => {
                 console.error(err);
                 callback(null, new Error('上传失败,请检查错误报告!'));
@@ -1007,11 +1007,11 @@ chrome.storage.local.get(storagelocal, function (result) {
                 callback(data, null);
                 imageUrl = options_Custom_domain_name + filename;
                 options_host = options_Endpoint;
-                LocalStorage(filename, imageUrl);
+                LocalStorage(filename, imageUrl, file);
             })
 
         }
-        function GitHub_uploadFile(blob) {
+        function GitHub_uploadFile(blob, file) {
             let date = new Date();
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
             // 查询是否冲突
@@ -1072,7 +1072,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                         callback(res, null);
                         options_host = "GitHub.com"
                         imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + UrlImgNema
-                        LocalStorage(UrlImgNema, imageUrl)
+                        LocalStorage(UrlImgNema, imageUrl, file)
                     }).catch(error => {
                         console.log(error)
                         callback(null, new Error('上传失败,请检查错误报告!'));
@@ -1088,7 +1088,7 @@ chrome.storage.local.get(storagelocal, function (result) {
      * @param {string} filename 文件名字 
      * @param {url} imageUrl 上传成功后的url
      */
-    function LocalStorage(filename, imageUrl) {
+    function LocalStorage(filename, imageUrl, file) {
         chrome.storage.local.get('UploadLog', function (result) {
             let UploadLog = result.UploadLog || [];
             if (!Array.isArray(UploadLog)) {
@@ -1119,6 +1119,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                     uploadExe: options_exe,
                     upload_domain_name: options_host,
                     original_file_name: filename,
+                    file_size: file.size,
                     img_file_size: "宽:不支持,高:不支持",
                     uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
                 }

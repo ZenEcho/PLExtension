@@ -194,10 +194,10 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			// 自定义上传属性
 			let optionsUrl
 			let optionHeaders
-			console.log(file)
-			// /**
-			//  * 上传到图床
-			//  */
+
+			/**
+			 * 上传到图床
+			 */
 			switch (options_exe) {
 				case 'Lsky':
 					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
@@ -348,6 +348,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								uploadExe: options_exe + "-" + MethodName,
 								upload_domain_name: options_host,
 								original_file_name: UrlImgNema,
+								file_size: file.size,
 								img_file_size: "宽:不支持,高:不支持",
 								uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
 							}

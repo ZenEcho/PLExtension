@@ -794,8 +794,6 @@ $(document).ready(function () {
                   const progress = Math.round((progressData.loaded / progressData.total) * 100);
                   currentFile.upload.progress = progress;
                   currentFile.status = Dropzone.UPLOADING;
-                  console.log(progressData)
-                  console.log(progress)
                   uploader.emit("uploadprogress", currentFile, progress, 100);
                 }
               }, function (err, data) {
@@ -1220,9 +1218,7 @@ $(document).ready(function () {
               UploadLog = JSON.parse(UploadLog);
             }
             UploadLog.push(UploadLogData);
-            console.log(UploadLog)
             chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
-              // 数据保存完成后的回调函数
               resolve(); // 标记操作完成
             })
           })

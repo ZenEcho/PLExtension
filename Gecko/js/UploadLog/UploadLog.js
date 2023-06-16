@@ -151,8 +151,8 @@ $(document).ready(function () {
                 });
             }
         }
-        let Time_sorting = 0;
-        let Size_sorting;
+        let Sorting_Plan;
+        let Sorting_Methods;
         function Program_Start_Execution() {
             chrome.storage.local.get(["UploadLog"], function (resultData) {
                 if (Browse_mode_switching_status == 0) {
@@ -210,24 +210,31 @@ $(document).ready(function () {
                     if (typeof images !== 'object') {
                         images = JSON.parse(images);
                     }
-
-                    // 将日期字符串转换为日期对象的辅助函数
-                    function parseDate(dateString) {
-                        var parts = dateString.match(/(\d+)/g);
-                        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
-                    }
-
-                    // 根据uploadTime属性进行排序
                     images.sort(function (a, b) {
-                        var dateA = parseDate(a.uploadTime);
-                        var dateB = parseDate(b.uploadTime);
-                        if (Time_sorting == 0 || !Time_sorting) {
-                            return dateB - dateA; // 降序排序
-                        } else {
-                            return dateA - dateB; // 升序排序
+                        if (Sorting_Plan == "Size_sorting") {
+                            if (Sorting_Methods == "First") {
+                                return b.file_size - a.file_size;
+                            }
+                            if (Sorting_Methods == "Last") {
+                                return a.file_size - b.file_size;
+                            }
                         }
-
+                        if (Sorting_Plan == "Time_sorting") {
+                            function parseDate(dateString) {
+                                let parts = dateString.match(/(\d+)/g);
+                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                            }
+                            let dateA = parseDate(a.uploadTime);
+                            let dateB = parseDate(b.uploadTime);
+                            if (Sorting_Methods == "First") {
+                                return dateB - dateA; // 降序排序
+                            }
+                            if (Sorting_Methods == "Last") {
+                                return dateA - dateB; // 升序排序
+                            }
+                        }
                     });
+                    console.log(images)
                     if (!images.length) {
                         $("#container").html(No_picture_data);
                     } else {
@@ -887,37 +894,230 @@ $(document).ready(function () {
                      * 网络图片渲染
                      */
                     async function networkRenderImages() {
+                        console.log(images)
                         switch (options_exe) {
                             case 'Lsky':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.size - a.size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.size - b.size;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.date);
+                                            let dateB = parseDate(b.date);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'SM_MS':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.size - a.size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.size - b.size;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.created_at);
+                                            let dateB = parseDate(b.created_at);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'Hellohao':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.sizes - a.sizes;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.sizes - b.sizes;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.updatetime);
+                                            let dateB = parseDate(b.updatetime);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'Tencent_COS':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.Size - a.Size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.Size - b.Size;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.LastModified);
+                                            let dateB = parseDate(b.LastModified);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'Aliyun_OSS':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.size - a.size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.size - b.size;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.lastModified);
+                                            let dateB = parseDate(b.lastModified);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'AWS_S3':
+                                images.sort(function (a, b) {
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.Size - a.Size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.Size - b.Size;
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            let dateA = new Date(a.LastModified);
+                                            let dateB = new Date(b.LastModified);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
                                 break;
                             case 'GitHubUP':
                                 images.sort(function (a, b) {
-
-                                    if (Size_sorting == 0) {
-                                        
-                                        return b.size - a.size; // 降序排序
+                                    try {
+                                        if (Sorting_Plan == "Size_sorting") {
+                                            if (Sorting_Methods == "First") {
+                                                return b.size - a.size;
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return a.size - b.size;
+                                            }
+                                        }
+                                    } catch (error) {
                                     }
-                                    if (Size_sorting == 1) {//1
-                                        
-                                        return a.size - b.size; // 降序排序
+                                    try {
+                                        if (Sorting_Plan == "Time_sorting") {
+                                            function parseDate(dateString) {
+                                                let parts = dateString.match(/(\d+)/g);
+                                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                                            }
+                                            let dateA = parseDate(a.lastModified);
+                                            let dateB = parseDate(b.lastModified);
+                                            if (Sorting_Methods == "First") {
+                                                return dateB - dateA; // 降序排序
+                                            }
+                                            if (Sorting_Methods == "Last") {
+                                                return dateA - dateB; // 升序排序
+                                            }
+                                        }
+                                    } catch (error) {
                                     }
-
                                 });
-
                                 break;
 
                         }
-                        // 输出排序后的结果
                         $container.empty();
                         switch (options_exe) {
                             case 'SM_MS':
@@ -2094,7 +2294,7 @@ $(document).ready(function () {
             })
         }
         Program_Start_Execution()
-        $(".dropdown-item").click(function () {
+        $(".Copy_Selected .dropdown-item").click(function () {
             const value = $(this).attr("value");
             toastItem({ toast_content: "复制模式为:" + value })
             chrome.storage.local.set({ 'Copy_Selected_Mode': value })
@@ -2130,41 +2330,16 @@ $(document).ready(function () {
         })
 
         $("#Time_sorting").click(function () {
-            if (Time_sorting == 0) {
-                Time_sorting = 1
-                $("#Time_sorting").css({
-                    "background-color": "#0d6efd",
-                    "color": "#fff"
-                })
-                Program_Start_Execution()
-            } else {
-                Time_sorting = 0
-                $("#Time_sorting").css({
-                    "background-color": "",
-                    "color": ""
-                })
-                Program_Start_Execution()
-            }
+            Sorting_Plan = "Time_sorting"
         });
-
         $("#Size_sorting").click(function () {
-            if (Size_sorting == 0 || !Size_sorting) {
-                Size_sorting = 1
-                $("#Size_sorting").css({
-                    "background-color": "#0d6efd",
-                    "color": "#fff"
-                })
-                toastItem({ toast_content: "大小升序" })
-                Program_Start_Execution()
-            } else {
-                Size_sorting = 0
-                $("#Size_sorting").css({
-                    "background-color": "",
-                    "color": ""
-                })
-                toastItem({ toast_content: "大小降序" })
-                Program_Start_Execution()
-            }
+            Sorting_Plan = "Size_sorting"
+        });
+        $("#Time_sorting .dropdown-item, #Size_sorting .dropdown-item").click(function () {
+            const value = $(this).attr("value");
+            Sorting_Methods = value;
+            toastItem({ toast_content: $(this).text() });
+            Program_Start_Execution()
         });
     })
 

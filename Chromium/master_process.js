@@ -93,7 +93,6 @@ function plB(Element) {
 try {
     let TinyMCE_Elements = tinymce.activeEditor
     if (TinyMCE_Elements) {
-        console.log("发现TinyMCE")
         let container = TinyMCE_Elements.getContainer();
         plB(container)
     }
@@ -103,7 +102,6 @@ try {
 try {
     let wangeditor_Elements = editor.getEditableContainer()
     if (wangeditor_Elements) {
-        console.log("发现wangeditor")
         plB(wangeditor_Elements)
     }
 } catch (error) {
@@ -113,7 +111,6 @@ try {
     let ckeditor_Elements = Object.values(CKEDITOR.instances)[0];
     let ckeditor_Element_Node = ckeditor_Elements.container.$
     if (ckeditor_Element_Node) {
-        console.log("发现ckeditor")
         plB(ckeditor_Element_Node)
     }
 } catch (error) {
