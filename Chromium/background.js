@@ -266,6 +266,11 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					optionHeaders = { "Accept": "application/json" };
 					formData.append("file", file);
 					break;
+				case 'imgdd':
+					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
+					optionHeaders = { "Accept": "application/json", "User-Agent": "PLExtension" };
+					formData.append("image", file);
+					break;
 			}
 			fetch(optionsUrl, {
 				method: 'POST',
@@ -317,6 +322,9 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								return;
 							}
 							imageUrl = `https://telegra.ph/` + res[0].src
+							break;
+						case 'imgdd':
+							imageUrl = res.url
 							break;
 					}
 					chrome.storage.local.get('UploadLog', function (result) {

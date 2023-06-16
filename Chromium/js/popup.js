@@ -578,6 +578,17 @@ $(document).ready(function () {
           LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
           LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
           break;
+        case 'imgdd':
+          if (!res.url) {
+            res.url = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+          }
+          imageUrl = res.url
+          LinksUrl.push(res.url)
+          LinksHtml.push('&lt;img src="' + res.url + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
+          LinksBBCode.push('[img]' + res.url + '[/img]')
+          LinksMarkdown.push('![' + file.name + '](' + res.url + ')')
+          LinksMDwithlink.push('[![' + file.name + '](' + res.url + ')](' + res.url + ')')
+          break;
       }
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(file, imageUrl)
@@ -1177,6 +1188,13 @@ $(document).ready(function () {
         uploader.options.paramName = 'file';
         uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.tif,.bmp,.ico,.psd,.webp';
         break;
+      case 'imgdd':
+        uploader.options.maxFilesize = 5
+        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/v1/upload";
+        uploader.options.headers = { "Accept": "application/json" };
+        uploader.options.paramName = 'image';
+        uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.bmp,.webp';
+        break;
     }
     function LocalStorage(file, url, UploadLog) {
       return new Promise((resolve, reject) => {
@@ -1278,7 +1296,7 @@ $(document).ready(function () {
 
 
     if (!options_host) {
-      if (options_exe != "UserDiy" && options_exe != "Tencent_COS" && options_exe != "Aliyun_OSS" && options_exe != "AWS_S3" && options_exe != "GitHubUP") {
+      if (options_exe != "UserDiy" && options_exe != "Tencent_COS" && options_exe != "Aliyun_OSS" && options_exe != "AWS_S3" && options_exe != "GitHubUP" && options_exe != "imgdd") {
         alert('网站域名为空,请初始化配置再上传!');
         window.location.href = "options.html";
         return;
