@@ -476,7 +476,12 @@ $(document).ready(function () {
           options_host = "GitHub.com"
           break;
         case 'Telegra_ph':
-          imageUrl = `https://telegra.ph/` + res[0].src
+          if (options_Custom_domain_name) {
+            imageUrl = options_Custom_domain_name + res[0].src;
+            options_host = options_Custom_domain_name
+          } else {
+            imageUrl = `https://telegra.ph` + res[0].src;
+          }
           break;
         case 'imgdd':
           imageUrl = res.url
@@ -494,7 +499,6 @@ $(document).ready(function () {
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(file, imageUrl)
     })
-
     uploader.on("error", function (file, err) {
       console.log(err)
       LinksUrl.push('文件：' + file.upload.filename + "-上传失败")
@@ -1084,7 +1088,11 @@ $(document).ready(function () {
         break;
       case 'Telegra_ph':
         uploader.options.maxFilesize = 5
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/upload";
+        if (options_Custom_domain_name) {
+          uploader.options.url = options_proxy_server + options_Custom_domain_name + "/upload";
+        } else {
+          uploader.options.url = options_proxy_server + "https://" + options_host + "/upload";
+        }
         uploader.options.headers = { "Accept": "application/json" };
         uploader.options.paramName = 'file';
         uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.tif,.bmp,.ico,.psd,.webp';
