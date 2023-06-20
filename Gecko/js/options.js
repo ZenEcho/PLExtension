@@ -498,6 +498,11 @@ $(document).ready(function () {
       <hr>
       <p class="mb-0">感谢使用,盘络上传扩展!</p>
     </div>
+    <div class="form-group">
+    <label for="options_Custom_domain_name" class="options_Custom_domain_name">自定义访问域名<p class="options_Custom_domain_name_tips">(填写完整信息，留空不设置;)</p>
+    </label>
+    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="例如:https://www.google.com,末端不要加/" />
+    </div>
       `
     const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷，但跑起来就会生风`
 
@@ -811,6 +816,7 @@ $(document).ready(function () {
           break;
         case 'Telegra_ph':
           $("#exe_Telegra_ph").addClass('active');
+          $("#options_Custom_domain_name").val(options_Custom_domain_name);
           break;
         case 'imgdd':
           $("#exe_imgdd").addClass('active');
@@ -948,6 +954,7 @@ $(document).ready(function () {
       }
       if (prog.needUid == 13) {//Tg
         $('#options-form').append(prog.html_exeBox);
+        $("#options_Custom_domain_name").val(options_Custom_domain_name);
       }
       if (prog.needUid == 14) {//imgdd
         $('#options-form').append(prog.html_exeBox);
@@ -1415,6 +1422,7 @@ $(document).ready(function () {
         }
         if ($('#exe_Telegra_ph').hasClass('active')) {
           chrome.storage.local.set({ 'options_host': "telegra.ph" })
+          chrome.storage.local.set({ 'options_Custom_domain_name': $("#options_Custom_domain_name").val() })
         } else {
           chrome.storage.local.set({ 'options_host': $("#options_host").val() })
         }
