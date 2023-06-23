@@ -2093,31 +2093,35 @@ $(document).ready(function () {
                 function OverlayProject(item, item_imgUrl) {
                     // 创建弹出窗口的容器元素
                     const overlayElement = $(`
-                <div class="overlay">
-                <div class="close-button">×</div>
-                <div class="zoomdiv">
-                    <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
-                    <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
-                    <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
-                    <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
-                    <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
-                    <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
-                </div>
-                </div>
-                `);
-
-                    // 将容器元素添加到文档主体中
-                    $('body').append(overlayElement);
+                        <div class="overlay">
+                        <div class="close-button">×</div>
+                        <div class="zoomdiv">
+                            <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
+                            <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
+                            <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
+                            <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
+                            <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
+                            <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
+                        </div>
+                        </div>
+                  `);
                     $("body").css('overflow', 'hidden');
+
                     if (item.attr("type") == "video") {
                         overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
+                    } else if (item.attr("type") == "image") {
+                        overlayElement.append(`<img src="${item_imgUrl}">`);
                     } else if (item.attr("type") == "editable") {
                         overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
                         get_item_imgUrl_text();
                     } else {
-                        overlayElement.append(`<img src="${item_imgUrl}">`);
+                        toastItem({
+                            toast_content: '不支持预览!'
+                        })
+                        return;
                     }
-
+                    // 将容器元素添加到文档主体中
+                    $('body').append(overlayElement);
                     // 点击关闭按钮时，移除弹出窗口
                     overlayElement.find('.close-button').click(() => {
                         overlayElement.remove();
