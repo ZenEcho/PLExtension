@@ -483,9 +483,9 @@ $(document).ready(function () {
                                 imgSrcs.push(links);
                             });
                             if (imgSrcs.length) {
-                                let tempInput = $("<input>");
+                                let tempInput = $(`<textarea>`);
                                 $("body").append(tempInput);
-                                tempInput.val(imgSrcs.join(" ")).select();
+                                tempInput.val(imgSrcs.join("\n")).select();
                                 document.execCommand("copy");
                                 tempInput.remove();
                                 toastItem({
@@ -1770,9 +1770,9 @@ $(document).ready(function () {
                             imgSrcs.push(links);
                         });
                         if (imgSrcs.length) {
-                            let tempInput = $("<input>");
+                            let tempInput = $(`<textarea>`);
                             $("body").append(tempInput);
-                            tempInput.val(imgSrcs.join(" ")).select();
+                            tempInput.val(imgSrcs.join("\n")).select();
                             document.execCommand("copy");
                             tempInput.remove();
                             toastItem({

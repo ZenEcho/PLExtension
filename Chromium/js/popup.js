@@ -1192,11 +1192,11 @@ $(document).ready(function () {
         selected_p_urls.each(function () {
           selected_text.push($(this).text())
         })
-        let tempInput = $("<input>");  // create a temporary input element
-        $("body").append(tempInput);  // add the input element to the document
-        tempInput.val(selected_text.join(" ")).select();  // set the value of the input element to the imgSrcs array joined with newline characters, and select the input element
-        document.execCommand("copy");  // copy the selected text to the clipboard
-        tempInput.remove();  // remove the temporary input element from the document
+        let tempInput = $(`<textarea>`);
+        $("body").append(tempInput);
+        tempInput.val(imgSrcs.join("\n")).select();
+        document.execCommand("copy");
+        tempInput.remove();
         toastItem({
           toast_content: "复制成功"
         })
