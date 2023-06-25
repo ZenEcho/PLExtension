@@ -353,7 +353,7 @@ $(document).ready(function () {
                                             url = src
                                             break;
                                         case 'HTML':
-                                            url = '&lt;img src="' + src + '" alt="' + name + '" title="' + name + '" /&gt;'
+                                            url = '<img src="' + src + '" alt="' + name + '" title="' + name + '" >'
                                             break;
                                         case 'BBCode':
                                             url = '[img]' + src + '[/img]'
@@ -468,7 +468,7 @@ $(document).ready(function () {
                                         links = link
                                         break;
                                     case 'HTML':
-                                        links = '&lt;img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" /&gt;'
+                                        links = '<img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
                                         break;
                                     case 'BBCode':
                                         links = '[img]' + link + '[/img]'
@@ -1451,7 +1451,7 @@ $(document).ready(function () {
                                         url = src
                                         break;
                                     case 'HTML':
-                                        url = '&lt;img src="' + src + '" alt="' + name + '" title="' + name + '" /&gt;'
+                                        url = '<img src="' + src + '" alt="' + name + '" title="' + name + '" >'
                                         break;
                                     case 'BBCode':
                                         url = '[img]' + src + '[/img]'
@@ -1755,7 +1755,7 @@ $(document).ready(function () {
                                     links = link
                                     break;
                                 case 'HTML':
-                                    links = '&lt;img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" /&gt;'
+                                    links = '<img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
                                     break;
                                 case 'BBCode':
                                     links = '[img]' + link + '[/img]'

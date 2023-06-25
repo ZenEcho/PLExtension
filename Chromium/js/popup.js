@@ -1194,7 +1194,7 @@ $(document).ready(function () {
         })
         let tempInput = $(`<textarea>`);
         $("body").append(tempInput);
-        tempInput.val(imgSrcs.join("\n")).select();
+        tempInput.val(selected_text.join("\n")).select();
         document.execCommand("copy");
         tempInput.remove();
         toastItem({
