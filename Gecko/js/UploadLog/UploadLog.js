@@ -234,7 +234,6 @@ $(document).ready(function () {
                             }
                         }
                     });
-                    console.log(images)
                     if (!images.length) {
                         $("#container").html(No_picture_data);
                     } else {
@@ -894,7 +893,6 @@ $(document).ready(function () {
                      * 网络图片渲染
                      */
                     async function networkRenderImages() {
-                        console.log(images)
                         switch (options_exe) {
                             case 'Lsky':
                                 images.sort(function (a, b) {
@@ -1253,6 +1251,10 @@ $(document).ready(function () {
                             $container.append(item);
                             // 给删除按钮添加点击事件
                             item.find('.delete').one('click', function () {
+                                const deleteLoading = $(`
+                                <div class="delete-loading"></div>
+                                        `);
+                                item.append(deleteLoading);
                                 // 从瀑布流容器中删除图片元素
                                 switch (options_exe) {
                                     case 'Lsky':
@@ -1415,6 +1417,7 @@ $(document).ready(function () {
                                 }
                                 async function itemdelete() {
                                     // 启用删除按钮
+                                    deleteLoading.remove()
                                     item.remove()
                                     $container.masonry('reloadItems')
                                     $container.masonry();
@@ -1517,7 +1520,6 @@ $(document).ready(function () {
                                     fitWidth: true,
                                     // horizontalOrder: true
                                 });
-
                             });
                         });
                         $container.masonry({});
@@ -2022,6 +2024,22 @@ $(document).ready(function () {
                     } else {
                         item.find(".imgs").attr("src", "./icons/fileicon/file.png")
                     }
+                    if (imageUrl.PLFileType == "image") {
+                        const loadingIndicator = $(`
+                            <div class="loading">
+                            <div class="loading-shape loading-shape-1"></div>
+                            <div class="loading-shape loading-shape-2"></div>
+                            <div class="loading-shape loading-shape-3"></div>
+                            <div class="loading-shape loading-shape-4"></div>
+                            </div>
+                                `);
+                        item.append(loadingIndicator);
+                        item.imagesLoaded().done(() => {
+                            loadingIndicator.remove();
+                        }).catch(() => {
+                            loadingIndicator.remove();
+                        });
+                    }
                     if (imageUrl.PLFileType != "image") {
                         item.find(".imgs").css("width", "250px")
                         item.find(".imgs").css("height", "250px")
@@ -2105,12 +2123,25 @@ $(document).ready(function () {
                         </div>
                         </div>
                   `);
-                    $("body").css('overflow', 'hidden');
-
+                    const loadingIndicator = $(`
+                            <div class="loading" style="z-index: 9992;">
+                            <div class="loading-shape loading-shape-1"></div>
+                            <div class="loading-shape loading-shape-2"></div>
+                            <div class="loading-shape loading-shape-3"></div>
+                            <div class="loading-shape loading-shape-4"></div>
+                            </div>
+                    `);
                     if (item.attr("type") == "video") {
                         overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
                     } else if (item.attr("type") == "image") {
-                        overlayElement.append(`<img src="${item_imgUrl}">`);
+                        const imageElement = $('<img src="' + item_imgUrl + '">');
+                        imageElement.imagesLoaded().done(() => {
+                            loadingIndicator.remove();
+                        }).catch(() => {
+                            loadingIndicator.remove();
+                        });
+                        overlayElement.append(loadingIndicator);
+                        overlayElement.append(imageElement);
                     } else if (item.attr("type") == "editable") {
                         overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
                         get_item_imgUrl_text();
@@ -2122,10 +2153,21 @@ $(document).ready(function () {
                     }
                     // 将容器元素添加到文档主体中
                     $('body').append(overlayElement);
+                    overlayElement.find('img, video, textarea').hide().slideDown(500);
+                    $("body").css('overflow', 'hidden');
                     // 点击关闭按钮时，移除弹出窗口
                     overlayElement.find('.close-button').click(() => {
-                        overlayElement.remove();
-                        $("body").css('overflow', '');
+                        overlayElement.find('img, video, textarea').last().slideUp(400).promise().done(function () {
+                            // 动画完成后移除弹窗元素
+                            overlayElement.remove();
+                            $("body").css('overflow', '');
+                        });
+                    });
+                    // 按下 "Esc" 键时
+                    document.addEventListener("keydown", function (event) {
+                        if (event.key === "Escape") {
+                            overlayElement.find('.close-button').click()
+                        }
                     });
                     // 点击关闭按钮时，移除弹出窗口
                     overlayElement.find('.repeat-button').click(() => {
@@ -2137,7 +2179,6 @@ $(document).ready(function () {
                             transform: ``,
                         });
                     });
-
                     // 点击放大按钮时，增加图片尺寸
                     overlayElement.find('.zoomdiv .zoom-button.zoom-in').on('click', function () {
                         const currentWidth = overlayElement.find('img, video, textarea').width();
@@ -2147,7 +2188,6 @@ $(document).ready(function () {
                             height: currentHeight * 1.1
                         });
                     });
-
                     // 点击缩小按钮时，减小图片尺寸
                     overlayElement.find('.zoomdiv .zoom-button.zoom-out').on('click', function () {
                         const currentWidth = overlayElement.find('img, video, textarea').width();
@@ -2157,7 +2197,6 @@ $(document).ready(function () {
                             height: currentHeight / 1.1
                         });
                     });
-
                     // 跟踪当前的旋转角度
                     overlayElement.data('rotation', 0);
                     // 点击旋转按钮时，旋转图片
@@ -2203,7 +2242,6 @@ $(document).ready(function () {
                             rotateLeftRight = 0
                         }
                     });
-
                     // 监听鼠标滚轮事件
                     overlayElement.on('wheel', 'img, video', function (e) {
                         e.preventDefault();
@@ -2238,7 +2276,6 @@ $(document).ready(function () {
                         });
                         element.height(height);
                     });
-
                     // 监听鼠标按下事件
                     overlayElement.find('img, video').on('mousedown', function (e) {
                         e.preventDefault();
@@ -2276,6 +2313,7 @@ $(document).ready(function () {
                         xhr.open('GET', item_imgUrl, true);
                         xhr.responseType = 'text';
                         xhr.onprogress = function (event) {
+                            console.log(event)
                             if (event.lengthComputable) {
                                 var percentComplete = Math.floor((event.loaded / event.total) * 100);
                                 overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');
@@ -2291,7 +2329,9 @@ $(document).ready(function () {
                                 overlayElement.find("textarea").val("文件获取失败!")
                             }
                         };
-
+                        xhr.onerror = function (e) {
+                            overlayElement.find("textarea").val("文件获取失败!");
+                        };
                         xhr.send();
                     }
                 }

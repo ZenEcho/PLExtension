@@ -45,6 +45,30 @@ body {
     background-color: red;
 }
 
+.delete-loading {
+    position: absolute;
+    top: 45%;
+    left: 49%;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #4183d7;
+    border-top: 10px solid #f5ab35;
+    animation: delete-loading-animation 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes delete-loading-animation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(720deg);
+    }
+}
+
 .copy {
     user-select: none;
     width: 2rem;
@@ -101,7 +125,6 @@ body {
     width: 100%;
     color: white;
 }
-
 
 .gigante {
     border: #03a9f4 2px solid;

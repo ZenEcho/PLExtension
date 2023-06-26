@@ -171,12 +171,11 @@ $(document).ready(function () {
             Simulated_upload = false; //模拟上传
             Black_curtain = false //显示灰块
             //自动演示
-            $(".Functional_animation").removeClass("active")
+            $(".Functional_animation").remove()
             let confirm_input = confirm("真棒👍!你已经学会“粘贴上传”啦,那我们进行下一步“拖拽上传”吧!")
             if (confirm_input == true) {
               chrome.runtime.sendMessage({ Demonstration_middleware: "Paste_Upload_100" });
             } else {
-              $(".Functional_animation").removeClass("active")
               showIntro()
             }
 
@@ -1381,7 +1380,17 @@ $(document).ready(function () {
 
       $("#Animation_Paste_Upload_Btn").click(() => { //粘贴上传
         removeIntro()
-        $(".Functional_animation").addClass("active")
+        if ($(".Functional_animation").length == 0) {
+          $("body").append(`
+          <div class="Functional_animation">
+            <h1>按下CTRL+V</h1>
+            <div class="animation_finger"></div>
+          </div>
+          `)
+        }
+        setTimeout(function () {
+          $(".Functional_animation").addClass("active")
+        }, 1000);
         Simulated_upload = true;  //模拟上传开启
         /**
          * 剪切板数据
@@ -1403,13 +1412,19 @@ $(document).ready(function () {
   function removeIntro() {
     $("#overlay").remove()
   }
-  // 关闭蒙层和介绍框
   function Animation_auto() {
     removeIntro()
-    $(".Functional_animation").removeClass("active")
+    if ($(".Functional_animation").length == 0) {
+      $("body").append(`
+      <div class="Functional_animation">
+        <h1>按下CTRL+V</h1>
+        <div class="animation_finger"></div>
+      </div>
+      `)
+    }
     setTimeout(() => {
       $(".Functional_animation").addClass("active")
-    }, 1800)
+    }, 1000)
     Simulated_upload = true;  //模拟上传开启
     /**
      * 剪切板数据
@@ -1425,6 +1440,7 @@ $(document).ready(function () {
     removeIntro()
     Simulated_upload = false;
     Black_curtain = false
+    $(".Functional_animation").remove()
     chrome.runtime.sendMessage({ Demonstration_middleware: "closeIntro" });
   }
   let Black_curtain = false

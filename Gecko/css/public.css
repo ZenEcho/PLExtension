@@ -389,3 +389,94 @@ h1:hover {
 .Animation_button6:hover .Animation_button_span::after {
   top: 0
 }
+
+.loading {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 42%;
+  left: 46%;
+  animation: animationContainer 1s ease infinite;
+}
+
+.loading-shape {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.loading-shape-1 {
+  background-color: #1875e5;
+  left: 0;
+  animation: animationloading-shape1 0.5s ease infinite alternate;
+}
+
+.loading-shape-2 {
+  background-color: #c5523f;
+  right: 0;
+  animation: animationloading-shape2 0.5s ease infinite alternate;
+}
+
+.loading-shape-3 {
+  background-color: #499255;
+  bottom: 0;
+  animation: animationloading-shape3 0.5s ease infinite alternate;
+}
+
+.loading-shape-4 {
+  background-color: #f2b736;
+  right: 0;
+  bottom: 0;
+  animation: animationloading-shape4 0.5s ease infinite alternate;
+}
+
+@keyframes animationContainer {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animationloading-shape1 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(20px, 20px);
+  }
+}
+
+@keyframes animationloading-shape2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-20px, 20px);
+  }
+}
+
+@keyframes animationloading-shape3 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(20px, -20px);
+  }
+}
+
+@keyframes animationloading-shape4 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-20px, -20px);
+  }
+}
