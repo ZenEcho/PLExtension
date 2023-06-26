@@ -1997,6 +1997,20 @@ $(document).ready(function () {
                         `)
                     if (imageUrl.PLFileType == "image") {
                         item.find(".imgs").attr("src", item_imgUrl)
+                        const loadingIndicator = $(`
+                            <div class="loading">
+                            <div class="loading-shape loading-shape-1"></div>
+                            <div class="loading-shape loading-shape-2"></div>
+                            <div class="loading-shape loading-shape-3"></div>
+                            <div class="loading-shape loading-shape-4"></div>
+                            </div>
+                                `);
+                        item.append(loadingIndicator);
+                        item.imagesLoaded().done(() => {
+                            loadingIndicator.remove();
+                        }).catch(() => {
+                            loadingIndicator.remove();
+                        });
                     } else if (imageUrl.PLFileType == "ae") {
                         item.find(".imgs").attr("src", "./icons/fileicon/ae.png")
                     } else if (imageUrl.PLFileType == "ai") {
@@ -2023,22 +2037,6 @@ $(document).ready(function () {
                         item.find(".imgs").attr("src", "./icons/fileicon/WORD.png")
                     } else {
                         item.find(".imgs").attr("src", "./icons/fileicon/file.png")
-                    }
-                    if (imageUrl.PLFileType == "image") {
-                        const loadingIndicator = $(`
-                            <div class="loading">
-                            <div class="loading-shape loading-shape-1"></div>
-                            <div class="loading-shape loading-shape-2"></div>
-                            <div class="loading-shape loading-shape-3"></div>
-                            <div class="loading-shape loading-shape-4"></div>
-                            </div>
-                                `);
-                        item.append(loadingIndicator);
-                        item.imagesLoaded().done(() => {
-                            loadingIndicator.remove();
-                        }).catch(() => {
-                            loadingIndicator.remove();
-                        });
                     }
                     if (imageUrl.PLFileType != "image") {
                         item.find(".imgs").css("width", "250px")
@@ -2140,8 +2138,8 @@ $(document).ready(function () {
                         }).catch(() => {
                             loadingIndicator.remove();
                         });
-                        overlayElement.append(loadingIndicator);
                         overlayElement.append(imageElement);
+                        overlayElement.append(loadingIndicator);
                     } else if (item.attr("type") == "editable") {
                         overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
                         get_item_imgUrl_text();
@@ -2169,7 +2167,6 @@ $(document).ready(function () {
                             overlayElement.find('.close-button').click()
                         }
                     });
-                    // 点击关闭按钮时，移除弹出窗口
                     overlayElement.find('.repeat-button').click(() => {
                         overlayElement.find('img, video, textarea').css({
                             width: "90%",
