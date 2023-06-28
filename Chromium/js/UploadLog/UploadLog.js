@@ -154,6 +154,15 @@ $(document).ready(function () {
         let Sorting_Plan;
         let Sorting_Methods;
         function Program_Start_Execution() {
+            $("#container").empty();
+            $("#container").append(`
+            <div class="loading mx-auto" style="z-index: 9992;">
+                <div class="loading-shape loading-shape-1"></div>
+                <div class="loading-shape loading-shape-2"></div>
+                <div class="loading-shape loading-shape-3"></div>
+                <div class="loading-shape loading-shape-4"></div>
+            </div>
+            `);
             chrome.storage.local.get(["UploadLog"], function (resultData) {
                 if (Browse_mode_switching_status == 0) {
                     //本地信息获取
@@ -1998,7 +2007,7 @@ $(document).ready(function () {
                     if (imageUrl.PLFileType == "image") {
                         item.find(".imgs").attr("src", item_imgUrl)
                         const loadingIndicator = $(`
-                            <div class="loading">
+                            <div class="UploadLog-loading">
                             <div class="loading-shape loading-shape-1"></div>
                             <div class="loading-shape loading-shape-2"></div>
                             <div class="loading-shape loading-shape-3"></div>
@@ -2110,36 +2119,36 @@ $(document).ready(function () {
                     // 创建弹出窗口的容器元素
                     const overlayElement = $(`
                         <div class="overlay">
-                        <div class="close-button">×</div>
-                        <div class="zoomdiv">
-                            <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
-                            <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
-                            <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
-                            <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
-                            <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
-                            <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
-                        </div>
+                            <div class="close-button">×</div>
+                            <div class="zoomdiv">
+                                <div class="zoom-button repeat-button"><i class="bi bi-arrow-repeat"></i></div>
+                                <div class="zoom-button zoom-in"><i class="bi bi-plus"></i></div>
+                                <div class="zoom-button zoom-out"><i class="bi bi-dash"></i></div>
+                                <div class="zoom-button rotate-button"><i class="bi bi-arrow-clockwise"></i></div>
+                                <div class="zoom-button rotate-down-up"><i class="bi bi-arrow-down-up"></i></i></div>
+                                <div class="zoom-button rotate-left-right"><i class="bi bi-arrow-left-right"></i></div>
+                            </div>
                         </div>
                   `);
                     const loadingIndicator = $(`
-                            <div class="loading" style="z-index: 9992;">
-                            <div class="loading-shape loading-shape-1"></div>
-                            <div class="loading-shape loading-shape-2"></div>
-                            <div class="loading-shape loading-shape-3"></div>
-                            <div class="loading-shape loading-shape-4"></div>
-                            </div>
+                    <div class="loading" style="z-index: 9992;">
+                        <div class="loading-shape loading-shape-1"></div>
+                        <div class="loading-shape loading-shape-2"></div>
+                        <div class="loading-shape loading-shape-3"></div>
+                        <div class="loading-shape loading-shape-4"></div>
+                    </div>
                     `);
                     if (item.attr("type") == "video") {
                         overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
                     } else if (item.attr("type") == "image") {
                         const imageElement = $('<img src="' + item_imgUrl + '">');
+                        overlayElement.append(loadingIndicator);
+                        overlayElement.append(imageElement);
                         imageElement.imagesLoaded().done(() => {
                             loadingIndicator.remove();
                         }).catch(() => {
                             loadingIndicator.remove();
                         });
-                        overlayElement.append(imageElement);
-                        overlayElement.append(loadingIndicator);
                     } else if (item.attr("type") == "editable") {
                         overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
                         get_item_imgUrl_text();

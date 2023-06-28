@@ -129,6 +129,15 @@ function animation_button(Animation_class) {
   $animationElement.addClass(randomClass);
 }
 
+function animation_button2(Animation_class) {
+  return new Promise(function (resolve, reject) {
+    let classNames = ['css-button-sliding-bottom', 'css-button-sliding-top', 'css-button-sliding-right', 'css-button-sliding-left'];
+    let $animationElement = $(Animation_class);
+    let randomClass = classNames[Math.floor(Math.random() * classNames.length)];
+    $animationElement.addClass(randomClass);
+    resolve();
+  });
+}
 //读取本地数组
 var getSave = [
   "options_exe",

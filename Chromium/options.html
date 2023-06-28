@@ -22,6 +22,14 @@
 </head>
 
 <body>
+  <div class="overlay">
+    <div class="loading">
+      <div class="loading-shape loading-shape-1"></div>
+      <div class="loading-shape loading-shape-2"></div>
+      <div class="loading-shape loading-shape-3"></div>
+      <div class="loading-shape loading-shape-4"></div>
+    </div>
+  </div>
   <div class="shadow-lg" id="header">
     <div class="container-md ">
       <header class="py-3">
@@ -53,40 +61,40 @@
     <div class="row border-bottom Config-Box">
       <div class="Config-Box-Left">
         <div id="options_exe">
-          <button type="button" class=" active Animation_button" id="exe_Lsky" value="Lsky"><span
-              class="Animation_button_span">兰空图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_EasyImages" value="EasyImages"><span
+          <button type="button" class=" active Animation_button2 css-button-sliding-to-bottom--sky" id="exe_Lsky"
+            value="Lsky"><span class="Animation_button_span">兰空图床程序</span></button>
+          <button type="button" class="Animation_button2" id="exe_EasyImages" value="EasyImages"><span
               class="Animation_button_span">简单图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_ImgURL" value="ImgURL"><span
+          <button type="button" class="Animation_button2" id="exe_ImgURL" value="ImgURL"><span
               class="Animation_button_span">ImgURL图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_Chevereto" value="Chevereto"><span
+          <button type="button" class="Animation_button2" id="exe_Chevereto" value="Chevereto"><span
               class="Animation_button_span">Chevereto图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_Hellohao" value="Hellohao"><span
+          <button type="button" class="Animation_button2" id="exe_Hellohao" value="Hellohao"><span
               class="Animation_button_span">Hellohao图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_SM_MS" value="SM_MS"><span
+          <button type="button" class="Animation_button2" id="exe_SM_MS" value="SM_MS"><span
               class="Animation_button_span">SM.MS图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_Imgur" value="Imgur"><span
+          <button type="button" class="Animation_button2" id="exe_Imgur" value="Imgur"><span
               class="Animation_button_span">Imgur图床程序</span></button>
-          <button type="button" class="Animation_button" id="exe_imgdd" value="imgdd"><span
+          <button type="button" class="Animation_button2" id="exe_imgdd" value="imgdd"><span
               class="Animation_button_span">IMGDD图床</span></button>
-          <button type="button" class="Animation_button" id="exe_Tencent_COS" value="Tencent_COS"><span
+          <button type="button" class="Animation_button2" id="exe_Tencent_COS" value="Tencent_COS"><span
               class="Animation_button_span">腾讯云COS</span></button>
-          <button type="button" class="Animation_button" id="exe_Aliyun_OSS" value="Aliyun_OSS"><span
+          <button type="button" class="Animation_button2" id="exe_Aliyun_OSS" value="Aliyun_OSS"><span
               class="Animation_button_span">阿里云OSS</span></button>
-          <button type="button" class="Animation_button" id="exe_AWS_S3" value="AWS_S3"><span
+          <button type="button" class="Animation_button2" id="exe_AWS_S3" value="AWS_S3"><span
               class="Animation_button_span">AWS S3</span></button>
-          <button type="button" class="Animation_button" id="exe_GitHubUP" value="GitHubUP"><span
+          <button type="button" class="Animation_button2" id="exe_GitHubUP" value="GitHubUP"><span
               class="Animation_button_span">GitHub</span></button>
-          <button type="button" class="Animation_button" id="exe_Telegra_ph" value="Telegra_ph"><span
+          <button type="button" class="Animation_button2" id="exe_Telegra_ph" value="Telegra_ph"><span
               class="Animation_button_span">Telegra.ph</span></button>
-          <button type="button" class="Animation_button" id="exe_UserDiy" value="UserDiy"><span
+          <button type="button" class="Animation_button2" id="exe_UserDiy" value="UserDiy"><span
               class="Animation_button_span">自定义上传</span></button>
         </div>
       </div>
       <div class="col Config-Box-Right">
         <div class="row border-bottom Config-Box-Right-header">
-          <div class="btn-group " id="CorsButton">
-            <button type="button" class="btn btn-dark CorsButton">配置CORS代理</button>
+          <div class="CorsButton" id="CorsButton">
+            <button type="button" class="css-button-rounded--black">配置CORS代理</button>
           </div>
 
         </div>
@@ -95,10 +103,10 @@
           </form>
           <div class="container-fluid" style="border: none;">
             <p class="text-bottom-Tips1"></p>
-            <p class="text-bottom-Tips2">提示由 <a href="https://github.com/ZenEcho/PLExtension/" style="color: #03a9f4;" target="_blank">
+            <p class="text-bottom-Tips2">提示由 <a href="https://github.com/ZenEcho/PLExtension/" style="color: #03a9f4;"
+                target="_blank">
                 盘络上传</a> 提供,仅供参考。正式使用请替换。</p>
-            <button type="button" class="btn btn-primary box-shadow" id="options_save"><i
-                class="bi bi-check-lg"></i>保存</button>
+            <button type="button" class="css-button-rounded--sky" id="options_save">保存</button>
           </div>
         </div>
 
@@ -107,7 +115,7 @@
     <div class="row row-cols-auto border-bottom Config-Bottom-Boxs">
       <div id="options_Open_withDiv" class="Config-Bottom-Box">
         <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="css-button-arrow--sky" data-bs-toggle="dropdown" aria-expanded="false">
           </button>
           <ul class="dropdown-menu">
             <li id="options_Open_with_Tab"><a class="dropdown-item" href="#"><i class="bi bi-window"></i>在标签页打开</a></li>
@@ -120,7 +128,7 @@
       </div>
       <div id="GlobalUpload" class="Config-Bottom-Box">
         <div class="btn-group">
-          <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="css-button-arrow--sky" data-bs-toggle="dropdown" aria-expanded="false">
             本地全局+拖拽上传
           </button>
           <ul class="dropdown-menu">
@@ -132,12 +140,12 @@
         </div>
       </div>
       <div class="Config-Bottom-Box">
-        <button id="Sidebar_area" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        <button id="Sidebar_area" type="button" class="css-button-rounded--sky" data-bs-toggle="modal"
           data-bs-target="#uploadArea_Modal">侧边栏区域</button>
       </div>
       <div id="AutoInsert" class="Config-Bottom-Box">
         <div class="btn-group">
-          <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="css-button-arrow--sky" data-bs-toggle="dropdown" aria-expanded="false">
             <span style="color: red;">[新]</span>自动插入
           </button>
           <ul class="dropdown-menu">
@@ -155,7 +163,7 @@
       </div>
       <div class="Config-Bottom-Box">
         <div class="btn-group">
-          <button type="button" class="btn " id="VERSION"> </button>
+          <button type="button" class="btn" id="VERSION"> </button>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
+const overlayElement = $(`.overlay`);
 $(document).ready(function () {
   // 删除a标签的active达到初始化的目的
   $("#options_exe button").removeClass('active');
-
   chrome.storage.local.get(getSave, function (result) {
     // 获取程序以及状态
     var options_exe = result.options_exe
@@ -371,13 +371,13 @@ $(document).ready(function () {
   `
     const html_exeTencent_COSBoxBottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cos" target="_blank"> 腾讯云COS </a>`
     const cos_cors = `
-  <div class="btn-group " id="Object_Storage_cors">
-  <button id="" type="button" class="btn btn-primary">设置COS的CORS</button>
+  <div class="CorsButton" id="Object_Storage_cors">
+  <button type="button" class="css-button-rounded--sky">设置COS的CORS</button>
   </div>
   `
     const cos_putBucketACL = `
-  <div class="btn-group " id="putBucketACL">
-    <button type="button" class="btn btn-primary dropdown-toggle putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
+  <div class="CorsButton" id="putBucketACL">
+    <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
       设置访问权限
     </button>
     <ul class="dropdown-menu">
@@ -429,13 +429,13 @@ $(document).ready(function () {
   `
     const html_exeAliyun_OSSBoxBottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://oss.console.aliyun.com/oss" target="_blank"> 阿里云OSS </a>`
     const oss_cors = ` 
-  <div class="btn-group " id="Object_Storage_cors">
-    <button type="button" class="btn btn-primary">设置OSS的CORS</button>
+  <div class="CorsButton" id="Object_Storage_cors">
+    <button type="button" class="css-button-rounded--sky">设置OSS的CORS</button>
     </div>
     `
     const oss_putBucketACL = `
-  <div class="btn-group " id="putBucketACL">
-    <button type="button" class="btn btn-primary dropdown-toggle putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
+  <div class="CorsButton" id="putBucketACL">
+    <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
       设置访问权限
     </button>
     <ul class="dropdown-menu">
@@ -486,8 +486,8 @@ $(document).ready(function () {
   `
     const html_exeAWS_S3Bottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://s3.console.aws.amazon.com/" target="_blank"> AWS S3 </a>`
     const s3_cors = ` 
-  <div class="btn-group " id="Object_Storage_cors">
-    <button type="button" class="btn btn-primary">设置S3的CORS</button>
+  <div class="CorsButton" id="Object_Storage_cors">
+    <button type="button" class="css-button-rounded--sky">设置S3的CORS</button>
     </div>
     `
 
@@ -903,7 +903,7 @@ $(document).ready(function () {
         $("#CorsButton").parent().append(cos_putBucketACL)
         setBucketACL()
         setBucketCors()
-        if ($('#CorsButton button').is(".btn-danger")) {
+        if ($('#CorsButton button').is(".css-button-rounded--red")) {
           Close_CORS_Element()
         }
       }
@@ -920,7 +920,7 @@ $(document).ready(function () {
         $("#CorsButton").parent().append(oss_putBucketACL)
         setBucketACL()
         setBucketCors()
-        if ($('#CorsButton button').is(".btn-danger")) {
+        if ($('#CorsButton button').is(".css-button-rounded--red")) {
           Close_CORS_Element()
         }
 
@@ -936,7 +936,7 @@ $(document).ready(function () {
         $("#options_Custom_domain_name").val(options_Custom_domain_name);
         $("#CorsButton").parent().append(s3_cors)
         setBucketCors()
-        if ($('#CorsButton button').is(".btn-danger")) {
+        if ($('#CorsButton button').is(".css-button-rounded--red")) {
           Close_CORS_Element()
         }
 
@@ -1629,8 +1629,8 @@ $(document).ready(function () {
      * 统一插入CORS元素
      */
     function Insert_CORS_Element() {
-      $("#CorsButton button").removeClass("btn-dark")
-      $("#CorsButton button").addClass('btn-danger');
+      $("#CorsButton button").removeClass("css-button-rounded--black")
+      $("#CorsButton button").addClass('css-button-rounded--red');
       $('#options-form').append(html_exeCORSForm)
       Edit_Box_Animation()
       $('#options_proxy_server').val(options_proxy_server);
@@ -1643,8 +1643,8 @@ $(document).ready(function () {
      * 统一关闭CORS元素
      */
     function Close_CORS_Element() {
-      $("#CorsButton button").removeClass("btn-danger")
-      $("#CorsButton button").addClass('btn-dark');
+      $("#CorsButton button").removeClass("css-button-rounded--red")
+      $("#CorsButton button").addClass('css-button-rounded--black');
       var $options_proxy_server = $('.options_proxy_server').parent()
       $(".CorsForm").slideUp(500, function () {
         $options_proxy_server.remove();
@@ -1678,7 +1678,7 @@ $(document).ready(function () {
         return;
       }
 
-      if ($('#CorsButton button').is(".btn-danger")) {
+      if ($('#CorsButton button').is(".css-button-rounded--red")) {
         Close_CORS_Element()
         toastItem({
           toast_content: 'CORS代理关闭成功'
@@ -2007,13 +2007,10 @@ $(document).ready(function () {
     })
 
   })//chrome get
-
-
   $("#options_exe button").click(function () {
     $("#options_exe button").removeClass('active'); // 删除所有a标签的active类
     $(this).addClass('active'); // 给当前点击的a标签添加active类
   });
-
   // 修复初始化时输入框读取到undefined
   let optionsNull = ['#options_host', '#options_token', '#options_uid'];
   optionsNull.forEach(function (option) {
@@ -2189,5 +2186,8 @@ $(document).ready(function () {
     return 0; // 版本号相等
   }
 
-  animation_button('.Animation_button')
+  animation_button2('.Animation_button2').then(function () {
+    overlayElement.remove()
+  });
 });
+

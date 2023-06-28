@@ -36,7 +36,7 @@ code {
 
 #options_exe button.active {
   color: white;
-  background-color: #0d6efd;
+  background: #2e1bff;
 }
 
 .Config-Box .Config-Box-Left {
@@ -59,10 +59,16 @@ code {
 .Config-Box-Right-header div {
   padding: 0;
   padding-left: .5rem;
-  width: 10rem;
 }
-
-
+.Config-Box-Right-header div:nth-child(1) {
+  width: 9em;
+}
+.Config-Box-Right-header div:nth-child(2) {
+  width: 10em;
+}
+.Config-Box-Right-header div:nth-child(3) {
+  width: 10em;
+}
 
 .Config-Bottom-Boxs .Config-Bottom-Box {
   padding: .5rem .2rem;
@@ -73,14 +79,12 @@ code {
     margin-top: .2rem;
     margin-bottom: .2rem;
     width: 100%;
+    flex-direction: column;
   }
 
   .Config-Box .Config-Box-Left {
     width: 12rem;
   }
-
-
-
 }
 
 .form-group {
@@ -208,4 +212,181 @@ input:checked+.slider:before {
   width: 10px;
   cursor: move;
   position: absolute;
+}
+
+.css-button-rounded--sky {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid #4433ff;
+  background: #4433ff;
+}
+
+.css-button-rounded--sky:hover {
+  background: #fff;
+  color: #4433ff
+}
+
+.css-button-sliding-bottom {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  z-index: 0;
+  background: #fff;
+  overflow: hidden;
+  border: none;
+  color: #4433ff;
+}
+
+.css-button-sliding-bottom:hover {
+  color: #fff;
+}
+
+.css-button-sliding-bottom:hover:after {
+  height: 100%;
+}
+
+.css-button-sliding-bottom:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: all 0.3s ease;
+  left: 0;
+  top: 0;
+  height: 0;
+  width: 100%;
+  background: #4433ff;
+}
+
+.css-button-sliding-top {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  z-index: 0;
+  background: #fff;
+  overflow: hidden;
+  border: none;
+  color: #4433ff;
+}
+
+.css-button-sliding-top:hover {
+  color: #fff;
+}
+
+.css-button-sliding-top:hover:after {
+  height: 100%;
+}
+
+.css-button-sliding-top:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: all 0.3s ease;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background: #4433ff;
+}
+
+.css-button-sliding-right {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  z-index: 0;
+  background: #fff;
+  overflow: hidden;
+  border: none;
+  color: #4433ff;
+}
+
+.css-button-sliding-right:hover {
+  color: #fff;
+}
+
+.css-button-sliding-right:hover:after {
+  width: 100%;
+}
+
+.css-button-sliding-right:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: all 0.3s ease;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: #4433ff;
+}
+
+.css-button-sliding-left {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  z-index: 0;
+  background: #fff;
+  overflow: hidden;
+  border: none;
+  color: #4433ff;
+}
+
+.css-button-sliding-left:hover {
+  color: #fff;
+}
+
+.css-button-sliding-left:hover:after {
+  width: 100%;
+}
+
+.css-button-sliding-left:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: all 0.3s ease;
+  right: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: #4433ff;
 }

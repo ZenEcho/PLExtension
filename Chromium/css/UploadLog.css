@@ -141,6 +141,7 @@ body {
 }
 
 #container {
+    min-height: 50px;
     margin-top: calc(var(--bs-gutter-x) * .5)
 }
 
@@ -165,6 +166,7 @@ nav {
     justify-content: center;
     align-items: center;
     z-index: 9991;
+    
 }
 
 .overlay img,
