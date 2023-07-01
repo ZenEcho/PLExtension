@@ -53,8 +53,8 @@ function createAlertBox(options) {
   // 点击X关闭弹窗
   $('.alert_title_button').click(function () {
     $("body").css("overflow", "");
-    var $alert = $(this).parent().parent();
-    var $alertBG = $("#alertBG");
+    let $alert = $(this).parent().parent();
+    let $alertBG = $("#alertBG");
     $alert.remove();
     $alertBG.remove();
   });
@@ -423,10 +423,10 @@ chrome.storage.local.get(getSave, function (result) {
         },
         function (res) {
           $('.userBox').hide().fadeIn('slow'); //动画
-          var getUser_name = res.data.username
-          var getUser_capacity = (res.data.disk_limit_raw / 1024 / 1024 / 1024).toFixed(2)
-          var getUser_size = (res.data.disk_usage_raw / 1024 / 1024 / 1024).toFixed(3)
-          var getUser_image_num = "SM.MS不支持"
+          let getUser_name = res.data.username
+          let getUser_capacity = (res.data.disk_limit_raw / 1024 / 1024 / 1024).toFixed(2)
+          let getUser_size = (res.data.disk_usage_raw / 1024 / 1024 / 1024).toFixed(3)
+          let getUser_image_num = "SM.MS不支持"
           $(".userName").text(getUser_name)
           $(".userCapacity").text(getUser_capacity + "GB")
           $(".userSize").text(getUser_size + "GB")

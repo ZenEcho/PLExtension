@@ -508,7 +508,6 @@ h1:hover {
 }
 
 .css-button-rounded--black {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -529,7 +528,6 @@ h1:hover {
 }
 
 .css-button-rounded--red {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -550,7 +548,6 @@ h1:hover {
 }
 
 .css-button-rounded--sky {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -570,8 +567,27 @@ h1:hover {
   color: #4433ff
 }
 
+.css-button-rounded--blue {
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid #2c0b8e;
+  background: #2c0b8e;
+}
+
+.css-button-rounded--blue:hover {
+  background: #fff;
+  color: #2c0b8e
+}
+
 .css-button-arrow--sky {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -610,7 +626,6 @@ h1:hover {
 }
 
 #options_exe .css-button-shadow--sky {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -628,79 +643,4 @@ h1:hover {
 
 #options_exe .css-button-shadow--sky:active {
   box-shadow: 0 4px 2px -3px #ccc, 0 4px 5px 1px #ccc, 0 2px 7px 1px #ccc;
-}
-
-#options_exe .css-button-gradient--9 {
-  min-width: 130px;
-  height: 40px;
-  color: #fff;
-  padding: 5px 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  outline: none;
-  border-radius: 5px;
-  border: none;
-  background-size: 120% auto;
-  background-image: linear-gradient(315deg, #833ab4 0%, #fd1d1d 50%, #fcb045);
-}
-
-#options_exe .css-button-gradient--9:hover {
-  background-position: right center;
-}
-
-#options_exe .css-button-gradient--9:active {
-  top: 2px;
-}
-
-#options_exe .css-button-gradient--8 {
-  min-width: 130px;
-  height: 40px;
-  color: #fff;
-  padding: 5px 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  outline: none;
-  border-radius: 5px;
-  border: none;
-  background-size: 120% auto;
-  background-image: linear-gradient(315deg, #7b4397 0%, #dc2430 75%);
-}
-
-#options_exe .css-button-gradient--8:hover {
-  background-position: right center;
-}
-
-#options_exe .css-button-gradient--8:active {
-  top: 2px;
-}
-
-#options_exe .css-button-gradient--7 {
-  min-width: 130px;
-  height: 40px;
-  color: #fff;
-  padding: 5px 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  outline: none;
-  border-radius: 5px;
-  border: none;
-  background-size: 120% auto;
-  background-image: linear-gradient(315deg, #c02425 0%, #f0cb35 75%);
-}
-
-#options_exe .css-button-gradient--7:hover {
-  background-position: right center;
-}
-
-#options_exe .css-button-gradient--7:active {
-  top: 2px;
 }

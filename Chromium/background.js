@@ -11,7 +11,7 @@ function showNotification(title, message, onClickCallback) {
 	}
 }
 // 安装时的初始化
-var browser_Open_with
+let browser_Open_with
 chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason === "install") {
 		chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
@@ -120,27 +120,27 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		callback = function () { };
 	}
 	chrome.storage.local.get(getSave, function (result) {
-		var options_exe = result.options_exe
-		var options_proxy_server_state = result.options_proxy_server_state
-		var options_proxy_server = result.options_proxy_server
-		var options_host = result.options_host
-		var options_token = result.options_token
-		var options_uid = result.options_uid
-		var options_source = result.options_source
-		var options_source_select = result.options_source_select
-		var options_expiration_select = result.options_expiration_select || "NODEL"
-		var options_album_id = result.options_album_id
-		var options_nsfw_select = result.options_nsfw_select || 0
-		var options_permission_select = result.options_permission_select || 0
+		let options_exe = result.options_exe
+		let options_proxy_server_state = result.options_proxy_server_state
+		let options_proxy_server = result.options_proxy_server
+		let options_host = result.options_host
+		let options_token = result.options_token
+		let options_uid = result.options_uid
+		let options_source = result.options_source
+		let options_source_select = result.options_source_select
+		let options_expiration_select = result.options_expiration_select || "NODEL"
+		let options_album_id = result.options_album_id
+		let options_nsfw_select = result.options_nsfw_select || 0
+		let options_permission_select = result.options_permission_select || 0
 		//自定义请求
-		var options_apihost = result.options_apihost
-		var options_parameter = result.options_parameter
-		var options_Headers = result.options_Headers
-		var options_Body = result.options_Body
-		var options_return_success = result.options_return_success
+		let options_apihost = result.options_apihost
+		let options_parameter = result.options_parameter
+		let options_Headers = result.options_Headers
+		let options_Body = result.options_Body
+		let options_return_success = result.options_return_success
 		// var open_json_button = result.open_json_button
 
-		var d = new Date();
+		let d = new Date();
 		const getFullYear = d.getFullYear()
 		const getMonth = d.getMonth() + 1
 		const getDate = d.getDate()
@@ -257,7 +257,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					optionsUrl = options_proxy_server + options_apihost;
 					formData.append(options_parameter, file);
 					optionHeaders = options_Headers;
-					for (var key in options_Body) {
+					for (let key in options_Body) {
 						formData.append(key, options_Body[key]);
 					}
 					break;
@@ -472,7 +472,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			if (index < base64String.length) {
 				let binaryData = atob(base64String[index]);
 				let array = new Uint8Array(binaryData.length);
-				for (var i = 0; i < binaryData.length; i++) {
+				for (let i = 0; i < binaryData.length; i++) {
 					array[i] = binaryData.charCodeAt(i);
 				}
 				let blob = new Blob([array], { type: 'image/jpeg' });
@@ -590,7 +590,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		});
 	}
 });
-var Simulated_upload = false//模拟上传
+let Simulated_upload = false//模拟上传
 
 chrome.action.onClicked.addListener(function (tab) {
 	chrome.storage.local.get(["browser_Open_with"], function (result) {

@@ -2,41 +2,41 @@ $(document).ready(function () {
   Dropzone.autoDiscover = false;
   chrome.storage.local.get(getSave, function (result) {
     // 初始化读取数据
-    var options_exe = result.options_exe
-    var options_proxy_server_state = result.options_proxy_server_state
-    var options_proxy_server = result.options_proxy_server
-    var options_host = result.options_host
-    var options_token = result.options_token
-    var options_uid = result.options_uid
-    var options_source = result.options_source
-    var options_imgur_post_mode = result.options_imgur_post_mode
-    var options_source_select = result.options_source_select
-    var options_expiration_select = result.options_expiration_select || "NODEL"
-    var options_album_id = result.options_album_id
-    var options_nsfw_select = result.options_nsfw_select || 0
-    var options_permission_select = result.options_permission_select || 0
+    let options_exe = result.options_exe
+    let options_proxy_server_state = result.options_proxy_server_state
+    let options_proxy_server = result.options_proxy_server
+    let options_host = result.options_host
+    let options_token = result.options_token
+    let options_uid = result.options_uid
+    let options_source = result.options_source
+    let options_imgur_post_mode = result.options_imgur_post_mode
+    let options_source_select = result.options_source_select
+    let options_expiration_select = result.options_expiration_select || "NODEL"
+    let options_album_id = result.options_album_id
+    let options_nsfw_select = result.options_nsfw_select || 0
+    let options_permission_select = result.options_permission_select || 0
     //自定义请求
-    var options_apihost = result.options_apihost
-    var options_parameter = result.options_parameter
-    var options_Headers = result.options_Headers
-    var options_Body = result.options_Body
-    var options_return_success = result.options_return_success
-    var open_json_button = result.open_json_button
-    var Copy_Selected_Mode = result.Copy_Selected_Mode
+    let options_apihost = result.options_apihost
+    let options_parameter = result.options_parameter
+    let options_Headers = result.options_Headers
+    let options_Body = result.options_Body
+    let options_return_success = result.options_return_success
+    let open_json_button = result.open_json_button
+    let Copy_Selected_Mode = result.Copy_Selected_Mode
 
     //GitHub
-    var options_owner = result.options_owner
-    var options_repository = result.options_repository
+    let options_owner = result.options_owner
+    let options_repository = result.options_repository
 
     //对象存储
-    var options_SecretId = result.options_SecretId
-    var options_SecretKey = result.options_SecretKey
-    var options_Bucket = result.options_Bucket
-    var options_AppId = result.options_AppId
-    var options_Endpoint = result.options_Endpoint
-    var options_Region = result.options_Region
-    var options_UploadPath = result.options_UploadPath
-    var options_Custom_domain_name = result.options_Custom_domain_name
+    let options_SecretId = result.options_SecretId
+    let options_SecretKey = result.options_SecretKey
+    let options_Bucket = result.options_Bucket
+    let options_AppId = result.options_AppId
+    let options_Endpoint = result.options_Endpoint
+    let options_Region = result.options_Region
+    let options_UploadPath = result.options_UploadPath
+    let options_Custom_domain_name = result.options_Custom_domain_name
 
     // 初始化JSON转换的模式
     if (!open_json_button) {
@@ -98,25 +98,25 @@ $(document).ready(function () {
 
 
     // 定义数组
-    var SvgData = `<img class="icon" src="/icons/logo.ico">`
-    var UserBox = `
+    let SvgData = `<img class="icon" src="/icons/logo.ico">`
+    let UserBox = `
     <div class="userBox"  style="display: none;">
     <i class="bi bi-person"></i>用户:(<span class="userName" style="color: #03a9f4;">游客(仅兰空,SM.MS图床程序)</span>),
     <i class="bi bi-bar-chart-line-fill"></i>总容量:(<span class="userCapacity" style="color: #03a9f4;">0Gb</span>),
     <i class="bi bi-bar-chart-line"></i>已使用:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
     <i class="bi bi-image"></i>图片数量:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
-    var links
-    var LinksUrl = []
-    var LinksHtml = []
-    var LinksBBCode = []
-    var LinksMarkdown = []
-    var LinksMDwithlink = []
-    var imageUrl
-    var filePreviewElements = [];
-    var fileDeletePreview = [];
+    let links
+    let LinksUrl = []
+    let LinksHtml = []
+    let LinksBBCode = []
+    let LinksMarkdown = []
+    let LinksMDwithlink = []
+    let imageUrl
+    let filePreviewElements = [];
+    let fileDeletePreview = [];
     // 实现上传功能
-    var uploader;
+    let uploader;
     if ($('.dropzone').length) {
       uploader = new Dropzone(".dropzone", {
         method: 'post',
@@ -625,7 +625,7 @@ $(document).ready(function () {
         uploader.options.paramName = options_parameter;
         uploader.options.headers = options_Headers
         uploader.on("sending", function (file, xhr, formData) {
-          for (var key in options_Body) {
+          for (let key in options_Body) {
             formData.append(key, options_Body[key]);
           }
         })
@@ -1211,7 +1211,7 @@ $(document).ready(function () {
       }
     }
 
-    var tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
+    let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
     if (tokenRequired.includes(options_exe)) {
       if (!options_token) {
         alert(`${options_exe}图床程序必须填写Token`);
@@ -1313,7 +1313,7 @@ $(document).ready(function () {
 
 
     // 写入标题
-    var options_webtitle = localStorage.options_webtitle
+    let options_webtitle = localStorage.options_webtitle
     $(".title-a").text(options_webtitle)
     $(".exeinfo_p").text(options_exe + "图床程序")
 

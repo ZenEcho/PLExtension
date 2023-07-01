@@ -166,7 +166,7 @@ nav {
     justify-content: center;
     align-items: center;
     z-index: 9991;
-    
+
 }
 
 .overlay img,
@@ -238,4 +238,26 @@ textarea {
 
 .zoom-out {
     font-size: 26px;
+}
+#Select_mode{
+    
+}
+#Copy_Selected{
+    min-width:110px ;
+}
+.Copy_Selected button {
+    font-weight: bold;
+    border: 2px solid #4433ff;
+    color: #4433ff;
+}
+
+.Copy_Selected button:hover {
+    color: #fff;
+    border: 2px solid #4433ff;
+    background-color: #4433ff;
+}
+
+
+.Copy_Selected button:nth-child(2) {
+    border-left: 1px;
 }

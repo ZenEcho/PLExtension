@@ -29,56 +29,56 @@ let storagelocal = [
 var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
-    var imageUrl
-    var options_exe = result.options_exe
-    var options_proxy_server_state = result.options_proxy_server_state
-    var options_proxy_server = result.options_proxy_server
+    let imageUrl
+    let options_exe = result.options_exe
+    let options_proxy_server_state = result.options_proxy_server_state
+    let options_proxy_server = result.options_proxy_server
     //GitHub
-    var options_token = result.options_token
-    var options_owner = result.options_owner
-    var options_repository = result.options_repository
+    let options_token = result.options_token
+    let options_owner = result.options_owner
+    let options_repository = result.options_repository
     //对象存储
-    var options_SecretId = result.options_SecretId
-    var options_SecretKey = result.options_SecretKey
-    var options_Bucket = result.options_Bucket
-    var options_AppId = result.options_AppId
-    var options_Endpoint = result.options_Endpoint
-    var options_Region = result.options_Region
-    var options_UploadPath = result.options_UploadPath
-    var options_Custom_domain_name = result.options_Custom_domain_name
+    let options_SecretId = result.options_SecretId
+    let options_SecretKey = result.options_SecretKey
+    let options_Bucket = result.options_Bucket
+    let options_AppId = result.options_AppId
+    let options_Endpoint = result.options_Endpoint
+    let options_Region = result.options_Region
+    let options_UploadPath = result.options_UploadPath
+    let options_Custom_domain_name = result.options_Custom_domain_name
 
     let Animation_time; // 定义多少秒关闭iframe
     let iframe_mouseover = false // 定义iframe状态
-    var GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
+    let GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
 
-    var uploadArea = document.createElement('div'); //定义上传区域/侧边栏
+    let uploadArea = document.createElement('div'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
 
 
-    var uploadAreaTips = document.createElement('div'); //定义上传区域的提示
+    let uploadAreaTips = document.createElement('div'); //定义上传区域的提示
     uploadAreaTips.className = 'uploadAreaTips';
     uploadAreaTips.id = "uploadAreaTips"
-    var PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
-    var PNGlogo32 = chrome.runtime.getURL("icons/logo32.png");
-    var PNGlogo64 = chrome.runtime.getURL("icons/logo64.png");
-    var PNGlogo128 = chrome.runtime.getURL("icons/logo128.png");
-    var finger = chrome.runtime.getURL("icons/dh/t.png");
+    let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
+    let PNGlogo32 = chrome.runtime.getURL("icons/logo32.png");
+    let PNGlogo64 = chrome.runtime.getURL("icons/logo64.png");
+    let PNGlogo128 = chrome.runtime.getURL("icons/logo128.png");
+    let finger = chrome.runtime.getURL("icons/dh/t.png");
     document.body.appendChild(uploadArea);
     document.body.appendChild(uploadAreaTips);
 
-    var popupUrl = chrome.runtime.getURL('popup.html');
+    let popupUrl = chrome.runtime.getURL('popup.html');
     // 创建一个iframe元素
-    var iframe = document.createElement('iframe');
+    let iframe = document.createElement('iframe');
     iframe.className = 'PNGiframe'
     document.body.appendChild(iframe);
 
     //自定义图标区域
-    var edit_uploadArea_width = result.edit_uploadArea_width
-    var edit_uploadArea_height = result.edit_uploadArea_height
-    var edit_uploadArea_Location = result.edit_uploadArea_Location
-    var edit_uploadArea_opacity = result.edit_uploadArea_opacity
-    var edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
-    var edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
+    let edit_uploadArea_width = result.edit_uploadArea_width
+    let edit_uploadArea_height = result.edit_uploadArea_height
+    let edit_uploadArea_Location = result.edit_uploadArea_Location
+    let edit_uploadArea_opacity = result.edit_uploadArea_opacity
+    let edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
+    let edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
     uploadArea.style.width = edit_uploadArea_width + "px"
     uploadArea.style.height = edit_uploadArea_height + "%"
     uploadArea.style.top = edit_uploadArea_Location + "%"
@@ -170,7 +170,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     /**
      * 实现获取侧边栏的位置信息
      */
-    var PNGsidebarRect = uploadArea.getBoundingClientRect();
+    let PNGsidebarRect = uploadArea.getBoundingClientRect();
     window.addEventListener('resize', function () {
         uploadArea.style.display = "block"
         PNGsidebarRect = uploadArea.getBoundingClientRect();
@@ -368,29 +368,22 @@ chrome.storage.local.get(storagelocal, function (result) {
         let uploadAreaTipsRect = uploadAreaTips.getBoundingClientRect();
         let uploadAreaTipsX = event.clientX - uploadAreaTipsRect.left;
         let uploadAreaTipsY = event.clientY - uploadAreaTipsRect.top;
-        switch (GlobalUpload) {
-            case 'GlobalUpload_Default':
-                // 判断拖拽点是否在上传区域内
-                if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                if (uploadAreaTipsX >= 0 && uploadAreaTipsX <= uploadAreaTipsRect.width && uploadAreaTipsY >= 0 && uploadAreaTipsY <= uploadAreaTipsRect.height) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                uploadAreaTips.style.bottom = "10px";
-                switch (edit_uploadArea_Left_or_Right) {
-                    case "Left":
-                        uploadArea.style.left = "0";
-                        break;
-                    case "Right":
-                        uploadArea.style.right = "0";
-                        break;
-                }
-                break;
-            case 'GlobalUpload_off':
-                break;
+        if (GlobalUpload == "GlobalUpload_Default") {
+            // 判断拖拽点是否在上传区域内
+            if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            if (uploadAreaTipsX >= 0 && uploadAreaTipsX <= uploadAreaTipsRect.width && uploadAreaTipsY >= 0 && uploadAreaTipsY <= uploadAreaTipsRect.height) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            uploadAreaTips.style.bottom = "10px";
+            if (edit_uploadArea_Left_or_Right == "Left") {
+                uploadArea.style.left = "0";
+            } else {
+                uploadArea.style.right = "0";
+            }
         }
     }
     /**
@@ -551,7 +544,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             }
 
         }
-
         //v2exReply
         if (pageText.toLowerCase().includes("v2ex")) {
             let reply_content_Advanced = document.getElementById("topic_content")
@@ -561,7 +553,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
             }
         }
-
         //nodeseek
         if (pageText.toLowerCase().includes("nodeseek")) {
             let nodeseek = document.getElementById("markdown-input")
@@ -569,7 +560,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                 nodeseek.parentNode.parentNode.appendChild(item)
             }
         }
-
         //Xiuno
         if (pageText.toLowerCase().includes("xiuno")) {
             if (pageText.toLowerCase().includes("粗体") || pageText.toLowerCase().includes("回帖")) {
@@ -620,17 +610,15 @@ chrome.storage.local.get(storagelocal, function (result) {
             let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
             HaloEditorHeader.appendChild(item)
         }
-
         function master_processCSS(file) {
-            var link = document.createElement('link');
+            let link = document.createElement('link');
             link.href = chrome.runtime.getURL(file);
             link.rel = 'stylesheet';
             (document.head || document.documentElement).appendChild(link);
         }
         master_processCSS('master_process.css');
-
         function addJs(file) {
-            var script = document.createElement('script');
+            let script = document.createElement('script');
             script.src = chrome.runtime.getURL(file);
             script.onload = function () {
                 this.remove();
@@ -649,154 +637,159 @@ chrome.storage.local.get(storagelocal, function (result) {
      */
     function AutoInsertFun(AutoInsert_message_content) {
         chrome.storage.local.get(["AutoInsert"], function (result) {
-            if (result.AutoInsert == "AutoInsert_on") {
-                let Find_Editor = false
-                let pageText = document.body.innerText;
-                let scripts = document.querySelectorAll('script');
-                //Discuz
-                if (pageText.toLowerCase().includes("discuz")) {
-                    let Discuz = document.getElementById("fastpostmessage")
-                    let Discuz_Interactive_reply = document.getElementById("postmessage")
-                    let Discuz_Advanced = document.getElementById("e_textarea")
-                    let Discuz_Advanced_iframe
-                    try {
-                        Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe")
-                    } catch (error) {
-
-                    }
-                    if (Discuz_Interactive_reply) {
-                        if (Find_Editor == true) { return; }
-                        //如果是回复楼层
-                        let originalContent = Discuz_Interactive_reply.value;
-                        Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
-                        Find_Editor = true
-                    } else if (Discuz) {
-                        if (Find_Editor == true) { return; }
-                        //如果是回复楼主
-                        let originalContent = Discuz.value;
-                        Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
-                        Find_Editor = true
-                    }
-                    if (Discuz_Advanced) {
-                        if (Find_Editor == true) { return; }
-                        if (Discuz_Advanced_iframe) {
-                            let bodyElement = Discuz_Advanced_iframe.contentDocument.body
-                            let img = document.createElement('img')
-                            img.src = AutoInsert_message_content
-                            bodyElement.appendChild(img)
-                            Find_Editor = true
-                        } else {
-                            let originalContent = Discuz_Advanced.value;
-                            Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
-                            Find_Editor = true
-                        }
-                    }
+            if (result.AutoInsert != "AutoInsert_on") { return; }
+            let Find_Editor = false
+            let pageText = document.body.innerText;
+            let scripts = document.querySelectorAll('script');
+            //Discuz
+            if (pageText.toLowerCase().includes("discuz")) {
+                let Discuz = document.getElementById("fastpostmessage")
+                let Discuz_Interactive_reply = document.getElementById("postmessage")
+                let Discuz_Advanced = document.getElementById("e_textarea")
+                let Discuz_Advanced_iframe
+                try {
+                    Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe")
+                } catch (error) {
 
                 }
-                //v2exReply
-                if (pageText.toLowerCase().includes("v2ex")) {
-                    if (pageText.toLowerCase().includes("主题创建指南")) {
-                        let reply_content_Advanced = document.getElementById("topic_content")
-                        if (reply_content_Advanced) {
-                            if (Find_Editor == true) { return; }
-                            let originalContent = reply_content_Advanced.value;
-                            reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
-                            Find_Editor = true
-                        }
-                    }
-
-                }
-                //nodeseek
-                if (pageText.toLowerCase().includes("nodeseek")) {
-                    let nodeseek = document.getElementById("markdown-input")
-                    if (nodeseek) {
-                        if (Find_Editor == true) { return; }
-                        let originalContent = nodeseek.value;
-                        nodeseek.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
-                        Find_Editor = true
-                    }
-
-                }
-                //hostevaluate
-                if (pageText.toLowerCase().includes("hostevaluate")) {
-                    let hostevaluate = document.getElementsByClassName("write-container")
-                    if (hostevaluate.length) {
-                        if (Find_Editor == true) { return; }
-                        let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
-                        let originalContent = write.value;
-                        write.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
-                        Find_Editor = true
-                    }
-                }
-                //Typecho
-                if (pageText.toLowerCase().includes("typecho")) {
-                    let text = document.getElementById("text")
-                    if (text) {
-                        if (Find_Editor == true) { return; }
-                        let originalContent = text.value;
-                        text.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
-                        Find_Editor = true
-                    }
-                }
-                //CodeMirror
-                let CodeMirror = document.querySelector(".CodeMirror");
-                if (CodeMirror) {
+                if (Discuz_Interactive_reply) {
                     if (Find_Editor == true) { return; }
-                    window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+                    //如果是回复楼层
+                    let originalContent = Discuz_Interactive_reply.value;
+                    Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                    Find_Editor = true
+                } else if (Discuz) {
+                    if (Find_Editor == true) { return; }
+                    //如果是回复楼主
+                    let originalContent = Discuz.value;
+                    Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
                     Find_Editor = true
                 }
-                //Gutenberg Editor
-                let Gutenberg = document.getElementById("wpbody-content")
-                if (Gutenberg) {
+                if (Discuz_Advanced) {
                     if (Find_Editor == true) { return; }
-                    window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
-                    Find_Editor = true
+                    if (Discuz_Advanced_iframe) {
+                        let bodyElement = Discuz_Advanced_iframe.contentDocument.body
+                        let img = document.createElement('img')
+                        img.src = AutoInsert_message_content
+                        bodyElement.appendChild(img)
+                        Find_Editor = true
+                    } else {
+                        let originalContent = Discuz_Advanced.value;
+                        Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
+                        Find_Editor = true
+                    }
                 }
-                scripts.forEach(function (script) {
-                    if (Find_Editor == true) { return; }
-                    let src = script.getAttribute('src');
-                    //TinyMCE 5/6 Editor
-                    if (src && src.includes('tinymce')) {
-                        window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-                        Find_Editor = true
-                        return;
-                    }
-                    //wangeditor
-                    if (src && src.includes('wangeditor')) {
-                        window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-                        Find_Editor = true
-                        return;
-                    }
-                    //ckeditor4
-                    if (src && src.includes('ckeditor4')) {
-                        window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-                        Find_Editor = true
-                        return;
-                    }
-                    //ckeditor5
-                    if (src && src.includes('ckeditor5')) {
-                        window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-                        Find_Editor = true
-                        return;
-                    }
-                    //ckeditor4/5
-                    if (src && src.includes('ckeditor')) {
-                        window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-                        Find_Editor = true
-                        return;
-                    }
-                    //Halo
-                    if (src && src.includes('halo')) {
-                        let HaloEditor_Element = document.querySelector('.ProseMirror');
-                        if (HaloEditor_Element) {
-                            HaloEditor_Element.focus();
-                            document.execCommand('insertImage', false, AutoInsert_message_content);
-                        }
-                        Find_Editor = true
-                        return;
-                    }
-                });
+
             }
+            //v2exReply
+            if (pageText.toLowerCase().includes("v2ex")) {
+                if (pageText.toLowerCase().includes("主题创建指南")) {
+                    let reply_content_Advanced = document.getElementById("topic_content")
+                    if (reply_content_Advanced) {
+                        if (Find_Editor == true) { return; }
+                        let originalContent = reply_content_Advanced.value;
+                        reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                        Find_Editor = true
+                    }
+                }
+
+            }
+            //nodeseek
+            if (pageText.toLowerCase().includes("nodeseek")) {
+                let nodeseek = document.getElementById("markdown-input")
+                if (nodeseek) {
+                    if (Find_Editor == true) { return; }
+                    let originalContent = nodeseek.value;
+                    nodeseek.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                    Find_Editor = true
+                }
+
+            }
+            //hostevaluate
+            if (pageText.toLowerCase().includes("hostevaluate")) {
+                let hostevaluate = document.getElementsByClassName("write-container")
+                if (hostevaluate.length) {
+                    if (Find_Editor == true) { return; }
+                    let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
+                    let originalContent = write.value;
+                    write.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                    Find_Editor = true
+                }
+            }
+            //Typecho
+            if (pageText.toLowerCase().includes("typecho")) {
+                let text = document.getElementById("text")
+                if (text) {
+                    if (Find_Editor == true) { return; }
+                    let originalContent = text.value;
+                    text.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                    Find_Editor = true
+                }
+            }
+            //CodeMirror
+            let CodeMirror = document.querySelector(".CodeMirror");
+            if (CodeMirror) {
+                if (Find_Editor == true) { return; }
+                window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+                Find_Editor = true
+            }
+            //Gutenberg Editor
+            let Gutenberg = document.getElementById("wpbody-content")
+            if (Gutenberg) {
+                if (Find_Editor == true) { return; }
+                window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
+                Find_Editor = true
+            }
+            scripts.forEach(function (script) {
+                if (Find_Editor == true) { return; }
+                let src = script.getAttribute('src');
+                //TinyMCE 5/6 Editor
+                if (src && src.includes('tinymce')) {
+                    window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                    Find_Editor = true
+                    return;
+                }
+                //wangeditor
+                if (src && src.includes('wangeditor')) {
+                    window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                    Find_Editor = true
+                    return;
+                }
+                //ckeditor4
+                if (src && src.includes('ckeditor4')) {
+                    window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                    Find_Editor = true
+                    return;
+                }
+                //ckeditor5
+                if (src && src.includes('ckeditor5')) {
+                    window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                    Find_Editor = true
+                    return;
+                }
+                //ckeditor4/5
+                if (src && src.includes('ckeditor')) {
+                    window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                    Find_Editor = true
+                    return;
+                }
+                //Halo
+                if (src && src.includes('halo')) {
+                    let HaloEditor_Element = document.querySelector('.ProseMirror');
+                    if (HaloEditor_Element) {
+                        HaloEditor_Element.focus();
+                        document.execCommand('insertImage', false, AutoInsert_message_content);
+                    }
+                    Find_Editor = true
+                    return;
+                }
+                //ueditor 百度
+                if (src && src.includes('ueditor')) {
+                    window.postMessage({ type: 'ueditor', data: AutoInsert_message_content }, '*');
+                    Find_Editor = true
+                    return;
+                }
+            });
         })
     }
 
@@ -1017,8 +1010,8 @@ chrome.storage.local.get(storagelocal, function (result) {
             // 查询是否冲突
             let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
             data.content = blob
-            try {
-                fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema, {
+            function fetchContent(url) {
+                return fetch(url, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + options_token,
@@ -1028,34 +1021,20 @@ chrome.storage.local.get(storagelocal, function (result) {
                     .then(response => response.json())
                     .then(res => {
                         if (res.sha) {
-                            data.sha = res.sha
+                            data.sha = res.sha;
                         }
-                        Upload_method()
-                    })
-            } catch (error) {
-                try {
-                    fetch("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + options_token,
-                            'Content-Type': 'application/json'
-                        },
-                    })
-                        .then(response => response.json())
-                        .then(res => {
-                            console.log(res)
-                            if (res.sha) {
-                                data.sha = res.sha
-                            }
-                            Upload_method()
-                        })
-                } catch (error) {
-                    console.log(error)
-                    chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
-                    return;
-                }
+                        Upload_method();
+                    });
             }
 
+            fetchContent(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema)
+                .catch(() => {
+                    return fetchContent("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema);
+                })
+                .catch(error => {
+                    console.log(error);
+                    chrome.runtime.sendMessage({ Loudspeaker: "上传失败，请打开DevTools查看报错并根据常见问题进行报错排除" });
+                });
 
             function Upload_method() {
                 fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + UrlImgNema, {
@@ -1135,7 +1114,7 @@ chrome.storage.local.get(storagelocal, function (result) {
             });
         });
     }
-    var Simulated_upload = false//模拟上传
+    let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
             // 收到盘络扩展网站传来的信息

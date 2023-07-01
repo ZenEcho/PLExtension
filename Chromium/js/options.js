@@ -4,48 +4,48 @@ $(document).ready(function () {
   $("#options_exe button").removeClass('active');
   chrome.storage.local.get(getSave, function (result) {
     // 获取程序以及状态
-    var options_exe = result.options_exe
-    var options_proxy_server_state = result.options_proxy_server_state
-    var options_proxy_server = result.options_proxy_server
-    var options_host = result.options_host
-    var options_token = result.options_token
-    var options_uid = result.options_uid
-    var options_source = result.options_source
-    var options_imgur_post_mode = result.options_imgur_post_mode
-    var options_expiration_select = result.options_expiration_select || "NODEL"
-    var options_album_id = result.options_album_id
-    var options_nsfw_select = result.options_nsfw_select || 0
-    var options_permission_select = result.options_permission_select || 0
+    let options_exe = result.options_exe
+    let options_proxy_server_state = result.options_proxy_server_state
+    let options_proxy_server = result.options_proxy_server
+    let options_host = result.options_host
+    let options_token = result.options_token
+    let options_uid = result.options_uid
+    let options_source = result.options_source
+    let options_imgur_post_mode = result.options_imgur_post_mode
+    let options_expiration_select = result.options_expiration_select || "NODEL"
+    let options_album_id = result.options_album_id
+    let options_nsfw_select = result.options_nsfw_select || 0
+    let options_permission_select = result.options_permission_select || 0
 
     //自定义请求
-    var options_apihost = result.options_apihost
-    var options_parameter = result.options_parameter
-    var options_Headers = result.options_Headers
-    var options_Body = result.options_Body
-    var options_return_success = result.options_return_success
-    var open_json_button = result.open_json_button
+    let options_apihost = result.options_apihost
+    let options_parameter = result.options_parameter
+    let options_Headers = result.options_Headers
+    let options_Body = result.options_Body
+    let options_return_success = result.options_return_success
+    let open_json_button = result.open_json_button
 
     //GitHub
-    var options_owner = result.options_owner
-    var options_repository = result.options_repository
+    let options_owner = result.options_owner
+    let options_repository = result.options_repository
 
     //对象存储
-    var options_SecretId = result.options_SecretId
-    var options_SecretKey = result.options_SecretKey
-    var options_Bucket = result.options_Bucket
-    var options_AppId = result.options_AppId
-    var options_Endpoint = result.options_Endpoint
-    var options_Region = result.options_Region
-    var options_UploadPath = result.options_UploadPath
-    var options_Custom_domain_name = result.options_Custom_domain_name
+    let options_SecretId = result.options_SecretId
+    let options_SecretKey = result.options_SecretKey
+    let options_Bucket = result.options_Bucket
+    let options_AppId = result.options_AppId
+    let options_Endpoint = result.options_Endpoint
+    let options_Region = result.options_Region
+    let options_UploadPath = result.options_UploadPath
+    let options_Custom_domain_name = result.options_Custom_domain_name
 
     //自定义图标区域
-    var edit_uploadArea_width = result.edit_uploadArea_width
-    var edit_uploadArea_height = result.edit_uploadArea_height
-    var edit_uploadArea_Location = result.edit_uploadArea_Location
-    var edit_uploadArea_opacity = result.edit_uploadArea_opacity
-    var edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
-    var edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
+    let edit_uploadArea_width = result.edit_uploadArea_width
+    let edit_uploadArea_height = result.edit_uploadArea_height
+    let edit_uploadArea_Location = result.edit_uploadArea_Location
+    let edit_uploadArea_opacity = result.edit_uploadArea_opacity
+    let edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
+    let edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
     // 初始化新安装时的判断跨域开关
     if (options_proxy_server_state == 0) {
       options_proxy_server = ""
@@ -516,7 +516,7 @@ $(document).ready(function () {
 
     const html_exe_imgddBoxBottom_Tips = `该图床无需配置，直接使用即可`
 
-    var optionsProg = {
+    let optionsProg = {
       '#exe_Lsky': {
         'needUid': 1,
         'html_exeBox': html_exeLskyBox,
@@ -1645,7 +1645,7 @@ $(document).ready(function () {
     function Close_CORS_Element() {
       $("#CorsButton button").removeClass("css-button-rounded--red")
       $("#CorsButton button").addClass('css-button-rounded--black');
-      var $options_proxy_server = $('.options_proxy_server').parent()
+      let $options_proxy_server = $('.options_proxy_server').parent()
       $(".CorsForm").slideUp(500, function () {
         $options_proxy_server.remove();
       });// CORS动画
@@ -2020,7 +2020,7 @@ $(document).ready(function () {
   });
 
   // 写入标题
-  var options_webtitle = localStorage.options_webtitle
+  let options_webtitle = localStorage.options_webtitle
   $(".title-a").text(options_webtitle)
 
   // 初始化底部打开方式

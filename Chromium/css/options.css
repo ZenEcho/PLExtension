@@ -60,12 +60,15 @@ code {
   padding: 0;
   padding-left: .5rem;
 }
+
 .Config-Box-Right-header div:nth-child(1) {
   width: 9em;
 }
+
 .Config-Box-Right-header div:nth-child(2) {
   width: 10em;
 }
+
 .Config-Box-Right-header div:nth-child(3) {
   width: 10em;
 }
