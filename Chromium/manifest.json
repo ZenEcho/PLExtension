@@ -25,6 +25,7 @@
         "js/oss/aliyun-oss-sdk.min.js",
         "js/s3/aws-sdk.min.js",
         "js/confetti.js",
+        "js/public.js",
         "content_scripts.js"
       ],
       "css": [

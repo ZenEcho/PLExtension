@@ -138,8 +138,9 @@ function animation_button2(Animation_class) {
     resolve();
   });
 }
+
 //读取本地数组
-var getSave = [
+var storagelocal = [
   "options_exe",
   "options_proxy_server_state",
   "options_proxy_server",
@@ -177,6 +178,7 @@ var getSave = [
   "UploadLog",
   "Browse_mode_switching_status",
   "Copy_Selected_Mode",
+  "GlobalUpload",
   "edit_uploadArea_width",
   "edit_uploadArea_height",
   "edit_uploadArea_Location",
@@ -184,6 +186,50 @@ var getSave = [
   "edit_uploadArea_auto_close_time",
   "edit_uploadArea_Left_or_Right"
 ]
+var uploader;
+var options_exe,
+  options_proxy_server_state,
+  options_proxy_server,
+  options_host,
+  options_token,
+  options_uid,
+  options_source,
+  options_imgur_post_mode,
+  options_source_select,
+  options_expiration_select, //删除时间
+  options_album_id,//相册
+  options_nsfw_select,//是否健康
+  options_permission_select,//是否公开
+  //自定义请求
+  options_apihost,
+  options_parameter,
+  options_Headers,
+  options_Body,
+  options_return_success,
+  //GitHub
+  options_owner,
+  options_repository,
+  //对象存储
+  options_SecretId,
+  options_SecretKey,
+  options_Bucket,
+  options_AppId,
+  options_Endpoint,
+  options_Region,
+  options_UploadPath,
+  options_Custom_domain_name,
+
+  open_json_button,
+  UploadLog,
+  Browse_mode_switching_status,
+  Copy_Selected_Mode,
+  GlobalUpload,
+  edit_uploadArea_width,
+  edit_uploadArea_height,
+  edit_uploadArea_Location,
+  edit_uploadArea_opacity,
+  edit_uploadArea_auto_close_time,
+  edit_uploadArea_Left_or_Right;
 
 var fileTypeMap = {
   '.zip': 'compressedfile',
@@ -331,7 +377,7 @@ function sendAjax(url, type, data, headers, successCallback, errorCallback) {
     error: errorCallback
   });
 }
-chrome.storage.local.get(getSave, function (result) {
+chrome.storage.local.get(storagelocal, function (result) {
 
   let options_exe = result.options_exe
   let options_proxy_server = result.options_proxy_server

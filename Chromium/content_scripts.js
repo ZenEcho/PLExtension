@@ -1,55 +1,30 @@
 /**
  * 本地存储key
  */
-let storagelocal = [
-    "options_exe",
-    "options_proxy_server",
-    "options_proxy_server_state",
-    "GlobalUpload",
-    "edit_uploadArea_width",
-    "edit_uploadArea_height",
-    "edit_uploadArea_Location",
-    "edit_uploadArea_opacity",
-    "edit_uploadArea_auto_close_time",
-    "edit_uploadArea_Left_or_Right",
-    //GitHub
-    "options_token",
-    "options_owner",
-    "options_repository",
-    //对象存储
-    "options_SecretId",
-    "options_SecretKey",
-    "options_Bucket",
-    "options_AppId",
-    "options_Endpoint",
-    "options_Region",
-    "options_UploadPath",
-    "options_Custom_domain_name",
-]
 var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
     let imageUrl
-    let options_exe = result.options_exe
-    let options_proxy_server_state = result.options_proxy_server_state
-    let options_proxy_server = result.options_proxy_server
+    options_exe = result.options_exe
+    options_proxy_server_state = result.options_proxy_server_state
+    options_proxy_server = result.options_proxy_server
     //GitHub
-    let options_token = result.options_token
-    let options_owner = result.options_owner
-    let options_repository = result.options_repository
+    options_token = result.options_token
+    options_owner = result.options_owner
+    options_repository = result.options_repository
     //对象存储
-    let options_SecretId = result.options_SecretId
-    let options_SecretKey = result.options_SecretKey
-    let options_Bucket = result.options_Bucket
-    let options_AppId = result.options_AppId
-    let options_Endpoint = result.options_Endpoint
-    let options_Region = result.options_Region
-    let options_UploadPath = result.options_UploadPath
-    let options_Custom_domain_name = result.options_Custom_domain_name
+    options_SecretId = result.options_SecretId
+    options_SecretKey = result.options_SecretKey
+    options_Bucket = result.options_Bucket
+    options_AppId = result.options_AppId
+    options_Endpoint = result.options_Endpoint
+    options_Region = result.options_Region
+    options_UploadPath = result.options_UploadPath
+    options_Custom_domain_name = result.options_Custom_domain_name
 
     let Animation_time; // 定义多少秒关闭iframe
     let iframe_mouseover = false // 定义iframe状态
-    let GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
+    GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
 
     let uploadArea = document.createElement('div'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
@@ -73,12 +48,12 @@ chrome.storage.local.get(storagelocal, function (result) {
     document.body.appendChild(iframe);
 
     //自定义图标区域
-    let edit_uploadArea_width = result.edit_uploadArea_width
-    let edit_uploadArea_height = result.edit_uploadArea_height
-    let edit_uploadArea_Location = result.edit_uploadArea_Location
-    let edit_uploadArea_opacity = result.edit_uploadArea_opacity
-    let edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
-    let edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
+    edit_uploadArea_width = result.edit_uploadArea_width
+    edit_uploadArea_height = result.edit_uploadArea_height
+    edit_uploadArea_Location = result.edit_uploadArea_Location
+    edit_uploadArea_opacity = result.edit_uploadArea_opacity
+    edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
+    edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
     uploadArea.style.width = edit_uploadArea_width + "px"
     uploadArea.style.height = edit_uploadArea_height + "%"
     uploadArea.style.top = edit_uploadArea_Location + "%"
@@ -1069,7 +1044,7 @@ chrome.storage.local.get(storagelocal, function (result) {
      */
     function LocalStorage(filename, imageUrl, file) {
         chrome.storage.local.get('UploadLog', function (result) {
-            let UploadLog = result.UploadLog || [];
+            UploadLog = result.UploadLog || [];
             if (!Array.isArray(UploadLog)) {
                 UploadLog = [];
             }
@@ -1106,7 +1081,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                     UploadLog = JSON.parse(UploadLog);
                 }
                 UploadLog.push(UploadLogData);
-                chrome.storage.local.set({ 'UploadLog': UploadLog })
                 chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
                     chrome.runtime.sendMessage({ Loudspeaker: "图片上传成功，前往上传日志页面即可查看" });
                     AutoInsertFun(imageUrl)

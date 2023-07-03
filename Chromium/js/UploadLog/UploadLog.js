@@ -1,27 +1,27 @@
 $(document).ready(function () {
-    chrome.storage.local.get(getSave, function (result) {
+    chrome.storage.local.get(storagelocal, function (result) {
         // 获取程序以及状态
-        let options_exe = result.options_exe;
-        let options_proxy_server = result.options_proxy_server;
-        let options_host = result.options_host;
-        let options_token = result.options_token
-        let options_proxy_server_state = result.options_proxy_server_state
-        let Browse_mode_switching_status = result.Browse_mode_switching_status
-        let Copy_Selected_Mode = result.Copy_Selected_Mode
+        options_exe = result.options_exe;
+        options_proxy_server = result.options_proxy_server;
+        options_host = result.options_host;
+        options_token = result.options_token
+        options_proxy_server_state = result.options_proxy_server_state
+        Browse_mode_switching_status = result.Browse_mode_switching_status
+        Copy_Selected_Mode = result.Copy_Selected_Mode
 
         //对象存储
-        let options_SecretId = result.options_SecretId
-        let options_SecretKey = result.options_SecretKey
-        let options_Bucket = result.options_Bucket
-        let options_AppId = result.options_AppId
-        let options_Endpoint = result.options_Endpoint
-        let options_Region = result.options_Region
-        let options_UploadPath = result.options_UploadPath
-        let options_Custom_domain_name = result.options_Custom_domain_name
+        options_SecretId = result.options_SecretId
+        options_SecretKey = result.options_SecretKey
+        options_Bucket = result.options_Bucket
+        options_AppId = result.options_AppId
+        options_Endpoint = result.options_Endpoint
+        options_Region = result.options_Region
+        options_UploadPath = result.options_UploadPath
+        options_Custom_domain_name = result.options_Custom_domain_name
 
         //GitHub
-        let options_owner = result.options_owner
-        let options_repository = result.options_repository
+        options_owner = result.options_owner
+        options_repository = result.options_repository
 
         let images
         let imageUrlkey = [] //必须在这里初始化
@@ -1738,13 +1738,13 @@ $(document).ready(function () {
                         Select_mode = 1;
                         $("#Select_mode").removeClass("css-button-rounded--sky")
                         $("#Select_mode").addClass("css-button-rounded--blue")
-                  
+
                         toastItem({ toast_content: "已开启:选择模式" })
                     } else {
                         Select_mode = 0;
                         $("#Select_mode").removeClass("css-button-rounded--blue")
                         $("#Select_mode").addClass("css-button-rounded--sky")
-                      
+
                         toastItem({ toast_content: "已关闭:选择模式" })
                     }
                 })

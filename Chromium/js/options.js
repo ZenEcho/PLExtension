@@ -2,50 +2,50 @@ const overlayElement = $(`.overlay`);
 $(document).ready(function () {
   // 删除a标签的active达到初始化的目的
   $("#options_exe button").removeClass('active');
-  chrome.storage.local.get(getSave, function (result) {
+  chrome.storage.local.get(storagelocal, function (result) {
     // 获取程序以及状态
-    let options_exe = result.options_exe
-    let options_proxy_server_state = result.options_proxy_server_state
-    let options_proxy_server = result.options_proxy_server
-    let options_host = result.options_host
-    let options_token = result.options_token
-    let options_uid = result.options_uid
-    let options_source = result.options_source
-    let options_imgur_post_mode = result.options_imgur_post_mode
-    let options_expiration_select = result.options_expiration_select || "NODEL"
-    let options_album_id = result.options_album_id
-    let options_nsfw_select = result.options_nsfw_select || 0
-    let options_permission_select = result.options_permission_select || 0
+    options_exe = result.options_exe
+    options_proxy_server_state = result.options_proxy_server_state
+    options_proxy_server = result.options_proxy_server
+    options_host = result.options_host
+    options_token = result.options_token
+    options_uid = result.options_uid
+    options_source = result.options_source
+    options_imgur_post_mode = result.options_imgur_post_mode
+    options_expiration_select = result.options_expiration_select || "NODEL"
+    options_album_id = result.options_album_id
+    options_nsfw_select = result.options_nsfw_select || 0
+    options_permission_select = result.options_permission_select || 0
 
     //自定义请求
-    let options_apihost = result.options_apihost
-    let options_parameter = result.options_parameter
-    let options_Headers = result.options_Headers
-    let options_Body = result.options_Body
-    let options_return_success = result.options_return_success
-    let open_json_button = result.open_json_button
+    options_apihost = result.options_apihost
+    options_parameter = result.options_parameter
+    options_Headers = result.options_Headers
+    options_Body = result.options_Body
+    options_return_success = result.options_return_success
+    open_json_button = result.open_json_button
 
     //GitHub
-    let options_owner = result.options_owner
-    let options_repository = result.options_repository
+    options_owner = result.options_owner
+    options_repository = result.options_repository
 
     //对象存储
-    let options_SecretId = result.options_SecretId
-    let options_SecretKey = result.options_SecretKey
-    let options_Bucket = result.options_Bucket
-    let options_AppId = result.options_AppId
-    let options_Endpoint = result.options_Endpoint
-    let options_Region = result.options_Region
-    let options_UploadPath = result.options_UploadPath
-    let options_Custom_domain_name = result.options_Custom_domain_name
+    options_SecretId = result.options_SecretId
+    options_SecretKey = result.options_SecretKey
+    options_Bucket = result.options_Bucket
+    options_AppId = result.options_AppId
+    options_Endpoint = result.options_Endpoint
+    options_Region = result.options_Region
+    options_UploadPath = result.options_UploadPath
+    options_Custom_domain_name = result.options_Custom_domain_name
 
     //自定义图标区域
-    let edit_uploadArea_width = result.edit_uploadArea_width
-    let edit_uploadArea_height = result.edit_uploadArea_height
-    let edit_uploadArea_Location = result.edit_uploadArea_Location
-    let edit_uploadArea_opacity = result.edit_uploadArea_opacity
-    let edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
-    let edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
+    edit_uploadArea_width = result.edit_uploadArea_width
+    edit_uploadArea_height = result.edit_uploadArea_height
+    edit_uploadArea_Location = result.edit_uploadArea_Location
+    edit_uploadArea_opacity = result.edit_uploadArea_opacity
+    edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
+    edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
     // 初始化新安装时的判断跨域开关
     if (options_proxy_server_state == 0) {
       options_proxy_server = ""
