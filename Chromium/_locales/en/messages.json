@@ -3,7 +3,7 @@
     "message": "PLExtension"
   },
   "app_description": {
-    "message": "PLExtension is a free upload extension that provides file upload capabilities for programs such as lsky, EasyImages, chevereto, Alibaba Cloud OSS, AWS S3, and more."
+    "message": "PLExtension that provides file upload capabilities for programs such as lsky, EasyImages, chevereto, Alibaba OSS, AWS S3, and more."
   },
   "Installing_initialization": {
     "message": "Installing initialization..."
