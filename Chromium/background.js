@@ -1,4 +1,7 @@
 function showNotification(title, message, onClickCallback) {
+	if (!title) {
+		title = chrome.i18n.getMessage("app_name")
+	}
 	chrome.notifications.create({
 		type: 'basic',
 		title: title,
@@ -14,12 +17,30 @@ function showNotification(title, message, onClickCallback) {
 let browser_Open_with
 chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason === "install") {
-		chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
-			chrome.action.setPopup({
-				popup: "popup.html"
+		try {
+			if (window.navigator.userAgent.indexOf('Firefox') > -1) {
+				chrome.storage.local.set({ 'browser_Open_with': 1 }, function () {
+					chrome.tabs.create({
+						'url': ('popup.html')
+					});
+					console.log(chrome.i18n.getMessage("Installing_initialization"));
+				});
+			} else {
+				chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
+					chrome.action.setPopup({
+						popup: "popup.html"
+					});
+					console.log(chrome.i18n.getMessage("Installing_initialization"));
+				});
+			}
+		} catch (error) {
+			chrome.storage.local.set({ 'browser_Open_with': 1 }, function () {
+				chrome.tabs.create({
+					'url': ('popup.html')
+				});
+				console.log(chrome.i18n.getMessage("Installing_initialization"));
 			});
-			console.log("安装初始中...");
-		});
+		}
 		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
 		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
 		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
@@ -32,14 +53,14 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
 
 		chrome.contextMenus.create({
-			title: '使用盘络程序上传图片',
+			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
 			id: "upload_imagea"
 		})
 
 		chrome.storage.local.get(["browser_Open_with"], function (result) {
 			browser_Open_with = result.browser_Open_with
-			showNotification("盘络上传程序", "安装初始化完成，完成配置填写即可上传", function () {
+			showNotification(null, chrome.i18n.getMessage("Installing_initialization_completed"), function () {
 				chrome.tabs.create({
 					'url': ('options.html')
 				});
@@ -76,7 +97,7 @@ const getSave = [
 chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
 	if (result.Right_click_menu_upload == "on") {
 		chrome.contextMenus.create({
-			title: '使用盘络程序上传图片',
+			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
 			id: "upload_imagea"
 		}, function () {
@@ -154,12 +175,12 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			try {
 				options_Headers = JSON.parse(options_Headers);
 			} catch (error) {
-				showNotification("盘络上传程序", "Headers请求参数不是一个合法的 JSON 格式字符串！", function () {
+				showNotification(null, chrome.i18n.getMessage("Headers_error"), function () {
 					chrome.tabs.create({
 						'url': ('options.html')
 					});
 				})
-				console.error("Headers请求参数不是一个合法的 JSON 格式字符串！")
+				console.error(chrome.i18n.getMessage("Headers_error"))
 				return;
 			}
 		}
@@ -169,12 +190,12 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			try {
 				options_Body = JSON.parse(options_Body);
 			} catch (error) {
-				showNotification("盘络上传程序", "Body请求参数不是一个合法的 JSON 格式字符串！", function () {
+				showNotification(null, chrome.i18n.getMessage("Body_error"), function () {
 					chrome.tabs.create({
 						'url': ('options.html')
 					});
 				})
-				console.error("Body请求参数不是一个合法的 JSON 格式字符串！")
+				console.error(chrome.i18n.getMessage("Body_error"))
 				return;
 			}
 		}
@@ -187,7 +208,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			options_proxy_server = ""
 		}
 		async function Img_Request_Success(blob) {
-			showNotification("盘络上传程序", "图片获取完成,正在执行上传;")
+			showNotification(null, chrome.i18n.getMessage("Upload_prompt1"))
 			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
 			const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
 			const formData = new FormData();
@@ -318,7 +339,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							break;
 						case 'Telegra_ph':
 							if (res.error) {
-								showNotification("盘络上传程序", res.error)
+								showNotification(null, res.error)
 								return;
 							}
 							imageUrl = `https://telegra.ph/` + res[0].src
@@ -357,7 +378,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								upload_domain_name: options_host,
 								original_file_name: UrlImgNema,
 								file_size: file.size,
-								img_file_size: "宽:不支持,高:不支持",
+								img_file_size: chrome.i18n.getMessage("img_file_size"),
 								uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
 							}
 							if (typeof UploadLog !== 'object') {
@@ -365,7 +386,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							}
 							UploadLog.push(UploadLogData);
 							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
-								showNotification("盘络上传程序", "图片上传成功，前往上传日志页面即可查看")
+								showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
 							})
 							callback(res, null);
 							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -386,8 +407,8 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				})
 				.catch(error => {
 					console.error(error);
-					callback(null, new Error('上传失败,请检查错误报告!'));
-					showNotification("盘络上传程序", "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" + error.toString())
+					callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
+					showNotification(null, chrome.i18n.getMessage("Upload_prompt4") + error.toString())
 				});
 		}
 
@@ -432,14 +453,14 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				Img_Request_Success(blob)
 			})
 			.catch(error => {
-				console.log("获取失败，再次尝试...")
+				console.log(chrome.i18n.getMessage("Upload_prompt5"))
 				fetch("https://cors-anywhere.pnglog.com/" + imgUrl)
 					.then(res => res.blob())
 					.then(blob => {
 						Img_Request_Success(blob)
 					})
 					.catch(error => {
-						console.log("很抱歉还是获取失败了，请按F12查看错误信息进行错误排除！")
+						console.log(chrome.i18n.getMessage("Upload_prompt6"))
 						console.log(error)
 						return;
 					})
@@ -457,7 +478,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	//大喇叭
 	if (request.Loudspeaker) {
-		showNotification("盘络上传程序", request.Loudspeaker)
+		showNotification(null, request.Loudspeaker)
 	}
 	//拖拽上传
 	// Circle_dragUpload
@@ -619,3 +640,5 @@ chrome.action.onClicked.addListener(function (tab) {
 	});
 
 });
+
+

@@ -67,531 +67,485 @@ $(document).ready(function () {
 
     const html_exeLskyBox = `
     <div class="form-group">
-      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:pnglog.com" />
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_lsky") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(Lsky程序必须填写Token)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
       </label>
         <input type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="例如:Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5" />
+                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_lsky") + `" />
     </div>
     <div class="form-group">
-      <label for="options_album_id" class="options_album_id">相册选择<p class="options_album_id_tips">(选择相册)</p>
-      </label>
+      <label for="options_album_id" class="options_album_id">` + chrome.i18n.getMessage("options_album_id") + `</label>
       <select id="options_album_id" class="form-select box-shadow">
       
       </select>
     </div>
     <div class="form-group">
-      <label for="options_permission" class="options_permission">隐私选择<p class="options_permission_tips">(上传的内容是否公开,默认私有)</p>
+      <label for="options_permission" class="options_permission">` + chrome.i18n.getMessage("options_permission") + `
       </label>
       <select id="options_permission_select" class="form-select box-shadow">
-      <option selected value="0">私有</option>
-      <option value="1">公开</option>
+      <option selected value="0">` + chrome.i18n.getMessage("options_permission_0") + `</option>
+      <option value="1">` + chrome.i18n.getMessage("options_permission_1") + `</option>
       </select>                
     </div>
     <div class="form-group">
-      <label for="options_source" class="options_source">存储源选择<p class="options_uid_tips">(兰空图床程序可选存储源)</p>
+      <label for="options_source" class="options_source">` + chrome.i18n.getMessage("options_source_lsky") + `
       </label>
       <select id="options_source_select" class="form-select box-shadow">
       </select>
     </div>
   `
-    const html_exeLskyBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://www.lsky.pro/" target="_blank"> 兰空图床 </a>程序的网站`
 
     const html_exeEasyImagesBox = `
 <div class="form-group">
-    <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+    <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
     </label>
-    <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:png.cm" />
+    <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_EasyImages") + `" />
   </div>
   <div class="form-group">
-    <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(EasyImages程序必须填写Token)</p>
+    <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
     </label>
       <input type="text" class="form-control box-shadow" id="options_token"
-                placeholder="例如:d21dc5039421455238b7152a6bf1cdc4" />
+                placeholder="` + chrome.i18n.getMessage("options_token_placeholder_EasyImages") + `" />
   </div>`
-    const html_exeEasyImagesBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://png.cm/" target="_blank"> 简单图床 </a>程序的网站`
 
     const html_exeImgURLBox = `
   <div class="form-group">
-      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:www.imgurl.org" />
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_ImgURL") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(ImgURL程序必须填写Token)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
       </label>
       <input type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="例如:ddd35111f39990b2f104a138181d31bc" />
+                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_ImgURL") + `" />
     </div>
     <div class="form-group">
-      <label for="options_uid" class="options_uid">UID<p class="options_uid_tips"><span style="color: red;">*</span>(ImgURL程序必须填写UID)</p>
+      <label for="options_uid" class="options_uid">` + chrome.i18n.getMessage("options_uid") + `
       </label>
-      <input type="text" class="form-control box-shadow" id="options_uid" placeholder="例如:391e3afaf70fgcf4355f95a2g0876b87" />
+      <input type="text" class="form-control box-shadow" id="options_uid" placeholder="` + chrome.i18n.getMessage("options_uid_placeholder") + `" />
     </div>
     `
-    const html_exeImgURLBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://www.imgurl.org/" target="_blank"> ImgURL图床 </a>程序的网站`
-
     const html_exeSM_MSBox = `
   <div class="form-group">
-      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:sm.ms" />
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_SM_MS") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(SM.MS程序必须填写Token)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
       </label>
         <input type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="例如:42GGhgkttap3D2hDQkCbiTlYGZ1Jx5Yx" />
+                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_SM_MS") + `" />
     </div>`
-    const html_exeSM_MSBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://sm.ms/" target="_blank"> SM.MS图床 </a>程序的网站`
 
     const html_exeCheveretoBox = `
   <div class="form-group">
-      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:demo.chevereto.com" />
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Chevereto") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(Chevereto程序必须填写Token)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
       </label>
         <input type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="例如:chv_Vxd5_618c6cf4dbbec416be206e4..." />
+                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Chevereto") + `" />
     </div>
     <div class="form-group">
-      <label for="options_album_id" class="options_album_id">相册ID<p class="options_album_id_tips">(相册ID,默认为空)</p>
+      <label for="options_album_id" class="options_album_id">` + chrome.i18n.getMessage("options_album_id_Chevereto") + `
       </label>
         <input type="text" class="form-control box-shadow" id="options_album_id"
-                  placeholder="例如:iXnGp" />
+                  placeholder="` + chrome.i18n.getMessage("options_album_id_placeholder_Chevereto") + `" />
     </div>
     <div class="form-group">
-      <label for="options_nsfw" class="options_nsfw">是否健康<p class="options_nsfw_tips">(上传的内容是否健康,默认健康)</p>
+      <label for="options_nsfw" class="options_nsfw">` + chrome.i18n.getMessage("options_nsfw") + `
       </label>
       <select id="options_nsfw_select" class="form-select box-shadow">
-      <option selected value="0">健康</option>
-      <option value="1">不良</option>
+      <option selected value="0">` + chrome.i18n.getMessage("options_nsfw_0") + `</option>
+      <option value="1">` + chrome.i18n.getMessage("options_nsfw_1") + `</option>
       </select>                
     </div>
     <div class="form-group">
-    <label for="options_expiration" class="options_expiration">删除时间<p class="options_expiration_tips">(删除时间,默认不自动删除)</p>
+    <label for="options_expiration" class="options_expiration">` + chrome.i18n.getMessage("options_expiration") + `
     </label>
     <select id="options_expiration_select" class="form-select box-shadow">
-    <option selected value="NODEL">不自动删除</option>
-    <option value="PT5M">5分钟</option>
-    <option value="PT15M">15分钟</option>
-    <option value="PT30M">30分钟</option>
-    <option value="PT1H">1小时</option>
-    <option value="PT3H">3小时</option>
-    <option value="PT6H">6小时</option>
-    <option value="PT12H">12小时</option>
-    <option value="P1D">1天</option>
-    <option value="P2D">2天</option>
-    <option value="P3D">3天</option>
-    <option value="P4D">4天</option>
-    <option value="P5D">5天</option>
-    <option value="P6D">6天</option>
-    <option value="P1W">1周</option>
-    <option value="P2W">2周</option>
-    <option value="P3W">3周</option>
-    <option value="P1M">1月</option>
-    <option value="P2M">2月</option>
-    <option value="P3M">3月</option>
-    <option value="P4M">4月</option>
-    <option value="P5M">5月</option>
-    <option value="P6M">6月</option>
-    <option value="P1Y">1年</option>
+    <option selected value="NODEL">` + chrome.i18n.getMessage("options_expiration_no") + `</option>
+    <option value="PT5M">` + chrome.i18n.getMessage("options_expiration_1") + `</option>
+    <option value="PT15M">` + chrome.i18n.getMessage("options_expiration_2") + `</option>
+    <option value="PT30M">` + chrome.i18n.getMessage("options_expiration_3") + `</option>
+    <option value="PT1H">` + chrome.i18n.getMessage("options_expiration_4") + `</option>
+    <option value="PT3H">` + chrome.i18n.getMessage("options_expiration_5") + `</option>
+    <option value="PT6H">` + chrome.i18n.getMessage("options_expiration_6") + `</option>
+    <option value="PT12H">` + chrome.i18n.getMessage("options_expiration_7") + `</option>
+    <option value="P1D">` + chrome.i18n.getMessage("options_expiration_8") + `</option>
+    <option value="P2D">` + chrome.i18n.getMessage("options_expiration_9") + `</option>
+    <option value="P3D">` + chrome.i18n.getMessage("options_expiration_10") + `</option>
+    <option value="P4D">` + chrome.i18n.getMessage("options_expiration_11") + `</option>
+    <option value="P5D">` + chrome.i18n.getMessage("options_expiration_12") + `</option>
+    <option value="P6D">` + chrome.i18n.getMessage("options_expiration_13") + `</option>
+    <option value="P1W">` + chrome.i18n.getMessage("options_expiration_14") + `</option>
+    <option value="P2W">` + chrome.i18n.getMessage("options_expiration_15") + `</option>
+    <option value="P3W">` + chrome.i18n.getMessage("options_expiration_16") + `</option>
+    <option value="P1M">` + chrome.i18n.getMessage("options_expiration_17") + `</option>
+    <option value="P2M">` + chrome.i18n.getMessage("options_expiration_18") + `</option>
+    <option value="P3M">` + chrome.i18n.getMessage("options_expiration_19") + `</option>
+    <option value="P4M">` + chrome.i18n.getMessage("options_expiration_20") + `</option>
+    <option value="P5M">` + chrome.i18n.getMessage("options_expiration_21") + `</option>
+    <option value="P6M">` + chrome.i18n.getMessage("options_expiration_22") + `</option>
+    <option value="P1Y">` + chrome.i18n.getMessage("options_expiration_23") + `</option>
     </select>
     </div>
     `
-    const html_exeCheveretoBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://demo.chevereto.com/" target="_blank"> Chevereto图床 </a>程序的网站`
-
     const html_exeCORSForm = `
   <div class="form-group CorsForm">
-    <label for="options_proxy_server" class="options_proxy_server">CORS代理<p class="options_proxy_server_tips">(项目地址:<a href="https://github.com/Rob--W/cors-anywhere">Github</a>),
-    例如:<code class="options_token_tips_code">https://cors-anywhere.herokuapp.com/</code>
-  </p>
-  </label>
-    <input type="text" class="form-control box-shadow" id="options_proxy_server" placeholder="输入CORS代理服务器地址" />
+    <label for="options_proxy_server" class="options_proxy_server">` + chrome.i18n.getMessage("options_proxy_server") + `
+    </label>
+    <input type="text" class="form-control box-shadow" id="options_proxy_server" placeholder="` + chrome.i18n.getMessage("options_proxy_server_placeholder") + `" />
   </div>`
 
 
     const html_exe_HellohaoBox = `
   <div class="form-group">
-      <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:server.hellohao.cn" />
+      <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Hellohao") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(Hellohao程序必须填写Token)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
       </label>
         <input type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="例如:02468631e6c13413bddefc0722e2389b" />
+                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Hellohao") + `" />
     </div>
     <div class="form-group">
-      <label for="options_source" class="options_source">存储源选择<p class="options_uid_tips"><span style="color: red;">*</span>(Hellohao图床程序必须填写存储源)</p>
+      <label for="options_source" class="options_source">` + chrome.i18n.getMessage("options_source_Hellohao") + `
       </label>
-      <input type="text" class="form-control box-shadow" id="options_source" placeholder="例如:12" />
+      <input type="text" class="form-control box-shadow" id="options_source" placeholder="` + chrome.i18n.getMessage("options_source_placeholder_Hellohao") + `" />
     </div>
     `
-
-    const html_exe_HellohaoBoxBottom_Tips = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://pic.hellohao.cn/" target="_blank"> Hellohao图床 </a>程序的网站`
-
     const html_exe_ImgurBox = `
   <div class="form-group">
-  <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+  <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
   </label>
-  <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:api.imgur.com" />
+  <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Imgur") + `" />
 </div>
 <div class="form-group">
-  <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span
-        style="color: red;">*</span><a style="color: #03a9f4;" href="https://api.imgur.com/oauth2/addclient"
-        target="_blank">注册Client-ID</a>(imgur程序必须填写Token)</p>
+  <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token_Imgur") + `
   </label>
-  <input type="text" class="form-control box-shadow" id="options_token" placeholder="例如:3596a2113fdg16f" />
+  <input type="text" class="form-control box-shadow" id="options_token" placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Imgur") + `" />
 </div>
-<div class="ImgurPostModeDiv " style="text-align: center;">图片上传
+<div class="ImgurPostModeDiv " style="text-align: center;">Image
   <label class="switch">
     <input id="options_imgur_post_mode" type="checkbox">
     <div class="slider round"></div>
-  </label>视频上传
+  </label>video
 </div>
     `
-    const html_exe_ImgurBoxBottom_Tipsa = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://imgur.com/" target="_blank"> Imgur图床 </a>程序的网站`
-
-
     const html_exe_UserDiyBox = `
   <div class="form-group">
-  <label for="options_apihost" class="options_apihost">API地址<p class="">(完整的API地址)</p>
+  <label for="options_apihost" class="options_apihost">` + chrome.i18n.getMessage("options_apihost") + `</p>
   </label>
-  <input type="url" class="form-control box-shadow" id="options_apihost" placeholder="例如:https://pnglog.com/api/v1/upload" />
+  <input type="url" class="form-control box-shadow" id="options_apihost" placeholder="` + chrome.i18n.getMessage("options_apihost_placeholder") + `" />
 </div>
 <div class="form-group">
-  <label for="options_parameter" class="options_parameter">POST参数</span><p class="options_parameter_tips"><span style="color: red;">*</span>(上传图片参数)</p>
+  <label for="options_parameter" class="options_parameter">` + chrome.i18n.getMessage("options_parameter") + `
   </label>
-  <input type="text" class="form-control box-shadow" id="options_parameter" placeholder="如:image 或 file" />
+  <input type="text" class="form-control box-shadow" id="options_parameter" placeholder="` + chrome.i18n.getMessage("options_parameter_placeholder") + `" />
 </div>
 <div class="form-group">
-  <label for="options_Headers" class="options_Headers">Headers请求头</span><p class="options_Headers_tips"><span style="color: red;">*</span>(自定义请求头,不需要可以留空)</p>
+  <label for="options_Headers" class="options_Headers">` + chrome.i18n.getMessage("options_Headers") + `
   </label>
   <div class="form-floating">
     <textarea class="form-control box-shadow" id="options_Headers"></textarea>
-    <label for="floatingTextarea">使用JSON格式 如：{"Accept":"application/json","Authorization":"Bearer 1|1bJbwlb5"}</label>
+    <label for="floatingTextarea">` + chrome.i18n.getMessage("options_Headers_floatingTextarea") + `</label>
   </div>
 </div>
 <div class="form-group">
-  <label for="options_Body" class="options_Body">Body</span><p class="options_Body_tips"><span style="color: red;">*</span>(自定义Body,不需要可以留空)</p>
+  <label for="options_Body" class="options_Body">` + chrome.i18n.getMessage("options_Body") + `
   </label>
   <div class="form-floating">
     <textarea class="form-control box-shadow" id="options_Body"></textarea>
-    <label for="floatingTextarea">使用JSON格式 如：{"mail":"123@qq.com","password":"123456"}</label>
+    <label for="floatingTextarea">` + chrome.i18n.getMessage("options_Body_floatingTextarea") + `</label>
   </div>
 </div>
 
 <div class="form-group">
-  <label for="options_Body" class="options_return_success">JSON路径<p class="options_return_success_tips"><span
-        style="color: red;">*</span>(请求成功后的图片URL路径)</p>
+  <label for="options_Body" class="options_return_success">` + chrome.i18n.getMessage("options_return_success") + `
   </label>
-  <input type="text" class="form-control box-shadow" id="options_return_success" placeholder="如:data.links.url" />
+  <input type="text" class="form-control box-shadow" id="options_return_success" placeholder="` + chrome.i18n.getMessage("options_return_success_placeholder") + `" />
   <div class="form-check form-switch" style="margin-top: 1rem;">
    <input class="form-check-input" type="checkbox" role="switch" id="open_json_button">
-   <label class="form-check-label" for="flexSwitchCheckDefault">转到JSON<p>(将字符串转化为JSON)</p></label>
+   <label class="form-check-label" for="flexSwitchCheckDefault">` + chrome.i18n.getMessage("open_json_button") + `</label>
   </div>
 
   </div>
     `
-    const html_exe_UserDiyBoxBottom_Tipsa = `当前配置适用于 用户自定义 的网站`
-
     const html_exe_GitHubUP = `
     <div class="form-group">
-      <label for="options_owner" class="options_owner">用户名<p class="options_owner_tips"><span style="color: red;">*</span>(GitHub用户名)</p>
+      <label for="options_owner" class="options_owner">` + chrome.i18n.getMessage("options_owner") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_owner" placeholder="例如:abcd" />
+      <input type="url" class="form-control box-shadow" id="options_owner" placeholder="` + chrome.i18n.getMessage("options_owner_placeholder") + `" />
     </div>
     <div class="form-group">
-      <label for="options_repository" class="options_repository">仓库名<p class="options_repository_tips"><span style="color: red;">*</span>(仓库名字)</p>
+      <label for="options_repository" class="options_repository">` + chrome.i18n.getMessage("options_repository") + `
       </label>
-      <input type="text" class="form-control box-shadow" id="options_repository" placeholder="例如:3596a2113fdg16f" />
+      <input type="text" class="form-control box-shadow" id="options_repository" placeholder="` + chrome.i18n.getMessage("options_repository_placeholder") + `" />
     </div>
     <div class="form-group">
-      <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为根目录)</p>
+      <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
       </label>
-      <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images" />
+      <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
     </div>
     <div class="form-group">
-      <label for="options_token" class="options_token ">Token<p class="options_token_tips"><span style="color: red;">*</span>(GitHub必须填写Token,获取<a style="color: #03a9f4;" href="https://github.com/settings/tokens" target="_blank"> Token </a>)</p>
+      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token_GitHub") + `
       </label>
-      <input type="text" class="form-control box-shadow" id="options_token" placeholder="例如:2389b" />
+      <input type="text" class="form-control box-shadow" id="options_token" placeholder="` + chrome.i18n.getMessage("options_token_placeholder_GitHub") + `" />
     </div>
     <div class="alert alert-warning" role="alert">
-      GitHub 是一个代码托管平台，在 GitHub 存储图片不符合它的设计初衷，建议及时删除不必要的图片文件。
+    ` + chrome.i18n.getMessage("options_GitHub_Warning") + `
     </div>
       `
-    const html_exe_GitHubUPBoxBottom_Tipsa = `当前配置适用于所有基于<a style="color: #03a9f4;" href="https://github.com/" target="_blank"> GitHub </a>网站`
-
 
     const html_exeTencent_COS = `
   <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">SecretId<p class=""><span style="color: red;">*</span>(访问ID,获取<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cam/capi" target="_blank"> SecretId </a>)</p>
+    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_COS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd" />
+    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_COS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">SecretKey<p class="options_SecretKey_tips"><span style="color: red;">*</span>(访问密钥,获取<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cam/capi" target="_blank"> SecretKey </a>)</p>
+    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_COS") + `
     </label>
-    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="例如:hgcscdsfwer1rdff346v54yvwdfsdx13" />
+    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_COS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">Bucket<p class="options_Bucket_tips"><span style="color: red;">*</span>(储存桶名称,查看<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cos/bucket" target="_blank"> 存储桶列表 </a>)</p>
+    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_COS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="例如:abcd-112233445566" />
+    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_COS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_AppId" class="options_AppId">AppId<p class="options_AppId_tips">(应用ID)</p>
+    <label for="options_AppId" class="options_AppId">` + chrome.i18n.getMessage("options_AppId_COS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_AppId" placeholder="例如:112233445566(储存桶名后面的数字)" />
+    <input type="text" class="form-control box-shadow" id="options_AppId" placeholder="` + chrome.i18n.getMessage("options_AppId_placeholder_COS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Region" class="options_Region">Region<p class="options_Region_tips"><span style="color: red;">*</span>(区域)</p>
+    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_COS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="例如:ap-hongkong" />
+    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_COS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
+    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
+    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">自定义访问域名<p class="options_Custom_domain_name_tips">(如果在<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cos" target="_blank"> 腾讯云COS </a>设定了话,留空不设置;)</p>
+    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_COS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="例如:images.google.com" />
+    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder") + `" />
   </div>
   `
-    const html_exeTencent_COSBoxBottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://console.cloud.tencent.com/cos" target="_blank"> 腾讯云COS </a>`
     const cos_cors = `
   <div class="CorsButton" id="Object_Storage_cors">
-  <button type="button" class="css-button-rounded--sky">设置COS的CORS</button>
+  <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_COS") + `</button>
   </div>
   `
     const cos_putBucketACL = `
   <div class="CorsButton" id="putBucketACL">
     <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
-      设置访问权限
+    ` + chrome.i18n.getMessage("putBucketACL") + `
     </button>
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>私有读/私有写</a></li>
-      <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>私有写/公共读(推荐)</a>
-      </li>
-      <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>公共读/公共写</a></li>
+      <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>` + chrome.i18n.getMessage("putBucketACL_1") + `</a></li>
+      <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>` + chrome.i18n.getMessage("putBucketACL_2") + `</a></li>
+      <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>` + chrome.i18n.getMessage("putBucketACL_3") + `</a></li>
     </ul>
   </div>
   `
-
 
     const html_exeAliyun_OSS = `
   <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">AccessKeyId<p class=""><span style="color: red;">*</span>(访问ID,获取<a style="color: #03a9f4;" href="https://ram.console.aliyun.com/manage/ak" target="_blank"> AccessKeyId </a>)</p>
+    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_OSS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd" />
+    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">AccessKeySecret<p class="options_SecretKey_tips"><span style="color: red;">*</span>(访问密钥,获取<a style="color: #03a9f4;" href="https://ram.console.aliyun.com/manage/ak" target="_blank"> AccessKeySecret </a>)</p>
+    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_OSS") + `
     </label>
-    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="例如:hgcscdsfwer1rdff346v54yvwdfsdx13" />
+    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">Bucket<p class="options_Bucket_tips"><span style="color: red;">*</span>(储存桶名称,查看<a style="color: #03a9f4;" href="https://oss.console.aliyun.com/bucket" target="_blank"> 存储桶列表 </a>)</p>
+    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_OSS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="例如:abcde-images" />
+    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Endpoint" class="options_Endpoint">Endpoint<p class="options_Endpoint_tips"><span style="color: red;">*</span>(区域节点,查看<a style="color: #03a9f4;" href="https://help.aliyun.com/document_detail/31837.html" target="_blank"> 访问域名和数据中心 </a>)</p>
+    <label for="options_Endpoint" class="options_Endpoint">` + chrome.i18n.getMessage("options_Endpoint_OSS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="例如:oss-cn-beijing.aliyuncs.com" />
+    <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="` + chrome.i18n.getMessage("options_Endpoint_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Region" class="options_Region">Region<p class="options_Region_tips"><span style="color: red;">*</span>(区域)</p>
+    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_OSS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="例如:oss-cn-beijing" />
+    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
+    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
+    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder_OSS") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">自定义访问域名<p class="options_Custom_domain_name_tips">(如果在<a style="color: #03a9f4;" href="https://oss.console.aliyun.com/overview" target="_blank"> 阿里云OSS </a>设定了话,留空不设置;)</p>
+    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_OSS") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="例如:images.google.com" />
+    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder") + `" />
   </div>
   `
-    const html_exeAliyun_OSSBoxBottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://oss.console.aliyun.com/oss" target="_blank"> 阿里云OSS </a>`
     const oss_cors = ` 
   <div class="CorsButton" id="Object_Storage_cors">
-    <button type="button" class="css-button-rounded--sky">设置OSS的CORS</button>
+    <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_OSS") + `</button>
     </div>
     `
     const oss_putBucketACL = `
-  <div class="CorsButton" id="putBucketACL">
-    <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
-      设置访问权限
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>私有读/私有写</a></li>
-      <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>私有写/公共读(推荐)</a>
-      </li>
-      <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>公共读/公共写</a></li>
-    </ul>
-  </div>
+    <div class="CorsButton" id="putBucketACL">
+      <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
+      ` + chrome.i18n.getMessage("putBucketACL") + `
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>` + chrome.i18n.getMessage("putBucketACL_1") + `</a></li>
+        <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>` + chrome.i18n.getMessage("putBucketACL_2") + `</a></li>
+        <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>` + chrome.i18n.getMessage("putBucketACL_3") + `</a></li>
+      </ul>
+    </div>
   `
 
     const html_exeAWS_S3 = `
   <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">访问ID<p class=""><span style="color: red;">*</span>(访问ID)</p>
+    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_S3") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd" />
+    <input type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_S3") + `" />
   </div>
   <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">访问密钥<p class="options_SecretKey_tips"><span style="color: red;">*</span>(访问密钥)</p>
+    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_S3") + `
     </label>
-    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="例如:hgcscdsfwer1rdff346v54yvwdfsdx13" />
+    <input type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_S3") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">Bucket<p class="options_Bucket_tips"><span style="color: red;">*</span>(储存桶名称)</p>
+    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_S3") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="注意:如果要使用自定义域名请将桶名称设置为域名,例如:images.google.com" />
+    <input type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_S3") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Region" class="options_Region">Region<p class="options_Region_tips"><span style="color: red;">*</span>(区域)</p>
+    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_S3") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="例如:oss-cn-beijing" />
+    <input type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_S3") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Endpoint" class="options_Endpoint">Endpoint<p class="options_Endpoint_tips">(区域节点,<span style="color: red;">S3 兼容(必填)</span>对接请填写完整域名,留空默认AWS S3;)</p>
+    <label for="options_Endpoint" class="options_Endpoint">` + chrome.i18n.getMessage("options_Endpoint_S3") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="例如:https://{accountid}.r2.cloudflarestorage.com" />
+    <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="` + chrome.i18n.getMessage("options_Endpoint_placeholder_S3") + `" />
   </div>
   <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">上传路径<p class="options_UploadPath_tips">(给文件一个温暖的家,留空为桶的根目录)</p>
+    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="例如:images或files" />
+    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
   </div>
   <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">自定义访问域名<p class="options_Custom_domain_name_tips">(<span style="color: red;">S3 兼容(必填)</span>,如果设置了话,留空不设置;)</p>
+    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_S3") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="注意:S3自定义域名要和桶名称一致,例如:images.google.com" />
+    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder_S3") + `" />
   </div>
   `
-    const html_exeAWS_S3Bottom_Tips = `当前配置适用于<a style="color: #03a9f4;" href="https://s3.console.aws.amazon.com/" target="_blank"> AWS S3 </a>`
     const s3_cors = ` 
   <div class="CorsButton" id="Object_Storage_cors">
-    <button type="button" class="css-button-rounded--sky">设置S3的CORS</button>
+    <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_S3") + `</button>
     </div>
     `
 
     const html_exe_Telegra_ph = `
     <div class="alert alert-success" role="alert">
-      <h4 class="alert-heading">你好</h4>
-      <p>Telegra.ph是一个匿名上传图片的平台,因此无法删除上传的内容,请确保上传的内容是有价值的.</p>
+      <h4 class="alert-heading">` + chrome.i18n.getMessage("Telegra_ph_1") + `</h4>
+      <p>` + chrome.i18n.getMessage("Telegra_ph_2") + `</p>
       <hr>
-      <p class="mb-0">感谢使用,盘络上传扩展!</p>
+      <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
     </div>
     <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">自定义访问域名<p class="options_Custom_domain_name_tips">(填写完整信息，留空不设置;)</p>
+    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_Telegra_ph") + `
     </label>
-    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="例如:https://www.google.com,末端不要加/" />
+    <input type="text" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder_Telegra_ph") + `" />
     </div>
       `
     const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷，但跑起来就会生风`
 
     const html_exe_imgdd = `
       <div class="form-group">
-        <label for="options_host" class="options_host">网站域名<p class="">(不需要携带任何前后缀,输入域名即可)</p>
+        <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
         </label>
-        <input type="url" class="form-control box-shadow" id="options_host" placeholder="例如:imgdd.com" value="imgdd.com"/>
+        <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_imgdd") + `" value="imgdd.com"/>
       </div>
     `
-
-    const html_exe_imgddBoxBottom_Tips = `该图床无需配置，直接使用即可`
-
     let optionsProg = {
       '#exe_Lsky': {
         'needUid': 1,
         'html_exeBox': html_exeLskyBox,
-        'bottomTips': html_exeLskyBoxBottom_Tips
       },
       '#exe_EasyImages': {
         'needUid': 2,
         'html_exeBox': html_exeEasyImagesBox,
-        'bottomTips': html_exeEasyImagesBoxBottom_Tips
       },
       '#exe_ImgURL': {
         'needUid': 3,
         'html_exeBox': html_exeImgURLBox,
-        'bottomTips': html_exeImgURLBoxBottom_Tips
       },
       '#exe_SM_MS': {
         'needUid': 4,
         'html_exeBox': html_exeSM_MSBox,
-        'bottomTips': html_exeSM_MSBoxBottom_Tips
       },
       '#exe_Chevereto': {
         'needUid': 5,
         'html_exeBox': html_exeCheveretoBox,
-        'bottomTips': html_exeCheveretoBoxBottom_Tips
       },
       '#exe_Hellohao': {
         'needUid': 6,
         'html_exeBox': html_exe_HellohaoBox,
-        'bottomTips': html_exe_HellohaoBoxBottom_Tips
       },
       '#exe_Imgur': {
         'needUid': 7,
         'html_exeBox': html_exe_ImgurBox,
-        'bottomTips': html_exe_ImgurBoxBottom_Tipsa
       },
       '#exe_UserDiy': {
         'needUid': 8,
         'html_exeBox': html_exe_UserDiyBox,
-        'bottomTips': html_exe_UserDiyBoxBottom_Tipsa
       },
       '#exe_Tencent_COS': {
         'needUid': 9,
         'html_exeBox': html_exeTencent_COS,
-        'bottomTips': html_exeTencent_COSBoxBottom_Tips
       },
       '#exe_Aliyun_OSS': {
         'needUid': 10,
         'html_exeBox': html_exeAliyun_OSS,
-        'bottomTips': html_exeAliyun_OSSBoxBottom_Tips
       },
       '#exe_AWS_S3': {
         'needUid': 11,
         'html_exeBox': html_exeAWS_S3,
-        'bottomTips': html_exeAWS_S3Bottom_Tips
       },
       '#exe_GitHubUP': {
         'needUid': 12,
         'html_exeBox': html_exe_GitHubUP,
-        'bottomTips': html_exe_GitHubUPBoxBottom_Tipsa
       },
       '#exe_Telegra_ph': {
         'needUid': 13,
         'html_exeBox': html_exe_Telegra_ph,
-        'bottomTips': html_exe_Telegra_phBoxBottom_Tipsa
       },
       "#exe_imgdd": {
         'needUid': 14,
         'html_exeBox': html_exe_imgdd,
-        'bottomTips': html_exe_imgddBoxBottom_Tips
       },
       'default': {
         'body': `
       <div class="alert alert-secondary" role="alert">
-        <h4 class="alert-heading">嗨，你好朋友</h4>
-        <p> 一定要选择一个图床程序进行图床配置哦</p>
+        <h4 class="alert-heading">` + chrome.i18n.getMessage("Program_selection_instructions_1") + `</h4>
+        <p>` + chrome.i18n.getMessage("Program_selection_instructions_2") + `</p>
         <hr>
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
       <!-- 按钮 -->
@@ -607,24 +561,24 @@ $(document).ready(function () {
       <!-- 内容 -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="https://cdn-us.imgs.moe/2023/03/23/641c6a131923f.png" class="d-block w-100">
+          <img src="https://cdn-us.imgs.moe/2023/07/04/64a414574dba6.gif" class="d-block w-100">
           <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>你知道吗?</h1>
-            <p >盘络上传是可以对着图片右键上传的喔！</p>
+            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+            <p>` + chrome.i18n.getMessage("You_know_what_1") + `</p>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="https://cdn-us.imgs.moe/2023/03/23/641c6a1456d1b.png" class="d-block w-100" loading="lazy">
+          <img src="https://cdn-us.imgs.moe/2023/07/04/64a4145276e67.gif" class="d-block w-100" loading="lazy">
           <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>你知道吗?</h1>
-            <p>盘络上传是可以获取图床相册的,允许读取本地和网络信息呢！</p>
+            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+            <p>` + chrome.i18n.getMessage("You_know_what_2") + `</p>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="https://cdn-us.imgs.moe/2023/03/23/641c6a143794d.png" class="d-block w-100" loading="lazy">
+          <img src="https://cdn-us.imgs.moe/2023/07/04/64a414475a4ec.gif" class="d-block w-100" loading="lazy">
           <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>你知道吗?</h1>
-            <p>盘络上传页面是允许使用粘贴本地图片、网络图片以及图片链接进行上传的喔！</p>
+            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+            <p>` + chrome.i18n.getMessage("You_know_what_3") + `</p>
           </div>
         </div>
       </div>
@@ -645,68 +599,6 @@ $(document).ready(function () {
       `
       }
     };
-
-    if (options_exe == 'Tencent_COS') {
-      try {
-        let getAuthorization = function (options, callback) {
-          let authorization = COS.getAuthorization({
-            SecretId: options_SecretId,
-            SecretKey: options_SecretKey,
-            Method: options.Method,
-            Pathname: options.Pathname,
-            Query: options.Query,
-            Headers: options.Headers,
-            Expires: 900,
-          });
-          callback({ Authorization: authorization });
-        };
-        var cos = new COS({
-          getAuthorization: getAuthorization,
-          UploadCheckContentMd5: true,
-          protocol: 'https:' // 强制使用 HTTPS 协议
-        });
-      } catch (error) {
-        toastItem({
-          toast_content: error
-        });
-      }
-
-    }
-    if (options_exe == 'Aliyun_OSS') {
-      try {
-        var oss = new OSS({
-          accessKeyId: options_SecretId,
-          accessKeySecret: options_SecretKey,
-          bucket: options_Bucket,
-          endpoint: options_Endpoint,
-          region: options_Region,
-          secure: true //强制https
-        });
-      } catch (error) {
-        toastItem({
-          toast_content: error
-        });
-      }
-
-    }
-    if (options_exe == 'AWS_S3') {
-      try {
-        AWS.config.update({
-          accessKeyId: options_SecretId,
-          secretAccessKey: options_SecretKey,
-          region: options_Region,
-          endpoint: options_Endpoint,
-          signatureVersion: 'v4'
-        });
-        var s3 = new AWS.S3();
-      } catch (error) {
-        toastItem({
-          toast_content: error
-        });
-      }
-
-    }
-
     function Input_box_loading() {
       let prog = optionsProg['#exe_' + options_exe];
       // 加载元素配置
@@ -716,7 +608,7 @@ $(document).ready(function () {
       } else {
         $('#options-form').append(prog.html_exeBox);
         Edit_Box_Animation()
-        $('.text-bottom-Tips1').html(prog.bottomTips);
+        // $('.text-bottom-Tips1').html(prog.bottomTips);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
       }
@@ -819,6 +711,18 @@ $(document).ready(function () {
           $('#options_host').attr("disabled", true)
           break;
         default:
+          if (window.navigator.userAgent.indexOf('Firefox') > -1) {
+            $("#carouselExampleCaptions").prepend(`<button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>`)
+            $("#carouselExampleCaptions").prepend(`
+              <div class="alert alert-warning" role="alert">
+              ` + chrome.i18n.getMessage("Firefox_browser_access_permissions_warning") + `
+              </div>
+              `)
+            $("#firefox-permission-toggle").click(() => {
+              browser.runtime.openOptionsPage();
+            })
+          }
+          break;
       }
 
     }
@@ -998,7 +902,7 @@ $(document).ready(function () {
                 }, function (err, data) {
                   if (data) {
                     toastItem({
-                      toast_content: '腾讯云对象存储CORS设置成功',
+                      toast_content: chrome.i18n.getMessage("Setting_successful_1"),
                       toast_DestroyTime: '15000'
                     })
                     $("#Object_Storage_cors button").attr("disabled", 'true')
@@ -1006,7 +910,7 @@ $(document).ready(function () {
                   if (err) {
                     console.error(err)
                     toastItem({
-                      toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                      toast_content: chrome.i18n.getMessage("Setting_failed_1")
                     })
                     $("#Object_Storage_cors button").attr("disabled", 'false')
                   }
@@ -1028,7 +932,7 @@ $(document).ready(function () {
                     } else {
                       if (data.CORSRules[0].AllowedOrigins == "*" && data.CORSRules[0].AllowedHeaders == "*") {
                         toastItem({
-                          toast_content: "查询到已设置CORS"
+                          toast_content: chrome.i18n.getMessage("Setting_successful_2")
                         })
                         return;
                       } else {
@@ -1039,7 +943,7 @@ $(document).ready(function () {
                   if (err) {
                     $("#Object_Storage_cors button").attr("disabled", 'false')
                     toastItem({
-                      toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                      toast_content: chrome.i18n.getMessage("Setting_failed_1")
                     })
                   }
                 });
@@ -1048,7 +952,7 @@ $(document).ready(function () {
             } else {
               $("#Object_Storage_cors button").attr("disabled", 'true')
               toastItem({
-                toast_content: '请先保存再进行设置'
+                toast_content: chrome.i18n.getMessage("Setting_successful_3")
               });
             }
 
@@ -1067,14 +971,14 @@ $(document).ready(function () {
                   maxAgeSeconds: '300'
                 }]).then((res) => {
                   toastItem({
-                    toast_content: '阿里云对象存储CORS设置成功',
+                    toast_content: chrome.i18n.getMessage("Setting_successful_4"),
                     toast_DestroyTime: '15000'
                   })
                   $("#Object_Storage_cors").attr("disabled", 'true')
                 }).catch(error => {
                   console.error(error)
                   toastItem({
-                    toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                    toast_content: chrome.i18n.getMessage("Setting_failed_1")
                   })
                   $("#Object_Storage_cors").attr("disabled", 'false')
                 });
@@ -1086,7 +990,7 @@ $(document).ready(function () {
                 oss.getBucketCORS(options_Bucket).then((res) => {
                   if (res.rules[0].allowedOrigin == "*" && res.rules[0].allowedHeader == "*") {
                     toastItem({
-                      toast_content: "查询到已设置CORS"
+                      toast_content: chrome.i18n.getMessage("Setting_successful_2")
                     })
                     return;
                   } else {
@@ -1100,7 +1004,7 @@ $(document).ready(function () {
             } else {
               $("#Object_Storage_cors button").attr("disabled", 'true')
               toastItem({
-                toast_content: '请先保存再进行设置'
+                toast_content: chrome.i18n.getMessage("Setting_successful_3")
               });
             }
             break;
@@ -1140,7 +1044,7 @@ $(document).ready(function () {
                 }, function (err, data) {
                   if (data) {
                     toastItem({
-                      toast_content: 'S3对象存储CORS设置成功',
+                      toast_content: chrome.i18n.getMessage("Setting_successful_5"),
                       toast_DestroyTime: '15000'
                     })
                     $("#Object_Storage_cors button").attr("disabled", 'true')
@@ -1148,7 +1052,7 @@ $(document).ready(function () {
                   if (err) {
                     console.error(err)
                     toastItem({
-                      toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                      toast_content: chrome.i18n.getMessage("Setting_failed_1")
                     })
                     $("#Object_Storage_cors button").attr("disabled", 'false')
                   }
@@ -1169,7 +1073,7 @@ $(document).ready(function () {
                     $("#Object_Storage_cors button").attr("disabled", 'true')
                     if (data.CORSRules[0].AllowedOrigins == "*" && data.CORSRules[0].AllowedHeaders == "*") {
                       toastItem({
-                        toast_content: "查询到已设置CORS"
+                        toast_content: chrome.i18n.getMessage("Setting_successful_2")
                       })
                       return;
                     } else {
@@ -1182,7 +1086,7 @@ $(document).ready(function () {
             } else {
               $("#Object_Storage_cors button").attr("disabled", 'true')
               toastItem({
-                toast_content: '请先保存再进行设置'
+                toast_content: chrome.i18n.getMessage("Setting_successful_3")
               });
             }
             break;
@@ -1209,7 +1113,7 @@ $(document).ready(function () {
                 } catch (error) {
                   console.log(error)
                   toastItem({
-                    toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                    toast_content: chrome.i18n.getMessage("Setting_failed_1")
                   })
                 }
               }
@@ -1218,7 +1122,7 @@ $(document).ready(function () {
               $('#putBucketACL button').attr("disabled", true)
               $('#putBucketACL ul').removeClass("show")
               toastItem({
-                toast_content: '请先保存再进行设置'
+                toast_content: chrome.i18n.getMessage("Setting_successful_3")
               });
             }
             break;
@@ -1233,7 +1137,7 @@ $(document).ready(function () {
                 } catch (error) {
                   console.log(error)
                   toastItem({
-                    toast_content: "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                    toast_content: chrome.i18n.getMessage("Setting_successful_1")
                   })
                 }
               }
@@ -1242,7 +1146,7 @@ $(document).ready(function () {
               $('#putBucketACL button').attr("disabled", true)
               $('#putBucketACL ul').removeClass("show")
               toastItem({
-                toast_content: '请先保存再进行设置'
+                toast_content: chrome.i18n.getMessage("Setting_successful_3")
               });
             }
             break;
@@ -1287,44 +1191,46 @@ $(document).ready(function () {
      */
     function GetSource() {
       if (options_host) {//不为空时
-        sendAjax(
-          options_proxy_server + "https://" + options_host + "/api/v1/strategies",
-          'GET',
-          null,
-          {
-            "Accept": "application/json",
-            "Authorization": options_token
-          },
-          function (res) {
-            let strategies = res.data.strategies
+        fetch(options_proxy_server + "https://" + options_host + "/api/v1/strategies", {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': options_token
+          }
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Network response was not ok.');
+            }
+          })
+          .then(res => {
+            let strategies = res.data.strategies;
             $("#options_source_select").empty();
             strategies.forEach(function (e, index) {
               $("#options_source_select").append(
                 `<option value="` + e.id + `">` + e.name + `</option>`
-              )
-            })
+              );
+            });
             chrome.storage.local.get('options_source_select', function (data) {
               let selectedValue = data.options_source_select;
               let option = $('#options_source_select option[value=' + selectedValue + ']');
               if (option.length) {
-                // 如果没有就选择第一个
                 $('#options_source_select').val(selectedValue);
               } else {
                 $('#options_source_select option:first').prop('selected', true);
-                chrome.storage.local.set({ 'options_source_select': $("#options_source_select").val() })
+                chrome.storage.local.set({ 'options_source_select': $("#options_source_select").val() });
               }
-
             });
-
-          },
-
-          function (error) {
+          })
+          .catch(error => {
             $("#options_source_select").append(
-              `<option selected value="NO">无法获取存储源</option>`
-            )
-            console.log(error)
-          }
-        )
+              `<option selected value="NO">` + chrome.i18n.getMessage("Unable_to_obtain_storage_source") + `</option>`
+            );
+            console.error(chrome.i18n.getMessage("request_failure"), error);
+          });
+
       }
     }
     /**
@@ -1332,25 +1238,32 @@ $(document).ready(function () {
      */
     function Getalbums() {
       if (options_host) {//不为空时
-        sendAjax(
-          options_proxy_server + "https://" + options_host + "/api/v1/albums",
-          'GET',
-          null,
-          {
-            "Accept": "application/json",
-            "Authorization": options_token
-          },
-          function (res) {
-            let albums = res.data.data
+        fetch(options_proxy_server + "https://" + options_host + "/api/v1/albums", {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': options_token
+          }
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Network response was not ok.');
+            }
+          })
+          .then(res => {
+            let albums = res.data.data;
             $("#options_album_id").empty();
             $("#options_album_id").append(
-              `<option selected value="">默认</option>`
-            )
+              `<option selected value="">` + chrome.i18n.getMessage("default") + `</option>`
+            );
             albums.forEach(function (e, index) {
               $("#options_album_id").append(
                 `<option value="` + e.id + `">` + e.name + `</option>`
-              )
-            })
+              );
+            });
+
             chrome.storage.local.get('options_album_id', function (data) {
               let selectedValue = data.options_album_id;
               try {
@@ -1360,17 +1273,17 @@ $(document).ready(function () {
                 }
               } catch (error) {
                 $('#options_album_id option:first').prop('selected', true);
-                chrome.storage.local.set({ 'options_album_id': $("#options_album_id").val() })
+                chrome.storage.local.set({ 'options_album_id': $("#options_album_id").val() });
               }
             });
-          },
-          function (err) {
+          })
+          .catch(error => {
             $("#options_album_id").append(
-              `<option selected value="NO">无法获取相册</option>`
-            )
-            console.log(err)
-          }
-        )
+              `<option selected value="NO">` + chrome.i18n.getMessage("Unable_to_obtain_album") + `</option>`
+            );
+            console.error(chrome.i18n.getMessage("request_failure"), error);
+          });
+
       }
     }
     /**
@@ -1382,14 +1295,14 @@ $(document).ready(function () {
           chrome.storage.local.set({ 'options_imgur_post_mode': "video" })
           // 开启
           toastItem({
-            toast_content: "当前模式为：视频上传模式",
+            toast_content: chrome.i18n.getMessage("Video_upload_mode"),
           })
 
         } else {
           chrome.storage.local.set({ 'options_imgur_post_mode': "image" })
           // 关闭
           toastItem({
-            toast_content: "当前模式为：图片上传模式",
+            toast_content: chrome.i18n.getMessage("Image_upload_mode"),
           })
         }
       });
@@ -1409,7 +1322,7 @@ $(document).ready(function () {
         let proxyServer = $('#options_proxy_server');
         if (proxyServer.val() == "") {
           toastItem({
-            toast_content: 'CORS代理不能为空'
+            toast_content: chrome.i18n.getMessage("CORS_proxy_cannot_be_empty")
           })
           setTimeout(function () {
             $("#options_save").removeClass('btn-danger');
@@ -1454,7 +1367,7 @@ $(document).ready(function () {
           } else {
             if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
               toastItem({
-                toast_content: '保存失败，上传路径不能含有特殊字符'
+                toast_content: chrome.i18n.getMessage("Save_failed_1")
               });
               return;
             }
@@ -1487,7 +1400,7 @@ $(document).ready(function () {
           } else {
             if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
               toastItem({
-                toast_content: '保存失败，上传路径不能含有特殊字符'
+                toast_content: chrome.i18n.getMessage("Save_failed_1")
               });
               return;
             }
@@ -1531,7 +1444,7 @@ $(document).ready(function () {
           } else {
             if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
               toastItem({
-                toast_content: '保存失败，上传路径不能含有特殊字符'
+                toast_content: chrome.i18n.getMessage("Save_failed_1")
               });
               return;
             }
@@ -1576,7 +1489,7 @@ $(document).ready(function () {
           } else {
             if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
               toastItem({
-                toast_content: '保存失败，上传路径不能含有特殊字符'
+                toast_content: chrome.i18n.getMessage("Save_failed_1")
               });
               return;
             }
@@ -1607,7 +1520,7 @@ $(document).ready(function () {
         }
         localStorage.options_webtitle_status = 1
         toastItem({
-          toast_content: '保存成功,即将刷新页面'
+          toast_content: chrome.i18n.getMessage("Successfully_saved_1")
         })
         setTimeout(function () {
           window.location.reload();
@@ -1615,7 +1528,7 @@ $(document).ready(function () {
 
       } else {
         toastItem({
-          toast_content: '请选择上传程序'
+          toast_content: chrome.i18n.getMessage("select_upload_program")
         })
         setTimeout(function () {
           $("#options_save").removeClass('btn-danger');
@@ -1661,19 +1574,19 @@ $(document).ready(function () {
     $('#CorsButton').click(function () {
       if ($('#exe_Tencent_COS').hasClass('active')) {
         toastItem({
-          toast_content: 'Tencent_COS无法配置CORS代理,请前往官网进行相关配置'
+          toast_content: chrome.i18n.getMessage("Unable_configure_CORS_proxy")
         })
         return;
       }
       if ($('#exe_Aliyun_OSS').hasClass('active')) {
         toastItem({
-          toast_content: 'Aliyun_OSS无法配置CORS代理,请前往官网进行相关配置'
+          toast_content: chrome.i18n.getMessage("Unable_configure_CORS_proxy")
         })
         return;
       }
       if ($('#exe_AWS_S3').hasClass('active')) {
         toastItem({
-          toast_content: 'AWS_S3无法配置CORS代理,请前往官网进行相关配置'
+          toast_content: chrome.i18n.getMessage("Unable_configure_CORS_proxy")
         })
         return;
       }
@@ -1681,13 +1594,13 @@ $(document).ready(function () {
       if ($('#CorsButton button').is(".css-button-rounded--red")) {
         Close_CORS_Element()
         toastItem({
-          toast_content: 'CORS代理关闭成功'
+          toast_content: chrome.i18n.getMessage("CORS_proxy_closed")
         })
 
       } else {
         Insert_CORS_Element()
         toastItem({
-          toast_content: 'CORS代理开启成功'
+          toast_content: chrome.i18n.getMessage("CORS_proxy_opened")
         })
 
       }
@@ -1701,12 +1614,12 @@ $(document).ready(function () {
         if ($('#open_json_button').is(':checked')) {
           chrome.storage.local.set({ 'open_json_button': 1 })
           toastItem({
-            toast_content: '开启JSON转换'
+            toast_content: chrome.i18n.getMessage("Enable_JSON_Conversion")
           })
         } else {
           chrome.storage.local.set({ 'open_json_button': 0 })
           toastItem({
-            toast_content: '关闭JSON转换'
+            toast_content: chrome.i18n.getMessage("Disable_JSON_Conversion")
           })
         }
       });
@@ -1727,8 +1640,8 @@ $(document).ready(function () {
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="uploadArea_ModalLabel">区域设置 </h1>&nbsp<span
-                style="font-size: 10px; color: #333;">关闭全局上传,侧边栏也会关闭</span>
+              <h1 class="modal-title fs-5" id="uploadArea_ModalLabel">`+ chrome.i18n.getMessage("Region_settings") + `</h1>&nbsp<span
+                style="font-size: 10px; color: #333;">`+ chrome.i18n.getMessage("Region_settings_tips") + `</span>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
         
@@ -1737,40 +1650,40 @@ $(document).ready(function () {
               <div style="width: 125px;"></div>
               <div style="width: 250px;">
                 <div>
-                  <label for="edit_uploadArea_width" class="form-label">宽度:0px</label>
+                  <label for="edit_uploadArea_width" class="form-label">`+ chrome.i18n.getMessage("width") + `:0px</label>
                   <input type="range" class="form-range" min="16" max="100" id="edit_uploadArea_width">
                 </div>
                 <div>
-                  <label for="edit_uploadArea_height" class="form-label">高度:0%</label>
+                  <label for="edit_uploadArea_height" class="form-label">`+ chrome.i18n.getMessage("height") + `:0%</label>
                   <input type="range" class="form-range" min="1" max="100" id="edit_uploadArea_height">
                 </div>
                 <div>
-                  <label for="edit_uploadArea_Location" class="form-label">位置:0</label>
+                  <label for="edit_uploadArea_Location" class="form-label">`+ chrome.i18n.getMessage("Location") + `:0</label>
                   <input type="range" class="form-range" min="1" max="100" id="edit_uploadArea_Location" disabled>
                 </div>
                 <div>
-                  <label for="edit_uploadArea_opacity" class="form-label">透明度:0</label>
+                  <label for="edit_uploadArea_opacity" class="form-label">`+ chrome.i18n.getMessage("opacity") + `:0</label>
                   <input type="range" class="form-range" min="5" max="100" id="edit_uploadArea_opacity">
                 </div>
                 <div>
-                  <label for="edit_uploadArea_auto_close_time" class="form-label">关闭时间:2秒</label>
+                  <label for="edit_uploadArea_auto_close_time" class="form-label">`+ chrome.i18n.getMessage("auto_close_time") + `:2s</label>
                   <input type="range" class="form-range" min="2" max="100" id="edit_uploadArea_auto_close_time">
                 </div>
                 <div style="display: flex;">
-                  <label for="edit_uploadArea_Left_or_Right" class="form-label" style="margin-right: .5rem;">侧边栏在:</label>
+                  <label for="edit_uploadArea_Left_or_Right" class="form-label" style="margin-right: .5rem;">`+ chrome.i18n.getMessage("edit_uploadArea_Left_or_Right") + `:</label>
                   <div style="display: flex;">
                     <div class="form-check">
                       <input class="form-check-input" type="radio" name="edit_uploadArea_Left_or_Right"
                         id="edit_uploadArea_Left">
                       <label class="form-check-label" for="edit_uploadArea_Left_or_Right" style="margin-right: 1rem;">
-                        左
+                      `+ chrome.i18n.getMessage("Left") + `
                       </label>
                     </div>
                     <div class="form-check">
                       <input class="form-check-input" type="radio" name="edit_uploadArea_Left_or_Right"
                         id="edit_uploadArea_Right">
                       <label class="form-check-label" for="edit_uploadArea_Left_or_Right">
-                        右
+                      `+ chrome.i18n.getMessage("Right") + `
                       </label>
                     </div>
                   </div>
@@ -1782,11 +1695,11 @@ $(document).ready(function () {
               <div style="width: 125px;"></div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>关闭</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>`+ chrome.i18n.getMessage("close") + `</button>
               <button type="button" class="btn btn-danger" id="edit_uploadArea_reset" data-bs-dismiss="modal"><i
-                  class="bi bi-arrow-repeat"></i>重置</button>
+                  class="bi bi-arrow-repeat"></i>`+ chrome.i18n.getMessage("reset") + `</button>
               <button type="button" class="btn btn-primary" id="edit_uploadArea_save"><i
-                  class="bi bi-check-lg"></i>保存</button>
+                  class="bi bi-check-lg"></i>`+ chrome.i18n.getMessage("save") + `</button>
             </div>
           </div>
         </div>
@@ -1826,7 +1739,7 @@ $(document).ready(function () {
             dragPos = uploadAreaParent.height() - edit_uploadArea.height();
           }
           edit_uploadArea_Location_value = parseInt(dragPos / (parentHeight / 100));
-          $("#edit_uploadArea_Location").prev('label').text("位置:" + edit_uploadArea_Location_value + "%");
+          $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ":" + edit_uploadArea_Location_value + "%");
           edit_uploadArea_Location = edit_uploadArea_Location_value
           edit_uploadArea.css("top", dragPos);
           uploadAreaParent.scrollTop(dragPos);
@@ -1840,12 +1753,12 @@ $(document).ready(function () {
       // 宽度
       edit_uploadArea.css('width', edit_uploadArea_width + 'px');
       $("#edit_uploadArea_width").attr("value", edit_uploadArea_width)
-      $("#edit_uploadArea_width").prev('label').text('宽度:' + edit_uploadArea_width + "px");
+      $("#edit_uploadArea_width").prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width + "px");
       // 高度
 
       edit_uploadArea.css('height', edit_uploadArea_height + '%');
       $("#edit_uploadArea_height").attr("value", edit_uploadArea_height)
-      $("#edit_uploadArea_height").prev('label').text('高度:' + edit_uploadArea_height + "%");
+      $("#edit_uploadArea_height").prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height + "%");
       switch (edit_uploadArea_Left_or_Right) {
         case 'Left':
           if (edit_uploadArea_height > 99) {
@@ -1866,16 +1779,16 @@ $(document).ready(function () {
       //位置
       edit_uploadArea.css('top', (edit_uploadArea_Location * ($("#PNGmodal-body").height() / 100)) + 'px');
       $("#edit_uploadArea_Location").attr("value", edit_uploadArea_Location)
-      $("#edit_uploadArea_Location").prev('label').text('位置:' + (edit_uploadArea_Location) + "%");
+      $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + (edit_uploadArea_Location) + "%");
 
       //透明
       edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity + `)`)
       $("#edit_uploadArea_opacity").attr("value", edit_uploadArea_opacity * 100)
-      $("#edit_uploadArea_opacity").prev('label').text('透明度:' + edit_uploadArea_opacity);
+      $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity);
 
       //自动关闭时间
       $("#edit_uploadArea_auto_close_time").attr("value", edit_uploadArea_auto_close_time)
-      $("#edit_uploadArea_auto_close_time").prev('label').text('关闭时间:' + edit_uploadArea_auto_close_time + "秒");
+      $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time + "s");
       switch (edit_uploadArea_Left_or_Right) {
         case 'Left':
           $("#edit_uploadArea_Left").attr("checked", true)
@@ -1912,7 +1825,7 @@ $(document).ready(function () {
 
       $('#edit_uploadArea_width').on('input', function () {
         edit_uploadArea_width_value = $(this).val();
-        $(this).prev('label').text('宽度:' + edit_uploadArea_width_value + "px");
+        $(this).prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width_value + "px");
         edit_uploadArea.css('width', edit_uploadArea_width_value + 'px');
         edit_uploadArea_width = edit_uploadArea_width_value
         switch (edit_uploadArea_Left_or_Right) {
@@ -1933,8 +1846,8 @@ $(document).ready(function () {
 
         edit_uploadArea_Location_value = parseInt((top / parentHeight) * 100);
         let from_border = edit_uploadArea_Location_value + parseInt(edit_uploadArea_height_value)
-        $(this).prev('label').text('高度:' + edit_uploadArea_height_value + "%");
-        $("#edit_uploadArea_Location").prev('label').text('位置:' + edit_uploadArea_Location_value + "%");
+        $(this).prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height_value + "%");
+        $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + edit_uploadArea_Location_value + "%");
         if (from_border > 99) {
           edit_uploadArea.css("top", 0)
         }
@@ -1968,14 +1881,14 @@ $(document).ready(function () {
 
       $('#edit_uploadArea_opacity').on('input', function () {
         edit_uploadArea_opacity_value = $(this).val() / 100;
-        $("#edit_uploadArea_opacity").prev('label').text('透明度:' + edit_uploadArea_opacity_value);
+        $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity_value);
         edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity_value + `)`)
         edit_uploadArea_opacity = edit_uploadArea_opacity_value
       });
 
       $('#edit_uploadArea_auto_close_time').on('input', function () {
         edit_uploadArea_auto_close_time_value = $(this).val();
-        $("#edit_uploadArea_auto_close_time").prev('label').text('关闭时间:' + edit_uploadArea_auto_close_time_value + "秒");
+        $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time_value + "s");
         edit_uploadArea_auto_close_time = edit_uploadArea_auto_close_time_value
       });
 
@@ -1987,7 +1900,7 @@ $(document).ready(function () {
         chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
         chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
         toastItem({
-          toast_content: '保存成功,刷新页面生效'
+          toast_content: chrome.i18n.getMessage("Successfully_saved_1")
         })
 
       })
@@ -1999,7 +1912,7 @@ $(document).ready(function () {
         chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
         chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
         toastItem({
-          toast_content: '重置成功,刷新页面生效'
+          toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
         })
 
       })
@@ -2046,20 +1959,39 @@ $(document).ready(function () {
     chrome.storage.local.set({ 'browser_Open_with': 1 }, function () {
       // 打开方式为：在标签页打开
     });
-    chrome.runtime.reload();
+    try {
+      chrome.runtime.reload();
+    } catch (error) {
+      toastItem({
+        toast_content: chrome.i18n.getMessage("Setting_successful_6")
+      })
+    }
   });
   $('#options_Open_with_Window').click(function () {
     chrome.storage.local.set({ 'browser_Open_with': 2 }, function () {
       // 打开方式为：在新窗口打开
     });
-    chrome.runtime.reload();
+    try {
+      chrome.runtime.reload();
+    } catch (error) {
+      toastItem({
+        toast_content: chrome.i18n.getMessage("Setting_successful_6")
+      })
+    }
   });
   $('#options_Open_with_Inside').click(function () {
-    alert('使用内置页打开，第一使用需要点击两次插件！')
-    chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
-      // 打开方式为：在内置页打开
-    });
-    chrome.runtime.reload();
+    if (window.navigator.userAgent.indexOf('Firefox') > -1) {
+      toastItem({
+        toast_content: chrome.i18n.getMessage("Setting_failed_2")
+      })
+      return;
+    } else {
+      alert(chrome.i18n.getMessage("Setting_successful_7"))
+      chrome.storage.local.set({ 'browser_Open_with': 3 }, function () {
+        // 打开方式为：在内置页打开
+      });
+      chrome.runtime.reload();
+    }
   });
 
   chrome.storage.local.get(["GlobalUpload"], function (result) {
@@ -2109,7 +2041,7 @@ $(document).ready(function () {
       $("#AutoInsert button").removeClass("btn-primary btn-dark")
       if (val == "AutoInsert_on") {
         toastItem({
-          toast_content: "开启成功,请手动刷新页面再上传"
+          toast_content: chrome.i18n.getMessage("Successfully_opened_1")
         });
         $("#AutoInsert button").addClass("btn-primary")
       } else if (val == "AutoInsert_off") {
@@ -2136,9 +2068,9 @@ $(document).ready(function () {
       chrome.runtime.reload();
     });
   })
-  $("#VERSION").text("当前版本:V" + chrome.runtime.getManifest().version)
+  $("#VERSION").text(chrome.i18n.getMessage("VERSION_1") + ":V" + chrome.runtime.getManifest().version)
   $("#VERSION").click(function () {
-    $("#VERSION").text("获取中...")
+    $("#VERSION").text(chrome.i18n.getMessage("Obtaining"))
     fetch(`https://api.github.com/repos/ZenEcho/PLExtension/releases/latest`)
       .then(response => response.json())
       .then(data => {
@@ -2147,26 +2079,26 @@ $(document).ready(function () {
         if (remoteVersion) {
           let result = compareVersions(localVersion, remoteVersion);
           if (result === -1) {
-            $("#VERSION").text("有新版本:V" + remoteVersion)
+            $("#VERSION").text(chrome.i18n.getMessage("VERSION_2") + ":V" + remoteVersion)
             $("#VERSION").css({ "color": "red" })
-            if (confirm("检测到新版本是否打开页面?")) {
+            if (confirm(chrome.i18n.getMessage("VERSION_3"))) {
               window.open("https://github.com/ZenEcho/PLExtension/releases")
             }
             // 远程版本较新
           } else {
-            $("#VERSION").text("无新版本:V" + localVersion)
+            $("#VERSION").text(chrome.i18n.getMessage("VERSION_4") + ":V" + localVersion)
           }
         } else {
           toastItem({
             toast_content: data.message
           });
-          $("#VERSION").text("版本取失败!")
+          $("#VERSION").text(chrome.i18n.getMessage("VERSION_5"))
         }
 
       })
       .catch(error => {
-        $("#VERSION").text("版本取失败!")
-        console.error('请求出错:', error);
+        $("#VERSION").text(chrome.i18n.getMessage("VERSION_5"))
+        console.error(chrome.i18n.getMessage("Request_error"), error);
       });
   })
   function compareVersions(localVersion, remoteVersion) {

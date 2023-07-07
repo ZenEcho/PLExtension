@@ -51,7 +51,7 @@ $(document).ready(function () {
         try {
           options_Headers = JSON.parse(options_Headers);
         } catch (error) {
-          alert('Headers请求参数不是一个合法的 JSON 格式字符串!');
+          alert(chrome.i18n.getMessage("Headers_error"));
           window.location.href = "options.html"
           return;
         }
@@ -62,7 +62,7 @@ $(document).ready(function () {
         try {
           options_Body = JSON.parse(options_Body);
         } catch (error) {
-          alert('Body请求参数不是一个合法的 JSON 格式字符串!');
+          alert(chrome.i18n.getMessage("Body_error"));
           window.location.href = "options.html"
           return;
         }
@@ -101,10 +101,10 @@ $(document).ready(function () {
     let SvgData = `<img class="icon" src="/icons/logo.ico">`
     let UserBox = `
     <div class="userBox"  style="display: none;">
-    <i class="bi bi-person"></i>用户:(<span class="userName" style="color: #03a9f4;">游客(仅兰空,SM.MS图床程序)</span>),
-    <i class="bi bi-bar-chart-line-fill"></i>总容量:(<span class="userCapacity" style="color: #03a9f4;">0Gb</span>),
-    <i class="bi bi-bar-chart-line"></i>已使用:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
-    <i class="bi bi-image"></i>图片数量:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
+    <i class="bi bi-person"></i>`+ chrome.i18n.getMessage("user") + `:(<span class="userName" style="color: #03a9f4;">游客</span>),
+    <i class="bi bi-bar-chart-line-fill"></i>`+ chrome.i18n.getMessage("Total_capacity") + `:(<span class="userCapacity" style="color: #03a9f4;">0Gb</span>),
+    <i class="bi bi-bar-chart-line"></i>`+ chrome.i18n.getMessage("Used") + `:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
+    <i class="bi bi-image"></i>`+ chrome.i18n.getMessage("Number_images") + `:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
     let links
     let LinksUrl = []
@@ -141,16 +141,16 @@ $(document).ready(function () {
     `,
         // autoProcessQueue: false, //自动上传
         parallelUploads: 1, // 每次上传1个
-        dictDefaultMessage: SvgData + `<p>点击上传 / 拖拽上传 / 粘贴上传</p>` + UserBox,
-        dictFallbackMessage: "您的浏览器不支持拖拽......",
+        dictDefaultMessage: SvgData + `<p>` + chrome.i18n.getMessage("Upload_box_prompt") + `</p>` + UserBox,
+        dictFallbackMessage: chrome.i18n.getMessage("dictFallbackMessage"),
         dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
         dictFileTooBig: "你传的玩意有 {{filesize}}MiB这么大.但是我就允许你传: {{maxFilesize}}MiB.",
-        dictInvalidFileType: "你不能上传这个文件类型.......",
-        dictResponseError: "服务器返回 {{statusCode}} 代码.",
-        dictCancelUpload: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">取消上传</button>`,
-        dictCancelUploadConfirmation: "你确认取消上传吗?",
-        dictRemoveFile: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">删除图片</button>`,
-        dictMaxFilesExceeded: "您不能上传更多啦......",
+        dictInvalidFileType: chrome.i18n.getMessage("dictInvalidFileType"),
+        dictResponseError: "{{statusCode}}",
+        dictCancelUpload: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">X</button>`,
+        dictCancelUploadConfirmation: chrome.i18n.getMessage("dictCancelUploadConfirmation"),
+        dictRemoveFile: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">X</button>`,
+        dictMaxFilesExceeded: chrome.i18n.getMessage("dictMaxFilesExceeded"),
       });
     }
     //剪切板上传
@@ -250,13 +250,13 @@ $(document).ready(function () {
       const textFrame = `
       <div class="Upload_Return_Box">
         <div class="col">
-          <p class="p_urls">上传成功后URL将会显示在这里</p>
+          <p class="p_urls">`+chrome.i18n.getMessage("Upload_return_information")+`</p>
         </div>
         <div class="text-center selector_p_urls">
-          <span>选择</span>
+          <span>`+chrome.i18n.getMessage("Selected")+`</span>
         </div>
         <div class="text-center copy">
-          <span>复制</span>
+          <span>`+chrome.i18n.getMessage("Copy")+`</span>
         </div>
       </div>
     `
@@ -303,12 +303,13 @@ $(document).ready(function () {
                 <p class="p_urls">${link}</p>
               </div>
               <div class="text-center selector_p_urls">
-                <span>选择</span>
+                <span>`+chrome.i18n.getMessage("Selected")+`</span>
               </div>
               <div class="text-center copy">
-                <span>复制</span>
+                <span>`+chrome.i18n.getMessage("Copy")+`</span>
               </div>
             </div>
+
               `);
           });
           $(".Upload_Return_Box .col").click(function () {
@@ -455,21 +456,21 @@ $(document).ready(function () {
         case 'Aliyun_OSS':
           imageUrl = options_Custom_domain_name + filename
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = options_Endpoint
           break;
         case 'AWS_S3':
           imageUrl = options_Custom_domain_name + filename
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = options_Endpoint
           break;
         case 'GitHubUP':
           imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = "GitHub.com"
           break;
@@ -486,7 +487,7 @@ $(document).ready(function () {
           break;
       }
       if (!imageUrl) {
-        imageUrl = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+        imageUrl = chrome.i18n.getMessage("Upload_prompt4")
       }
       LinksUrl.push(imageUrl)
       LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
@@ -495,15 +496,15 @@ $(document).ready(function () {
       LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
 
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
-      await LocalStorage(file, imageUrl)
+      await LocalStorage(null, imageUrl, file)
     })
     uploader.on("error", function (file, err) {
       console.log(err)
-      LinksUrl.push('文件：' + file.upload.filename + "-上传失败")
-      LinksHtml.push('文件：' + file.upload.filename + "-上传失败")
-      LinksBBCode.push('文件：' + file.upload.filename + "-上传失败")
-      LinksMarkdown.push('文件：' + file.upload.filename + "-上传失败")
-      LinksMDwithlink.push('文件：' + file.upload.filename + "-上传失败")
+      LinksUrl.push('file：' + file.upload.filename + "-error")
+      LinksHtml.push('file：' + file.upload.filename + "-error")
+      LinksBBCode.push('file：' + file.upload.filename + "-error")
+      LinksMarkdown.push('file：' + file.upload.filename + "-error")
+      LinksMDwithlink.push('file：' + file.upload.filename + "-error")
       switch (options_exe) {
         case 'Lsky':
           toastItem({
@@ -541,53 +542,50 @@ $(document).ready(function () {
       }
     })
     popup_Uploader()
-    function LocalStorage(file, url) {
-      return new Promise((resolve, reject) => {
-        chrome.storage.local.get("UploadLog", function (result) {
-          UploadLog = result.UploadLog || [];
-          if (!Array.isArray(UploadLog)) {
-            UploadLog = [];
-          }
-          function generateRandomKey() {
-            return new Promise(resolve => {
-              const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-              let key = '';
-              for (let i = 0; i < 6; i++) {
-                key += characters.charAt(Math.floor(Math.random() * characters.length));
-              }
-              // 确保不会重复
-              while (UploadLog.some(log => log.id === key)) {
-                key = '';
-                for (let i = 0; i < 6; i++) {
-                  key += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-              }
-              resolve(key);
-            });
-          }
-          let d = new Date();
-          generateRandomKey().then(key => {
-            let UploadLogData = {
-              key: key,
-              url: url,
-              uploadExe: options_exe,
-              upload_domain_name: options_host,
-              original_file_name: file.name,
-              file_size: file.size,
-              img_file_size: "宽:不支持,高:不支持",
-              uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
-            }
-            if (typeof UploadLog !== 'object') {
-              UploadLog = JSON.parse(UploadLog);
-            }
-            UploadLog.push(UploadLogData);
-            chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
-              resolve(); // 标记操作完成
-            })
-          })
-        })
-      });
-    }
+    // function LocalStorage(file, url) {
+    //   chrome.storage.local.get("UploadLog", function (result) {
+    //     UploadLog = result.UploadLog || [];
+    //     if (!Array.isArray(UploadLog)) {
+    //       UploadLog = [];
+    //     }
+    //     function generateRandomKey() {
+    //       return new Promise(resolve => {
+    //         const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    //         let key = '';
+    //         for (let i = 0; i < 6; i++) {
+    //           key += characters.charAt(Math.floor(Math.random() * characters.length));
+    //         }
+    //         // 确保不会重复
+    //         while (UploadLog.some(log => log.id === key)) {
+    //           key = '';
+    //           for (let i = 0; i < 6; i++) {
+    //             key += characters.charAt(Math.floor(Math.random() * characters.length));
+    //           }
+    //         }
+    //         resolve(key);
+    //       });
+    //     }
+    //     let d = new Date();
+    //     generateRandomKey().then(key => {
+    //       let UploadLogData = {
+    //         key: key,
+    //         url: url,
+    //         uploadExe: options_exe,
+    //         upload_domain_name: options_host,
+    //         original_file_name: file.name,
+    //         file_size: file.size,
+    //         img_file_size: "宽:不支持,高:不支持",
+    //         uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
+    //       }
+    //       if (typeof UploadLog !== 'object') {
+    //         UploadLog = JSON.parse(UploadLog);
+    //       }
+    //       UploadLog.push(UploadLogData);
+    //       chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
+    //       })
+    //     })
+    //   })
+    // }
     // 实现链接按钮下划线
     $(".urlButton").click(function () {
       const value = $(this).attr("value");

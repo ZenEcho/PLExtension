@@ -80,6 +80,18 @@ window.addEventListener('message', function (event) {
         }
 
     }
+    if (event.data.type === 'ueditor') {
+        try {
+            let ueditor_Element = UE.getEditor("editor_content");
+            if (ueditor_Element) {
+                ueditor_Element.execCommand('insertimage', {
+                    src: event.data.data,
+                });
+            }
+        } catch (error) {
+        }
+
+    }
 });
 
 function plB(Element) {
@@ -112,6 +124,15 @@ try {
     let ckeditor_Element_Node = ckeditor_Elements.container.$
     if (ckeditor_Element_Node) {
         plB(ckeditor_Element_Node)
+    }
+} catch (error) {
+}
+//ueditor
+try {
+    let ueditor_Elements = UE.getEditor("editor_content");
+    let ueditor_Elements_Node = ueditor_Elements.container
+    if (ueditor_Elements_Node) {
+        plB(ueditor_Elements_Node)
     }
 } catch (error) {
 }

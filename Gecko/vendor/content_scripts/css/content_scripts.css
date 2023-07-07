@@ -3,13 +3,11 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 
 }
-
 #PL_JS_Alerts {
     position: fixed;
     bottom: 16px;
     right: 16px;
 }
-
 .PL_JS_Alert {
     border-radius: 0.5rem;
     text-align: center;
@@ -18,7 +16,6 @@
     margin: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
-
 .PL_JS_Title {
     color: white;
     background-color: #03A9F4;
@@ -28,7 +25,6 @@
     font-weight: bold;
     font-size: 1rem;
 }
-
 .PL_JS_Content {
     font-size: 1rem;
     padding-top: 1rem;
@@ -37,12 +33,10 @@
     padding-right: 1.5rem;
     border-bottom: 1px solid #eee;
 }
-
 .PL_JS_Countdown {
     text-align: right;
     font-size: 0.5rem;
 }
-
 .uploadAreaTips {
     font-size: 16px;
     position: fixed;
@@ -57,7 +51,6 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 
 }
-
 #PNG_upload_prompt {
     font-size: 16px;
     position: fixed;
@@ -70,7 +63,6 @@
     padding: 16px;
     text-align: center;
 }
-
 .PNGiframe {
     position: fixed;
     width: 780px;
@@ -84,7 +76,6 @@
 .Functional_animation span {
     font-size: 2em;
 }
-
 .Functional_animation {
     top: 60%;
     position: absolute;
@@ -93,12 +84,10 @@
     transition: left 3s ease;
     width: 200px;
 }
-
 .animation_finger {
     width: 155px;
     height: 200px;
 }
-
 .Functional_animation.active {
     right: 0%;
 }

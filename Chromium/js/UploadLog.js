@@ -31,6 +31,28 @@ $(document).ready(function () {
         let itemsPerPage
         let totalPages;
 
+        if (options_exe == 'Tencent_COS') {
+            //腾讯云cos拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
+            }
+        }
+        if (options_exe == 'Aliyun_OSS') {
+            //阿里云oss拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
+            }
+        }
+        if (options_exe == 'AWS_S3') {
+            //AWS S3区域拼接
+            if (!options_Endpoint) {
+                options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
+            }
+            //AWS S3拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
+            }
+        }
         const Image_acquisition_failed = `
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">亲亲</h4>
@@ -78,82 +100,10 @@ $(document).ready(function () {
             chrome.storage.local.set({ 'Copy_Selected_Mode': "URL" })
             Copy_Selected_Mode = "URL"
         }
-        if (options_exe == 'Tencent_COS') {
-            try {
-                let getAuthorization = function (options, callback) {
-                    let authorization = COS.getAuthorization({
-                        SecretId: options_SecretId,
-                        SecretKey: options_SecretKey,
-                        Method: options.Method,
-                        Pathname: options.Pathname,
-                        Query: options.Query,
-                        Headers: options.Headers,
-                        Expires: 900,
-                    });
-                    callback({ Authorization: authorization });
-                };
-                var cos = new COS({
-                    getAuthorization: getAuthorization,
-                    UploadCheckContentMd5: true,
-                    protocol: 'https:' // 强制使用 HTTPS 协议
-                });
-            } catch (error) {
-                toastItem({
-                    toast_content: error
-                });
-            }
-            //腾讯云cos拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
-            }
-        }
-        if (options_exe == 'Aliyun_OSS') {
-            try {
-                var oss = new OSS({
-                    accessKeyId: options_SecretId,
-                    accessKeySecret: options_SecretKey,
-                    bucket: options_Bucket,
-                    endpoint: options_Endpoint,
-                    region: options_Region,
-                    secure: true //强制https
-                });
-            } catch (error) {
-                toastItem({
-                    toast_content: error
-                });
-            }
-            //阿里云oss拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
-            }
-        }
-        if (options_exe == 'AWS_S3') {
-            //AWS S3区域拼接
-            if (!options_Endpoint) {
-                options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
-            }
-            //AWS S3拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
-            }
-            try {
-                AWS.config.update({
-                    accessKeyId: options_SecretId,
-                    secretAccessKey: options_SecretKey,
-                    region: options_Region,
-                    endpoint: options_Endpoint,
-                    signatureVersion: 'v4'
-                });
-                var s3 = new AWS.S3();
-            } catch (error) {
-                toastItem({
-                    toast_content: error
-                });
-            }
-        }
         let Sorting_Plan;
         let Sorting_Methods;
         function Program_Start_Execution() {
+            $('.pagination').twbsPagination('destroy')
             $("#container").empty();
             $("#container").append(`
             <div class="loading mx-auto" style="z-index: 9992;">
@@ -248,7 +198,6 @@ $(document).ready(function () {
                         return;
                     } else {
                         $container = $('#container');
-                        // $('.pagination').twbsPagination('destroy')
                         currentPage = 1;
                         itemsPerPage = 10;
                         // 计算总页数
@@ -543,67 +492,80 @@ $(document).ready(function () {
             } else {
                 $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
-                // $('.pagination').twbsPagination('destroy')
                 switch (options_exe) {
                     case 'Lsky':
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
                             注意：现在删除图片,服务器图片也会跟随删除
                           </div>`)
-                        sendAjax(
-                            options_proxy_server + "https://" + options_host + "/api/v1/images",
-                            'GET',
-                            null,
-                            {
+                        fetch(options_proxy_server + "https://" + options_host + "/api/v1/images", {
+                            method: 'GET',
+                            headers: {
                                 "Accept": "application/json",
                                 "Authorization": options_token
-                            },
-                            function (res) {
-                                //第一遍请求成功
-                                images = res.data.data
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('Network response was not ok.');
+                                }
+                            })
+                            .then(res => {
+                                // 第一遍请求成功
+                                images = res.data.data;
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
                                     $container = $('#container');
-                                    // currentPage = res.data.current_page; // 当前第1页
-                                    itemsPerPage = res.data.per_page; // 每页40张图片
-                                    // 计算总页数
+                                    itemsPerPage = res.data.per_page;
                                     totalPages = res.data.last_page;
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
                                             currentPage = page;
-                                            sendAjax(
-                                                options_proxy_server + "https://" + options_host + "/api/v1/images?page=" + page,
-                                                'GET',
-                                                null,
-                                                {
+                                            fetch(options_proxy_server + "https://" + options_host + "/api/v1/images?page=" + page, {
+                                                method: 'GET',
+                                                headers: {
                                                     "Accept": "application/json",
                                                     "Authorization": options_token
-                                                },
-                                                function (res) {
-                                                    images = res.data.data
-                                                    networkRenderImages();
                                                 }
-                                            )
+                                            })
+                                                .then(response => {
+                                                    if (response.ok) {
+                                                        return response.json();
+                                                    } else {
+                                                        throw new Error('Network response was not ok.');
+                                                    }
+                                                })
+                                                .then(res => {
+                                                    images = res.data.data;
+                                                    networkRenderImages();
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                    toastItem({
+                                                        toast_content: "获取失败"
+                                                    });
+                                                    $("#container").html(Image_acquisition_failed);
+                                                });
                                         },
                                         first: '首页',
                                         prev: null,
                                         next: null,
-                                        last: "末页",
-
+                                        last: "末页"
                                     });
                                 }
-                            },
-                            function (err) {
-                                console.log(err)
+                            })
+                            .catch(err => {
+                                console.log(err);
                                 toastItem({
                                     toast_content: "获取失败"
-                                })
+                                });
                                 $("#container").html(Image_acquisition_failed);
-                            }
+                            });
 
-                        )
                         break;
                     case 'SM_MS':
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
@@ -611,103 +573,129 @@ $(document).ready(function () {
                       </div><div class="alert alert-primary" role="alert">
                       注意：仅加载最新100张图片且查询和删除有延迟(因为sm.ms服务端设置的单页100张图,单页这么多图对配置要求过高,还会被误判为ddos攻击。)
                     </div>`)
-                        sendAjax(
-                            options_proxy_server + "https://" + options_host + "/api/v2/upload_history?page=1",
-                            'GET',
-                            null,
-                            {
+                        fetch(options_proxy_server + "https://" + options_host + "/api/v2/upload_history?page=1", {
+                            method: 'GET',
+                            headers: {
                                 "Authorization": options_token,
                                 "Content-Type": "multipart/form-data"
-                            },
-                            function (res) {
-                                images = res.data
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('Network response was not ok.');
+                                }
+                            })
+                            .then(res => {
+                                images = res.data;
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
                                     $container = $('#container');
-                                    currentPage = 1; // 当前第1页
-                                    itemsPerPage = 20; // 每页20张图片
-                                    totalPages = Math.ceil(images.length / itemsPerPage)// 计算总页数
+                                    currentPage = 1;
+                                    itemsPerPage = 20;
+                                    totalPages = Math.ceil(images.length / itemsPerPage);
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
                                             currentPage = page;
-                                            networkRenderImages()
+                                            networkRenderImages();
                                         },
                                         first: '首页',
                                         prev: null,
                                         next: null,
-                                        last: "末页",
-
+                                        last: "末页"
                                     });
                                 }
-
-                            },
-                            function (err) {
-                                console.log(err)
+                            })
+                            .catch(err => {
+                                console.log(err);
                                 toastItem({
                                     toast_content: "获取失败"
-                                })
+                                });
                                 $("#container").html(Image_acquisition_failed);
-                            }
-                        )
+                            });
+
                         break;
                     case 'Hellohao':
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
                         注意：现在删除图片,服务器图片也会跟随删除
                       </div>`)
-                        sendAjax(
-                            options_proxy_server + "https://" + options_host + "/api/getimglist/",
-                            'POST',
-                            {
-                                "token": options_token
+                        fetch(options_proxy_server + "https://" + options_host + "/api/getimglist/", {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json"
                             },
-                            null,
-                            function (res) {
-                                images = res.data.rows
+                            body: JSON.stringify({
+                                "token": options_token
+                            })
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('Network response was not ok.');
+                                }
+                            })
+                            .then(res => {
+                                images = res.data.rows;
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
                                     $container = $('#container');
-                                    currentPage = 1; // 当前第1页
-                                    itemsPerPage = 20; // 每页20张图片
-                                    totalPages = Math.ceil(res.data.total / itemsPerPage);// 计算总页数
+                                    currentPage = 1;
+                                    itemsPerPage = 20;
+                                    totalPages = Math.ceil(res.data.total / itemsPerPage);
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
                                             currentPage = page;
-                                            sendAjax(
-                                                options_proxy_server + "https://" + options_host + "/api/getimglist/?pageNum=" + page,
-                                                'POST',
-                                                {
-                                                    "token": options_token
+                                            fetch(options_proxy_server + "https://" + options_host + "/api/getimglist/?pageNum=" + page, {
+                                                method: 'POST',
+                                                headers: {
+                                                    "Content-Type": "application/json"
                                                 },
-                                                null,
-                                                function (res) {
-                                                    images = res.data.rows
+                                                body: JSON.stringify({
+                                                    "token": options_token
+                                                })
+                                            })
+                                                .then(response => {
+                                                    if (response.ok) {
+                                                        return response.json();
+                                                    } else {
+                                                        throw new Error('Network response was not ok.');
+                                                    }
+                                                })
+                                                .then(res => {
+                                                    images = res.data.rows;
                                                     networkRenderImages();
-                                                }
-                                            )
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                    toastItem({
+                                                        toast_content: "获取失败"
+                                                    });
+                                                    $("#container").html(Image_acquisition_failed);
+                                                });
                                         },
                                         first: '首页',
                                         prev: null,
                                         next: null,
-                                        last: "末页",
-
+                                        last: "末页"
                                     });
-
                                 }
-                            },
-                            function (err) {
-                                console.log(err)
+                            })
+                            .catch(err => {
+                                console.log(err);
                                 toastItem({
                                     toast_content: "获取失败"
-                                })
+                                });
                                 $("#container").html(Image_acquisition_failed);
-                            }
-                        )
+                            });
+
                         break;
                     case 'Tencent_COS':
                         $(".PLdanger").html(
@@ -849,61 +837,64 @@ $(document).ready(function () {
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                                 <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,删除可能会有缓存</div>`)
                         $(".options_UploadPath").val(options_UploadPath)
-                        sendAjax(
-                            options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath,
-                            'GET',
-                            null,
-                            {
+                        fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath, {
+                            method: 'GET',
+                            headers: {
                                 'Authorization': 'Bearer ' + options_token,
                                 'Content-Type': 'application/json'
-                            },
-                            function (res) {
-                                images = res
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('Network response was not ok.');
+                                }
+                            })
+                            .then(res => {
+                                images = res;
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
                                     $container = $('#container');
-                                    currentPage = 1; // 当前第1页
-                                    itemsPerPage = 20; // 每页20张图片
-                                    totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
+                                    currentPage = 1;
+                                    itemsPerPage = 20;
+                                    totalPages = Math.ceil(images.length / itemsPerPage);
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
                                             currentPage = page;
-                                            networkRenderImages()
+                                            networkRenderImages();
                                         },
                                         first: '首页',
                                         prev: null,
                                         next: null,
-                                        last: "末页",
-
+                                        last: "末页"
                                     });
                                 }
-
-                            },
-                            function (err) {
-                                if (err.responseJSON.message = "Not Found") {
+                            })
+                            .catch(err => {
+                                if (err.message === 'Network response was not ok.') {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    console.log(err)
+                                    console.log(err);
                                     toastItem({
                                         toast_content: "获取失败"
-                                    })
+                                    });
                                     $("#container").html(Image_acquisition_failed);
                                 }
-                            }
-                        )
+                            });
+
                         break;
                     default:
                         $("#container").html('<div class="alert alert-danger" role="alert"><h4 class="alert-heading">亲亲</h4><p>真的很抱歉捏,这个图床不能获取图片噢!</p><hr><p class="mb-0"><a class="nav-link"href="options.html">换一个图床试一试吧</a></p></div>');
                         break;
                 }
-
                 /**
                  * 网络图片渲染
                  */
-                async function networkRenderImages() {
+                function networkRenderImages() {
                     switch (options_exe) {
                         case 'Lsky':
                             images.sort(function (a, b) {
@@ -1269,64 +1260,94 @@ $(document).ready(function () {
                             // 从瀑布流容器中删除图片元素
                             switch (options_exe) {
                                 case 'Lsky':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/v1/images/" + imageUrl.key,
-                                        'DELETE',
-                                        null,
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + imageUrl.key, {
+                                        method: 'DELETE',
+                                        headers: {
                                             "Accept": "application/json",
                                             "Authorization": options_token
-                                        },
-                                        function (res) {
-                                            itemdelete()
+                                        }
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .then(res => {
+                                            itemdelete();
                                             toastItem({
                                                 toast_content: res.message
-                                            })
+                                            });
                                             if ($container.find('.item').length === 0) {
                                                 window.location.reload();
                                             }
-                                        }
-                                    )
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
+
                                     break;
                                 case 'SM_MS':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/v2/delete/" + imageUrl.hash,
-                                        'GET',
-                                        null,
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + imageUrl.hash, {
+                                        method: 'GET',
+                                        headers: {
                                             "Authorization": options_token,
                                             "Content-Type": "multipart/form-data"
-                                        },
-                                        function (res) {
-                                            itemdelete()
+                                        }
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .then(res => {
+                                            itemdelete();
                                             toastItem({
                                                 toast_content: res.message
-                                            })
+                                            });
                                             if ($container.find('.item').length === 0) {
                                                 window.location.reload();
                                             }
-                                        }
-                                    )
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
+
                                     break;
                                 case 'Hellohao':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/deleteimg/",
-                                        'POST',
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                        method: 'POST',
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
                                             "token": options_token,
                                             "delkey": imageUrl.delkey
-                                        },
-                                        null,
-                                        function (res) {
-                                            itemdelete()
+                                        })
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .then(res => {
+                                            itemdelete();
                                             toastItem({
                                                 toast_content: '删除成功!'
-                                            })
+                                            });
                                             if ($container.find('.item').length === 0) {
                                                 window.location.reload();
                                             }
-                                        }
-                                    )
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
+
                                     break;
                                 case 'Tencent_COS':
                                     cos.deleteObject({
@@ -1395,33 +1416,40 @@ $(document).ready(function () {
                                             toast_content: imageUrl.path + '是一个文件夹无法删除'
                                         });
                                     } else {
-                                        sendAjax(
-                                            options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name,
-                                            'DELETE',
-                                            JSON.stringify({
-                                                message: 'Delete file', // 提交的消息
-                                                sha: item_divKey
-                                            }),
-                                            {
+                                        fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name, {
+                                            method: 'DELETE',
+                                            headers: {
                                                 'Authorization': 'Bearer ' + options_token,
                                                 'Content-Type': 'application/json'
                                             },
-                                            function (res) {
-                                                itemdelete()
+                                            body: JSON.stringify({
+                                                message: 'Delete file', // 提交的消息
+                                                sha: item_divKey
+                                            })
+                                        })
+                                            .then(response => {
+                                                if (response.ok) {
+                                                    return response.json();
+                                                } else {
+                                                    throw new Error('Network response was not ok.');
+                                                }
+                                            })
+                                            .then(res => {
+                                                itemdelete();
                                                 toastItem({
                                                     toast_content: "删除成功"
-                                                })
+                                                });
                                                 if ($container.find('.item').length === 0) {
                                                     window.location.reload();
                                                 }
-                                            },
-                                            function (err) {
-                                                console.log(err)
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
                                                 toastItem({
                                                     toast_content: "获取失败"
-                                                })
-                                            }
-                                        )
+                                                });
+                                            });
+
                                     }
 
                                     break;
@@ -1559,49 +1587,70 @@ $(document).ready(function () {
                     imageUrlkey.forEach(function (element, index) {
                         switch (options_exe) {
                             case 'Lsky':
-                                sendAjax(
-                                    options_proxy_server + "https://" + options_host + "/api/v1/images/" + element,
-                                    'DELETE',
-                                    null,
-                                    {
+                                fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + element, {
+                                    method: 'DELETE',
+                                    headers: {
                                         "Accept": "application/json",
                                         "Authorization": options_token
-                                    },
-                                    function (res) {
-                                        completed++;
-                                        deleteUrl(completed, imageUrlkey)
                                     }
-                                )
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            completed++;
+                                            deleteUrl(completed, imageUrlkey);
+                                        } else {
+                                            throw new Error('Network response was not ok.');
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
+
                                 break;
                             case 'SM_MS':
-                                sendAjax(
-                                    options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element,
-                                    'GET',
-                                    null,
-                                    {
+                                fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element, {
+                                    method: 'GET',
+                                    headers: {
                                         "Authorization": options_token,
                                         "Content-Type": "multipart/form-data"
-                                    },
-                                    function (res) {
-                                        completed++;
-                                        deleteUrl(completed, imageUrlkey)
                                     }
-                                )
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            completed++;
+                                            deleteUrl(completed, imageUrlkey);
+                                        } else {
+                                            throw new Error('Network response was not ok.');
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
+
                                 break;
                             case 'Hellohao':
-                                sendAjax(
-                                    options_proxy_server + "https://" + options_host + "/api/deleteimg/",
-                                    'POST',
-                                    {
+                                fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                    method: 'POST',
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
                                         "token": options_token,
                                         "delkey": element
-                                    },
-                                    null,
-                                    function (res) {
-                                        completed++;
-                                        deleteUrl(completed, imageUrlkey)
-                                    }
-                                )
+                                    })
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            completed++;
+                                            deleteUrl(completed, imageUrlkey);
+                                        } else {
+                                            throw new Error('Network response was not ok.');
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
+
                                 break;
                             case 'Tencent_COS':
                                 cos.deleteObject({
@@ -1680,36 +1729,39 @@ $(document).ready(function () {
                                                 completed++; // 延迟后处理下一个文件
                                                 setTimeout(deleteFileWithDelay, delay);
                                             } else {
-                                                sendAjax(
-                                                    options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path,
-                                                    'DELETE',
-                                                    JSON.stringify({
-                                                        message: 'Delete file:' + element.path,
-                                                        sha: element.sha
-                                                    }),
-                                                    {
+                                                fetch(options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path, {
+                                                    method: 'DELETE',
+                                                    headers: {
                                                         'Authorization': 'Bearer ' + options_token,
                                                         'Content-Type': 'application/json'
                                                     },
-                                                    function (res) {
-                                                        toastItem({
-                                                            toast_content: '删除成功'
-                                                        });
-                                                        completed++; // 延迟后处理下一个文件
-                                                        deleteUrl(completed, GitHubUP_file)
-                                                        // 使用 setTimeout 来添加延迟
-                                                        setTimeout(deleteFileWithDelay, delay);
-
-                                                    },
-                                                    function (error) {
+                                                    body: JSON.stringify({
+                                                        message: 'Delete file:' + element.path,
+                                                        sha: element.sha
+                                                    })
+                                                })
+                                                    .then(response => {
+                                                        if (response.ok) {
+                                                            toastItem({
+                                                                toast_content: '删除成功'
+                                                            });
+                                                            completed++; // 延迟后处理下一个文件
+                                                            deleteUrl(completed, GitHubUP_file);
+                                                            // 使用 setTimeout 来添加延迟
+                                                            setTimeout(deleteFileWithDelay, delay);
+                                                        } else {
+                                                            throw new Error('Network response was not ok.');
+                                                        }
+                                                    })
+                                                    .catch(error => {
                                                         toastItem({
                                                             toast_content: '删除失败，请查看控制台！'
                                                         });
                                                         console.log(error);
                                                         $('.overlay').remove();
                                                         $('body').css('overflow', 'auto');
-                                                    }
-                                                );
+                                                    });
+
                                             }
 
                                         } else {
@@ -1819,49 +1871,67 @@ $(document).ready(function () {
                         imgKey.forEach(function (element, index) {
                             switch (options_exe) {
                                 case 'Lsky':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/v1/images/" + element,
-                                        'DELETE',
-                                        null,
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + element, {
+                                        method: 'DELETE',
+                                        headers: {
                                             "Accept": "application/json",
                                             "Authorization": options_token
-                                        },
-                                        function () {
-                                            numDeleted++;
-                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
                                         }
-                                    )
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                numDeleted++;
+                                                Delete_Selected(selectedImgs, numDeleted, imgKey);
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
                                     break;
                                 case 'SM_MS':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element,
-                                        'GET',
-                                        null,
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element, {
+                                        method: 'GET',
+                                        headers: {
                                             "Authorization": options_token,
                                             "Content-Type": "multipart/form-data"
-                                        },
-                                        function (res) {
-                                            numDeleted++;
-                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
                                         }
-                                    )
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                numDeleted++;
+                                                Delete_Selected(selectedImgs, numDeleted, imgKey);
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
                                     break;
                                 case 'Hellohao':
-                                    sendAjax(
-                                        options_proxy_server + "https://" + options_host + "/api/deleteimg/",
-                                        'POST',
-                                        {
+                                    fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                        method: 'POST',
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
                                             "token": options_token,
                                             "delkey": element
-                                        },
-                                        null,
-                                        function (res) {
-                                            numDeleted++;
-                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
-                                        }
-                                    )
+                                        })
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                numDeleted++;
+                                                Delete_Selected(selectedImgs, numDeleted, imgKey);
+                                            } else {
+                                                throw new Error('Network response was not ok.');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
                                     break;
                                 case 'Tencent_COS':
                                     cos.deleteObject({
@@ -1940,30 +2010,34 @@ $(document).ready(function () {
                                                     numDeleted++; // 延迟后处理下一个文件
                                                     setTimeout(deleteFileWithDelay, delay);
                                                 } else {
-                                                    sendAjax(
-                                                        options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path,
-                                                        'DELETE',
-                                                        JSON.stringify({
-                                                            message: 'Delete file:' + element.path,
-                                                            sha: element.sha
-                                                        }),
-                                                        {
+                                                    fetch(options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path, {
+                                                        method: 'DELETE',
+                                                        headers: {
                                                             'Authorization': 'Bearer ' + options_token,
                                                             'Content-Type': 'application/json'
                                                         },
-                                                        function (res) {
-                                                            numDeleted++; // 延迟后处理下一个文件
-                                                            Delete_Selected(selectedImgs, numDeleted, imgKey)
-                                                            // 使用 setTimeout 来添加延迟
-                                                            setTimeout(deleteFileWithDelay, delay);
-                                                        },
-                                                        function (error) {
+                                                        body: JSON.stringify({
+                                                            message: 'Delete file:' + element.path,
+                                                            sha: element.sha
+                                                        })
+                                                    })
+                                                        .then(response => {
+                                                            if (response.ok) {
+                                                                numDeleted++; // 延迟后处理下一个文件
+                                                                Delete_Selected(selectedImgs, numDeleted, imgKey);
+                                                                // 使用 setTimeout 来添加延迟
+                                                                setTimeout(deleteFileWithDelay, delay);
+                                                            } else {
+                                                                throw new Error('Network response was not ok.');
+                                                            }
+                                                        })
+                                                        .catch(error => {
                                                             toastItem({
                                                                 toast_content: '删除失败，请查看控制台！'
                                                             });
                                                             console.log(error);
-                                                        }
-                                                    );
+                                                        });
+
                                                 }
                                             }
                                         }
@@ -2323,7 +2397,6 @@ $(document).ready(function () {
                     xhr.open('GET', item_imgUrl, true);
                     xhr.responseType = 'text';
                     xhr.onprogress = function (event) {
-                        console.log(event)
                         if (event.lengthComputable) {
                             var percentComplete = Math.floor((event.loaded / event.total) * 100);
                             overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');

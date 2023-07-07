@@ -145,6 +145,12 @@ body {
     margin-top: calc(var(--bs-gutter-x) * .5)
 }
 
+.foot {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+}
+
 nav {
     margin-top: 1rem;
     padding-top: 1rem;
@@ -239,12 +245,13 @@ textarea {
 .zoom-out {
     font-size: 26px;
 }
-#Select_mode{
-    
+
+#Select_mode {}
+
+#Copy_Selected {
+    min-width: 110px;
 }
-#Copy_Selected{
-    min-width:110px ;
-}
+
 .Copy_Selected button {
     font-weight: bold;
     border: 2px solid #4433ff;

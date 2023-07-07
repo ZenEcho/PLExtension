@@ -73,6 +73,9 @@ code {
   width: 10em;
 }
 
+.Config-Bottom-Boxs {
+  padding: 5px 10px;
+}
 .Config-Bottom-Boxs .Config-Bottom-Box {
   padding: .5rem .2rem;
 }

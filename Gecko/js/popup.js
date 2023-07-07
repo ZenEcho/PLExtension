@@ -1,42 +1,42 @@
 $(document).ready(function () {
   Dropzone.autoDiscover = false;
-  chrome.storage.local.get(getSave, function (result) {
+  chrome.storage.local.get(storagelocal, function (result) {
     // 初始化读取数据
-    var options_exe = result.options_exe
-    var options_proxy_server_state = result.options_proxy_server_state
-    var options_proxy_server = result.options_proxy_server
-    var options_host = result.options_host
-    var options_token = result.options_token
-    var options_uid = result.options_uid
-    var options_source = result.options_source
-    var options_imgur_post_mode = result.options_imgur_post_mode
-    var options_source_select = result.options_source_select
-    var options_expiration_select = result.options_expiration_select || "NODEL"
-    var options_album_id = result.options_album_id
-    var options_nsfw_select = result.options_nsfw_select || 0
-    var options_permission_select = result.options_permission_select || 0
+    options_exe = result.options_exe
+    options_proxy_server_state = result.options_proxy_server_state
+    options_proxy_server = result.options_proxy_server
+    options_host = result.options_host
+    options_token = result.options_token
+    options_uid = result.options_uid
+    options_source = result.options_source
+    options_imgur_post_mode = result.options_imgur_post_mode
+    options_source_select = result.options_source_select
+    options_expiration_select = result.options_expiration_select || "NODEL"
+    options_album_id = result.options_album_id
+    options_nsfw_select = result.options_nsfw_select || 0
+    options_permission_select = result.options_permission_select || 0
     //自定义请求
-    var options_apihost = result.options_apihost
-    var options_parameter = result.options_parameter
-    var options_Headers = result.options_Headers
-    var options_Body = result.options_Body
-    var options_return_success = result.options_return_success
-    var open_json_button = result.open_json_button
-    var Copy_Selected_Mode = result.Copy_Selected_Mode
+    options_apihost = result.options_apihost
+    options_parameter = result.options_parameter
+    options_Headers = result.options_Headers
+    options_Body = result.options_Body
+    options_return_success = result.options_return_success
+    open_json_button = result.open_json_button
+    Copy_Selected_Mode = result.Copy_Selected_Mode
 
     //GitHub
-    var options_owner = result.options_owner
-    var options_repository = result.options_repository
+    options_owner = result.options_owner
+    options_repository = result.options_repository
 
     //对象存储
-    var options_SecretId = result.options_SecretId
-    var options_SecretKey = result.options_SecretKey
-    var options_Bucket = result.options_Bucket
-    var options_AppId = result.options_AppId
-    var options_Endpoint = result.options_Endpoint
-    var options_Region = result.options_Region
-    var options_UploadPath = result.options_UploadPath
-    var options_Custom_domain_name = result.options_Custom_domain_name
+    options_SecretId = result.options_SecretId
+    options_SecretKey = result.options_SecretKey
+    options_Bucket = result.options_Bucket
+    options_AppId = result.options_AppId
+    options_Endpoint = result.options_Endpoint
+    options_Region = result.options_Region
+    options_UploadPath = result.options_UploadPath
+    options_Custom_domain_name = result.options_Custom_domain_name
 
     // 初始化JSON转换的模式
     if (!open_json_button) {
@@ -51,7 +51,7 @@ $(document).ready(function () {
         try {
           options_Headers = JSON.parse(options_Headers);
         } catch (error) {
-          alert('Headers请求参数不是一个合法的 JSON 格式字符串!');
+          alert(chrome.i18n.getMessage("Headers_error"));
           window.location.href = "options.html"
           return;
         }
@@ -62,7 +62,7 @@ $(document).ready(function () {
         try {
           options_Body = JSON.parse(options_Body);
         } catch (error) {
-          alert('Body请求参数不是一个合法的 JSON 格式字符串!');
+          alert(chrome.i18n.getMessage("Body_error"));
           window.location.href = "options.html"
           return;
         }
@@ -98,25 +98,24 @@ $(document).ready(function () {
 
 
     // 定义数组
-    var SvgData = `<img class="icon" src="/icons/logo.ico">`
-    var UserBox = `
+    let SvgData = `<img class="icon" src="/icons/logo.ico">`
+    let UserBox = `
     <div class="userBox"  style="display: none;">
-    <i class="bi bi-person"></i>用户:(<span class="userName" style="color: #03a9f4;">游客(仅兰空,SM.MS图床程序)</span>),
-    <i class="bi bi-bar-chart-line-fill"></i>总容量:(<span class="userCapacity" style="color: #03a9f4;">0Gb</span>),
-    <i class="bi bi-bar-chart-line"></i>已使用:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
-    <i class="bi bi-image"></i>图片数量:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
+    <i class="bi bi-person"></i>`+ chrome.i18n.getMessage("user") + `:(<span class="userName" style="color: #03a9f4;">游客</span>),
+    <i class="bi bi-bar-chart-line-fill"></i>`+ chrome.i18n.getMessage("Total_capacity") + `:(<span class="userCapacity" style="color: #03a9f4;">0Gb</span>),
+    <i class="bi bi-bar-chart-line"></i>`+ chrome.i18n.getMessage("Used") + `:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
+    <i class="bi bi-image"></i>`+ chrome.i18n.getMessage("Number_images") + `:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
-    var links
-    var LinksUrl = []
-    var LinksHtml = []
-    var LinksBBCode = []
-    var LinksMarkdown = []
-    var LinksMDwithlink = []
-    var imageUrl
-    var filePreviewElements = [];
-    var fileDeletePreview = [];
+    let links
+    let LinksUrl = []
+    let LinksHtml = []
+    let LinksBBCode = []
+    let LinksMarkdown = []
+    let LinksMDwithlink = []
+    let imageUrl
+    let filePreviewElements = [];
+    let fileDeletePreview = [];
     // 实现上传功能
-    var uploader;
     if ($('.dropzone').length) {
       uploader = new Dropzone(".dropzone", {
         method: 'post',
@@ -142,16 +141,16 @@ $(document).ready(function () {
     `,
         // autoProcessQueue: false, //自动上传
         parallelUploads: 1, // 每次上传1个
-        dictDefaultMessage: SvgData + `<p>点击上传 / 拖拽上传 / 粘贴上传</p>` + UserBox,
-        dictFallbackMessage: "您的浏览器不支持拖拽......",
+        dictDefaultMessage: SvgData + `<p>` + chrome.i18n.getMessage("Upload_box_prompt") + `</p>` + UserBox,
+        dictFallbackMessage: chrome.i18n.getMessage("dictFallbackMessage"),
         dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
         dictFileTooBig: "你传的玩意有 {{filesize}}MiB这么大.但是我就允许你传: {{maxFilesize}}MiB.",
-        dictInvalidFileType: "你不能上传这个文件类型.......",
-        dictResponseError: "服务器返回 {{statusCode}} 代码.",
-        dictCancelUpload: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">取消上传</button>`,
-        dictCancelUploadConfirmation: "你确认取消上传吗?",
-        dictRemoveFile: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">删除图片</button>`,
-        dictMaxFilesExceeded: "您不能上传更多啦......",
+        dictInvalidFileType: chrome.i18n.getMessage("dictInvalidFileType"),
+        dictResponseError: "{{statusCode}}",
+        dictCancelUpload: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">X</button>`,
+        dictCancelUploadConfirmation: chrome.i18n.getMessage("dictCancelUploadConfirmation"),
+        dictRemoveFile: `<button type="button" class="btn btn-outline-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; width: 100%;">X</button>`,
+        dictMaxFilesExceeded: chrome.i18n.getMessage("dictMaxFilesExceeded"),
       });
     }
     //剪切板上传
@@ -251,13 +250,13 @@ $(document).ready(function () {
       const textFrame = `
       <div class="Upload_Return_Box">
         <div class="col">
-          <p class="p_urls">上传成功后URL将会显示在这里</p>
+          <p class="p_urls">`+chrome.i18n.getMessage("Upload_return_information")+`</p>
         </div>
         <div class="text-center selector_p_urls">
-          <span>选择</span>
+          <span>`+chrome.i18n.getMessage("Selected")+`</span>
         </div>
         <div class="text-center copy">
-          <span>复制</span>
+          <span>`+chrome.i18n.getMessage("Copy")+`</span>
         </div>
       </div>
     `
@@ -304,12 +303,13 @@ $(document).ready(function () {
                 <p class="p_urls">${link}</p>
               </div>
               <div class="text-center selector_p_urls">
-                <span>选择</span>
+                <span>`+chrome.i18n.getMessage("Selected")+`</span>
               </div>
               <div class="text-center copy">
-                <span>复制</span>
+                <span>`+chrome.i18n.getMessage("Copy")+`</span>
               </div>
             </div>
+
               `);
           });
           $(".Upload_Return_Box .col").click(function () {
@@ -456,21 +456,21 @@ $(document).ready(function () {
         case 'Aliyun_OSS':
           imageUrl = options_Custom_domain_name + filename
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = options_Endpoint
           break;
         case 'AWS_S3':
           imageUrl = options_Custom_domain_name + filename
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = options_Endpoint
           break;
         case 'GitHubUP':
           imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = "GitHub.com"
           break;
@@ -487,7 +487,7 @@ $(document).ready(function () {
           break;
       }
       if (!imageUrl) {
-        imageUrl = "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+        imageUrl = chrome.i18n.getMessage("Upload_prompt4")
       }
       LinksUrl.push(imageUrl)
       LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
@@ -496,15 +496,15 @@ $(document).ready(function () {
       LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
 
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
-      await LocalStorage(file, imageUrl)
+      await LocalStorage(null, imageUrl, file)
     })
     uploader.on("error", function (file, err) {
       console.log(err)
-      LinksUrl.push('文件：' + file.upload.filename + "-上传失败")
-      LinksHtml.push('文件：' + file.upload.filename + "-上传失败")
-      LinksBBCode.push('文件：' + file.upload.filename + "-上传失败")
-      LinksMarkdown.push('文件：' + file.upload.filename + "-上传失败")
-      LinksMDwithlink.push('文件：' + file.upload.filename + "-上传失败")
+      LinksUrl.push('file：' + file.upload.filename + "-error")
+      LinksHtml.push('file：' + file.upload.filename + "-error")
+      LinksBBCode.push('file：' + file.upload.filename + "-error")
+      LinksMarkdown.push('file：' + file.upload.filename + "-error")
+      LinksMDwithlink.push('file：' + file.upload.filename + "-error")
       switch (options_exe) {
         case 'Lsky':
           toastItem({
@@ -541,616 +541,51 @@ $(document).ready(function () {
           break;
       }
     })
-    switch (options_exe) {
-      // 自定义上传属性
-      case 'Lsky':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/v1/upload";
-        uploader.options.headers = { "Authorization": options_token };
-        uploader.options.paramName = 'file';
-        uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.tif,.bmp,.ico,.psd,.webp';
-        uploader.on("sending", function (file, xhr, formData) {
-          if (options_source_select) {
-            formData.append("strategy_id", options_source_select);
-
-          }
-          if (options_album_id) {
-            formData.append("album_id", options_album_id);
-          }
-          formData.append("permission", options_permission_select);
-        })
-        break;
-      case 'EasyImages':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/index.php";
-        uploader.options.paramName = 'image';
-        uploader.options.acceptedFiles = 'image/*';
-        uploader.on("sending", function (file, xhr, formData) {
-          formData.append("token", options_token);
-        })
-        break;
-      case 'ImgURL':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/v2/upload";
-        uploader.options.paramName = 'file';
-        uploader.options.acceptedFiles = 'image/*';
-        uploader.on("sending", function (file, xhr, formData) {
-          formData.append("token", options_token);
-          formData.append("uid", options_uid);
-        })
-        break;
-      case 'SM_MS':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/v2/upload";
-        uploader.options.headers = { "Authorization": options_token };
-        uploader.options.paramName = 'smfile';
-        uploader.options.acceptedFiles = 'image/*';
-        uploader.on("sending", function (file, xhr, formData) {
-          formData.append("token", options_token);
-        })
-        break;
-      case 'Chevereto':
-        let Temporary_URL = ""
-        if (options_expiration_select != "NODEL") {
-          Temporary_URL += "&expiration=" + options_expiration_select
-        }
-        if (options_album_id) {
-          Temporary_URL += "&album_id=" + options_album_id
-        }
-        if (options_nsfw_select) {
-          Temporary_URL += "&nsfw=" + options_nsfw_select
-        }
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token + Temporary_URL;
-        uploader.options.headers = { "Authorization": options_token };
-        uploader.options.paramName = 'source';
-        uploader.options.acceptedFiles = 'image/*';
-        break;
-      case 'Hellohao':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/uploadbytoken/";
-        uploader.options.paramName = 'file';
-        uploader.options.acceptedFiles = 'image/*';
-        uploader.on("sending", function (file, xhr, formData) {
-          formData.append("token", options_token);
-          formData.append("source", options_source);
-        })
-        break;
-      case 'Imgur':
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/3/upload";
-        uploader.options.headers = { "Authorization": 'Client-ID ' + options_token };
-        if (options_imgur_post_mode == "video") {
-          uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
-        } else {
-          uploader.options.acceptedFiles = 'image/*';
-        }
-        uploader.options.paramName = options_imgur_post_mode;
-        break;
-      case 'UserDiy':
-        uploader.options.url = options_proxy_server + options_apihost;
-        uploader.options.paramName = options_parameter;
-        uploader.options.headers = options_Headers
-        uploader.on("sending", function (file, xhr, formData) {
-          for (var key in options_Body) {
-            formData.append(key, options_Body[key]);
-          }
-        })
-        break;
-      case 'Tencent_COS':
-        // 初始化 COS 对象
-        try {
-          let getAuthorization = function (options, callback) {
-            let authorization = COS.getAuthorization({
-              SecretId: options_SecretId,
-              SecretKey: options_SecretKey,
-              Method: options.Method,
-              Pathname: options.Pathname,
-              Query: options.Query,
-              Headers: options.Headers,
-              Expires: 900,
-            });
-            callback({ Authorization: authorization });
-          };
-          var cos = new COS({
-            getAuthorization: getAuthorization,
-            UploadCheckContentMd5: true,
-            protocol: 'https:' // 强制使用 HTTPS 协议
-          });
-        } catch (error) {
-          toastItem({
-            toast_content: error
-          });
-        }
-        //腾讯云cos拼接
-        if (!options_Custom_domain_name) {
-          options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
-        }
-        uploader.options.autoProcessQueue = false
-        uploader.options.acceptedFiles = ""
-        uploader.options.maxFilesize = 5000 //文件大小
-        measurePingDelay((error, ping) => {
-          if (error) {
-            toastItem({
-              toast_content: error
-            });
-            return;
-          } else {
-            let delay
-            if (ping > 300) { //大于
-              delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-            } else if (ping < 150) { //小于
-              delay = 150
-            } else {
-              delay = ping
-            }
-            async function delayUpload(file, index) {
-              if (index >= file.length) {
-                // 所有文件上传完成
-                return;
-              }
-              const currentFile = file[index];
-              if (currentFile.size > uploader.options.maxFilesize * 1024 * 1024) {
-                // 跳过文件大小超过限制的文件
-                await delayUpload(file, index + 1);
-                return;
-              }
-
-              let date = new Date();
-              let filename =
-                options_UploadPath +
-                date.getFullYear() +
-                "/" +
-                (date.getMonth() + 1) +
-                "/" +
-                date.getDate() +
-                "/" +
-                currentFile.name;
-
-              await cos.uploadFile({
-                Bucket: options_Bucket,
-                Region: options_Region,
-                Key: filename,
-                Body: currentFile,
-                onProgress: function (progressData) {
-                  const progress = Math.round((progressData.loaded / progressData.total) * 100);
-                  currentFile.upload.progress = progress;
-                  currentFile.status = Dropzone.UPLOADING;
-                  uploader.emit("uploadprogress", currentFile, progress, 100);
-                }
-              }, function (err, data) {
-                if (data) {
-                  currentFile.status = Dropzone.SUCCESS
-                  uploader.emit("success", currentFile, "上传完成");
-                  uploader.emit("complete", currentFile);
-                }
-                if (err) {
-                  toastItem({
-                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-                  })
-                  console.error(err);
-                }
-              });
-
-              // 延迟一段时间后上传下一个文件
-              await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
-              await delayUpload(file, index + 1);
-            }
-            // 监听文件添加事件
-            uploader.on("addedfiles", function (files) {
-              // 调用延迟上传函数开始上传
-              delayUpload(files, 0);
-              $(".dz-remove").remove()
-            });
-          }
-        }, options_Custom_domain_name)
-
-
-        break;
-      case 'Aliyun_OSS':
-        try {
-          var oss = new OSS({
-            accessKeyId: options_SecretId,
-            accessKeySecret: options_SecretKey,
-            bucket: options_Bucket,
-            endpoint: options_Endpoint,
-            region: options_Region,
-            secure: true //强制https
-          });
-        } catch (error) {
-          toastItem({
-            toast_content: error
-          });
-        }
-        //阿里云oss拼接
-        if (!options_Custom_domain_name) {
-          options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
-        }
-        uploader.options.paramName = "file";
-        uploader.options.autoProcessQueue = false
-        uploader.options.acceptedFiles = ""
-        uploader.options.maxFilesize = 5000
-        measurePingDelay((error, ping) => {
-          if (error) {
-            toastItem({
-              toast_content: error
-            });
-            return;
-          } else {
-            let delay
-            if (ping > 300) { //大于
-              delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-            } else if (ping < 150) { //小于
-              delay = 150
-            } else {
-              delay = ping
-            }
-            // 定义延迟上传函数
-            async function delayUpload(file, index) {
-              if (index >= file.length) {
-                // 所有文件上传完成
-                return;
-              }
-              const currentFile = file[index];
-              if (currentFile.size > uploader.options.maxFilesize * 1024 * 1024) {
-                // 跳过文件大小超过限制的文件
-                await delayUpload(file, index + 1);
-                return;
-              }
-
-              let date = new Date();
-              let filename =
-                options_UploadPath +
-                date.getFullYear() +
-                "/" +
-                (date.getMonth() + 1) +
-                "/" +
-                date.getDate() +
-                "/" +
-                currentFile.name;
-
-              const progressCallback = (progress) => {
-                const percentage = Math.floor(progress * 100);
-                currentFile.upload.progress = percentage;
-                currentFile.status = Dropzone.UPLOADING;
-                uploader.emit("uploadprogress", currentFile, percentage, 100);
-              };
-
-              try {
-                await oss.multipartUpload(filename, currentFile, { progress: progressCallback });
-                currentFile.status = Dropzone.SUCCESS;
-                uploader.emit("success", currentFile, "上传完成");
-                uploader.emit("complete", currentFile);
-              } catch (error) {
-                toastItem({
-                  toast_content: "上传失败，请打开DevTools查看报错并根据常见问题进行报错排除",
-                });
-                console.error(error);
-                return;
-              }
-
-              // 延迟一段时间后上传下一个文件
-              await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
-              await delayUpload(file, index + 1);
-            }
-            // 监听文件添加事件
-            uploader.on("addedfiles", function (files) {
-              // 调用延迟上传函数开始上传
-              delayUpload(files, 0);
-              $(".dz-remove").remove()
-            });
-          }
-        }, options_Custom_domain_name)
-
-
-        break;
-      case 'AWS_S3':
-        //AWS S3区域拼接
-        if (!options_Endpoint) {
-          options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
-        }
-        //AWS S3拼接
-        if (!options_Custom_domain_name) {
-          options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
-        }
-        try {
-          AWS.config.update({
-            accessKeyId: options_SecretId,
-            secretAccessKey: options_SecretKey,
-            region: options_Region,
-            endpoint: options_Endpoint,
-            signatureVersion: 'v4'
-          });
-          var s3 = new AWS.S3();
-        } catch (error) {
-          toastItem({
-            toast_content: error
-          });
-        }
-        uploader.options.autoProcessQueue = false
-        uploader.options.acceptedFiles = ""
-        uploader.options.maxFilesize = 5000
-        measurePingDelay((error, ping) => {
-          if (error) {
-            toastItem({
-              toast_content: error
-            });
-            return;
-          } else {
-            let delay
-            if (ping > 300) { //大于
-              delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-            } else if (ping < 150) { //小于
-              delay = 150
-            } else {
-              delay = ping
-            }
-            async function delayUpload(file, index) {
-              if (index >= file.length) {
-                // 所有文件上传完成
-                return;
-              }
-              const currentFile = file[index];
-              if (currentFile.size > uploader.options.maxFilesize * 1024 * 1024) {
-                // 跳过文件大小超过限制的文件
-                await delayUpload(file, index + 1);
-                return;
-              }
-
-              let date = new Date();
-              let filename =
-                options_UploadPath +
-                date.getFullYear() +
-                "/" +
-                (date.getMonth() + 1) +
-                "/" +
-                date.getDate() +
-                "/" +
-                currentFile.name;
-
-              let params;
-              if (options_Endpoint.includes('amazonaws.com')) {
-                params = {
-                  Bucket: options_Bucket,
-                  Key: filename,
-                  Body: currentFile,
-                  ACL: 'public-read',
-                  ContentType: currentFile.type,
-                  Expires: 120,
-                };
-              } else {
-                params = {
-                  Bucket: options_Bucket,
-                  Key: filename,
-                  Body: currentFile,
-                  Expires: 120
-                };
-              }
-              await s3.upload(params, (err, data) => {
-                if (err) {
-                  toastItem({
-                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-                  })
-                  console.error(err);
-                  return;
-                }
-                if (data) {
-                  currentFile.status = Dropzone.SUCCESS
-                  uploader.emit("success", currentFile, "上传完成");
-                  uploader.emit("complete", currentFile);
-                }
-              }).on('httpUploadProgress', function (progress) {
-                const percentage = Math.floor((progress.loaded / progress.total) * 100);
-                currentFile.upload.progress = percentage;
-                currentFile.status = Dropzone.UPLOADING;
-                uploader.emit("uploadprogress", currentFile, percentage, 100);
-              });
-
-              // 延迟一段时间后上传下一个文件
-              await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
-              await delayUpload(file, index + 1);
-            }
-
-            // 监听文件添加事件
-            uploader.on("addedfiles", function (files) {
-              // 调用延迟上传函数开始上传
-              delayUpload(files, 0);
-              $(".dz-remove").remove()
-            });
-
-
-
-          }
-        }, options_Custom_domain_name)
-
-        break;
-      case 'GitHubUP':
-        uploader.options.autoProcessQueue = false
-        uploader.options.acceptedFiles = ""
-        uploader.options.maxFilesize = 5000
-        measurePingDelay(function (error, ping) {
-          if (error) {
-            toastItem({
-              toast_content: error
-            });
-            return;
-          } else {
-            let delay
-            if (ping > 300) { //大于
-              delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-            } else if (ping < 150) { //小于
-              delay = 150
-            } else {
-              delay = ping
-            }
-            async function delayUpload(file, index) {
-              if (index >= file.length) {
-                // 所有文件上传完成
-                return;
-              }
-              const currentFile = file[index];
-              if (currentFile.size > uploader.options.maxFilesize * 1024 * 1024) {
-                // 跳过文件大小超过限制的文件
-                await delayUpload(file, index + 1);
-                return;
-              }
-
-              let date = new Date();
-              let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
-              // 查询是否冲突
-              try {
-                fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name, {
-                  method: 'GET',
-                  headers: {
-                    'Authorization': 'Bearer ' + options_token,
-                    'Content-Type': 'application/json'
-                  },
-                })
-                  .then(response => response.json())
-                  .then(res => {
-                    if (res.sha) {
-                      data.sha = res.sha
-                    }
-                    Upload_method()
-                  })
-              } catch (error) {
-                console.log("第二次尝试...")
-                try {
-                  fetch("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name, {
-                    method: 'GET',
-                    headers: {
-                      'Authorization': 'Bearer ' + options_token,
-                      'Content-Type': 'application/json'
-                    },
-                  })
-                    .then(response => response.json())
-                    .then(res => {
-                      if (res.sha) {
-                        data.sha = res.sha
-                      }
-                      Upload_method()
-                    })
-                } catch (error) {
-                  console.log(error)
-                  toastItem({
-                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
-                  })
-                }
-              }
-              async function Upload_method() {
-                const fileReader = new FileReader();
-                fileReader.onloadend = function () {
-                  data.content = btoa(fileReader.result)
-                  // 发送上传请求
-                  $.ajax({
-                    url: options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + currentFile.name,
-                    type: 'PUT',
-                    headers: {
-                      'Authorization': 'Bearer ' + options_token,
-                      'Content-Type': 'application/json'
-                    },
-                    xhr: function () {
-                      const xhr = new window.XMLHttpRequest();
-                      xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                          const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                          currentFile.upload.progress = percentComplete;
-                          currentFile.status = Dropzone.UPLOADING;
-                          uploader.emit("uploadprogress", currentFile, percentComplete, 100);
-                        }
-                      }, false);
-                      return xhr;
-                    },
-                    data: JSON.stringify(data),
-                    success: function (response) {
-                      currentFile.status = Dropzone.SUCCESS;
-                      uploader.emit("success", currentFile, "上传完成");
-                      uploader.emit("complete", currentFile);
-                    },
-                    error: function (xhr, status, error) {
-                      if (xhr) {
-                        uploader.emit("error", currentFile, xhr);
-                        return;
-                      }
-                    }
-                  });
-
-                };
-                fileReader.readAsBinaryString(currentFile);
-                // 延迟一段时间后上传下一个文件
-                await new Promise((resolve) => setTimeout(resolve, delay)); // 设置延迟时间（单位：毫秒）
-                await delayUpload(file, index + 1);
-              }
-            }
-            // 监听文件添加事件
-            uploader.on("addedfiles", function (files) {
-              // 调用延迟上传函数开始上传
-              delayUpload(files, 0);
-              $(".dz-remove").remove()
-            });
-
-          }
-        }, 'https://github.com');
-        break;
-      case 'Telegra_ph':
-        uploader.options.maxFilesize = 5
-        if (options_Custom_domain_name) {
-          uploader.options.url = options_proxy_server + options_Custom_domain_name + "/upload";
-        } else {
-          uploader.options.url = options_proxy_server + "https://" + options_host + "/upload";
-        }
-        uploader.options.headers = { "Accept": "application/json" };
-        uploader.options.paramName = 'file';
-        uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.tif,.bmp,.ico,.psd,.webp';
-        break;
-      case 'imgdd':
-        uploader.options.maxFilesize = 5
-        uploader.options.url = options_proxy_server + "https://" + options_host + "/api/v1/upload";
-        uploader.options.headers = { "Accept": "application/json" };
-        uploader.options.paramName = 'image';
-        uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.bmp,.webp';
-        break;
-    }
-    function LocalStorage(file, url) {
-      return new Promise((resolve, reject) => {
-        chrome.storage.local.get("UploadLog", function (result) {
-          let UploadLog = result.UploadLog || [];
-          if (!Array.isArray(UploadLog)) {
-            UploadLog = [];
-          }
-          function generateRandomKey() {
-            return new Promise(resolve => {
-              const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-              let key = '';
-              for (let i = 0; i < 6; i++) {
-                key += characters.charAt(Math.floor(Math.random() * characters.length));
-              }
-              // 确保不会重复
-              while (UploadLog.some(log => log.id === key)) {
-                key = '';
-                for (let i = 0; i < 6; i++) {
-                  key += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-              }
-              resolve(key);
-            });
-          }
-          let d = new Date();
-          generateRandomKey().then(key => {
-            let UploadLogData = {
-              key: key,
-              url: url,
-              uploadExe: options_exe,
-              upload_domain_name: options_host,
-              original_file_name: file.name,
-              file_size: file.size,
-              img_file_size: "宽:不支持,高:不支持",
-              uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
-            }
-            if (typeof UploadLog !== 'object') {
-              UploadLog = JSON.parse(UploadLog);
-            }
-            UploadLog.push(UploadLogData);
-            chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
-              resolve(); // 标记操作完成
-            })
-          })
-        })
-      });
-    }
+    popup_Uploader()
+    // function LocalStorage(file, url) {
+    //   chrome.storage.local.get("UploadLog", function (result) {
+    //     UploadLog = result.UploadLog || [];
+    //     if (!Array.isArray(UploadLog)) {
+    //       UploadLog = [];
+    //     }
+    //     function generateRandomKey() {
+    //       return new Promise(resolve => {
+    //         const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    //         let key = '';
+    //         for (let i = 0; i < 6; i++) {
+    //           key += characters.charAt(Math.floor(Math.random() * characters.length));
+    //         }
+    //         // 确保不会重复
+    //         while (UploadLog.some(log => log.id === key)) {
+    //           key = '';
+    //           for (let i = 0; i < 6; i++) {
+    //             key += characters.charAt(Math.floor(Math.random() * characters.length));
+    //           }
+    //         }
+    //         resolve(key);
+    //       });
+    //     }
+    //     let d = new Date();
+    //     generateRandomKey().then(key => {
+    //       let UploadLogData = {
+    //         key: key,
+    //         url: url,
+    //         uploadExe: options_exe,
+    //         upload_domain_name: options_host,
+    //         original_file_name: file.name,
+    //         file_size: file.size,
+    //         img_file_size: "宽:不支持,高:不支持",
+    //         uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
+    //       }
+    //       if (typeof UploadLog !== 'object') {
+    //         UploadLog = JSON.parse(UploadLog);
+    //       }
+    //       UploadLog.push(UploadLogData);
+    //       chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
+    //       })
+    //     })
+    //   })
+    // }
     // 实现链接按钮下划线
     $(".urlButton").click(function () {
       const value = $(this).attr("value");
@@ -1211,7 +646,7 @@ $(document).ready(function () {
       }
     }
 
-    var tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
+    let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
     if (tokenRequired.includes(options_exe)) {
       if (!options_token) {
         alert(`${options_exe}图床程序必须填写Token`);
@@ -1313,7 +748,7 @@ $(document).ready(function () {
 
 
     // 写入标题
-    var options_webtitle = localStorage.options_webtitle
+    let options_webtitle = localStorage.options_webtitle
     $(".title-a").text(options_webtitle)
     $(".exeinfo_p").text(options_exe + "图床程序")
 
