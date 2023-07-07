@@ -1,0 +1,776 @@
+{
+  "app_name": {
+    "message": "PLExtension"
+  },
+  "app_description": {
+    "message": "PLExtension is a free upload extension that provides file upload capabilities for programs such as lsky, EasyImages, chevereto, Alibaba Cloud OSS, AWS S3, and more."
+  },
+  "Installing_initialization": {
+    "message": "Installing initialization..."
+  },
+  "Right_click_menu_upload_prompt": {
+    "message": "PLExtension to upload an image"
+  },
+  "Installing_initialization_completed": {
+    "message": "Installation initialization completed. Fill in the configuration and you can proceed with the upload."
+  },
+  "Headers_error": {
+    "message": "The request parameter for Headers is not a valid JSON format string!"
+  },
+  "Body_error": {
+    "message": "The request parameter for Body is not a valid JSON format string!"
+  },
+  "Upload_prompt1": {
+    "message": "Image retrieval completed. Uploading in progress."
+  },
+  "Upload_prompt2": {
+    "message": "Image upload successful. Please go to the upload log page to view."
+  },
+  "Upload_prompt3": {
+    "message": "Upload failed. Please check the error report!"
+  },
+  "Upload_prompt4": {
+    "message": "Upload failed. Please open DevTools to view the error and troubleshoot according to common issues"
+  },
+  "Upload_prompt5": {
+    "message": "Failed to retrieve. try again..."
+  },
+  "Upload_prompt6": {
+    "message": "Sorry, the retrieval still failed. Please press F12 to view the error message for troubleshooting!"
+  },
+  "Upload_prompt7": {
+    "message": "Upload successful."
+  },
+  "img_file_size": {
+    "message": "Width: Not supported, Height: Not supported"
+  },
+  "options_title": {
+    "message": "PLExtension Settings"
+  },
+  "Upload_page": {
+    "message": "<i class='bi bi-upload'></i> Upload"
+  },
+  "Settings_page": {
+    "message": "<i class='bi bi-sliders'></i> Settings"
+  },
+  "Upload_log": {
+    "message": "<i class='bi bi-images'></i> Upload Log"
+  },
+  "FAQ": {
+    "message": "<i class='bi bi-question-circle'></i> FAQ"
+  },
+  "lsky": {
+    "message": "lsky"
+  },
+  "EasyImages": {
+    "message": "EasyImages"
+  },
+  "ImgURL": {
+    "message": "ImgURL"
+  },
+  "Chevereto": {
+    "message": "Chevereto"
+  },
+  "Hellohao": {
+    "message": "Hellohao"
+  },
+  "SM_MS": {
+    "message": "SM.MS"
+  },
+  "Imgur": {
+    "message": "Imgur"
+  },
+  "IMGDD": {
+    "message": "IMGDD"
+  },
+  "Tencent_COS": {
+    "message": "Tencent COS"
+  },
+  "Alibaba_OSS": {
+    "message": "Alibaba OSS"
+  },
+  "AWS_S3": {
+    "message": "AWS S3"
+  },
+  "GitHub": {
+    "message": "GitHub"
+  },
+  "Telegra_ph": {
+    "message": "Telegra.ph"
+  },
+  "Custom_Upload": {
+    "message": "Custom Upload"
+  },
+  "Configure_CORS_Proxy": {
+    "message": "CORS Proxy"
+  },
+  "Reference_Tips": {
+    "message": "The tips are provided by <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>PLExtension</a> for reference only. Please replace it when using it officially."
+  },
+  "save": {
+    "message": "Save"
+  },
+  "Open_Method1": {
+    "message": "Open in a New Tab"
+  },
+  "Open_Method2": {
+    "message": "Open in New Window"
+  },
+  "Open_Method3": {
+    "message": "Open in Internal Page"
+  },
+  "Local_Global": {
+    "message": "Local Global + Drag Upload"
+  },
+  "Local_Global_on": {
+    "message": "<i class='bi bi-battery-half'></i>Enable (Network Resources + Local Resources to Sidebar)"
+  },
+  "Local_Global_off": {
+    "message": "<i class='bi bi-battery'></i>Disable (Use Right-click Upload Honestly)"
+  },
+  "Side_Panel_Area": {
+    "message": "Side Panel Area"
+  },
+  "AutoInsert": {
+    "message": "Automatic Insertion"
+  },
+  "on": {
+    "message": "Enable"
+  },
+  "off": {
+    "message": "Disable"
+  },
+  "Right_click_menu_upload": {
+    "message": "Right-click Menu Upload (Requires Restart)"
+  },
+  "options_host": {
+    "message": "Website domain name<p>(Do not include any prefixes or suffixes, enter the domain name only)</p>"
+  },
+  "options_host_placeholder_lsky": {
+    "message": "For example: pnglog.com"
+  },
+  "options_token": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(Token is required)</p>"
+  },
+  "options_token_placeholder_lsky": {
+    "message": "For example: Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5"
+  },
+  "options_album_id": {
+    "message": "Album selection<p class='options_album_id_tips'>(Select an album)</p>"
+  },
+  "options_permission": {
+    "message": "Privacy selection<p class='options_permission_tips'>(Is the uploaded content public? Default is private.)</p>"
+  },
+  "options_permission_0": {
+    "message": "Private"
+  },
+  "options_permission_1": {
+    "message": "Public"
+  },
+  "options_source_lsky": {
+    "message": "Storage Source Selection<p class='options_uid_tips'>(Optional storage source)</p>"
+  },
+  "options_host_placeholder_EasyImages": {
+    "message": "For example: png.cm"
+  },
+  "options_token_placeholder_EasyImages": {
+    "message": "For example: d21dc5039421455238b7152a6bf1cdc4"
+  },
+  "options_host_placeholder_ImgURL": {
+    "message": "For example: www.imgurl.org"
+  },
+  "options_token_placeholder_ImgURL": {
+    "message": "For example: ddd35111f39990b2f104a138181d31bc"
+  },
+  "options_uid": {
+    "message": "UID<p class='options_uid_tips'><span style='color: red;'>*</span>(UID is required for ImgURL program)</p>"
+  },
+  "options_uid_placeholder": {
+    "message": "For example: 391e3afaf70fgcf4355f95a2g0876b87"
+  },
+  "options_host_placeholder_SM_MS": {
+    "message": "For example: sm.ms"
+  },
+  "options_token_placeholder_SM_MS": {
+    "message": "For example: 42GGhgkttap3D2hDQkCbiTlYGZ1Jx5Yx"
+  },
+  "options_host_placeholder_Chevereto": {
+    "message": "For example: demo.chevereto.com"
+  },
+  "options_token_placeholder_Chevereto": {
+    "message": "For example: chv_Vxd5_618c6cf4dbbec416be206e4..."
+  },
+  "options_album_id_Chevereto": {
+    "message": "Album ID<p class='options_album_id_tips'>(Album ID, default is empty)</p>"
+  },
+  "options_album_id_placeholder_Chevereto": {
+    "message": "For example: iXnGp"
+  },
+  "options_nsfw": {
+    "message": "Content Health<p class='options_nsfw_tips'>(Whether the uploaded content is healthy? default is healthy)</p>"
+  },
+  "options_nsfw_0": {
+    "message": "Healthy"
+  },
+  "options_nsfw_1": {
+    "message": "Inappropriate"
+  },
+  "options_expiration": {
+    "message": "Deletion Time<p class='options_expiration_tips'>(Deletion time, default is not automatically deleted)</p>"
+  },
+  "options_expiration_no": {
+    "message": "Not automatically deleted"
+  },
+  "options_expiration_1": {
+    "message": "5 minutes"
+  },
+  "options_expiration_2": {
+    "message": "15 minutes"
+  },
+  "options_expiration_3": {
+    "message": "30 minutes"
+  },
+  "options_expiration_4": {
+    "message": "1 hour"
+  },
+  "options_expiration_5": {
+    "message": "3 hours"
+  },
+  "options_expiration_6": {
+    "message": "6 hours"
+  },
+  "options_expiration_7": {
+    "message": "12 hours"
+  },
+  "options_expiration_8": {
+    "message": "1 day"
+  },
+  "options_expiration_9": {
+    "message": "2 days"
+  },
+  "options_expiration_10": {
+    "message": "3 days"
+  },
+  "options_expiration_11": {
+    "message": "4 days"
+  },
+  "options_expiration_12": {
+    "message": "5 days"
+  },
+  "options_expiration_13": {
+    "message": "6 days"
+  },
+  "options_expiration_14": {
+    "message": "1 week"
+  },
+  "options_expiration_15": {
+    "message": "2 weeks"
+  },
+  "options_expiration_16": {
+    "message": "3 weeks"
+  },
+  "options_expiration_17": {
+    "message": "1 month"
+  },
+  "options_expiration_18": {
+    "message": "2 months"
+  },
+  "options_expiration_19": {
+    "message": "3 months"
+  },
+  "options_expiration_20": {
+    "message": "4 months"
+  },
+  "options_expiration_21": {
+    "message": "5 months"
+  },
+  "options_expiration_22": {
+    "message": "6 months"
+  },
+  "options_expiration_23": {
+    "message": "1 year"
+  },
+  "options_proxy_server": {
+    "message": "CORS Proxy<p class='options_proxy_server_tips'>(Project address: <a href='https://github.com/Rob--W/cors-anywhere'>Github</a>), for example: <code class='options_token_tips_code'>https://cors-anywhere.herokuapp.com/</code></p>"
+  },
+  "options_proxy_server_placeholder": {
+    "message": "Enter CORS proxy server address"
+  },
+  "options_host_placeholder_Hellohao": {
+    "message": "For example: server.hellohao.cn"
+  },
+  "options_token_placeholder_Hellohao": {
+    "message": "For example: 02468631e6c13413bddefc0722e2389b"
+  },
+  "options_source_Hellohao": {
+    "message": "Storage Source<p class='options_uid_tips'><span style='color: red;'>*</span>(requires storage source)</p>"
+  },
+  "options_source_placeholder_Hellohao": {
+    "message": "For example: 12"
+  },
+  "options_host_placeholder_Imgur": {
+    "message": "For example: api.imgur.com"
+  },
+  "options_token_Imgur": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'></span><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>Register Client-ID</a> (imgur requires Token)</p>"
+  },
+  "options_token_placeholder_Imgur": {
+    "message": "For example: 3596a2113fdg16f"
+  },
+  "options_apihost": {
+    "message": "API Address<p>(Complete API address)</p>"
+  },
+  "options_apihost_placeholder": {
+    "message": "For example: https://pnglog.com/api/v1/upload"
+  },
+  "options_parameter": {
+    "message": "POST Parameters</span><p class='options_parameter_tips'><span style='color: red;'></span>(Parameters for uploading images)</p>"
+  },
+  "options_parameter_placeholder": {
+    "message": "For example: image or file"
+  },
+  "options_Headers": {
+    "message": "Headers Request Headers</span><p class='options_Headers_tips'><span style='color: red;'></span>(Custom request headers, leave empty if not needed)</p>"
+  },
+  "options_Headers_floatingTextarea": {
+    "message": "Use JSON format such as: {'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
+  },
+  "options_Body": {
+    "message": "Body</span><p class='options_Body_tips'><span style='color: red;'></span>(Custom Body, leave empty if not needed)</p>"
+  },
+  "options_Body_floatingTextarea": {
+    "message": "Use JSON format such as: {'mail':'123@qq.com','password':'123456'}"
+  },
+  "options_return_success": {
+    "message": "JSON Path<p class='options_return_success_tips'><span style='color: red;'></span>(Path of the image URL after a successful request)</p>"
+  },
+  "options_return_success_placeholder": {
+    "message": "For example: data.links.url"
+  },
+  "open_json_button": {
+    "message": "Go to JSON<p>(Convert string to JSON)"
+  },
+  "options_owner": {
+    "message": "Username<p class='options_owner_tips'><span style='color: red;'></span>(GitHub username)</p>"
+  },
+  "options_owner_placeholder": {
+    "message": "For example: abcd"
+  },
+  "options_repository": {
+    "message": "Repository Name<p class='options_repository_tips'><span style='color: red;'></span>(Repository name)</p>"
+  },
+  "options_repository_placeholder": {
+    "message": "For example: 3596a2113fdg16f"
+  },
+  "options_UploadPath": {
+    "message": "Upload Path<p class='options_UploadPath_tips'>(Give the file a warm home, empty value defaults to the root directory.)</p>"
+  },
+  "options_UploadPath_placeholder": {
+    "message": "For example: images"
+  },
+  "options_token_GitHub": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'></span>(GitHub requires Token, obtain <a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'>Token</a>)</p>"
+  },
+  "options_token_placeholder_GitHub": {
+    "message": "For example: 2389b"
+  },
+  "options_GitHub_Warning": {
+    "message": "GitHub is a code hosting platform, storing images on GitHub is not in line with its original purpose. It is recommended to delete unnecessary image files promptly."
+  },
+  "options_SecretId_COS": {
+    "message": "SecretId<p class=''><span style='color: red;'></span>(Access ID, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretId</a>)</p>"
+  },
+  "options_SecretId_placeholder_COS": {
+    "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_COS": {
+    "message": "SecretKey<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretKey</a>)</p>"
+  },
+  "options_SecretKey_placeholder_COS": {
+    "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_COS": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name, view <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'>Bucket List</a>)</p>"
+  },
+  "options_Bucket_placeholder_COS": {
+    "message": "For example: abcd-112233445566"
+  },
+  "options_AppId_COS": {
+    "message": "AppId<p class='options_AppId_tips'>(Application ID)</p>"
+  },
+  "options_AppId_placeholder_COS": {
+    "message": "For example: 112233445566 (the number after the bucket name)"
+  },
+  "options_Region_COS": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
+  },
+  "options_Custom_domain_name_COS": {
+    "message": "Custom Access Domain Name<p class='options_Custom_domain_name_tips'>(Leave empty if not set in <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos' target='_blank'>Tencent Cloud COS</a>)</p>"
+  },
+  "options_Custom_domain_name_placeholder": {
+    "message": "For example: images.google.com"
+  },
+  "Object_Storage_cors_COS": {
+    "message": "Set CORS"
+  },
+  "putBucketACL": {
+    "message": "Set Access"
+  },
+  "putBucketACL_1": {
+    "message": "Private Read/Private Write"
+  },
+  "putBucketACL_2": {
+    "message": "Private Write/Public Read (Recommended)"
+  },
+  "putBucketACL_3": {
+    "message": "Public Read/Public Write"
+  },
+  "options_SecretId_OSS": {
+    "message": "AccessKeyId<p class=''><span style='color: red;'></span>(Access ID, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeyId</a>)</p>"
+  },
+  "options_SecretId_placeholder_OSS": {
+    "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_OSS": {
+    "message": "AccessKeySecret<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeySecret</a>)</p>"
+  },
+  "options_SecretKey_placeholder_OSS": {
+    "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_OSS": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name, view <a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'>Bucket List</a>)</p>"
+  },
+  "options_Bucket_placeholder_OSS": {
+    "message": "For example: abcde-images"
+  },
+  "options_Endpoint_OSS": {
+    "message": "Endpoint<p class='options_Endpoint_tips'><span style='color: red;'></span>(Region node, view <a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'>Access Domain Names and Data Centers</a>)</p>"
+  },
+  "options_Endpoint_placeholder_OSS": {
+    "message": "For example: oss-cn-beijing.aliyuncs.com"
+  },
+  "options_Region_OSS": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'></span>(Region)</p>"
+  },
+  "options_Region_placeholder_OSS": {
+    "message": "For example: oss-cn-beijing"
+  },
+  "options_Custom_domain_name_OSS": {
+    "message": "Custom Access Domain Name<p class='options_Custom_domain_name_tips'>(If set in <a style='color: #03a9f4;' href='https://oss.console.aliyun.com/overview' target='_blank'>Aliyun OSS</a>, leave it blank)</p>"
+  },
+  "Object_Storage_cors_OSS": {
+    "message": "Set CORS"
+  },
+  "options_SecretId_S3": {
+    "message": "Access ID<p class=''><span style='color: red;'></span>(Access ID)</p>"
+  },
+  "options_SecretId_placeholder_S3": {
+    "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_S3": {
+    "message": "Access Key<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key)</p>"
+  },
+  "options_SecretKey_placeholder_S3": {
+    "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_S3": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name)</p>"
+  },
+  "options_Bucket_placeholder_S3": {
+    "message": "Note: If you want to use a custom domain name, set the bucket name as the domain name. For example: images.google.com"
+  },
+  "options_Region_S3": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
+  },
+  "options_Region_placeholder_S3": {
+    "message": "For example: ap-east-1"
+  },
+  "options_Endpoint_S3": {
+    "message": "Endpoint<p class='options_Endpoint_tips'>(Region node, <span style='color: red;'> S3 interface compatibility (required)</span>, please provide the complete URL, leave it blank for default AWS S3.;)</p>"
+  },
+  "options_Endpoint_placeholder_S3": {
+    "message": "For example: https://{accountid}.r2.cloudflarestorage.com"
+  },
+  "options_Custom_domain_name_S3": {
+    "message": "Custom Access Domain Name<p class='options_Custom_domain_name_tips'>(<span style='color: red;'> S3 interface compatibility (required)</span>, leave it blank if not set;)</p>"
+  },
+  "options_Custom_domain_name_placeholder_S3": {
+    "message": "Note: S3 custom domain name should match the bucket name. For example: images.google.com"
+  },
+  "Object_Storage_cors_S3": {
+    "message": "Set CORS"
+  },
+  "Telegra_ph_1": {
+    "message": "Hello"
+  },
+  "Telegra_ph_2": {
+    "message": "Telegra.ph is a platform for anonymously uploading images. Therefore, uploaded content cannot be deleted. Please ensure that the uploaded content is valuable."
+  },
+  "Telegra_ph_3": {
+    "message": "Thank you for using PLExtension!"
+  },
+  "options_Custom_domain_name_Telegra_ph": {
+    "message": "Custom Access Domain Name<p class='options_Custom_domain_name_tips'>(Fill in complete information, leave it blank if not set;)</p>"
+  },
+  "options_Custom_domain_name_placeholder_Telegra_ph": {
+    "message": "For example: https://www.google.com, do not add a trailing slash"
+  },
+  "options_host_placeholder_imgdd": {
+    "message": "For example: imgdd.com"
+  },
+  "Program_selection_instructions_1": {
+    "message": "Hi, hello friend"
+  },
+  "Program_selection_instructions_2": {
+    "message": "Make sure to select an image hosting program for image hosting configuration"
+  },
+  "You_know_what": {
+    "message": "Do you know?"
+  },
+  "You_know_what_1": {
+    "message": "PLExtension allows you to upload images by right-clicking on them"
+  },
+  "You_know_what_2": {
+    "message": "PLExtension also supports global drag-and-drop upload"
+  },
+  "You_know_what_3": {
+    "message": "You can even paste images to upload and easily save images!"
+  },
+  "Firefox_browser_access_permissions": {
+    "message": "Set Firefox Browser Access Permissions"
+  },
+  "Firefox_browser_access_permissions_warning": {
+    "message": "The sidebar functionality requires enabling 'Access your data for all websites' permission. If not needed, you can ignore this setting."
+  },
+  "Setting_successful_1": {
+    "message": "Tencent Cloud Object Storage CORS settings successful"
+  },
+  "Setting_successful_2": {
+    "message": "CORS settings found"
+  },
+  "Setting_successful_3": {
+    "message": "Please save before making the settings"
+  },
+  "Setting_successful_4": {
+    "message": "Alibaba Cloud Object Storage CORS settings successful"
+  },
+  "Setting_successful_5": {
+    "message": "S3 Object Storage CORS settings successful"
+  },
+  "Setting_successful_6": {
+    "message": "Settings have been applied, but plugin reload failed. Please reload manually"
+  },
+  "Setting_successful_7": {
+    "message": "Open in built-in page. For the first use, click the plugin twice!"
+  },
+  "Setting_failed_1": {
+    "message": "Setting failed. Please open DevTools to view the error and troubleshoot according to common issues"
+  },
+  "Setting_failed_2": {
+    "message": "This setting is disabled due to API compatibility issues!"
+  },
+  "Unable_to_obtain_storage_source": {
+    "message": "Unable to obtain storage source"
+  },
+  "request_failure": {
+    "message": "Request failed:"
+  },
+  "default": {
+    "message": "Default"
+  },
+  "Unable_to_obtain_album": {
+    "message": "Unable to obtain album"
+  },
+  "Video_upload_mode": {
+    "message": "Current mode: Video upload mode"
+  },
+  "Image_upload_mode": {
+    "message": "Current mode: Image upload mode"
+  },
+  "CORS_proxy_cannot_be_empty": {
+    "message": "CORS proxy cannot be empty"
+  },
+  "Save_failed_1": {
+    "message": "Save failed. Upload path cannot contain special characters"
+  },
+  "Successfully_saved_1": {
+    "message": "Save successful. Page will be refreshed"
+  },
+  "select_upload_program": {
+    "message": "Please select an upload program"
+  },
+  "Unable_configure_CORS_proxy": {
+    "message": "Unable to configure CORS proxy. Please visit the official website for related configurations"
+  },
+  "CORS_proxy_closed": {
+    "message": "CORS proxy closed successfully"
+  },
+  "CORS_proxy_opened": {
+    "message": "CORS proxy opened successfully"
+  },
+  "Enable_JSON_Conversion": {
+    "message": "Enable JSON conversion"
+  },
+  "Disable_JSON_Conversion": {
+    "message": "Disable JSON conversion"
+  },
+  "Region_settings": {
+    "message": "Region settings"
+  },
+  "Region_settings_tips": {
+    "message": "Disabling global upload will also close the sidebar"
+  },
+  "width": {
+    "message": "Width"
+  },
+  "height": {
+    "message": "Height"
+  },
+  "Location": {
+    "message": "Location"
+  },
+  "opacity": {
+    "message": "Opacity"
+  },
+  "auto_close_time": {
+    "message": "Close Time"
+  },
+  "edit_uploadArea_Left_or_Right": {
+    "message": "Sidebar on"
+  },
+  "Left": {
+    "message": "Left"
+  },
+  "Right": {
+    "message": "Right"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "Successfully_Reset_1": {
+    "message": "Reset successful. Refresh the page to take effect"
+  },
+  "Successfully_opened_1": {
+    "message": "Opened successfully. Please refresh the page to start uploading"
+  },
+  "VERSION_1": {
+    "message": "Current Version"
+  },
+  "VERSION_2": {
+    "message": "New Version Available"
+  },
+  "VERSION_3": {
+    "message": "New version detected. Open page?"
+  },
+  "VERSION_4": {
+    "message": "No new version available"
+  },
+  "VERSION_5": {
+    "message": "Failed to fetch version"
+  },
+  "Obtaining": {
+    "message": "Obtaining..."
+  },
+  "popup_title": {
+    "message": "PLExtension"
+  },
+  "Request_error": {
+    "message": "Request error:"
+  },
+  "Select_All": {
+    "message": "Select All"
+  },
+  "Select_cancel": {
+    "message": "Cancel"
+  },
+  "Copy_Selected": {
+    "message": "Copy Selected"
+  },
+  "Upload_return_information": {
+    "message": "URL will be displayed here after successful upload"
+  },
+  "Selected": {
+    "message": "Sel"
+  },
+  "Copy": {
+    "message": "Copy"
+  },
+  "popup_upload_warning": {
+    "message": "<p>Currently using: <span class='exeinfo_p'></span>. Encountered an error during upload? Open the browser's developer tools (press F12) to view the error message, then check the <a target='_blank' style='color: red;' href='FAQ.html'>【FAQ】</a> for solutions.</p><p>Uploading of pornographic/illegal/violent content that violates the <span style='color: #03a9f4;'>TOS</span> is prohibited. The uploader is responsible for any consequences caused by the uploaded images!</p>"
+  },
+  "user": {
+    "message": "User"
+  },
+  "Total_capacity": {
+    "message": "Total Capacity"
+  },
+  "Used": {
+    "message": "Used"
+  },
+  "Number_images": {
+    "message": "Number of Images"
+  },
+  "Upload_box_prompt": {
+    "message": "Click to upload / Drag and drop upload / Paste upload"
+  },
+  "dictFallbackMessage": {
+    "message": "Your browser does not support drag and drop......"
+  },
+  "dictInvalidFileType": {
+    "message": "You cannot upload this file type......."
+  },
+  "dictCancelUploadConfirmation": {
+    "message": "Are you sure you want to cancel the upload?"
+  },
+  "dictMaxFilesExceeded": {
+    "message": "You cannot upload any more files......"
+  },
+  "UploadLog_title": {
+    "message": "Upload Log"
+  },
+  "UploadLog_Select": {
+    "message": "<i class='bi bi-ui-checks-grid'></i> Select"
+  },
+  "UploadLog_Select_All": {
+    "message": "<i class='bi bi-check-circle-fill'></i> Select All"
+  },
+  "UploadLog_Select_cancel": {
+    "message": "<i class='bi bi-check-circle'></i> Cancel"
+  },
+  "UploadLog_Copy_Selected": {
+    "message": "<i class='bi bi-clipboard2-check-fill'></i> Copy Selected"
+  },
+  "UploadLog_Delete_Selected": {
+    "message": "<i class='bi bi-x-circle-fill'></i> Delete Selected"
+  },
+  "Path": {
+    "message": "Path"
+  },
+  "Time_sorting": {
+    "message": "<i class='bi bi-filter-circle'></i> Sort by Time"
+  },
+  "Time_sorting_First": {
+    "message": "<i class='bi bi-sort-down'></i> Newest First"
+  },
+  "Time_sorting_Last": {
+    "message": "<i class='bi bi-sort-down-alt'></i> Oldest First"
+  },
+  "Size_sorting": {
+    "message": "<i class='bi bi-filter-circle'></i> Sort by Size"
+  },
+  "Size_sorting_First": {
+    "message": "<i class='bi bi-sort-down'></i> Largest First"
+  },
+  "Size_sorting_Last": {
+    "message": "<i class='bi bi-sort-down-alt'></i> Smallest First"
+  },
+  "UploadLog_deleteUrl": {
+    "message": "Clear Page Records"
+  },
+  "DeleteALL": {
+    "message": "Clear All Records"
+  }
+}

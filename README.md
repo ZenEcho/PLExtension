@@ -10,7 +10,7 @@
 - 盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,GitHub等程序的文件上传
 - 兼容Chromium内核，Gecko内核浏览器；
 - 目前支持的上传程序：[兰空图床](https://www.lsky.pro/),[简单图床](https://github.com/icret/EasyImages2.0),[imgurl图床](https://www.imgurl.org/),[chevereto图床](https://chevereto.com/),[hellohao图床](https://hellohao.cn/),[sm.ms图床](https://sm.ms/),[imgur图床](https://imgur.com/),[腾讯云cos](https://cloud.tencent.com/product/cos),[阿里云oss](https://www.aliyun.com/product/oss),[AWS S3](https://aws.amazon.com/cn/s3/),[GitHub](https://github.com/),[Telegra.ph](https://telegra.ph/),[IMGDD](https://imgdd.com/);
-- 支持实时预览、图片（跨域）上传、预格式代码/[编辑框插入](https://fileup.dev/#page2/3)。
+- 支持实时预览、图片（跨域）上传、预格式代码/[编辑框插入](https://github.com/ZenEcho/PLExtension/blob/dev/%E8%87%AA%E5%8A%A8%E6%8F%92%E5%85%A5%E6%94%AF%E6%8C%81.md)。
 - 支持浏览器常驻侧边栏，侧边栏拖拽上传，浏览器右键菜单上传，上传页面支持粘贴上传/拖拽上传，均支持本地与url转存;
 - 兼容主流的浏览器Chrome，Edge，Firefox；
 
@@ -77,6 +77,30 @@
 
 ## 版本更新:
 
+### 1.1.4更新:
+
+1.上传记录新增判断非图片文件无法打开预览功能
+
+2.新增复制多个数据时,数据换行
+
+3.新增加上传页面图片预览动画效果
+
+4.新增图片Loading,删除图片Loading效果
+
+#修复:
+
+1.修复演示模式粘贴上传的元素错位导致无法点击问题
+
+2.页面注入代码逻辑优化
+
+3.重构上传代码,重构项目文件,更易于适配(开发优化)
+
+#已知问题
+
+待发现
+
+—————————————
+
 ### 1.1.3更新:
 
 1.新增选择按钮.
@@ -115,24 +139,10 @@
 
 —————————————
 
-### 1.1.1更新:
+## 开发:
 
-1.新增加TG图床适配
+V1.1.4后增加了Chromium,Gecko内核识别
 
-#修复:
+这样开发功能时只需要开发一个内核,完成功能后将代码复制到另一个内核即可。
 
-1.修复GitHub跨域请求bug
-
-2.修复imgurl上传错误问题
-
-3.修复自定义上传不能返回数据的bug
-
-4.修复上传记录页面错误数据到账页面无响应的bug
-
-4.优化Chevereto可能会出现错误的bug
-
-#已知问题
-
-待发现
-
-—————————————
+但是manifest.json文件两个内核并不能合并,需要单独修改它。

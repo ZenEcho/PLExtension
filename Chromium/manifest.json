@@ -1,9 +1,10 @@
 {
-  "name": "盘络上传",
-  "version": "1.1.3.1",
+  "name": "__MSG_app_name__",
+  "version": "1.1.4",
   "manifest_version": 3,
-  "description": "盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,等程序的文件上传",
+  "description": "__MSG_app_description__",
   "homepage_url": "https://fileup.dev/",
+  "default_locale": "en",
   "icons": {
     "16": "icons/logo16.png",
     "32": "icons/logo32.png",
@@ -21,14 +22,17 @@
         "<all_urls>"
       ],
       "js": [
-        "js/cos/cos-js-sdk-v5.js",
-        "js/oss/aliyun-oss-sdk.min.js",
-        "js/s3/aws-sdk.min.js",
-        "js/confetti.js",
-        "content_scripts.js"
+        "vendor/cos/cos-js-sdk-v5.js",
+        "vendor/oss/aliyun-oss-sdk.min.js",
+        "vendor/s3/aws-sdk.min.js",
+        "vendor/confetti/confetti.js",
+        "js/public.js",
+        "vendor/content_scripts/js/content_scripts.js",
+        "js/uploader.js",
+        "vendor/content_scripts/js/AutoInsertFun.js"
       ],
       "css": [
-        "content_scripts.css"
+        "vendor/content_scripts/css/content_scripts.css"
       ]
     }
   ],
@@ -37,8 +41,8 @@
       "resources": [
         "popup.html",
         "icons/*.png",
-        "master_process.js",
-        "master_process.css"
+        "vendor/content_scripts/js/FullDomPermissions.js",
+        "vendor/content_scripts/css/FullDomPermissions.css"
       ],
       "matches": [
         "<all_urls>"
@@ -46,7 +50,7 @@
     }
   ],
   "action": {
-    "default_title": "盘洛上传",
+    "default_title": "__MSG_app_name__",
     "default_icon": "icons/logo128.png",
     "default_popup": ""
   },

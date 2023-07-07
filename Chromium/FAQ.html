@@ -7,10 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>盘络上传程序常见问题——盘络上传程序</title>
   <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/bootstrap-icons.css">
-  <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-icons.css">
+  <script defer src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="css/public.css">
+  <script defer src="_locales/language.js"></script>
   <style>
     body {
       min-width: 750px;
@@ -30,18 +31,18 @@
       <header class="py-3">
         <ul class="nav justify-content-end nav-pills ">
           <li class="nav-item">
-            <a class="nav-link" href="popup.html"><i class="bi bi-upload"></i> 上传页面</a>
+            <a class="nav-link" href="popup.html" data-i18n="Upload_page"><i class="bi bi-upload"></i> 上传页面</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="options.html">
+            <a class="nav-link" href="options.html" data-i18n="Settings_page">
               <i class="bi bi-sliders"></i> 配置信息</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="UploadLog.html">
+            <a class="nav-link" href="UploadLog.html" data-i18n="Upload_log">
               <i class="bi bi-images"></i> 上传记录</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" style="font-weight: bold;" href="FAQ.html"><i class="bi bi-question-circle"></i>
+            <a class="nav-link" style="font-weight: bold;" href="FAQ.html" data-i18n="FAQ"><i class="bi bi-question-circle"></i>
               常见问题</a>
           </li>
         </ul>
@@ -384,7 +385,7 @@
       </div>
     </div>
   </div>
-  <script src="/js/jquery-3.6.3.min.js"></script>
+  <script src="vendor/jquery/jquery-3.6.3.min.js"></script>
   <script src="/js/faq.js"></script>
 </body>
 

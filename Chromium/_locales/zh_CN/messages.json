@@ -1,0 +1,773 @@
+{
+  "app_name": {
+    "message": "盘络上传"
+  },
+  "app_description": {
+    "message": "盘络上传，是一款免费的上传扩展程序提供lsky,EasyImages,chevereto,阿里云oss,AWS S3,等程序的文件上传"
+  },
+  "Installing_initialization": {
+    "message": "安装初始化..."
+  },
+  "Right_click_menu_upload_prompt": {
+    "message": "盘络上传图片"
+  },
+  "Installing_initialization_completed": {
+    "message": "安装初始化完成，完成配置填写即可上传"
+  },
+  "Headers_error": {
+    "message": "Headers请求参数不是一个合法的 JSON 格式字符串!"
+  },
+  "Body_error": {
+    "message": "Body请求参数不是一个合法的 JSON 格式字符串!"
+  },
+  "Upload_prompt1": {
+    "message": "图片获取完成,正在执行上传;"
+  },
+  "Upload_prompt2": {
+    "message": "图片上传成功，前往上传日志页面即可查看"
+  },
+  "Upload_prompt3": {
+    "message": "上传失败,请检查错误报告!"
+  },
+  "Upload_prompt4": {
+    "message": "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+  },
+  "Upload_prompt5": {
+    "message": "获取失败，再次尝试..."
+  },
+  "Upload_prompt6": {
+    "message": "很抱歉还是获取失败了，请按F12查看错误信息进行错误排除!"
+  },
+  "Upload_prompt7": {
+    "message": "上传成功"
+  },
+  "img_file_size": {
+    "message": "宽:不支持,高:不支持"
+  },
+  "options_title": {
+    "message": "盘络上传程序配置——盘络上传程序"
+  },
+  "Upload_page": {
+    "message": "<i class='bi bi-upload'></i> 上传页面"
+  },
+  "Settings_page": {
+    "message": "<i class='bi bi-sliders'></i> 配置信息"
+  },
+  "Upload_log": {
+    "message": "<i class='bi bi-images'></i> 上传记录"
+  },
+  "FAQ": {
+    "message": "<i class='bi bi-question-circle'></i> 常见问题"
+  },
+  "lsky": {
+    "message": "兰空图床"
+  },
+  "EasyImages": {
+    "message": "简单图床"
+  },
+  "ImgURL": {
+    "message": "ImgURL图床"
+  },
+  "Chevereto": {
+    "message": "Chevereto"
+  },
+  "Hellohao": {
+    "message": "Hellohao"
+  },
+  "SM_MS": {
+    "message": "SM.MS"
+  },
+  "Imgur": {
+    "message": "Imgur"
+  },
+  "IMGDD": {
+    "message": "IMGDD"
+  },
+  "Tencent_COS": {
+    "message": "腾讯云 COS"
+  },
+  "Alibaba_OSS": {
+    "message": "阿里云 OSS"
+  },
+  "AWS_S3": {
+    "message": "亚马逊 S3"
+  },
+  "GitHub": {
+    "message": "GitHub"
+  },
+  "Telegra_ph": {
+    "message": "Telegra.ph"
+  },
+  "Custom_Upload": {
+    "message": "自定义上传"
+  },
+  "Configure_CORS_Proxy": {
+    "message": "配置CORS代理"
+  },
+  "Reference_Tips": {
+    "message": "提示由 <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>盘络上传</a> 提供,仅供参考。正式使用请替换。"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "Open_Method1": {
+    "message": "在标签页打开"
+  },
+  "Open_Method2": {
+    "message": "在新窗口打开"
+  },
+  "Open_Method3": {
+    "message": "在内置页打开"
+  },
+  "Local_Global": {
+    "message": "本地全局+拖拽上传"
+  },
+  "Local_Global_on": {
+    "message": "<i class='bi bi-battery-half'></i>开启(网络资源+本地资源到侧边栏)"
+  },
+  "Local_Global_off": {
+    "message": "<i class='bi bi-battery'></i>关闭(老老实实用右键上传)"
+  },
+  "Side_Panel_Area": {
+    "message": "侧边栏区域"
+  },
+  "AutoInsert": {
+    "message": "自动插入"
+  },
+  "on": {
+    "message": "开启"
+  },
+  "off": {
+    "message": "关闭"
+  },
+  "Right_click_menu_upload": {
+    "message": "右键菜单上传(需重启)"
+  },
+  "options_host": {
+    "message": "网站域名<p>(不需要携带任何前后缀,输入域名即可)</p>"
+  },
+  "options_host_placeholder_lsky": {
+    "message": "例如:pnglog.com"
+  },
+  "options_token": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(必须填写Token)</p>"
+  },
+  "options_token_placeholder_lsky": {
+    "message": "例如:Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5"
+  },
+  "options_album_id": {
+    "message": "相册选择<p class='options_album_id_tips'>(选择相册)</p>"
+  },
+  "options_permission": {
+    "message": "隐私选择<p class='options_permission_tips'>(上传的内容是否公开,默认私有)</p>"
+  },
+  "options_permission_0": {
+    "message": "私有"
+  },
+  "options_permission_1": {
+    "message": "公开"
+  },
+  "options_source_lsky": {
+    "message": "存储源选择<p class='options_uid_tips'>(兰空图床程序可选存储源)</p>"
+  },
+  "options_host_placeholder_EasyImages": {
+    "message": "例如:png.cm"
+  },
+  "options_token_placeholder_EasyImages": {
+    "message": "例如:d21dc5039421455238b7152a6bf1cdc4"
+  },
+  "options_host_placeholder_ImgURL": {
+    "message": "例如:www.imgurl.org"
+  },
+  "options_token_placeholder_ImgURL": {
+    "message": "例如:ddd35111f39990b2f104a138181d31bc"
+  },
+  "options_uid": {
+    "message": "UID<p class='options_uid_tips'><span style='color: red;'>*</span>(ImgURL程序必须填写UID)</p>"
+  },
+  "options_uid_placeholder": {
+    "message": "例如:391e3afaf70fgcf4355f95a2g0876b87"
+  },
+  "options_host_placeholder_SM_MS": {
+    "message": "例如:sm.ms"
+  },
+  "options_token_placeholder_SM_MS": {
+    "message": "例如:42GGhgkttap3D2hDQkCbiTlYGZ1Jx5Yx"
+  },
+  "options_host_placeholder_Chevereto": {
+    "message": "例如:demo.chevereto.com"
+  },
+  "options_token_placeholder_Chevereto": {
+    "message": "例如:chv_Vxd5_618c6cf4dbbec416be206e4..."
+  },
+  "options_album_id_Chevereto": {
+    "message": "相册ID<p class='options_album_id_tips'>(相册ID,默认为空)</p>"
+  },
+  "options_album_id_placeholder_Chevereto": {
+    "message": "例如:iXnGp"
+  },
+  "options_nsfw": {
+    "message": "是否健康<p class='options_nsfw_tips'>(上传的内容是否健康,默认健康)</p>"
+  },
+  "options_nsfw_0": {
+    "message": "健康"
+  },
+  "options_nsfw_1": {
+    "message": "不良"
+  },
+  "options_expiration": {
+    "message": "删除时间<p class='options_expiration_tips'>(删除时间,默认不自动删除)</p>"
+  },
+  "options_expiration_no": {
+    "message": "不自动删除"
+  },
+  "options_expiration_1": {
+    "message": "5分钟"
+  },
+  "options_expiration_2": {
+    "message": "15分钟"
+  },
+  "options_expiration_3": {
+    "message": "30分钟"
+  },
+  "options_expiration_4": {
+    "message": "1小时"
+  },
+  "options_expiration_5": {
+    "message": "3小时"
+  },
+  "options_expiration_6": {
+    "message": "6小时"
+  },
+  "options_expiration_7": {
+    "message": "12小时"
+  },
+  "options_expiration_8": {
+    "message": "1天"
+  },
+  "options_expiration_9": {
+    "message": "2天"
+  },
+  "options_expiration_10": {
+    "message": "3天"
+  },
+  "options_expiration_11": {
+    "message": "4天"
+  },
+  "options_expiration_12": {
+    "message": "5天"
+  },
+  "options_expiration_13": {
+    "message": "6天"
+  },
+  "options_expiration_14": {
+    "message": "1周"
+  },
+  "options_expiration_15": {
+    "message": "2周"
+  },
+  "options_expiration_16": {
+    "message": "3周"
+  },
+  "options_expiration_17": {
+    "message": "1个月"
+  },
+  "options_expiration_18": {
+    "message": "2个月"
+  },
+  "options_expiration_19": {
+    "message": "3个月"
+  },
+  "options_expiration_20": {
+    "message": "4个月"
+  },
+  "options_expiration_21": {
+    "message": "5个月"
+  },
+  "options_expiration_22": {
+    "message": "6个月"
+  },
+  "options_expiration_23": {
+    "message": "1年"
+  },
+  "options_proxy_server": {
+    "message": "CORS代理<p class='options_proxy_server_tips'>(项目地址:<a href='https://github.com/Rob--W/cors-anywhere'>Github</a>),例如:<code class='options_token_tips_code'>https://cors-anywhere.herokuapp.com/</code></p>"
+  },
+  "options_proxy_server_placeholder": {
+    "message": "输入CORS代理服务器地址"
+  },
+  "options_host_placeholder_Hellohao": {
+    "message": "例如:server.hellohao.cn"
+  },
+  "options_token_placeholder_Hellohao": {
+    "message": "例如:02468631e6c13413bddefc0722e2389b"
+  },
+  "options_source_Hellohao": {
+    "message": "存储源选择<p class='options_uid_tips'><span style='color: red;'>*</span>(Hellohao图床程序必须填写存储源)</p>"
+  },
+  "options_source_placeholder_Hellohao": {
+    "message": "例如:12"
+  },
+  "options_host_placeholder_Imgur": {
+    "message": "例如:api.imgur.com"
+  },
+  "options_token_Imgur": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>注册Client-ID</a>(imgur程序必须填写Token)</p>"
+  },
+  "options_token_placeholder_Imgur": {
+    "message": "例如:3596a2113fdg16f"
+  },
+  "options_apihost": {
+    "message": "API地址<p>(完整的API地址)</p>"
+  },
+  "options_apihost_placeholder": {
+    "message": "例如:https://pnglog.com/api/v1/upload"
+  },
+  "options_parameter": {
+    "message": "POST参数</span><p class='options_parameter_tips'><span style='color: red;'>*</span>(上传图片参数)</p>"
+  },
+  "options_parameter_placeholder": {
+    "message": "如:image 或 file"
+  },
+  "options_Headers": {
+    "message": "Headers请求头</span><p class='options_Headers_tips'><span style='color: red;'>*</span>(自定义请求头,不需要可以留空)</p>"
+  },
+  "options_Headers_floatingTextarea": {
+    "message": "使用JSON格式 如：{'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
+  },
+  "options_Body": {
+    "message": "Body</span><p class='options_Body_tips'><span style='color: red;'>*</span>(自定义Body,不需要可以留空)</p>"
+  },
+  "options_Body_floatingTextarea": {
+    "message": "使用JSON格式 如：{'mail':'123@qq.com','password':'123456'}"
+  },
+  "options_return_success": {
+    "message": "JSON路径<p class='options_return_success_tips'><span style='color: red;'>*</span>(请求成功后的图片URL路径)</p>"
+  },
+  "options_return_success_placeholder": {
+    "message": "如:data.links.url"
+  },
+  "open_json_button": {
+    "message": "转到JSON<p>(将字符串转化为JSON)"
+  },
+  "options_owner": {
+    "message": "用户名<p class='options_owner_tips'><span style='color: red;'>*</span>(GitHub用户名)</p>"
+  },
+  "options_owner_placeholder": {
+    "message": "例如:abcd"
+  },
+  "options_repository": {
+    "message": "仓库名<p class='options_repository_tips'><span style='color: red;'>*</span>(仓库名字)</p>"
+  },
+  "options_repository_placeholder": {
+    "message": "例如:3596a2113fdg16f"
+  },
+  "options_UploadPath": {
+    "message": "上传路径<p class='options_UploadPath_tips'>(给文件一个温暖的家,留空为根目录)</p>"
+  },
+  "options_UploadPath_placeholder": {
+    "message": "例如:images"
+  },
+  "options_token_GitHub": {
+    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(GitHub必须填写Token,获取<a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'> Token </a>)</p>"
+  },
+  "options_token_placeholder_GitHub": {
+    "message": "例如:2389b"
+  },
+  "options_GitHub_Warning": {
+    "message": "GitHub 是一个代码托管平台，在 GitHub 存储图片不符合它的设计初衷，建议及时删除不必要的图片文件。"
+  },
+  "options_SecretId_COS": {
+    "message": "SecretId<p class=''><span style='color: red;'>*</span>(访问ID,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretId </a>)</p>"
+  },
+  "options_SecretId_placeholder_COS": {
+    "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_COS": {
+    "message": "SecretKey<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretKey </a>)</p>"
+  },
+  "options_SecretKey_placeholder_COS": {
+    "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_COS": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称,查看<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'> 存储桶列表 </a>)</p>"
+  },
+  "options_Bucket_placeholder_COS": {
+    "message": "例如:abcd-112233445566"
+  },
+  "options_AppId_COS": {
+    "message": "AppId<p class='options_AppId_tips'>(应用ID)</p>"
+  },
+  "options_AppId_placeholder_COS": {
+    "message": "例如:112233445566(储存桶名后面的数字)"
+  },
+  "options_Region_COS": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+  },
+  "options_Custom_domain_name_COS": {
+    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(如果在<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos' target='_blank'> 腾讯云COS </a>设定了话,留空不设置;)</p>"
+  },
+  "options_Custom_domain_name_placeholder": {
+    "message": "例如:images.google.com"
+  },
+  "Object_Storage_cors_COS": {
+    "message": "设置COS的CORS"
+  },
+  "putBucketACL": {
+    "message": "设置访问权限"
+  },
+  "putBucketACL_1": {
+    "message": "私有读/私有写"
+  },
+  "putBucketACL_2": {
+    "message": "私有写/公共读(推荐)"
+  },
+  "putBucketACL_3": {
+    "message": "公共读/公共写"
+  },
+  "options_SecretId_OSS": {
+    "message": "AccessKeyId<p class=''><span style='color: red;'>*</span>(访问ID,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeyId </a>)</p>"
+  },
+  "options_SecretId_placeholder_OSS": {
+    "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_OSS": {
+    "message": "AccessKeySecret<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeySecret </a>)</p>"
+  },
+  "options_SecretKey_placeholder_OSS": {
+    "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_OSS": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称,查看<a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'> 存储桶列表 </a>)</p>"
+  },
+  "options_Bucket_placeholder_OSS": {
+    "message": "例如:abcde-images"
+  },
+  "options_Endpoint_OSS": {
+    "message": "Endpoint<p class='options_Endpoint_tips'><span style='color: red;'>*</span>(区域节点,查看<a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'> 访问域名和数据中心 </a>)</p>"
+  },
+  "options_Endpoint_placeholder_OSS": {
+    "message": "例如:oss-cn-beijing.aliyuncs.com"
+  },
+  "options_Region_OSS": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+  },
+  "options_Region_placeholder_OSS": {
+    "message": "例如:oss-cn-beijing"
+  },
+  "options_Custom_domain_name_OSS": {
+    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(如果在<a style='color: #03a9f4;' href='https://oss.console.aliyun.com/overview' target='_blank'> 阿里云OSS </a>设定了话,留空不设置;)</p>"
+  },
+  "Object_Storage_cors_OSS": {
+    "message": "设置OSS的CORS"
+  },
+  "options_SecretId_S3": {
+    "message": "访问ID<p class=''><span style='color: red;'>*</span>(访问ID)</p>"
+  },
+  "options_SecretId_placeholder_S3": {
+    "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
+  },
+  "options_SecretKey_S3": {
+    "message": "访问密钥<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥)</p>"
+  },
+  "options_SecretKey_placeholder_S3": {
+    "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
+  },
+  "options_Bucket_S3": {
+    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称)</p>"
+  },
+  "options_Bucket_placeholder_S3": {
+    "message": "注意:如果要使用自定义域名请将桶名称设置为域名,例如:images.google.com"
+  },
+  "options_Region_S3": {
+    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+  },
+  "options_Region_placeholder_S3": {
+    "message": "例如:ap-east-1"
+  },
+  "options_Endpoint_S3": {
+    "message": "Endpoint<p class='options_Endpoint_tips'>(区域节点,<span style='color: red;'>S3 兼容(必填)</span>对接请填写完整域名,留空默认AWS S3;)</p>"
+  },
+  "options_Endpoint_placeholder_S3": {
+    "message": "例如:https://{accountid}.r2.cloudflarestorage.com"
+  },
+  "options_Custom_domain_name_S3": {
+    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(<span style='color: red;'>S3 兼容(必填)</span>,如果设置了话,留空不设置;)</p>"
+  },
+  "options_Custom_domain_name_placeholder_S3": {
+    "message": "注意:S3自定义域名要和桶名称一致,例如:images.google.com"
+  },
+  "Object_Storage_cors_S3": {
+    "message": "设置S3的CORS"
+  },
+  "Telegra_ph_1": {
+    "message": "你好"
+  },
+  "Telegra_ph_2": {
+    "message": "Telegra.ph是一个匿名上传图片的平台,因此无法删除上传的内容,请确保上传的内容是有价值的."
+  },
+  "Telegra_ph_3": {
+    "message": "感谢使用,盘络上传扩展!"
+  },
+  "options_Custom_domain_name_Telegra_ph": {
+    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(填写完整信息，留空不设置;)</p>"
+  },
+  "options_Custom_domain_name_placeholder_Telegra_ph": {
+    "message": "例如:https://www.google.com,末端不要加/"
+  },
+  "options_host_placeholder_imgdd": {
+    "message": "例如:imgdd.com"
+  },
+  "Program_selection_instructions_1": {
+    "message": "嗨，你好朋友"
+  },
+  "Program_selection_instructions_2": {
+    "message": "一定要选择一个图床程序进行图床配置哦"
+  },
+  "You_know_what": {
+    "message": "你知道吗?"
+  },
+  "You_know_what_1": {
+    "message": "盘络上传是可以对着图片右键上传的喔"
+  },
+  "You_know_what_2": {
+    "message": "盘络还可以全局拖拽上传"
+  },
+  "You_know_what_3": {
+    "message": "粘贴上传,图片转存也不再话下啦!"
+  },
+  "Firefox_browser_access_permissions_warning": {
+    "message": "侧边栏功能需要开启'存取您在所有网站的数据'权限,如不需要请无视该设置"
+  },
+  "Setting_successful_1": {
+    "message": "腾讯云对象存储CORS设置成功"
+  },
+  "Setting_successful_2": {
+    "message": "查询到已设置CORS"
+  },
+  "Setting_successful_3": {
+    "message": "请先保存再进行设置"
+  },
+  "Setting_successful_4": {
+    "message": "阿里云对象存储CORS设置成功"
+  },
+  "Setting_successful_5": {
+    "message": "S3对象存储CORS设置成功"
+  },
+  "Setting_successful_6": {
+    "message": "设置已生效,但插件重载失败请手动重载"
+  },
+  "Setting_successful_7": {
+    "message": "使用内置页打开，第一使用需要点击两次插件!"
+  },
+  "Setting_failed_1": {
+    "message": "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+  },
+  "Setting_failed_2": {
+    "message": "因为API适配问题，该设置被禁止!"
+  },
+  "Unable_to_obtain_storage_source": {
+    "message": "无法获取存储源"
+  },
+  "request_failure": {
+    "message": "请求失败:"
+  },
+  "default": {
+    "message": "默认"
+  },
+  "Unable_to_obtain_album": {
+    "message": "无法获取相册"
+  },
+  "Video_upload_mode": {
+    "message": "当前模式为:视频上传模式"
+  },
+  "Image_upload_mode": {
+    "message": "当前模式为:图片上传模式"
+  },
+  "CORS_proxy_cannot_be_empty": {
+    "message": "CORS代理不能为空"
+  },
+  "Save_failed_1": {
+    "message": "保存失败,上传路径不能含有特殊字符"
+  },
+  "Successfully_saved_1": {
+    "message": "保存成功,即将刷新页面"
+  },
+  "select_upload_program": {
+    "message": "请选择上传程序"
+  },
+  "Unable_configure_CORS_proxy": {
+    "message": "无法配置CORS代理,请前往官网进行相关配置"
+  },
+  "CORS_proxy_closed": {
+    "message": "CORS代理关闭成功"
+  },
+  "CORS_proxy_opened": {
+    "message": "CORS代理开启成功"
+  },
+  "Enable_JSON_Conversion": {
+    "message": "开启JSON转换"
+  },
+  "Disable_JSON_Conversion": {
+    "message": "关闭JSON转换"
+  },
+  "Region_settings": {
+    "message": "区域设置"
+  },
+  "Region_settings_tips": {
+    "message": "关闭全局上传,侧边栏也会关闭"
+  },
+  "width": {
+    "message": "宽"
+  },
+  "height": {
+    "message": "高"
+  },
+  "Location": {
+    "message": "位置"
+  },
+  "opacity": {
+    "message": "透明度"
+  },
+  "auto_close_time": {
+    "message": "关闭时间"
+  },
+  "edit_uploadArea_Left_or_Right": {
+    "message": "侧边栏在"
+  },
+  "Left": {
+    "message": "左"
+  },
+  "Right": {
+    "message": "右"
+  },
+  "close": {
+    "message": "关闭"
+  },
+  "reset": {
+    "message": "重置"
+  },
+  "Successfully_Reset_1": {
+    "message": "重置成功,刷新页面生效"
+  },
+  "Successfully_opened_1": {
+    "message": "开启成功,请手动刷新页面再上传"
+  },
+  "VERSION_1": {
+    "message": "当前版本"
+  },
+  "VERSION_2": {
+    "message": "有新版本"
+  },
+  "VERSION_3": {
+    "message": "检测到新版本是否打开页面?"
+  },
+  "VERSION_4": {
+    "message": "无新版本"
+  },
+  "VERSION_5": {
+    "message": "版本取失败!"
+  },
+  "Obtaining": {
+    "message": "获取中..."
+  },
+  "Request_error": {
+    "message": "请求出错:"
+  },
+  "popup_title": {
+    "message": "盘络上传程序"
+  },
+  "Select_All": {
+    "message": "全选"
+  },
+  "Select_cancel": {
+    "message": "取消"
+  },
+  "Copy_Selected": {
+    "message": "复制选中"
+  },
+  "Upload_return_information": {
+    "message": "上传成功后URL将会显示在这里"
+  },
+  "Selected": {
+    "message": "选中"
+  },
+  "Copy": {
+    "message": "复制"
+  },
+  "popup_upload_warning": {
+    "message": "<p>当前使用的是:<span class='exeinfo_p'></span>,上传失败报错了?打开浏览器的开发者工具(按F12)查看错误信息,然后查看<a target='_blank' style='color: red;' href='FAQ.html'>【常见问题】</a></p><p>禁止上传色情/反动/暴力违规违反 <span style='color: #03a9f4;'>TOS</span> 的图片,造成的一切恶果由图片上传者承担!</p>"
+  },
+  "user": {
+    "message": "用户"
+  },
+  "Total_capacity": {
+    "message": "总容量"
+  },
+  "Used": {
+    "message": "已使用"
+  },
+  "Number_images": {
+    "message": "图片数量"
+  },
+  "Upload_box_prompt": {
+    "message": "点击上传 / 拖拽上传 / 粘贴上传"
+  },
+  "dictFallbackMessage": {
+    "message": "您的浏览器不支持拖拽......"
+  },
+  "dictInvalidFileType": {
+    "message": "你不能上传这个文件类型......."
+  },
+  "dictCancelUploadConfirmation": {
+    "message": "你确认取消上传吗?"
+  },
+  "dictMaxFilesExceeded": {
+    "message": "您不能上传更多啦......"
+  },
+  "UploadLog_title": {
+    "message": "盘络上传程序记录——盘络上传程序"
+  },
+  "UploadLog_Select": {
+    "message": "<i class='bi bi-ui-checks-grid'></i> 选择"
+  },
+  "UploadLog_Select_All": {
+    "message": "<i class='bi bi-check-circle-fill'></i> 全选"
+  },
+  "UploadLog_Select_cancel": {
+    "message": "<i class='bi bi-check-circle'></i> 取消"
+  },
+  "UploadLog_Copy_Selected": {
+    "message": "<i class='bi bi-clipboard2-check-fill'></i> 复制选中"
+  },
+  "UploadLog_Delete_Selected": {
+    "message": "<i class='bi bi-x-circle-fill'></i> 删除选中"
+  },
+  "Path": {
+    "message": "路径"
+  },
+  "Time_sorting": {
+    "message": "<i class='bi bi-filter-circle'></i> 时间排序"
+  },
+  "Time_sorting_First": {
+    "message": "<i class='bi bi-sort-down'></i> 最先排前"
+  },
+  "Time_sorting_Last": {
+    "message": "<i class='bi bi-sort-down-alt'></i> 最后排前"
+  },
+  "Size_sorting": {
+    "message": "<i class='bi bi-filter-circle'></i> 大小排序"
+  },
+  "Size_sorting_First": {
+    "message": "<i class='bi bi-sort-down'></i> 最大排前"
+  },
+  "Size_sorting_Last": {
+    "message": "<i class='bi bi-sort-down-alt'></i> 最小排前"
+  },
+  "UploadLog_deleteUrl": {
+    "message": "清除本页记录"
+  },
+  "DeleteALL": {
+    "message": "一键清空记录"
+  }
+}

@@ -45,6 +45,30 @@ body {
     background-color: red;
 }
 
+.delete-loading {
+    position: absolute;
+    top: 45%;
+    left: 49%;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #4183d7;
+    border-top: 10px solid #f5ab35;
+    animation: delete-loading-animation 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes delete-loading-animation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(720deg);
+    }
+}
+
 .copy {
     user-select: none;
     width: 2rem;
@@ -102,7 +126,6 @@ body {
     color: white;
 }
 
-
 .gigante {
     border: #03a9f4 2px solid;
 }
@@ -118,7 +141,14 @@ body {
 }
 
 #container {
+    min-height: 50px;
     margin-top: calc(var(--bs-gutter-x) * .5)
+}
+
+.foot {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
 }
 
 nav {
@@ -142,6 +172,7 @@ nav {
     justify-content: center;
     align-items: center;
     z-index: 9991;
+
 }
 
 .overlay img,
@@ -213,4 +244,27 @@ textarea {
 
 .zoom-out {
     font-size: 26px;
+}
+
+#Select_mode {}
+
+#Copy_Selected {
+    min-width: 110px;
+}
+
+.Copy_Selected button {
+    font-weight: bold;
+    border: 2px solid #4433ff;
+    color: #4433ff;
+}
+
+.Copy_Selected button:hover {
+    color: #fff;
+    border: 2px solid #4433ff;
+    background-color: #4433ff;
+}
+
+
+.Copy_Selected button:nth-child(2) {
+    border-left: 1px;
 }
