@@ -112,9 +112,10 @@ function AutoInsertFun(AutoInsert_message_content) {
         if (result.AutoInsert != "AutoInsert_on") { return; }
         let Find_Editor = false
         let pageText = document.body.innerText;
+        let pageHtml = document.documentElement.innerHTML;
         let scripts = document.querySelectorAll('script');
         //Discuz
-        if (pageText.toLowerCase().includes("discuz")) {
+        if (pageText.toLowerCase().includes("discuz") || pageHtml.toLowerCase().indexOf('discuz') !== -1) {
             let Discuz = document.getElementById("fastpostmessage")
             let Discuz_Interactive_reply = document.getElementById("postmessage")
             let Discuz_Advanced = document.getElementById("e_textarea")
@@ -127,12 +128,14 @@ function AutoInsertFun(AutoInsert_message_content) {
             if (Discuz_Interactive_reply) {
                 if (Find_Editor == true) { return; }
                 //如果是回复楼层
+
                 let originalContent = Discuz_Interactive_reply.value;
                 Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
                 Find_Editor = true
             } else if (Discuz) {
                 if (Find_Editor == true) { return; }
                 //如果是回复楼主
+
                 let originalContent = Discuz.value;
                 Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
                 Find_Editor = true
@@ -140,12 +143,14 @@ function AutoInsertFun(AutoInsert_message_content) {
             if (Discuz_Advanced) {
                 if (Find_Editor == true) { return; }
                 if (Discuz_Advanced_iframe) {
+
                     let bodyElement = Discuz_Advanced_iframe.contentDocument.body
                     let img = document.createElement('img')
                     img.src = AutoInsert_message_content
                     bodyElement.appendChild(img)
                     Find_Editor = true
                 } else {
+
                     let originalContent = Discuz_Advanced.value;
                     Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
                     Find_Editor = true
@@ -212,55 +217,107 @@ function AutoInsertFun(AutoInsert_message_content) {
             window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
             Find_Editor = true
         }
-        scripts.forEach(function (script) {
+        for (let i = 0; i < scripts.length; i++) {
             if (Find_Editor == true) { return; }
-            let src = script.getAttribute('src');
-            //TinyMCE 5/6 Editor
+            let src = scripts[i].getAttribute('src');
+
+            // TinyMCE 5/6 Editor
             if (src && src.includes('tinymce')) {
                 window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                 Find_Editor = true
-                return;
+                break; // 终止整个循环
             }
-            //wangeditor
+            // wangeditor
             if (src && src.includes('wangeditor')) {
                 window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                 Find_Editor = true
-                return;
+                break;
             }
-            //ckeditor4
+            // ckeditor4
             if (src && src.includes('ckeditor4')) {
                 window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                 Find_Editor = true
-                return;
+                break;
             }
-            //ckeditor5
+            // ckeditor5
             if (src && src.includes('ckeditor5')) {
                 window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                 Find_Editor = true
-                return;
+                break;
             }
-            //ckeditor4/5
+            // ckeditor4/5
             if (src && src.includes('ckeditor')) {
+                // 当不是4和5的时候，执行这条命令然后使用4的方法注入
                 window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
                 Find_Editor = true
-                return;
+                break;
             }
-            //Halo
+            // Halo
             if (src && src.includes('halo')) {
                 let HaloEditor_Element = document.querySelector('.ProseMirror');
                 if (HaloEditor_Element) {
                     HaloEditor_Element.focus();
                     document.execCommand('insertImage', false, AutoInsert_message_content);
+                    Find_Editor = true
                 }
-                Find_Editor = true
-                return;
+                break;
             }
-            //ueditor 百度
+            // ueditor 百度
             if (src && src.includes('ueditor')) {
                 window.postMessage({ type: 'ueditor', data: AutoInsert_message_content }, '*');
                 Find_Editor = true
-                return;
+                break;
             }
-        });
+        }
+        // scripts.forEach(function (script) {
+        //     if (Find_Editor == true) { return; }
+        //     let src = script.getAttribute('src');
+        //     //TinyMCE 5/6 Editor
+        //     if (src && src.includes('tinymce')) {
+        //         window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //wangeditor
+        //     if (src && src.includes('wangeditor')) {
+        //         window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //ckeditor4
+        //     if (src && src.includes('ckeditor4')) {
+        //         window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //ckeditor5
+        //     if (src && src.includes('ckeditor5')) {
+        //         window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //ckeditor4/5
+        //     if (src && src.includes('ckeditor')) {
+        //         window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //Halo
+        //     if (src && src.includes('halo')) {
+        //         let HaloEditor_Element = document.querySelector('.ProseMirror');
+        //         if (HaloEditor_Element) {
+        //             HaloEditor_Element.focus();
+        //             document.execCommand('insertImage', false, AutoInsert_message_content);
+        //         }
+        //         Find_Editor = true
+        //         return;
+        //     }
+        //     //ueditor 百度
+        //     if (src && src.includes('ueditor')) {
+        //         window.postMessage({ type: 'ueditor', data: AutoInsert_message_content }, '*');
+        //         Find_Editor = true
+        //         return;
+        //     }
+        // });
     })
 }

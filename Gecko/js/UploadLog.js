@@ -55,18 +55,18 @@ $(document).ready(function () {
         }
         const Image_acquisition_failed = `
         <div class="alert alert-danger" role="alert">
-            <h4 class="alert-heading">亲亲</h4>
-            <p>无法获取图床信息,详细信息请打开DevTools工具(F12)查看</p>
+            <h4 class="alert-heading">`+ chrome.i18n.getMessage("Kissing_alert") + `</h4>
+            <p>`+ chrome.i18n.getMessage("Kissing_alert_p_1") + `</p>
             <hr>
-            <p class="mb-0"><a class="nav-link" href="options.html">看看是不是配置信息错误了</a></p>
+            <p class="mb-0"><a class="nav-link" href="options.html">`+ chrome.i18n.getMessage("Kissing_alert_p2_2") + `</a></p>
         </div>`
 
         const No_picture_data = `
         <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">亲亲</h4>
-            <p>已经被榨干了!!!我获取不到数据了啦!</p>
+            <h4 class="alert-heading">`+ chrome.i18n.getMessage("Kissing_alert") + `</h4>
+            <p>`+ chrome.i18n.getMessage("Kissing_alert_p_3") + `</p>
             <hr>
-            <p class="mb-0">再努努力吧!</p>
+            <p class="mb-0">`+ chrome.i18n.getMessage("Kissing_alert_p2_4") + `</p>
         </div>`
         // 判断浏览模式开关
         if (!Browse_mode_switching_status) {
@@ -75,13 +75,13 @@ $(document).ready(function () {
         }
         if (Browse_mode_switching_status == 1) {
             // 开启
-            $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是图床服务器的图片.')
-            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到本地")
+            $("#Browse_mode_switch_button").attr('data-bs-content', chrome.i18n.getMessage("Browse_mode_switch_button_1_attr"))
+            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + chrome.i18n.getMessage("Browse_mode_switch_button_1"))
             $("#Browse_mode_switch_button").removeClass("css-button-rounded--black");
             $("#Browse_mode_switch_button").addClass('css-button-rounded--red');
         } else {
-            $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是本地图片.')
-            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到图床")
+            $("#Browse_mode_switch_button").attr('data-bs-content', chrome.i18n.getMessage("Browse_mode_switch_button_0_attr"))
+            $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + chrome.i18n.getMessage("Browse_mode_switch_button_0"))
             $("#Browse_mode_switch_button").removeClass("css-button-rounded--red")
             $("#Browse_mode_switch_button").addClass('css-button-rounded--black');
         }
@@ -102,17 +102,24 @@ $(document).ready(function () {
         }
         let Sorting_Plan;
         let Sorting_Methods;
+        function ContainerLoading() {
+            if ($("#container").find(".loading").length === 0) {
+                $("#container").empty();
+                $("#container").masonry({});
+                $("#container").masonry('reloadItems')
+                $("#container").append(`
+                  <div class="loading mx-auto" style="z-index: 9992;">
+                    <div class="loading-shape loading-shape-1"></div>
+                    <div class="loading-shape loading-shape-2"></div>
+                    <div class="loading-shape loading-shape-3"></div>
+                    <div class="loading-shape loading-shape-4"></div>
+                  </div>
+                `);
+            }
+        }
         function Program_Start_Execution() {
             $('.pagination').twbsPagination('destroy')
-            $("#container").empty();
-            $("#container").append(`
-            <div class="loading mx-auto" style="z-index: 9992;">
-                <div class="loading-shape loading-shape-1"></div>
-                <div class="loading-shape loading-shape-2"></div>
-                <div class="loading-shape loading-shape-3"></div>
-                <div class="loading-shape loading-shape-4"></div>
-            </div>
-            `);
+            ContainerLoading()
             if (Browse_mode_switching_status == 0) {
                 chrome.storage.local.get(["UploadLog"], function (resultData) {
                     //本地信息获取
@@ -150,7 +157,7 @@ $(document).ready(function () {
                                                 toast_content: '还原成功!即将刷新'
                                             })
                                             setTimeout(function () {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }, 2000)
 
                                         });
@@ -206,13 +213,14 @@ $(document).ready(function () {
                             totalPages: totalPages,
                             visiblePages: 5,
                             onPageClick: function (event, page) {
+                                ContainerLoading()
                                 currentPage = page;
                                 localRenderImages();
                             },
-                            first: '首页',
+                            first: chrome.i18n.getMessage("first"),
                             prev: null,
                             next: null,
-                            last: "末页",
+                            last: chrome.i18n.getMessage("last"),
 
                         });
                         /**
@@ -245,8 +253,8 @@ $(document).ready(function () {
                                     <div class="item shadow-lg bg-body-tertiary" key=`+ imageUrl.key + ` type=` + imageUrl.PLFileType + `>
                                     
                                         <ul class="logurl" style="display: none">
-                                            <li>上传程序: `+ imageUrl.uploadExe + `</li>
-                                            <li>上传域名: `+ imageUrl.upload_domain_name + `</li>
+                                            <li>`+ imageUrl.uploadExe + `</li>
+                                            <li>`+ imageUrl.upload_domain_name + `</li>
                                             <li>`+ imageUrl.uploadTime + `</li>
                                         </ul>
                                         <div class="delete" style="display: none">
@@ -262,7 +270,6 @@ $(document).ready(function () {
 
                                 set_PLFileType(item, imageUrl, imageUrl.url, "512")
                                 $container.append(item);
-
                                 // 给删除按钮添加点击事件
                                 item.find('.delete').one('click', function () {
                                     chrome.storage.local.get("UploadLog", function (res) {
@@ -275,16 +282,16 @@ $(document).ready(function () {
                                             images.splice(index, 1);
                                             item.remove()
                                             $container.masonry('reloadItems')
-                                            $container.masonry();
+                                            $container.masonry('layout')
                                             chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
                                                 // 从localStorage中删除图片URL
-                                                toastItem({ toast_content: "删除成功" })
+                                                toastItem({ toast_content: chrome.i18n.getMessage("Delete_successful") })
                                                 if ($("#container .item").length < 1) {
                                                     toastItem({
-                                                        toast_content: "页面无数据,即将刷新"
+                                                        toast_content: chrome.i18n.getMessage("Refresh")
                                                     })
                                                     setTimeout(function () {
-                                                        window.location.reload();
+                                                        Program_Start_Execution()
                                                     }, 3000);
                                                 }
                                             })
@@ -294,7 +301,7 @@ $(document).ready(function () {
 
                                 // 点击选中
                                 item.find('.FileMedia').click(function () {
-                                    if (Select_mode === 1) {
+                                    if (Select_mode === 1 || isShiftKeyPressed === true) {
                                         $(this).parent().toggleClass('gigante');
                                     } else {
                                         OverlayProject(item, imageUrl.url)
@@ -329,7 +336,7 @@ $(document).ready(function () {
                                     document.execCommand("copy");
                                     $temp.remove();
                                     toastItem({
-                                        toast_content: '链接复制成功!'
+                                        toast_content: chrome.i18n.getMessage("Copy_successful")
                                     })
 
                                 });
@@ -349,10 +356,10 @@ $(document).ready(function () {
                                     $container.masonry('layout');
                                 });
                                 item.imagesLoaded().progress(function () {
-                                    item.find('.Image_Width_And_Height').html("点击加载宽高;")
+                                    item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Image_Width_And_Height"))
                                     // 获取宽高
                                     item.find('.Image_Width_And_Height').one('click', function () {
-                                        item.find('.Image_Width_And_Height').html("加载中...")
+                                        item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Loading"))
                                         const img = item.find('.imgs');
                                         // 获取img元素的src属性
                                         const src = img.attr('src');
@@ -365,18 +372,17 @@ $(document).ready(function () {
                                         }
                                     });
                                 });
-                                $container.imagesLoaded().progress(function () {
-                                    $container.masonry({
-                                        itemSelector: '.item',
-                                        fitWidth: true,
-                                        // horizontalOrder: true
-                                    });
 
-                                });
 
 
                             });// currentImages.forEach
-                            $container.masonry({});
+                            $container.imagesLoaded().progress(function () {
+                                $container.masonry({
+                                    itemSelector: '.item',
+                                    fitWidth: true,
+                                    // horizontalOrder: true
+                                });
+                            });
                             $container.masonry('reloadItems')
                         }
                         //选择
@@ -386,12 +392,12 @@ $(document).ready(function () {
                                 Select_mode = 1;
                                 $("#Select_mode").toggleClass("btn-primary")
                                 $("#Select_mode").css({ "color": "white" })
-                                toastItem({ toast_content: "已开启:选择模式" })
+                                toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_0") })
                             } else {
                                 Select_mode = 0;
                                 $("#Select_mode").toggleClass("btn-primary")
                                 $("#Select_mode").css({ "color": "" })
-                                toastItem({ toast_content: "已关闭:选择模式" })
+                                toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_1") })
                             }
                         })
                         // 清除本页记录
@@ -402,7 +408,7 @@ $(document).ready(function () {
 
                             images.splice(delete_startIndex, delete_endIndex); //开始下引,删除数量
                             chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
-                                window.location.reload();
+                                Program_Start_Execution()
                             })
                         })
                         //全选
@@ -447,7 +453,7 @@ $(document).ready(function () {
                                 document.execCommand("copy");
                                 tempInput.remove();
                                 toastItem({
-                                    toast_content: "复制成功"
+                                    toast_content: chrome.i18n.getMessage("Copy_successful")
                                 })
                             }
 
@@ -467,19 +473,19 @@ $(document).ready(function () {
                                     imgKey.push(index);
                                     images.splice(imgKey[i], 1)
                                     toastItem({
-                                        toast_content: "删除成功"
+                                        toast_content: chrome.i18n.getMessage("Delete_successful")
                                     })
                                 });
                                 chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
                                     selectedImgs.remove()
                                     $container.masonry('reloadItems')
-                                    $container.masonry();
+                                    $container.masonry('layout')
                                     if ($("#container .item").length < 1) {
                                         toastItem({
-                                            toast_content: "页面无数据,即将刷新"
+                                            toast_content: chrome.i18n.getMessage("Refresh")
                                         })
                                         setTimeout(function () {
-                                            window.location.reload();
+                                            Program_Start_Execution()
                                         }, 3000);
                                     }
                                 })
@@ -492,6 +498,7 @@ $(document).ready(function () {
             } else {
                 $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
+                $container = $('#container');
                 switch (options_exe) {
                     case 'Lsky':
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
@@ -517,13 +524,13 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     itemsPerPage = res.data.per_page;
                                     totalPages = res.data.last_page;
                                     $('.pagination').twbsPagination({
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             fetch(options_proxy_server + "https://" + options_host + "/api/v1/images?page=" + page, {
                                                 method: 'GET',
@@ -546,22 +553,22 @@ $(document).ready(function () {
                                                 .catch(err => {
                                                     console.log(err);
                                                     toastItem({
-                                                        toast_content: "获取失败"
+                                                        toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                                     });
                                                     $("#container").html(Image_acquisition_failed);
                                                 });
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页"
+                                        last: chrome.i18n.getMessage("last")
                                     });
                                 }
                             })
                             .catch(err => {
                                 console.log(err);
                                 toastItem({
-                                    toast_content: "获取失败"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                 });
                                 $("#container").html(Image_acquisition_failed);
                             });
@@ -592,7 +599,6 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     currentPage = 1;
                                     itemsPerPage = 20;
                                     totalPages = Math.ceil(images.length / itemsPerPage);
@@ -600,20 +606,21 @@ $(document).ready(function () {
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             networkRenderImages();
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页"
+                                        last: chrome.i18n.getMessage("last")
                                     });
                                 }
                             })
                             .catch(err => {
                                 console.log(err);
                                 toastItem({
-                                    toast_content: "获取失败"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                 });
                                 $("#container").html(Image_acquisition_failed);
                             });
@@ -644,7 +651,6 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     currentPage = 1;
                                     itemsPerPage = 20;
                                     totalPages = Math.ceil(res.data.total / itemsPerPage);
@@ -652,6 +658,7 @@ $(document).ready(function () {
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             fetch(options_proxy_server + "https://" + options_host + "/api/getimglist/?pageNum=" + page, {
                                                 method: 'POST',
@@ -676,22 +683,22 @@ $(document).ready(function () {
                                                 .catch(err => {
                                                     console.log(err);
                                                     toastItem({
-                                                        toast_content: "获取失败"
+                                                        toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                                     });
                                                     $("#container").html(Image_acquisition_failed);
                                                 });
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页"
+                                        last: chrome.i18n.getMessage("last")
                                     });
                                 }
                             })
                             .catch(err => {
                                 console.log(err);
                                 toastItem({
-                                    toast_content: "获取失败"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                 });
                                 $("#container").html(Image_acquisition_failed);
                             });
@@ -723,7 +730,6 @@ $(document).ready(function () {
                                     if (!images.length) {
                                         $("#container").html(No_picture_data);
                                     } else {
-                                        $container = $('#container');
                                         currentPage = 1; // 当前第1页
                                         itemsPerPage = 20; // 每页20张图片
                                         totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
@@ -731,13 +737,14 @@ $(document).ready(function () {
                                             totalPages: totalPages,
                                             visiblePages: 5,
                                             onPageClick: function (event, page) {
+                                                ContainerLoading()
                                                 currentPage = page;
                                                 networkRenderImages()
                                             },
-                                            first: '首页',
+                                            first: chrome.i18n.getMessage("first"),
                                             prev: null,
                                             next: null,
-                                            last: "末页",
+                                            last: chrome.i18n.getMessage("last"),
 
                                         });
                                     }
@@ -761,7 +768,6 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     currentPage = 1; // 当前第1页
                                     itemsPerPage = 10; // 每页20张图片
                                     totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
@@ -769,14 +775,15 @@ $(document).ready(function () {
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             networkRenderImages()
 
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页",
+                                        last: chrome.i18n.getMessage("last"),
 
                                     });
                                 }
@@ -810,7 +817,6 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     currentPage = 1; // 当前第1页
                                     itemsPerPage = 20; // 每页20张图片
                                     totalPages = Math.ceil(images.length / itemsPerPage);// 计算总页数
@@ -818,13 +824,14 @@ $(document).ready(function () {
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             networkRenderImages()
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页",
+                                        last: chrome.i18n.getMessage("last"),
 
                                     });
                                 }
@@ -856,7 +863,6 @@ $(document).ready(function () {
                                 if (!images.length) {
                                     $("#container").html(No_picture_data);
                                 } else {
-                                    $container = $('#container');
                                     currentPage = 1;
                                     itemsPerPage = 20;
                                     totalPages = Math.ceil(images.length / itemsPerPage);
@@ -864,13 +870,14 @@ $(document).ready(function () {
                                         totalPages: totalPages,
                                         visiblePages: 5,
                                         onPageClick: function (event, page) {
+                                            ContainerLoading()
                                             currentPage = page;
                                             networkRenderImages();
                                         },
-                                        first: '首页',
+                                        first: chrome.i18n.getMessage("first"),
                                         prev: null,
                                         next: null,
-                                        last: "末页"
+                                        last: chrome.i18n.getMessage("last")
                                     });
                                 }
                             })
@@ -880,7 +887,7 @@ $(document).ready(function () {
                                 } else {
                                     console.log(err);
                                     toastItem({
-                                        toast_content: "获取失败"
+                                        toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                     });
                                     $("#container").html(Image_acquisition_failed);
                                 }
@@ -1232,11 +1239,10 @@ $(document).ready(function () {
                         }
                         const item = $(`
                             <div class="item shadow-lg bg-body-tertiary" key=`+ item_divKey + ` type=` + imageUrl.PLFileType + `>
-                                
                                 <ul class="logurl" style="display: none">
                                     <li>`+ item_liImgName + `</li>
-                                    <li>大小：`+ item_liImgSize + `</li>
-                                    <li>日期：`+ item_liImgDate + `</li>
+                                    <li>`+ item_liImgSize + `</li>
+                                    <li>`+ item_liImgDate + `</li>
                                 </ul>
                                 <div class="delete" style="display: none">
                                 <i class="bi bi-x-lg"></i>
@@ -1244,8 +1250,7 @@ $(document).ready(function () {
                                 <div class="copy" style="display: none">
                                 <i class="bi bi-clipboard-check"></i>
                                 </div>
-                                <div class="Image_Width_And_Height" style="display: none;" data-bs-toggle="popover"
-                                data-bs-trigger="hover focus" data-bs-content="点击获取宽高">
+                                <div class="Image_Width_And_Height" style="display: none;">
                                     <span>`+ Image_Width_And_Height + `</span>
                                 </div>
                             </div>`);
@@ -1280,7 +1285,7 @@ $(document).ready(function () {
                                                 toast_content: res.message
                                             });
                                             if ($container.find('.item').length === 0) {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }
                                         })
                                         .catch(err => {
@@ -1309,7 +1314,7 @@ $(document).ready(function () {
                                                 toast_content: res.message
                                             });
                                             if ($container.find('.item').length === 0) {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }
                                         })
                                         .catch(err => {
@@ -1338,10 +1343,10 @@ $(document).ready(function () {
                                         .then(res => {
                                             itemdelete();
                                             toastItem({
-                                                toast_content: '删除成功!'
+                                                toast_content: chrome.i18n.getMessage("Delete_successful")
                                             });
                                             if ($container.find('.item').length === 0) {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }
                                         })
                                         .catch(err => {
@@ -1358,15 +1363,15 @@ $(document).ready(function () {
                                         if (data) {
                                             itemdelete()
                                             toastItem({
-                                                toast_content: '删除成功!'
+                                                toast_content: chrome.i18n.getMessage("Delete_successful")
                                             })
                                             if ($container.find('.item').length === 0) {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }
                                         }
                                         if (err) {
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             console.error(err);
                                         }
@@ -1378,14 +1383,14 @@ $(document).ready(function () {
                                             await oss.delete(imageUrl.name);
                                             itemdelete()
                                             toastItem({
-                                                toast_content: '删除成功!'
+                                                toast_content: chrome.i18n.getMessage("Delete_successful")
                                             })
                                             if ($container.find('.item').length === 0) {
-                                                window.location.reload();
+                                                Program_Start_Execution()
                                             }
                                         } catch (error) {
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             console.log(error);
                                         }
@@ -1397,16 +1402,16 @@ $(document).ready(function () {
                                         if (err) {
                                             console.log(err);
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             return;
                                         }
                                         itemdelete()
                                         toastItem({
-                                            toast_content: '删除成功!'
+                                            toast_content: chrome.i18n.getMessage("Delete_successful")
                                         })
                                         if ($container.find('.item').length === 0) {
-                                            window.location.reload();
+                                            Program_Start_Execution()
                                         }
                                     });
                                     break;
@@ -1435,18 +1440,18 @@ $(document).ready(function () {
                                                 }
                                             })
                                             .then(res => {
-                                                itemdelete();
+                                                itemdelete(imageUrl.name);
                                                 toastItem({
-                                                    toast_content: "删除成功"
+                                                    toast_content: chrome.i18n.getMessage("Delete_successful")
                                                 });
                                                 if ($container.find('.item').length === 0) {
-                                                    window.location.reload();
+                                                    Program_Start_Execution()
                                                 }
                                             })
                                             .catch(err => {
                                                 console.log(err);
                                                 toastItem({
-                                                    toast_content: "获取失败"
+                                                    toast_content: chrome.i18n.getMessage("Upload_prompt8")
                                                 });
                                             });
 
@@ -1454,19 +1459,20 @@ $(document).ready(function () {
 
                                     break;
                             }
-                            async function itemdelete() {
+                            async function itemdelete(DeleteKey) {
                                 // 启用删除按钮
                                 deleteLoading.remove()
                                 item.remove()
+                                const index = images.findIndex(key => key.url === imageUrl.url);
+                                images.splice(index, 1);
                                 $container.masonry('reloadItems')
-                                $container.masonry();
-
+                                $container.masonry('layout')
                             }
                         });
 
                         // 点击选中
                         item.find('.FileMedia').click(function () {
-                            if (Select_mode === 1) {
+                            if (Select_mode === 1 || isShiftKeyPressed === true) {
                                 $(this).parent().toggleClass('gigante');
                             } else {
                                 if (!item_liImgName.split('/').pop() || item.attr("type") == "dir") {
@@ -1511,7 +1517,7 @@ $(document).ready(function () {
                             document.execCommand("copy");
                             $temp.remove();
                             toastItem({
-                                toast_content: '链接复制成功!'
+                                toast_content: chrome.i18n.getMessage("Copy_successful")
                             })
 
                         });
@@ -1522,6 +1528,7 @@ $(document).ready(function () {
                             $(this).find('.copy').show();
                             $(this).find('.Image_Width_And_Height').show();
                             $container.masonry('layout');
+
                         }, function () {
                             $(this).find('.logurl').hide();
                             $(this).find('.delete').hide();
@@ -1535,10 +1542,10 @@ $(document).ready(function () {
                             case 'AWS_S3':
                             case 'GitHubUP':
                                 item.imagesLoaded().progress(function () {
-                                    item.find('.Image_Width_And_Height').html("点击加载宽高;")
+                                    item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Image_Width_And_Height"))
                                     // 获取宽高
                                     item.find('.Image_Width_And_Height').one('click', function () {
-                                        item.find('.Image_Width_And_Height').html("加载中...")
+                                        item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Loading"))
                                         const img = item.find('.imgs');
                                         // 获取img元素的src属性
                                         const src = img.attr('src');
@@ -1553,23 +1560,39 @@ $(document).ready(function () {
                                 });
                                 break;
                         }
-                        $container.imagesLoaded().progress(function () {
-                            $container.masonry({
-                                itemSelector: '.item',
-                                fitWidth: true,
-                                // horizontalOrder: true
-                            });
+                    });
+                    $container.imagesLoaded().progress(function () {
+                        $container.masonry({
+                            itemSelector: '.item',
+                            fitWidth: true,
+                            // horizontalOrder: true
                         });
                     });
-                    $container.masonry({});
                     $container.masonry('reloadItems')
                 }
+                //选择
+                let Select_mode = 0
+                $("#Select_mode").click(function () {
+                    if (Select_mode === 0) {
+                        Select_mode = 1;
+                        $("#Select_mode").removeClass("css-button-rounded--sky")
+                        $("#Select_mode").addClass("css-button-rounded--blue")
+
+                        toastItem({ toast_content: "已开启:选择模式" })
+                    } else {
+                        Select_mode = 0;
+                        $("#Select_mode").removeClass("css-button-rounded--blue")
+                        $("#Select_mode").addClass("css-button-rounded--sky")
+
+                        toastItem({ toast_content: "已关闭:选择模式" })
+                    }
+                })
                 // 清除本页记录
                 $("#deleteUrl").click(function () {
                     if (!imageUrlkey.length) return;
                     let completed = 0;
                     toastItem({
-                        toast_content: '执行成功,正在努力删除中...'
+                        toast_content: chrome.i18n.getMessage("Delete_successful_1")
                     })
                     // 禁止活动
                     $('body').append('<div class="overlay"></div>');
@@ -1664,7 +1687,7 @@ $(document).ready(function () {
                                     }
                                     if (err) {
                                         toastItem({
-                                            toast_content: '删除失败,详情请打开F12查看!'
+                                            toast_content: chrome.i18n.getMessage("Delete_failed")
                                         })
                                         console.error(err);
                                     }
@@ -1678,7 +1701,7 @@ $(document).ready(function () {
                                         deleteUrl(completed, imageUrlkey)
                                     } catch (error) {
                                         toastItem({
-                                            toast_content: '删除失败,详情请打开F12查看!'
+                                            toast_content: chrome.i18n.getMessage("Delete_failed")
                                         })
                                         console.log(error);
                                     }
@@ -1690,7 +1713,7 @@ $(document).ready(function () {
                                     if (err) {
                                         console.log(err);
                                         toastItem({
-                                            toast_content: '删除失败,详情请打开F12查看!'
+                                            toast_content: chrome.i18n.getMessage("Delete_failed")
                                         })
                                         return;
                                     }
@@ -1743,7 +1766,7 @@ $(document).ready(function () {
                                                     .then(response => {
                                                         if (response.ok) {
                                                             toastItem({
-                                                                toast_content: '删除成功'
+                                                                toast_content: chrome.i18n.getMessage("Delete_successful")
                                                             });
                                                             completed++; // 延迟后处理下一个文件
                                                             deleteUrl(completed, GitHubUP_file);
@@ -1755,7 +1778,7 @@ $(document).ready(function () {
                                                     })
                                                     .catch(error => {
                                                         toastItem({
-                                                            toast_content: '删除失败，请查看控制台！'
+                                                            toast_content: chrome.i18n.getMessage("Delete_failed")
                                                         });
                                                         console.log(error);
                                                         $('.overlay').remove();
@@ -1779,25 +1802,8 @@ $(document).ready(function () {
                             // 解除禁止
                             $('.overlay').remove();
                             $('body').css('overflow', 'auto');
-                            window.location.reload();
+                            Program_Start_Execution()
                         }
-                    }
-                })
-                //选择
-                let Select_mode = 0
-                $("#Select_mode").click(function () {
-                    if (Select_mode === 0) {
-                        Select_mode = 1;
-                        $("#Select_mode").removeClass("css-button-rounded--sky")
-                        $("#Select_mode").addClass("css-button-rounded--blue")
-
-                        toastItem({ toast_content: "已开启:选择模式" })
-                    } else {
-                        Select_mode = 0;
-                        $("#Select_mode").removeClass("css-button-rounded--blue")
-                        $("#Select_mode").addClass("css-button-rounded--sky")
-
-                        toastItem({ toast_content: "已关闭:选择模式" })
                     }
                 })
                 //全选
@@ -1843,7 +1849,7 @@ $(document).ready(function () {
                         document.execCommand("copy");
                         tempInput.remove();
                         toastItem({
-                            toast_content: "复制成功"
+                            toast_content: chrome.i18n.getMessage("Copy_successful")
                         })
                     }
 
@@ -1852,7 +1858,7 @@ $(document).ready(function () {
                 $("#Delete_Selected").click(function () {
                     let selectedImgs = $(".gigante");
                     let imgKey = []
-                    selectedImgs.each(function () {
+                    selectedImgs.each(function (i) {
                         if (options_exe == "GitHubUP") {
                             let json = {
                                 sha: $(this).attr("key"),
@@ -1864,7 +1870,9 @@ $(document).ready(function () {
                         } else {
                             imgKey.push($(this).attr("key"));
                         }
-
+                        const indexAttr = $(this).find("img").attr("PLlink")
+                        const index = images.findIndex(img => img.url === indexAttr);
+                        images.splice(index, 1)
                     });
                     if (imgKey.length) {
                         let numDeleted = 0;  // 记录已经删除的图片数量
@@ -1945,7 +1953,7 @@ $(document).ready(function () {
                                         }
                                         if (err) {
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             console.error(err);
                                         }
@@ -1959,7 +1967,7 @@ $(document).ready(function () {
                                             Delete_Selected(selectedImgs, numDeleted, imgKey)
                                         } catch (error) {
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             console.log(error);
                                         }
@@ -1971,7 +1979,7 @@ $(document).ready(function () {
                                         if (err) {
                                             console.log(err);
                                             toastItem({
-                                                toast_content: '删除失败,详情请打开F12查看!'
+                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                             })
                                             return;
                                         }
@@ -1980,7 +1988,6 @@ $(document).ready(function () {
                                     })
                                     break;
                             }
-
                         });
                         switch (options_exe) {
                             case 'GitHubUP':
@@ -2033,7 +2040,7 @@ $(document).ready(function () {
                                                         })
                                                         .catch(error => {
                                                             toastItem({
-                                                                toast_content: '删除失败，请查看控制台！'
+                                                                toast_content: chrome.i18n.getMessage("Delete_failed")
                                                             });
                                                             console.log(error);
                                                         });
@@ -2052,16 +2059,16 @@ $(document).ready(function () {
                 async function Delete_Selected(selectedImgs, numDeleted, imgKey) {
                     selectedImgs.remove()
                     $container.masonry('reloadItems')
-                    $container.masonry();
+                    $container.masonry('layout')
                     toastItem({
-                        toast_content: "删除成功"
+                        toast_content: chrome.i18n.getMessage("Delete_successful")
                     })
                     if (numDeleted === imgKey.length && $("#container .item").length < 1) {
                         toastItem({
-                            toast_content: "页面无数据,即将刷新"
+                            toast_content: chrome.i18n.getMessage("Refresh")
                         })
                         setTimeout(function () {
-                            window.location.reload();
+                            Program_Start_Execution()
                         }, 2000);
                     }
                 }
@@ -2185,7 +2192,7 @@ $(document).ready(function () {
                                 let responseText = xhr.response;
                                 item.find("#textarea").val(responseText)
                             } else {
-                                item.find("#textarea").val("文件获取失败!")
+                                item.find("#textarea").val(chrome.i18n.getMessage("Upload_prompt8"))
                             }
                         };
 
@@ -2219,14 +2226,16 @@ $(document).ready(function () {
                 if (item.attr("type") == "video") {
                     overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
                 } else if (item.attr("type") == "image") {
-                    const imageElement = $('<img src="' + item_imgUrl + '">');
+                    const imageElement = $('<img>');
                     overlayElement.append(loadingIndicator);
                     overlayElement.append(imageElement);
+                    imageElement.attr("src", item_imgUrl)
                     imageElement.imagesLoaded().done(() => {
                         loadingIndicator.remove();
                     }).catch(() => {
                         loadingIndicator.remove();
                     });
+
                 } else if (item.attr("type") == "editable") {
                     overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
                     get_item_imgUrl_text();
@@ -2409,11 +2418,11 @@ $(document).ready(function () {
                             let responseText = xhr.response;
                             overlayElement.find("textarea").val(responseText)
                         } else {
-                            overlayElement.find("textarea").val("文件获取失败!")
+                            overlayElement.find("textarea").val(chrome.i18n.getMessage("Upload_prompt8"))
                         }
                     };
                     xhr.onerror = function (e) {
-                        overlayElement.find("textarea").val("文件获取失败!");
+                        overlayElement.find("textarea").val(chrome.i18n.getMessage("Upload_prompt8"));
                     };
                     xhr.send();
                 }
@@ -2421,6 +2430,18 @@ $(document).ready(function () {
 
         }
         Program_Start_Execution()
+
+        let isShiftKeyPressed = false;
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Shift' || event.key === 'Control') {
+                isShiftKeyPressed = true;
+            }
+        });
+        $(document).on('keyup', function (event) {
+            if (event.key === 'Shift' || event.key === 'Control') {
+                isShiftKeyPressed = false;
+            }
+        });
         $(".Copy_Selected .dropdown-item").click(function () {
             const value = $(this).attr("value");
             toastItem({ toast_content: "复制模式为:" + value })
@@ -2463,6 +2484,7 @@ $(document).ready(function () {
             Sorting_Plan = "Size_sorting"
         });
         $("#Time_sorting .dropdown-item, #Size_sorting .dropdown-item").click(function () {
+            ContainerLoading()
             const value = $(this).attr("value");
             Sorting_Methods = value;
             toastItem({ toast_content: $(this).text() });

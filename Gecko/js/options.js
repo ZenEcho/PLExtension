@@ -1900,7 +1900,7 @@ $(document).ready(function () {
         chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
         chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
         toastItem({
-          toast_content: chrome.i18n.getMessage("Successfully_saved_1")
+          toast_content: chrome.i18n.getMessage("Successfully_saved_2")
         })
 
       })

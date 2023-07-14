@@ -4,11 +4,10 @@
  
  # 盘络上传扩展程序
 
-[官网地址](https://fileup.dev/)
-
+[官网地址](https://fileup.dev/) **·** [安装下载](https://github.com/ZenEcho/PLExtension#%E4%B8%8B%E8%BD%BD) **·** [功能演示](https://github.com/ZenEcho/PLExtension#%E5%8A%9F%E8%83%BD%E6%BC%94%E7%A4%BA) **·** [版本更新](https://github.com/ZenEcho/PLExtension/blob/master/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0.md) **·** [问题反馈](https://github.com/ZenEcho/PLExtension#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
 ## 介绍
 - 盘络上传，是一款免费的上传扩展程序提供兰空图床,简单图床,chevereto,阿里云oss,AWS S3,GitHub等程序的文件上传
-- 兼容Chromium内核，Gecko内核浏览器；
+- 兼容Chromium内核，Gecko内核浏览器;
 - 目前支持的上传程序：[兰空图床](https://www.lsky.pro/),[简单图床](https://github.com/icret/EasyImages2.0),[imgurl图床](https://www.imgurl.org/),[chevereto图床](https://chevereto.com/),[hellohao图床](https://hellohao.cn/),[sm.ms图床](https://sm.ms/),[imgur图床](https://imgur.com/),[腾讯云cos](https://cloud.tencent.com/product/cos),[阿里云oss](https://www.aliyun.com/product/oss),[AWS S3](https://aws.amazon.com/cn/s3/),[GitHub](https://github.com/),[Telegra.ph](https://telegra.ph/),[IMGDD](https://imgdd.com/);
 - 支持实时预览、图片（跨域）上传、预格式代码/[编辑框插入](https://github.com/ZenEcho/PLExtension/blob/dev/%E8%87%AA%E5%8A%A8%E6%8F%92%E5%85%A5%E6%94%AF%E6%8C%81.md)。
 - 支持浏览器常驻侧边栏，侧边栏拖拽上传，浏览器右键菜单上传，上传页面支持粘贴上传/拖拽上传，均支持本地与url转存;
@@ -27,20 +26,23 @@
 - **粘贴上传**
 
 "粘贴上传"便捷的文件上传功能，支持直接粘贴图片数据、图片链接或本地文件到上传框，实现快速上传。省去了繁琐的选择步骤，只需简单复制并粘贴，即可将文件上传。
+![粘贴上传.gif](https://cdn-us.imgs.moe/2023/07/04/64a414475a4ec.gif)
 
 - **拖拽上传**
 
 "拖拽上传"是便捷的文件上传方式。只需将文件从本地拖动到指定区域即可完成上传，还可以快速拖拽多个文件或频繁上传文件，提高工作效率，为用户带来便利和舒适的上传体验。
+![拖拽上传.gif](https://cdn-us.imgs.moe/2023/07/04/64a4145276e67.gif)
 
 - **右键上传**
 
 "右键上传"是浏览器右键菜单中的便捷文件上传方式。用户只需在网页上对着图片右键点击，选择上传选项，即可完成文件上传。用户可以在浏览网页的同时，快速上传图片。
+![右键上传.gif](https://cdn-us.imgs.moe/2023/07/04/64a414574dba6.gif)
 
 - **自动插入**
 ![GitHub测试.gif](https://cdn-us.imgs.moe/2023/06/06/647f3b9b0fb88.gif)
 ![ty测试.gif](https://cdn-us.imgs.moe/2023/06/06/647f3b9b590e1.gif)
 ![wp测试.gif](https://cdn-us.imgs.moe/2023/06/06/647f3b9bc6a46.gif)
-
+#### [更多详细](https://github.com/ZenEcho/PLExtension/blob/master/%E8%87%AA%E5%8A%A8%E6%8F%92%E5%85%A5%E6%94%AF%E6%8C%81.md)
 -------------
 
 ## 下载

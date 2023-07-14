@@ -156,22 +156,19 @@ $(document).ready(function () {
     //剪切板上传
     document.addEventListener("paste", function (e) {
       const Copy_Url = e.clipboardData.getData("text")
-      toastItem({
-        toast_content: '检测到粘贴动作'
-      })
       // 判断是否为 HTTP URL
       const urlRegExp = /^(http|https):\/\/[^\s]+$/;
       if (urlRegExp.test(Copy_Url)) {
         async function clipboard_Request_Success(blob) {
           if (Simulated_upload == true) {
             toastItem({
-              toast_content: '恭喜你学会了粘贴上传'
+              toast_content: chrome.i18n.getMessage("Clipboard_upload_1")
             })
             Simulated_upload = false; //模拟上传
             Black_curtain = false //显示灰块
             //自动演示
             $(".Functional_animation").remove()
-            let confirm_input = confirm("真棒👍!你已经学会“粘贴上传”啦,那我们进行下一步“拖拽上传”吧!")
+            let confirm_input = confirm(chrome.i18n.getMessage("Clipboard_upload_2"))
             if (confirm_input == true) {
               chrome.runtime.sendMessage({ Demonstration_middleware: "Paste_Upload_100" });
             } else {
@@ -183,19 +180,19 @@ $(document).ready(function () {
           if (blob.type.indexOf("image") != -1) {//如果是图片文件时
             const Copy_Img = new File([blob], `pasted_image_` + new Date().getTime() + `.png`, { type: 'image/png' });
             toastItem({
-              toast_content: '资源获取成功'
+              toast_content: chrome.i18n.getMessage("Clipboard_upload_3")
             })
             uploader.addFile(Copy_Img);
           } else {
             toastItem({
-              toast_content: '无效资源'
+              toast_content: chrome.i18n.getMessage("Clipboard_upload_4")
             })
           }
         }
         fetch(options_proxy_server + Copy_Url)
           .then(res => {
             toastItem({
-              toast_content: '网络资源正在努力获取中...'
+              toast_content: chrome.i18n.getMessage("Clipboard_upload_5")
             })
             return res.blob()
           })
@@ -206,19 +203,19 @@ $(document).ready(function () {
             fetch("https://cors-anywhere.pnglog.com/" + Copy_Url)
               .then(res => {
                 toastItem({
-                  toast_content: '第二遍网络资源获取中...'
+                  toast_content: chrome.i18n.getMessage("Clipboard_upload_6")
                 })
                 return res.blob()
               })
               .then(blob => {
                 toastItem({
-                  toast_content: '第二遍资源获取成功,添加到上传框...'
+                  toast_content: chrome.i18n.getMessage("Clipboard_upload_7")
                 })
                 clipboard_Request_Success(blob)
               })
               .catch((error) => {
                 toastItem({
-                  toast_content: '很抱歉还是获取失败了,请打开DevTools查看错误信息进行错误排除!'
+                  toast_content: chrome.i18n.getMessage("Upload_prompt4")
                 })
                 console.error(error);
               });
@@ -237,7 +234,7 @@ $(document).ready(function () {
             }
           } else {
             toastItem({
-              toast_content: '无效资源'
+              toast_content: chrome.i18n.getMessage("Clipboard_upload_4")
             })
           }
         }
@@ -250,13 +247,13 @@ $(document).ready(function () {
       const textFrame = `
       <div class="Upload_Return_Box">
         <div class="col">
-          <p class="p_urls">`+chrome.i18n.getMessage("Upload_return_information")+`</p>
+          <p class="p_urls">`+ chrome.i18n.getMessage("Upload_return_information") + `</p>
         </div>
         <div class="text-center selector_p_urls">
-          <span>`+chrome.i18n.getMessage("Selected")+`</span>
+          <span>`+ chrome.i18n.getMessage("Selected") + `</span>
         </div>
         <div class="text-center copy">
-          <span>`+chrome.i18n.getMessage("Copy")+`</span>
+          <span>`+ chrome.i18n.getMessage("Copy") + `</span>
         </div>
       </div>
     `
@@ -303,10 +300,10 @@ $(document).ready(function () {
                 <p class="p_urls">${link}</p>
               </div>
               <div class="text-center selector_p_urls">
-                <span>`+chrome.i18n.getMessage("Selected")+`</span>
+                <span>`+ chrome.i18n.getMessage("Selected") + `</span>
               </div>
               <div class="text-center copy">
-                <span>`+chrome.i18n.getMessage("Copy")+`</span>
+                <span>`+ chrome.i18n.getMessage("Copy") + `</span>
               </div>
             </div>
 
@@ -338,7 +335,7 @@ $(document).ready(function () {
             document.execCommand("copy");
             $temp.remove();
             toastItem({
-              toast_content: '复制成功!'
+              toast_content: chrome.i18n.getMessage("Copy_successful")
             })
           });
           $(".selector_p_urls").click(function () {
@@ -374,7 +371,7 @@ $(document).ready(function () {
       }
       textFrame()
       toastItem({
-        toast_content: '删除成功'
+        toast_content: chrome.i18n.getMessage("Delete_successful")
       })
     });//文件删除
 
@@ -426,7 +423,7 @@ $(document).ready(function () {
           break;
         case 'UserDiy':
           toastItem({
-            toast_content: "服务器成功响应"
+            toast_content: chrome.i18n.getMessage("Server_response_successful")
           })
           //奖字符串转为JSON
           if (open_json_button == 1) {
@@ -434,7 +431,7 @@ $(document).ready(function () {
               try {
                 var res = JSON.parse(res)
               } catch (error) {
-                alert('返回的数据无法转换为JSON');
+                alert(chrome.i18n.getMessage("data_cannot_be_converted_to_JSON"));
                 return;
               }
             }
@@ -449,7 +446,7 @@ $(document).ready(function () {
         case 'Tencent_COS':
           imageUrl = options_Custom_domain_name + filename
           toastItem({
-            toast_content: '上传完成'
+            toast_content: chrome.i18n.getMessage("Upload_prompt7")
           })
           options_host = options_Bucket
           break;
@@ -542,50 +539,6 @@ $(document).ready(function () {
       }
     })
     popup_Uploader()
-    // function LocalStorage(file, url) {
-    //   chrome.storage.local.get("UploadLog", function (result) {
-    //     UploadLog = result.UploadLog || [];
-    //     if (!Array.isArray(UploadLog)) {
-    //       UploadLog = [];
-    //     }
-    //     function generateRandomKey() {
-    //       return new Promise(resolve => {
-    //         const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    //         let key = '';
-    //         for (let i = 0; i < 6; i++) {
-    //           key += characters.charAt(Math.floor(Math.random() * characters.length));
-    //         }
-    //         // 确保不会重复
-    //         while (UploadLog.some(log => log.id === key)) {
-    //           key = '';
-    //           for (let i = 0; i < 6; i++) {
-    //             key += characters.charAt(Math.floor(Math.random() * characters.length));
-    //           }
-    //         }
-    //         resolve(key);
-    //       });
-    //     }
-    //     let d = new Date();
-    //     generateRandomKey().then(key => {
-    //       let UploadLogData = {
-    //         key: key,
-    //         url: url,
-    //         uploadExe: options_exe,
-    //         upload_domain_name: options_host,
-    //         original_file_name: file.name,
-    //         file_size: file.size,
-    //         img_file_size: "宽:不支持,高:不支持",
-    //         uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
-    //       }
-    //       if (typeof UploadLog !== 'object') {
-    //         UploadLog = JSON.parse(UploadLog);
-    //       }
-    //       UploadLog.push(UploadLogData);
-    //       chrome.storage.local.set({ 'UploadLog': UploadLog }, function (e) {
-    //       })
-    //     })
-    //   })
-    // }
     // 实现链接按钮下划线
     $(".urlButton").click(function () {
       const value = $(this).attr("value");
@@ -632,7 +585,7 @@ $(document).ready(function () {
         document.execCommand("copy");
         tempInput.remove();
         toastItem({
-          toast_content: "复制成功"
+          toast_content: chrome.i18n.getMessage("Copy_successful")
         })
       }
     })
@@ -640,7 +593,7 @@ $(document).ready(function () {
 
     if (!options_host) {
       if (options_exe != "UserDiy" && options_exe != "Tencent_COS" && options_exe != "Aliyun_OSS" && options_exe != "AWS_S3" && options_exe != "GitHubUP" && options_exe != "imgdd") {
-        alert('网站域名为空,请初始化配置再上传!');
+        alert(chrome.i18n.getMessage("Website_domain_is_blank"));
         window.location.href = "options.html";
         return;
       }
@@ -649,17 +602,17 @@ $(document).ready(function () {
     let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
     if (tokenRequired.includes(options_exe)) {
       if (!options_token) {
-        alert(`${options_exe}图床程序必须填写Token`);
+        alert(`${options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
         window.location.href = "options.html";
         return;
       }
       if (options_exe === "ImgURL" && !options_uid) {
-        alert('ImgURL图床程序必须填写UID');
+        alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
         window.location.href = "options.html";
         return;
       }
       if (options_exe == "Hellohao" && !options_source) {
-        alert('Hellohao图床程序必须填写存储源');
+        alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
         window.location.href = "options.html";
         return;
       }
@@ -668,78 +621,78 @@ $(document).ready(function () {
     switch (options_exe) {
       case 'UserDiy':
         if (!options_apihost) {
-          alert('API地址为空,请初始化配置再上传!');
+          alert(chrome.i18n.getMessage("Website_domain_is_blank"));
           window.location.href = "options.html";
           return;
         }
         break;
       case 'Tencent_COS':
         if (!options_SecretId) {
-          alert(`腾讯云COS必须填写SecretId`)
+          alert(chrome.i18n.getMessage("Tencent_cos_1"))
           window.location.href = "options.html";
           return;
         }
         if (!options_SecretKey) {
-          alert(`腾讯云COS必须填写SecretKey`)
+          alert(chrome.i18n.getMessage("Tencent_cos_2"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Region) {
-          alert(`腾讯云COS必须填写Region`)
+          alert(chrome.i18n.getMessage("Tencent_cos_3"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Bucket) {
-          alert(`腾讯云COS必须填写Bucket`)
+          alert(chrome.i18n.getMessage("Tencent_cos_4"))
           window.location.href = "options.html";
           return;
         }
         break;
       case 'Aliyun_OSS':
         if (!options_SecretId) {
-          alert(`阿里云OSS必须填写AccessKeyId`)
+          alert(chrome.i18n.getMessage("Alibaba_oss_1"))
           window.location.href = "options.html";
           return;
         }
         if (!options_SecretKey) {
-          alert(`阿里云OSS必须填写AccessKeySecret`)
+          alert(chrome.i18n.getMessage("Alibaba_oss_2"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Bucket) {
-          alert(`阿里云OSS必须填写Bucket`)
+          alert(chrome.i18n.getMessage("Alibaba_oss_3"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Endpoint) {
-          alert(`阿里云OSS必须填写Endpoint`)
+          alert(chrome.i18n.getMessage("Alibaba_oss_4"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Region) {
-          alert(`阿里云OSS必须填写Region`)
+          alert(chrome.i18n.getMessage("Alibaba_oss_5"))
           window.location.href = "options.html";
           return;
         }
         break;
       case 'AWS_S3':
         if (!options_SecretId) {
-          alert(`AWS S3必须填写options_SecretId`)
+          alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
         if (!options_SecretKey) {
-          alert(`AWS S3必须填写options_SecretKey`)
+          alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Region) {
-          alert(`AWS S3必须填写options_Region`)
+          alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
         if (!options_Bucket) {
-          alert(`AWS S3必须填写options_Bucket`)
+          alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
@@ -750,7 +703,7 @@ $(document).ready(function () {
     // 写入标题
     let options_webtitle = localStorage.options_webtitle
     $(".title-a").text(options_webtitle)
-    $(".exeinfo_p").text(options_exe + "图床程序")
+    $(".exeinfo_p").text(options_exe)
 
   }) // chrome.storage.local.get
   animation_button('.Animation_button')// 设置按钮动画
@@ -763,12 +716,12 @@ $(document).ready(function () {
       $("body").append(`
     <div id="overlay">
       <div id="introBox">
-        <h2 style="padding: 0;margin: 0;">欢迎！功能演示</h2>
-        <p>我将从第一节"粘贴上传"引导您，盘络上传的使用方法,您也可以选择其他演示</p>
+        <h2 style="padding: 0;margin: 0;">`+ chrome.i18n.getMessage("Function_demonstration_1") + `</h2>
+        <p>`+ chrome.i18n.getMessage("Function_demonstration_2") + `</p>
         </p>
         <p style="margin: 10px;">
-          <button id="Animation_auto_Btn">开启演示</button>
-          <button id="Animation_close_Btn">关闭演示</button>
+          <button id="Animation_auto_Btn">`+ chrome.i18n.getMessage("Function_demonstration_3") + `</button>
+          <button id="Animation_close_Btn">`+ chrome.i18n.getMessage("Function_demonstration_4") + `</button>
         </p>
         <div class="Demo-container">
           <!-- 第一个卡片 -->
@@ -776,33 +729,32 @@ $(document).ready(function () {
             <div class="icon"></div>
             <h2>01</h2>
             <div class="content">
-              <h3>粘贴上传</h3>
-              <p>"粘贴上传"便捷的文件上传功能，支持直接粘贴图片数据、图片链接或本地文件到上传框，实现快速上传。省去了繁琐的选择步骤，只需简单复制并粘贴，即可将文件上传。
-              </p>
-              <a href="#" id="Animation_Paste_Upload_Btn">开始演示</a>
+              <h3>`+ chrome.i18n.getMessage("Function_demonstration_5") + `</h3>
+              <p>`+ chrome.i18n.getMessage("Function_demonstration_6") + `</p>
+              <a href="#" id="Animation_Paste_Upload_Btn">`+ chrome.i18n.getMessage("Function_demonstration_3") + `</a>
             </div>
           </div>
           <!-- 第二个卡片 -->
           <div class="card">
             <h2>02</h2>
             <div class="content">
-              <h3>拖拽上传</h3>
-              <p>"拖拽上传"是便捷的文件上传方式。只需将文件从本地拖动到指定区域即可完成上传，还可以快速拖拽多个文件或频繁上传文件，提高工作效率，为用户带来便利和舒适的上传体验。</p>
-              <a href="#" id="Animation_Drag_upload_Btn">开始演示</a>
+              <h3>`+ chrome.i18n.getMessage("Function_demonstration_7") + `</h3>
+              <p>`+ chrome.i18n.getMessage("Function_demonstration_8") + `</p>
+              <a href="#" id="Animation_Drag_upload_Btn">`+ chrome.i18n.getMessage("Function_demonstration_3") + `</a>
             </div>
           </div>
           <!-- 第三个卡片 -->
           <div class="card">
             <h2>03</h2>
             <div class="content">
-              <h3>右键上传</h3>
-              <p>"右键上传"是浏览器右键菜单中的便捷文件上传方式。用户只需在网页上对着图片右键点击，选择上传选项，即可完成文件上传。用户可以在浏览网页的同时，快速上传图片。</p>
-              <a href="#" id="Functional_Right_click_menu_Btn">开始演示</a>
+              <h3>`+ chrome.i18n.getMessage("Function_demonstration_9") + `</h3>
+              <p>`+ chrome.i18n.getMessage("Function_demonstration_10") + `</p>
+              <a href="#" id="Functional_Right_click_menu_Btn">`+ chrome.i18n.getMessage("Function_demonstration_3") + `</a>
             </div>
           </div>
         </div>
   
-        <p>开启“粘贴上传”后会自动复制👇消息</p>
+        <p>`+ chrome.i18n.getMessage("Function_demonstration_11") + `</p>
         <p>https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png</p>
       </div>
     </div>
@@ -818,7 +770,7 @@ $(document).ready(function () {
         if ($(".Functional_animation").length == 0) {
           $("body").append(`
           <div class="Functional_animation">
-            <h1>按下CTRL+V</h1>
+            <h1>CTRL+V</h1>
             <div class="animation_finger"></div>
           </div>
           `)
@@ -852,7 +804,7 @@ $(document).ready(function () {
     if ($(".Functional_animation").length == 0) {
       $("body").append(`
       <div class="Functional_animation">
-        <h1>按下CTRL+V</h1>
+        <h1>CTRL+V</h1>
         <div class="animation_finger"></div>
       </div>
       `)

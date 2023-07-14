@@ -1,5 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
+    console.log(event.data.type + "——Write")
     if (event.data.type === 'CodeMirror') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {

@@ -41,6 +41,9 @@
   "Upload_prompt7": {
     "message": "Upload successful."
   },
+  "Upload_prompt8": {
+    "message": "Failed to retrieve."
+  },
   "img_file_size": {
     "message": "Width: Not supported, Height: Not supported"
   },
@@ -596,6 +599,9 @@
   "Successfully_saved_1": {
     "message": "Save successful. Page will be refreshed"
   },
+  "Successfully_saved_2": {
+    "message": "Save successful. Please refresh the page for the changes to take effect."
+  },
   "select_upload_program": {
     "message": "Please select an upload program"
   },
@@ -728,6 +734,135 @@
   "dictMaxFilesExceeded": {
     "message": "You cannot upload any more files......"
   },
+  "Clipboard_upload_1": {
+    "message": "Congratulations! You have learned how to upload via clipboard."
+  },
+  "Clipboard_upload_2": {
+    "message": "Awesome! 👍 You have mastered 'Paste Upload'. Now let's move on to the next step, 'Drag and Drop Upload'!"
+  },
+  "Clipboard_upload_3": {
+    "message": "Resource retrieval successful."
+  },
+  "Clipboard_upload_4": {
+    "message": "Invalid resource."
+  },
+  "Clipboard_upload_5": {
+    "message": "Fetching network resource, please wait..."
+  },
+  "Clipboard_upload_6": {
+    "message": "Fetching network resource for the second time..."
+  },
+  "Clipboard_upload_7": {
+    "message": "Second network resource retrieval successful. Adding to the upload box..."
+  },
+  "Copy_successful": {
+    "message": "Copy successful."
+  },
+  "Delete_successful": {
+    "message": "Deletion successful."
+  },
+  "Delete_successful_1": {
+    "message": "Successfully executed, deleting in progress..."
+  },
+  "Delete_failed": {
+    "message": "Deletion failed, please open F12 for more details!"
+  },
+  "Server_response_successful": {
+    "message": "Server response successful."
+  },
+  "data_cannot_be_converted_to_JSON": {
+    "message": "The returned data cannot be converted to JSON."
+  },
+  "Website_domain_is_blank": {
+    "message": "Website domain is blank. Please initialize the configuration before uploading!"
+  },
+  "Token_is_required": {
+    "message": "Token is required."
+  },
+  "UID_is_required": {
+    "message": "UID is required."
+  },
+  "source_is_required": {
+    "message": "Storage source is required."
+  },
+  "SecretId_is_required": {
+    "message": "SecretId is required."
+  },
+  "Tencent_cos_1": {
+    "message": "Tencent COS requires SecretId to be filled in."
+  },
+  "Tencent_cos_2": {
+    "message": "Tencent COS requires SecretKey to be filled in."
+  },
+  "Tencent_cos_3": {
+    "message": "Tencent COS requires Region to be filled in."
+  },
+  "Tencent_cos_4": {
+    "message": "Tencent COS requires Bucket to be filled in."
+  },
+  "Alibaba_oss_1": {
+    "message": "Alibaba OSS requires AccessKeyId to be filled in."
+  },
+  "Alibaba_oss_2": {
+    "message": "Alibaba OSS requires AccessKeySecret to be filled in."
+  },
+  "Alibaba_oss_3": {
+    "message": "Alibaba OSS requires Bucket to be filled in."
+  },
+  "Alibaba_oss_4": {
+    "message": "Alibaba OSS requires Endpoint to be filled in."
+  },
+  "Alibaba_oss_5": {
+    "message": "Alibaba OSS requires Region to be filled in."
+  },
+  "s3_oss_1": {
+    "message": "AWS S3 requires SecretId to be filled in."
+  },
+  "s3_oss_2": {
+    "message": "AWS S3 requires SecretKey to be filled in."
+  },
+  "s3_oss_3": {
+    "message": "AWS S3 requires Region to be filled in."
+  },
+  "s3_oss_4": {
+    "message": "AWS S3 requires Bucket to be filled in."
+  },
+  "Function_demonstration_1": {
+    "message": "Welcome! Function demonstration"
+  },
+  "Function_demonstration_2": {
+    "message": "I will guide you through the first section 'Paste Upload' to demonstrate the usage of Panluo upload. You can also choose other demonstrations."
+  },
+  "Function_demonstration_3": {
+    "message": "Start Demo"
+  },
+  "Function_demonstration_4": {
+    "message": "Close Demo"
+  },
+  "Function_demonstration_5": {
+    "message": "Paste Upload"
+  },
+  "Function_demonstration_6": {
+    "message": "'Paste Upload' is a convenient file upload feature that supports directly pasting image data, image links, or local files into the upload box for quick upload. It eliminates the need for cumbersome selection steps, allowing you to simply copy and paste to upload files."
+  },
+  "Function_demonstration_7": {
+    "message": "Drag and Drop Upload"
+  },
+  "Function_demonstration_8": {
+    "message": "'Drag and Drop Upload' is a convenient file upload method. You can simply drag files from your local computer and drop them into the designated area to complete the upload. It allows for quick dragging and dropping of multiple files and frequent file uploads, improving work efficiency and providing users with a convenient and comfortable upload experience."
+  },
+  "Function_demonstration_9": {
+    "message": "Right-click Upload"
+  },
+  "Function_demonstration_10": {
+    "message": "'Right-click Upload' is a convenient file upload method available in the browser's right-click menu. Users can simply right-click on an image on the webpage and choose the upload option to complete the file upload. It allows users to quickly upload images while browsing the web."
+  },
+  "Function_demonstration_11": {
+    "message": "When 'Paste Upload' is enabled, the following message will be automatically copied: 👇"
+  },
+  "Function_demonstration_12": {
+    "message": "Awesome! 👍 You have mastered 'Drag and Drop Upload'! Let's move on to the next section, 'Right-click Upload' in our demonstration."
+  },
   "UploadLog_title": {
     "message": "Upload Log"
   },
@@ -772,5 +907,53 @@
   },
   "DeleteALL": {
     "message": "Clear All Records"
+  },
+  "Kissing_alert": {
+    "message": "Kiss"
+  },
+  "Kissing_alert_p_1": {
+    "message": "Failed to retrieve image hosting information. Please open DevTools (F12) for detailed information."
+  },
+  "Kissing_alert_p2_2": {
+    "message": "Check if the configuration information is incorrect."
+  },
+  "Kissing_alert_p_3": {
+    "message": "I've been drained! I can't fetch data anymore!"
+  },
+  "Kissing_alert_p2_4": {
+    "message": "Try a little harder!"
+  },
+  "Browse_mode_switch_button_1_attr": {
+    "message": "Currently loading images from the image hosting server."
+  },
+  "Browse_mode_switch_button_0_attr": {
+    "message": "Currently loading local images."
+  },
+  "Browse_mode_switch_button_1": {
+    "message": " Switch to Local"
+  },
+  "Browse_mode_switch_button_0": {
+    "message": " Switch to Image Hosting"
+  },
+  "first": {
+    "message": "First"
+  },
+  "last": {
+    "message": "Last"
+  },
+  "Refresh": {
+    "message": "No data on the page, refreshing..."
+  },
+  "Image_Width_And_Height": {
+    "message": "Click to load width and height"
+  },
+  "Loading": {
+    "message": "Loading..."
+  },
+  "Select_mode_0": {
+    "message": "Select mode is enabled."
+  },
+  "Select_mode_1": {
+    "message": "Select mode is disabled."
   }
 }

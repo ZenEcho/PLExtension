@@ -3,7 +3,7 @@
     "message": "盘络上传"
   },
   "app_description": {
-    "message": "盘络上传，是一款免费的上传扩展程序提供lsky,EasyImages,chevereto,阿里云oss,AWS S3,等程序的文件上传"
+    "message": "盘络上传,是一款免费的上传扩展程序提供lsky,EasyImages,chevereto,阿里云oss,AWS S3,等程序的文件上传"
   },
   "Installing_initialization": {
     "message": "安装初始化..."
@@ -12,7 +12,7 @@
     "message": "盘络上传图片"
   },
   "Installing_initialization_completed": {
-    "message": "安装初始化完成，完成配置填写即可上传"
+    "message": "安装初始化完成,完成配置填写即可上传"
   },
   "Headers_error": {
     "message": "Headers请求参数不是一个合法的 JSON 格式字符串!"
@@ -24,7 +24,7 @@
     "message": "图片获取完成,正在执行上传;"
   },
   "Upload_prompt2": {
-    "message": "图片上传成功，前往上传日志页面即可查看"
+    "message": "图片上传成功,前往上传日志页面即可查看"
   },
   "Upload_prompt3": {
     "message": "上传失败,请检查错误报告!"
@@ -33,13 +33,16 @@
     "message": "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
   },
   "Upload_prompt5": {
-    "message": "获取失败，再次尝试..."
+    "message": "获取失败,再次尝试..."
   },
   "Upload_prompt6": {
-    "message": "很抱歉还是获取失败了，请按F12查看错误信息进行错误排除!"
+    "message": "很抱歉还是获取失败了,请按F12查看错误信息进行错误排除!"
   },
   "Upload_prompt7": {
     "message": "上传成功"
+  },
+  "Upload_prompt8": {
+    "message": "获取失败"
   },
   "img_file_size": {
     "message": "宽:不支持,高:不支持"
@@ -105,7 +108,7 @@
     "message": "配置CORS代理"
   },
   "Reference_Tips": {
-    "message": "提示由 <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>盘络上传</a> 提供,仅供参考。正式使用请替换。"
+    "message": "提示由 <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>盘络上传</a> 提供,仅供参考.正式使用请替换."
   },
   "save": {
     "message": "保存"
@@ -375,7 +378,7 @@
     "message": "例如:2389b"
   },
   "options_GitHub_Warning": {
-    "message": "GitHub 是一个代码托管平台，在 GitHub 存储图片不符合它的设计初衷，建议及时删除不必要的图片文件。"
+    "message": "GitHub 是一个代码托管平台,在 GitHub 存储图片不符合它的设计初衷,建议及时删除不必要的图片文件."
   },
   "options_SecretId_COS": {
     "message": "SecretId<p class=''><span style='color: red;'>*</span>(访问ID,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretId </a>)</p>"
@@ -510,7 +513,7 @@
     "message": "感谢使用,盘络上传扩展!"
   },
   "options_Custom_domain_name_Telegra_ph": {
-    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(填写完整信息，留空不设置;)</p>"
+    "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(填写完整信息,留空不设置;)</p>"
   },
   "options_Custom_domain_name_placeholder_Telegra_ph": {
     "message": "例如:https://www.google.com,末端不要加/"
@@ -519,7 +522,7 @@
     "message": "例如:imgdd.com"
   },
   "Program_selection_instructions_1": {
-    "message": "嗨，你好朋友"
+    "message": "嗨,你好朋友"
   },
   "Program_selection_instructions_2": {
     "message": "一定要选择一个图床程序进行图床配置哦"
@@ -535,6 +538,9 @@
   },
   "You_know_what_3": {
     "message": "粘贴上传,图片转存也不再话下啦!"
+  },
+  "Firefox_browser_access_permissions": {
+    "message": "设置Firefox访问权限"
   },
   "Firefox_browser_access_permissions_warning": {
     "message": "侧边栏功能需要开启'存取您在所有网站的数据'权限,如不需要请无视该设置"
@@ -558,13 +564,13 @@
     "message": "设置已生效,但插件重载失败请手动重载"
   },
   "Setting_successful_7": {
-    "message": "使用内置页打开，第一使用需要点击两次插件!"
+    "message": "使用内置页打开,第一使用需要点击两次插件!"
   },
   "Setting_failed_1": {
     "message": "设置失败,请打开DevTools查看报错并根据常见问题进行报错排除"
   },
   "Setting_failed_2": {
-    "message": "因为API适配问题，该设置被禁止!"
+    "message": "因为API适配问题,该设置被禁止!"
   },
   "Unable_to_obtain_storage_source": {
     "message": "无法获取存储源"
@@ -592,6 +598,9 @@
   },
   "Successfully_saved_1": {
     "message": "保存成功,即将刷新页面"
+  },
+  "Successfully_saved_2": {
+    "message": "保存成功,刷新页面生效"
   },
   "select_upload_program": {
     "message": "请选择上传程序"
@@ -725,6 +734,135 @@
   "dictMaxFilesExceeded": {
     "message": "您不能上传更多啦......"
   },
+  "Clipboard_upload_1": {
+    "message": "恭喜你学会了粘贴上传"
+  },
+  "Clipboard_upload_2": {
+    "message": "真棒👍!你已经学会“粘贴上传”啦,那我们进行下一步“拖拽上传”吧!"
+  },
+  "Clipboard_upload_3": {
+    "message": "资源获取成功"
+  },
+  "Clipboard_upload_4": {
+    "message": "无效资源"
+  },
+  "Clipboard_upload_5": {
+    "message": "网络资源正在努力获取中..."
+  },
+  "Clipboard_upload_6": {
+    "message": "第二遍网络资源获取中..."
+  },
+  "Clipboard_upload_7": {
+    "message": "第二遍资源获取成功,添加到上传框..."
+  },
+  "Copy_successful": {
+    "message": "复制成功"
+  },
+  "Delete_successful": {
+    "message": "删除成功"
+  },
+  "Delete_successful_1": {
+    "message": "执行成功,正在努力删除中..."
+  },
+  "Delete_failed": {
+    "message": "删除失败,详情请打开F12查看!"
+  },
+  "Server_response_successful": {
+    "message": "服务器成功响应"
+  },
+  "data_cannot_be_converted_to_JSON": {
+    "message": "返回的数据无法转换为JSON"
+  },
+  "Website_domain_is_blank": {
+    "message": "网站域名为空,请初始化配置再上传!"
+  },
+  "Token_is_required": {
+    "message": "必须填写Token"
+  },
+  "UID_is_required": {
+    "message": "必须填写UID"
+  },
+  "source_is_required": {
+    "message": "必须填写存储源"
+  },
+  "SecretId_is_required": {
+    "message": "必须填写Token"
+  },
+  "Tencent_cos_1": {
+    "message": "腾讯云COS必须填写SecretId"
+  },
+  "Tencent_cos_2": {
+    "message": "腾讯云COS必须填写SecretKey"
+  },
+  "Tencent_cos_3": {
+    "message": "腾讯云COS必须填写Region"
+  },
+  "Tencent_cos_4": {
+    "message": "腾讯云COS必须填写Bucket"
+  },
+  "Alibaba_oss_1": {
+    "message": "阿里云OSS必须填写AccessKeyId"
+  },
+  "Alibaba_oss_2": {
+    "message": "阿里云OSS必须填写AccessKeySecret"
+  },
+  "Alibaba_oss_3": {
+    "message": "阿里云OSS必须填写Bucket"
+  },
+  "Alibaba_oss_4": {
+    "message": "阿里云OSS必须填写Endpoint"
+  },
+  "Alibaba_oss_5": {
+    "message": "阿里云OSS必须填写Region"
+  },
+  "s3_oss_1": {
+    "message": "AWS S3必须填写SecretId"
+  },
+  "s3_oss_2": {
+    "message": "AWS S3必须填写SecretKey"
+  },
+  "s3_oss_3": {
+    "message": "AWS S3必须填写Region"
+  },
+  "s3_oss_4": {
+    "message": "AWS S3必须填写Bucket"
+  },
+  "Function_demonstration_1": {
+    "message": "欢迎！功能演示"
+  },
+  "Function_demonstration_2": {
+    "message": "我将从第一节'粘贴上传'引导您,盘络上传的使用方法,您也可以选择其他演示"
+  },
+  "Function_demonstration_3": {
+    "message": "开启演示"
+  },
+  "Function_demonstration_4": {
+    "message": "关闭演示"
+  },
+  "Function_demonstration_5": {
+    "message": "粘贴上传"
+  },
+  "Function_demonstration_6": {
+    "message": "'粘贴上传'便捷的文件上传功能,支持直接粘贴图片数据、图片链接或本地文件到上传框,实现快速上传.省去了繁琐的选择步骤,只需简单复制并粘贴,即可将文件上传."
+  },
+  "Function_demonstration_7": {
+    "message": "拖拽上传"
+  },
+  "Function_demonstration_8": {
+    "message": "'拖拽上传'是便捷的文件上传方式.只需将文件从本地拖动到指定区域即可完成上传,还可以快速拖拽多个文件或频繁上传文件,提高工作效率,为用户带来便利和舒适的上传体验."
+  },
+  "Function_demonstration_9": {
+    "message": "右键上传"
+  },
+  "Function_demonstration_10": {
+    "message": "'右键上传'是浏览器右键菜单中的便捷文件上传方式.用户只需在网页上对着图片右键点击,选择上传选项,即可完成文件上传.用户可以在浏览网页的同时,快速上传图片."
+  },
+  "Function_demonstration_11": {
+    "message": "开启'粘贴上传'后会自动复制👇消息"
+  },
+  "Function_demonstration_12": {
+    "message": "真棒👍,你已经学会'拖拽上传'”'啦!,我们开启下一节“右键上传”的演示吧"
+  },
   "UploadLog_title": {
     "message": "盘络上传程序记录——盘络上传程序"
   },
@@ -769,5 +907,53 @@
   },
   "DeleteALL": {
     "message": "一键清空记录"
+  },
+  "Kissing_alert": {
+    "message": "亲亲"
+  },
+  "Kissing_alert_p_1": {
+    "message": "无法获取图床信息,详细信息请打开DevTools工具(F12)查看"
+  },
+  "Kissing_alert_p2_2": {
+    "message": "看看是不是配置信息错误了"
+  },
+  "Kissing_alert_p_3": {
+    "message": "已经被榨干了!!!我获取不到数据了啦!"
+  },
+  "Kissing_alert_p2_4": {
+    "message": "再努努力吧!"
+  },
+  "Browse_mode_switch_button_1_attr": {
+    "message": "现在加载的是图床服务器的图片"
+  },
+  "Browse_mode_switch_button_0_attr": {
+    "message": "现在加载的是本地图片"
+  },
+  "Browse_mode_switch_button_1": {
+    "message": " 切换到本地"
+  },
+  "Browse_mode_switch_button_0": {
+    "message": " 切换到图床"
+  },
+  "first": {
+    "message": "首页"
+  },
+  "last": {
+    "message": "末页"
+  },
+  "Refresh": {
+    "message": "页面无数据,即将刷新"
+  },
+  "Image_Width_And_Height": {
+    "message": "点击加载宽高"
+  },
+  "Loading": {
+    "message": "加载中..."
+  },
+  "Select_mode_0": {
+    "message": "已开启:选择模式"
+  },
+  "Select_mode_1": {
+    "message": "已关闭:选择模式"
   }
 }

@@ -177,7 +177,7 @@ function popup_Uploader() {
                             }
                             if (err) {
                                 toastItem({
-                                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt4")
                                 })
                                 console.error(err);
                             }
@@ -274,7 +274,7 @@ function popup_Uploader() {
                             uploader.emit("complete", currentFile);
                         } catch (error) {
                             toastItem({
-                                toast_content: "上传失败，请打开DevTools查看报错并根据常见问题进行报错排除",
+                                toast_content: chrome.i18n.getMessage("Upload_prompt4"),
                             });
                             console.error(error);
                             return;
@@ -380,7 +380,7 @@ function popup_Uploader() {
                         await s3.upload(params, (err, data) => {
                             if (err) {
                                 toastItem({
-                                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt4")
                                 })
                                 console.error(err);
                                 return;
@@ -484,7 +484,7 @@ function popup_Uploader() {
                             } catch (error) {
                                 console.log(error)
                                 toastItem({
-                                    toast_content: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除"
+                                    toast_content: chrome.i18n.getMessage("Upload_prompt4")
                                 })
                             }
                         }
@@ -567,7 +567,7 @@ function popup_Uploader() {
 // content_scripts
 function content_scripts_CheckUploadModel(event, Simulated_upload) {
     if (Simulated_upload == true) {
-        let confirm_input = confirm("真棒👍,你已经学会“拖拽上传”啦!,我们开启下一节“右键上传”的演示吧")
+        let confirm_input = confirm(chrome.i18n.getMessage("Function_demonstration_12"))
         Simulated_upload = false //恢复上传
         confetti({
             particleCount: 200,
@@ -695,7 +695,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     const blob = await res.blob();
                     blobUP(blob)
                 } catch (error) {
-                    chrome.runtime.sendMessage({ Loudspeaker: "上传失败，请打开 DevTools 查看报错并根据常见问题进行报错排除" });
+                    chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
                     console.log(error);
                     return;
                 }
@@ -741,8 +741,8 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             }
             if (err) {
                 console.error(err);
-                callback(null, new Error('上传失败,请检查错误报告!'));
-                chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+                callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
+                chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
             }
         });
     }
@@ -763,8 +763,8 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             LocalStorage(filename, imageUrl, file)
         }).catch((err) => {
             console.error(err);
-            callback(null, new Error('上传失败,请检查错误报告!'));
-            chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+            callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
+            chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
         });
     }
     function S3_uploadFile(blob,) {
@@ -793,9 +793,9 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         }
         s3.upload(params, function (err, data) {
             if (err) {
-                callback(null, new Error('上传失败,请检查错误报告!'));
+                callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                 console.error(err);
-                chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+                chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
                 return;
             }
             callback(data, null);
@@ -834,7 +834,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             })
             .catch(error => {
                 console.log(error);
-                chrome.runtime.sendMessage({ Loudspeaker: "上传失败，请打开DevTools查看报错并根据常见问题进行报错排除" });
+                chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
             });
 
         function Upload_method() {
@@ -855,8 +855,8 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     LocalStorage(UrlImgNema, imageUrl, file)
                 }).catch(error => {
                     console.log(error)
-                    callback(null, new Error('上传失败,请检查错误报告!'));
-                    chrome.runtime.sendMessage({ Loudspeaker: "上传失败,请打开DevTools查看报错并根据常见问题进行报错排除" });
+                    callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
+                    chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
                     return;
                 })
         }
@@ -912,7 +912,7 @@ function LocalStorage(filename, imageUrl, file) {
             UploadLog.push(UploadLogData);
             chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
                 if (window.location.href.startsWith('http')) {
-                    chrome.runtime.sendMessage({ Loudspeaker: "图片上传成功，前往上传日志页面即可查看" });
+                    chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt2") });
                     AutoInsertFun(imageUrl)
                 }
             })

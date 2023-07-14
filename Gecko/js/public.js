@@ -494,27 +494,27 @@ if (currentURL === pluginURL) {
 
 
     if (options_exe == "UserDiy") {
-      localStorage.options_webtitle = "自定义上传"
+      localStorage.options_webtitle = chrome.i18n.getMessage("Custom_Upload")
       localStorage.options_webtitle_status = 0
       return;
     }
     if (options_exe == "GitHubUP") {
-      localStorage.options_webtitle = "GitHub 上传"
+      localStorage.options_webtitle = chrome.i18n.getMessage("GitHub")
       localStorage.options_webtitle_status = 0
       return;
     }
     if (options_exe == "Tencent_COS") {
-      localStorage.options_webtitle = "腾讯云对象存储(COS)"
+      localStorage.options_webtitle = chrome.i18n.getMessage("Tencent_COS")
       localStorage.options_webtitle_status = 0
       return;
     }
     if (options_exe == "Aliyun_OSS") {
-      localStorage.options_webtitle = "阿里云对象存储(OSS)"
+      localStorage.options_webtitle = chrome.i18n.getMessage("Alibaba_OSS")
       localStorage.options_webtitle_status = 0
       return;
     }
     if (options_exe == "AWS_S3") {
-      localStorage.options_webtitle = "AWS 对象存储(S3)"
+      localStorage.options_webtitle = chrome.i18n.getMessage("AWS_S3")
       localStorage.options_webtitle_status = 0
       return;
     }
@@ -611,11 +611,9 @@ if (currentURL === pluginURL) {
                   let webtitle = $(html).filter('title').text();
                   localStorage.options_webtitle = webtitle
                   localStorage.options_webtitle_status = 0
-                  console.log("获取成功！");
                 })
                 .catch(error => {
-                  localStorage.options_webtitle = "盘络上传程序"
-                  console.log("获取失败，此错误不影响使用！");
+                  localStorage.options_webtitle = chrome.i18n.getMessage("app_name")
                 });
             });
         }

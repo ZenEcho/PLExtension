@@ -141,7 +141,7 @@ body {
 }
 
 #container {
-    min-height: 50px;
+    min-height: 150px;
     margin-top: calc(var(--bs-gutter-x) * .5)
 }
 
