@@ -144,7 +144,7 @@
     "message": "Disable"
   },
   "Right_click_menu_upload": {
-    "message": "Right-click Menu Upload (Requires Restart)"
+    "message": "Right-click Upload (Requires Restart)"
   },
   "options_host": {
     "message": "Website domain name<p>(Do not include any prefixes or suffixes, enter the domain name only)</p>"
@@ -522,7 +522,7 @@
     "message": "For example: imgdd.com"
   },
   "Program_selection_instructions_1": {
-    "message": "Hi, hello friend"
+    "message": "Welcome to PLExtension"
   },
   "Program_selection_instructions_2": {
     "message": "Make sure to select an image hosting program for image hosting configuration"
