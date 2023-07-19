@@ -184,6 +184,7 @@ textarea:focus {
 }
 
 .dropzone {
+  min-height: 284px;
   border: none;
   transition: min-height 1s ease-in-out;
 }
@@ -193,28 +194,9 @@ textarea:focus {
 }
 
 
-
-
-@media screen and (min-height: 480px) {
-  .dropzone {
-    min-height: 296px;
-  }
-
-  .dz-button {
-    margin-top: 0px;
-    transition: margin-top 0.5s ease-in-out;
-  }
-
-}
-
 @media screen and (min-height: 680px) {
   .dropzone {
     min-height: 420px;
-  }
-
-  .dz-button {
-    margin-top: 50px;
-    transition: margin-top 0.3s ease-in-out;
   }
 }
 
@@ -222,23 +204,17 @@ textarea:focus {
   .dropzone {
     min-height: 520px;
   }
-
-  .dz-button {
-    margin-top: 90px;
-    transition: margin-top 0.3s ease-in-out;
-  }
 }
 
 @media screen and (min-height: 880px) {
   .dropzone {
     min-height: 620px;
   }
-
-  .dz-button {
-    margin-top: 140px;
-    transition: margin-top 0.3s ease-in-out;
+}
+@media screen and (min-height: 1080px) {
+  .dropzone {
+    min-height: 820px;
   }
-
 }
 
 @media screen and (max-width: 780px) {
@@ -299,15 +275,6 @@ fieldset {
   border: .2rem rgba(0, 0, 0, 0.3) solid;
 }
 
-.pure-form {
-  /* width: 100%; */
-}
-
-/* #ButtonBox {
-  border-right: #eee 1px solid;
-  width: 9rem;
-} */
-
 .urlButton {
   overflow: hidden;
   user-select: none;
@@ -342,11 +309,11 @@ fieldset {
 }
 
 .p_urls:hover {
-  box-shadow: 0 0.2rem 1rem var(--bs-info-border-subtle), 0 0px 1rem var(--bs-info-bg-subtle);
+  box-shadow: 0 -0.2em 1em var(--bs-danger), 0 0.2em 1em var(--bs-primary)
 }
 
 .IMGpreview {
-  box-shadow: 0 0.2rem 1rem var(--bs-info-border-subtle), 0 0px 1rem var(--bs-info-bg-subtle);
+  box-shadow: 0 -0.2em 1em var(--bs-red), 0 0.2em 1em var(--bs-indigo)
 }
 
 

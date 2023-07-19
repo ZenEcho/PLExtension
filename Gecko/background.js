@@ -515,14 +515,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			let currentTabId
 			try {
 				currentTabId = tabs[0].id;
+				chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: AutoInsert_message_content }, function (response) {
+					if (chrome.runtime.lastError) {
+						//发送失败
+						return;
+					}
+				});
 			} catch (error) {
+				return "未找到插入组件"
 			}
-			chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: AutoInsert_message_content }, function (response) {
-				if (chrome.runtime.lastError) {
-					//发送失败
-					return;
-				}
-			});
+
 		});
 	}
 	//演示动画中间转发

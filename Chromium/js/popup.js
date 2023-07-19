@@ -106,12 +106,8 @@ $(document).ready(function () {
     <i class="bi bi-bar-chart-line"></i>`+ chrome.i18n.getMessage("Used") + `:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
     <i class="bi bi-image"></i>`+ chrome.i18n.getMessage("Number_images") + `:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
-    let links
+
     let LinksUrl = []
-    let LinksHtml = []
-    let LinksBBCode = []
-    let LinksMarkdown = []
-    let LinksMDwithlink = []
     let imageUrl
     let filePreviewElements = [];
     let fileDeletePreview = [];
@@ -278,97 +274,17 @@ $(document).ready(function () {
         $(".p_urls").removeClass("IMGpreview");
         $(pTag).toggleClass("IMGpreview");
       });
-
-
-      links = {
-        "popup_URL": LinksUrl,
-        "popup_HTML": LinksHtml,
-        "popup_BBCode": LinksBBCode,
-        "popup_Markdown": LinksMarkdown,
-        "popup_MDwithlink": LinksMDwithlink
-      };
-
-      for (let key in links) {
-        $(`#${key}`).click(() => {
-          $('.textFrame').empty();
-          textFrame()
-          // 实现点击按钮添加元素
-          links[key].forEach(link => {
-            $('.textFrame').append(`
-            <div class="Upload_Return_Box">
-              <div class="col">
-                <p class="p_urls">${link}</p>
-              </div>
-              <div class="text-center selector_p_urls">
-                <span>`+ chrome.i18n.getMessage("Selected") + `</span>
-              </div>
-              <div class="text-center copy">
-                <span>`+ chrome.i18n.getMessage("Copy") + `</span>
-              </div>
-            </div>
-
-              `);
-          });
-          $(".Upload_Return_Box .col").click(function () {
-            $(".p_urls").removeClass("IMGpreview");
-            $(".dz-preview").addClass("shadow");
-            // 全选
-            let range = document.createRange();
-            range.selectNodeContents(this);
-            let selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            // 实现点击p标签,预览框添加类
-
-            let index = $(this).parent().index();
-            let previewElement = filePreviewElements[index];
-            $(".dz-preview").removeClass("IMGpreview");
-            $(previewElement).removeClass("shadow");
-            $(previewElement).toggleClass("IMGpreview");
-          });
-          // 实现点击复制
-          $(".copy").click(function () {
-            let $temp = $("<input>");
-            $("body").append($temp);
-            let text = $(this).parent().find('.p_urls').text();
-            $temp.val(text).select();
-            document.execCommand("copy");
-            $temp.remove();
-            toastItem({
-              toast_content: chrome.i18n.getMessage("Copy_successful")
-            })
-          });
-          $(".selector_p_urls").click(function () {
-            $(this).parent().find(".p_urls").toggleClass("IMGpreview")
-            $(this).toggleClass('selector_p_urls_Click');
-            let index = $(this).parent().index();
-            let previewElement = filePreviewElements[index];
-            $(previewElement).removeClass("shadow");
-            $(previewElement).toggleClass("IMGpreview");
-            if (!$(previewElement).hasClass("IMGpreview") && !$(previewElement).hasClass("shadow")) {
-              $(previewElement).addClass("shadow");
-            }
-          })
-
-        });
-
-      }
-
       // 默认点击
       $('div[value="' + Copy_Selected_Mode + '"]').click();
-
     })
 
     uploader.on("removedfile", function (removefile) {
-
       const index = filePreviewElements.indexOf(removefile.previewElement);
       const pTag = $(".p_urls").eq(index);
       $(pTag).parent().parent().remove()
       filePreviewElements.splice(index, 1);
       fileDeletePreview.splice(index, 1);
-      for (let key in links) {
-        links[key].splice(index, 1);
-      }
+      LinksUrl.splice(index, 1);
       textFrame()
       toastItem({
         toast_content: chrome.i18n.getMessage("Delete_successful")
@@ -377,131 +293,141 @@ $(document).ready(function () {
 
     uploader.on("success", async function (file, res) {
       console.log(res)
+      textFrame()
       if ($('.LinksBox').is(':hidden')) {
         $('.LinksBox').hide().slideDown('slow'); //动画
       }
       let date = new Date();
       let getMonth = date.getMonth() + 1
       let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + file.name;
-      switch (options_exe) {
-        case 'Lsky':
-          toastItem({
-            toast_content: res.message
-          })
-          imageUrl = res.data.links.url
-          break;
-        case 'EasyImages':
-          toastItem({
-            toast_content: res.message
-          })
-          imageUrl = res.url
-          break;
-        case 'ImgURL':
-          toastItem({
-            toast_content: res.msg
-          })
-          imageUrl = res.data.url
-          break;
-        case 'SM_MS':
-          toastItem({
-            toast_content: res.message
-          })
-          imageUrl = res.data.url
-          break;
-        case 'Chevereto':
-          imageUrl = res.image.url
-          break;
-        case 'Hellohao':
-          toastItem({
-            toast_content: res.info
-          })
-          imageUrl = res.data.url
+      try {
+        switch (options_exe) {
+          case 'Lsky':
+            toastItem({
+              toast_content: res.message
+            })
+            imageUrl = res.data.links.url
+            break;
+          case 'EasyImages':
+            toastItem({
+              toast_content: res.message
+            })
+            imageUrl = res.url
+            break;
+          case 'ImgURL':
+            toastItem({
+              toast_content: res.msg
+            })
+            imageUrl = res.data.url
+            break;
+          case 'SM_MS':
+            toastItem({
+              toast_content: res.message
+            })
+            imageUrl = res.data.url
+            break;
+          case 'Chevereto':
+            imageUrl = res.image.url
+            break;
+          case 'Hellohao':
+            toastItem({
+              toast_content: res.info
+            })
+            imageUrl = res.data.url
 
-          break;
-        case 'Imgur':
-          imageUrl = res.data.link
-          break;
-        case 'UserDiy':
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Server_response_successful")
-          })
-          //奖字符串转为JSON
-          if (open_json_button == 1) {
-            if (typeof res !== 'object') {
-              try {
-                var res = JSON.parse(res)
-              } catch (error) {
-                alert(chrome.i18n.getMessage("data_cannot_be_converted_to_JSON"));
-                return;
+            break;
+          case 'Imgur':
+            imageUrl = res.data.link
+            break;
+          case 'UserDiy':
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Server_response_successful")
+            })
+            //奖字符串转为JSON
+            if (open_json_button == 1) {
+              if (typeof res !== 'object') {
+                try {
+                  var res = JSON.parse(res)
+                } catch (error) {
+                  alert(chrome.i18n.getMessage("data_cannot_be_converted_to_JSON"));
+                  return;
+                }
               }
             }
-          }
-          let options_return_success_value = res;
-          for (let property of options_return_success.split('.')) {
-            options_return_success_value = options_return_success_value[property];
-          }
-          imageUrl = options_return_success_value
-          options_host = options_apihost
-          break;
-        case 'Tencent_COS':
-          imageUrl = options_Custom_domain_name + filename
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Upload_prompt7")
-          })
-          options_host = options_Bucket
-          break;
-        case 'Aliyun_OSS':
-          imageUrl = options_Custom_domain_name + filename
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Upload_prompt7")
-          })
-          options_host = options_Endpoint
-          break;
-        case 'AWS_S3':
-          imageUrl = options_Custom_domain_name + filename
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Upload_prompt7")
-          })
-          options_host = options_Endpoint
-          break;
-        case 'GitHubUP':
-          imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Upload_prompt7")
-          })
-          options_host = "GitHub.com"
-          break;
-        case 'Telegra_ph':
-          if (options_Custom_domain_name) {
-            imageUrl = options_Custom_domain_name + res[0].src;
-            options_host = options_Custom_domain_name
-          } else {
-            imageUrl = `https://telegra.ph` + res[0].src;
-          }
-          break;
-        case 'imgdd':
-          imageUrl = res.url
-          break;
+            let options_return_success_value = res;
+            for (let property of options_return_success.split('.')) {
+              options_return_success_value = options_return_success_value[property];
+            }
+            imageUrl = options_return_success_value
+            options_host = options_apihost
+            break;
+          case 'Tencent_COS':
+            imageUrl = options_Custom_domain_name + filename
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            options_host = options_Bucket
+            break;
+          case 'Aliyun_OSS':
+            imageUrl = options_Custom_domain_name + filename
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            options_host = options_Endpoint
+            break;
+          case 'AWS_S3':
+            imageUrl = options_Custom_domain_name + filename
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            options_host = options_Endpoint
+            break;
+          case 'GitHubUP':
+            imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            options_host = "GitHub.com"
+            break;
+          case 'Telegra_ph':
+            if (options_Custom_domain_name) {
+              imageUrl = options_Custom_domain_name + res[0].src;
+              options_host = options_Custom_domain_name
+            } else {
+              imageUrl = `https://telegra.ph` + res[0].src;
+            }
+            break;
+          case 'imgdd':
+            imageUrl = res.url
+            break;
+        }
+      } catch (error) {
+        if (!imageUrl) {
+          imageUrl = chrome.i18n.getMessage("Upload_prompt4")
+        }
       }
-      if (!imageUrl) {
-        imageUrl = chrome.i18n.getMessage("Upload_prompt4")
+      let info = {
+        url: imageUrl,
+        name: file.name
       }
-      LinksUrl.push(imageUrl)
-      LinksHtml.push('&lt;img src="' + imageUrl + '" alt="' + file.name + '" title="' + file.name + '" /&gt;')
-      LinksBBCode.push('[img]' + imageUrl + '[/img]')
-      LinksMarkdown.push('![' + file.name + '](' + imageUrl + ')')
-      LinksMDwithlink.push('[![' + file.name + '](' + imageUrl + ')](' + imageUrl + ')')
 
+      LinksUrl.push(info)
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
       await LocalStorage(null, imageUrl, file)
+
     })
     uploader.on("error", function (file, err) {
       console.log(err)
-      LinksUrl.push('file：' + file.upload.filename + "-error")
-      LinksHtml.push('file：' + file.upload.filename + "-error")
-      LinksBBCode.push('file：' + file.upload.filename + "-error")
-      LinksMarkdown.push('file：' + file.upload.filename + "-error")
-      LinksMDwithlink.push('file：' + file.upload.filename + "-error")
+      let info = {
+        url: "文件" + file.name + "上传失败",
+        name: file.name
+      }
+      LinksUrl.push(info)
+      // LinksUrl.push('file：' + file.upload.filename + "-error")
+      // LinksHtml.push('file：' + file.upload.filename + "-error")
+      // LinksBBCode.push('file：' + file.upload.filename + "-error")
+      // LinksMarkdown.push('file：' + file.upload.filename + "-error")
+      // LinksMDwithlink.push('file：' + file.upload.filename + "-error")
       switch (options_exe) {
         case 'Lsky':
           toastItem({
@@ -546,8 +472,88 @@ $(document).ready(function () {
       $('.urlButton').not(this).removeClass('Check');
       chrome.storage.local.set({ 'Copy_Selected_Mode': value })
       Copy_Selected_Mode = value
-    })
 
+      let newUrl
+      if (filePreviewElements.length == 0) {
+        return;
+      }
+      $('.textFrame').empty();
+      LinksUrl.forEach((e, i) => {
+        switch (Copy_Selected_Mode) {
+          case 'URL':
+            newUrl = e.url
+            break;
+          case 'HTML':
+            newUrl = '&lt;img src="' + e.url + '" alt="' + e.name + '" title="' + e.name + '" /&gt;'
+            break;
+          case 'BBCode':
+            newUrl = '[img]' + e.url + '[/img]'
+            break;
+          case 'Markdown':
+            newUrl = '![' + e.name + '](' + e.url + ')'
+            break;
+          case 'MDWithLink':
+            newUrl = '[![' + e.name + '](' + e.url + ')](' + e.url + ')'
+            break;
+
+        }
+        $('.textFrame').append(`
+      <div class="Upload_Return_Box">
+        <div class="col">
+          <p class="p_urls">${newUrl}</p>
+        </div>
+        <div class="text-center selector_p_urls">
+          <span>`+ chrome.i18n.getMessage("Selected") + `</span>
+        </div>
+        <div class="text-center copy">
+          <span>`+ chrome.i18n.getMessage("Copy") + `</span>
+        </div>
+      </div>
+      `);
+        $(".Upload_Return_Box .col").click(function () {
+          $(".p_urls").removeClass("IMGpreview");
+          $(".dz-preview").addClass("shadow");
+          // 全选
+          let range = document.createRange();
+          range.selectNodeContents(this);
+          let selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          // 实现点击p标签,预览框添加类
+
+          let index = $(this).parent().index();
+          let previewElement = filePreviewElements[index];
+          $(".dz-preview").removeClass("IMGpreview");
+          $(previewElement).removeClass("shadow");
+          $(previewElement).toggleClass("IMGpreview");
+        });
+        // 实现点击复制
+        $(".copy").click(function () {
+          let $temp = $("<input>");
+          $("body").append($temp);
+          let text = $(this).parent().find('.p_urls').text();
+          $temp.val(text).select();
+          document.execCommand("copy");
+          $temp.remove();
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Copy_successful")
+          })
+        });
+
+
+      })
+      $(".selector_p_urls").click(function () {
+        $(this).parent().find(".p_urls").toggleClass("IMGpreview")
+        $(this).toggleClass('selector_p_urls_Click');
+        let index = $(this).parent().index();
+        let previewElement = filePreviewElements[index];
+        $(previewElement).removeClass("shadow");
+        $(previewElement).toggleClass("IMGpreview");
+        if (!$(previewElement).hasClass("IMGpreview") && !$(previewElement).hasClass("shadow")) {
+          $(previewElement).addClass("shadow");
+        }
+      })
+    })
     //全选
     $("#popup-Select-All").click(function () {
       if ($(".p_urls").length) {
@@ -710,7 +716,6 @@ $(document).ready(function () {
   $('.container-md').hide().fadeIn('slow'); //全局动画
 
   let Simulated_upload = false//模拟上传
-
   function showIntro() {
     if ($("#overlay").length == 0) {
       $("body").append(`
@@ -839,4 +844,21 @@ $(document).ready(function () {
       showIntro();
     }
   });
+
+  $(".title-a").click(() => {
+    confetti({
+      particleCount: 200,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+
+    });
+    confetti({
+      particleCount: 200,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+
+    });
+  })
 })

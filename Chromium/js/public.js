@@ -518,7 +518,7 @@ if (currentURL === pluginURL) {
       localStorage.options_webtitle_status = 0
       return;
     }
-    if (options_host) {//不为空时
+    if (options_host) {
       // 自定义ajax函数属性
       if (options_exe == "Lsky") {
         fetch(options_proxy_server + "https://" + options_host + "/api/v1/profile", {
@@ -619,9 +619,32 @@ if (currentURL === pluginURL) {
         }
       }
     }
+    if (options_exe != "Lsky" && options_exe != "SM_MS") {
+      chrome.storage.local.get("UploadLog", function (result) {
+        setTimeout(() => {
+          $('.userBox').hide().fadeIn('slow'); // 动画
+          UploadLog = result.UploadLog || [];
+          let size = 0
+          if (UploadLog.length > 0) {
+            UploadLog.forEach(element => {
+              size = size + element.file_size
+            });
+            let NewSize = (size / 1024 / 1024).toFixed(2)
+            console.log(NewSize)
+            console.log(UploadLog)
+            $(".userName").text("本地存储");
+            $(".userCapacity").text("无限");
+            $(".userSize").text(NewSize + "MB");
+            $(".userImage_num").text(UploadLog.length);
+          }
+        }, 1500)
 
+      })
+    }
   })
 }
+
+
 function measurePingDelay(callback, getUrl) {
   let startTime = new Date().getTime();
   let xhr = new XMLHttpRequest();

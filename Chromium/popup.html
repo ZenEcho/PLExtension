@@ -18,6 +18,7 @@
   <script defer src="vendor/s3/aws-sdk.min.js"></script>
   <script defer src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script defer src="vendor/dropzone/js/dropzone.js"></script>
+  <script defer src="vendor/confetti/confetti.js"></script>
   <script defer src="js/public.js"></script>
   <script defer src="js/uploader.js"></script>
   <script defer src="js/popup.js"></script>
@@ -65,15 +66,18 @@
           <div id="popup_HTML" class="urlButton" value="HTML">HTML</div>
           <div id="popup_BBCode" class="urlButton" value="BBCode">BBCode</div>
           <div id="popup_Markdown" class="urlButton" value="Markdown">Markdown</div>
-          <div id="popup_MDwithlink" class="urlButton" value="MD with link">MD with link</div>
+          <div id="popup_MDwithlink" class="urlButton" value="MDWithLink">MD with link</div>
         </div>
         <div class="col">
           <div class="border-bottom text-center" style="display: flex; justify-content: flex-end;">
             <a class="popup-Select" target="_blank" href="https://github.com/ZenEcho/PLExtension"><i
                 class="bi bi-github"></i> GitHub</a>
-            <div id="popup-Select-All" class="popup-Select" data-i18n="Select_All"><i class="bi bi-check-circle-fill"></i>全选</div>
-            <div id="popup-Select-cancel" class="popup-Select" data-i18n="Select_cancel"><i class="bi bi-check-circle"></i>取消</div>
-            <div id="popup-Copy-Selected" class="popup-Select" data-i18n="Copy_Selected"><i class="bi bi-clipboard2-check-fill"></i>复制选中</div>
+            <div id="popup-Select-All" class="popup-Select" data-i18n="Select_All"><i
+                class="bi bi-check-circle-fill"></i>全选</div>
+            <div id="popup-Select-cancel" class="popup-Select" data-i18n="Select_cancel"><i
+                class="bi bi-check-circle"></i>取消</div>
+            <div id="popup-Copy-Selected" class="popup-Select" data-i18n="Copy_Selected"><i
+                class="bi bi-clipboard2-check-fill"></i>复制选中</div>
           </div>
 
           <div id="textFrame" class="textFrame">

@@ -4,7 +4,8 @@
 		transform: translateY(40px)
 	}
 
-	30%,70% {
+	30%,
+	70% {
 		opacity: 1;
 		transform: translateY(0px)
 	}
@@ -41,13 +42,14 @@
 	}
 }
 
-.dropzone,.dropzone * {
+.dropzone,
+.dropzone * {
 	box-sizing: border-box
 }
 
 .dropzone {
 	min-height: 100px;
-	border: 1px solid rgba(0,0,0,.8);
+	border: 1px solid rgba(0, 0, 0, .8);
 	border-radius: 5px;
 	padding: 20px 20px
 }
@@ -60,7 +62,8 @@
 	cursor: default
 }
 
-.dropzone.dz-clickable .dz-message,.dropzone.dz-clickable .dz-message * {
+.dropzone.dz-clickable .dz-message,
+.dropzone.dz-clickable .dz-message * {
 	cursor: pointer
 }
 
@@ -78,7 +81,11 @@
 
 .dropzone .dz-message {
 	text-align: center;
-	margin: 2em 0
+	width: 100%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .dropzone .dz-message .dz-button {
@@ -153,7 +160,7 @@
 	max-width: 100%;
 	padding: 2em 1em;
 	text-align: center;
-	color: rgba(0,0,0,.9);
+	color: rgba(0, 0, 0, .9);
 	line-height: 150%
 }
 
@@ -167,8 +174,8 @@
 }
 
 .dropzone .dz-preview .dz-details .dz-filename:hover span {
-	border: 1px solid rgba(200,200,200,.8);
-	background-color: rgba(255,255,255,.8)
+	border: 1px solid rgba(200, 200, 200, .8);
+	background-color: rgba(255, 255, 255, .8)
 }
 
 .dropzone .dz-preview .dz-details .dz-filename:not(:hover) {
@@ -180,8 +187,9 @@
 	border: 1px solid transparent
 }
 
-.dropzone .dz-preview .dz-details .dz-filename span,.dropzone .dz-preview .dz-details .dz-size span {
-	background-color: rgba(255,255,255,.4);
+.dropzone .dz-preview .dz-details .dz-filename span,
+.dropzone .dz-preview .dz-details .dz-size span {
+	background-color: rgba(255, 255, 255, .4);
 	padding: 0 .4em;
 	border-radius: 3px
 }
@@ -214,23 +222,25 @@
 	animation: slide-in 3s cubic-bezier(0.77, 0, 0.175, 1)
 }
 
-.dropzone .dz-preview .dz-success-mark,.dropzone .dz-preview .dz-error-mark {
-    pointer-events: none;
-    opacity: 0;
-    z-index: 500;
-    position: absolute;
-    display: block;
-    top: 50%;
-    left: 50%;
-    margin-left: -16px;
-    margin-top: -32px;
-    background: rgba(0,0,0,.8);
-    width: 32px;
-    text-align: center;
-    border-radius: 50%;
+.dropzone .dz-preview .dz-success-mark,
+.dropzone .dz-preview .dz-error-mark {
+	pointer-events: none;
+	opacity: 0;
+	z-index: 500;
+	position: absolute;
+	display: block;
+	top: 50%;
+	left: 50%;
+	margin-left: -16px;
+	margin-top: -32px;
+	background: rgba(0, 0, 0, .8);
+	width: 32px;
+	text-align: center;
+	border-radius: 50%;
 }
 
-.dropzone .dz-preview .dz-success-mark svg,.dropzone .dz-preview .dz-error-mark svg {
+.dropzone .dz-preview .dz-success-mark svg,
+.dropzone .dz-preview .dz-error-mark svg {
 	display: block;
 	width: 54px;
 	height: 54px;
@@ -261,8 +271,8 @@
 	margin-top: -10px;
 	left: 15%;
 	right: 15%;
-	border: 3px solid rgba(0,0,0,.8);
-	background: rgba(0,0,0,.8);
+	border: 3px solid rgba(0, 0, 0, .8);
+	background: rgba(0, 0, 0, .8);
 	border-radius: 10px;
 	overflow: hidden
 }
