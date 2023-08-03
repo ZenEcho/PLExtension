@@ -26,11 +26,11 @@ chrome.storage.local.get(storagelocal, function (result) {
     let iframe_mouseover = false // 定义iframe状态
     GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
 
-    let uploadArea = document.createElement('div'); //定义上传区域/侧边栏
+    let uploadArea = document.createElement('PLExtension'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
 
 
-    let uploadAreaTips = document.createElement('div'); //定义上传区域的提示
+    let uploadAreaTips = document.createElement('PLExtension-tips'); //定义上传区域的提示
     uploadAreaTips.className = 'uploadAreaTips';
     uploadAreaTips.id = "uploadAreaTips"
     let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
