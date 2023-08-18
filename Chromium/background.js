@@ -41,17 +41,18 @@ chrome.runtime.onInstalled.addListener(function (details) {
 				console.log(chrome.i18n.getMessage("Installing_initialization"));
 			});
 		}
-		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
-		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
-		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
-
-		chrome.storage.local.set({ "edit_uploadArea_width": 32 }) //宽度
-		chrome.storage.local.set({ "edit_uploadArea_height": 30 }) //高度
-		chrome.storage.local.set({ "edit_uploadArea_Location": 34 }) //位置
-		chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 }) //透明度
-		chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 }) //关闭时间
-		chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-
+		chrome.storage.local.set({
+			"GlobalUpload": "GlobalUpload_Default", //全局上传
+			"Right_click_menu_upload": "on",//右键上传
+			"AutoInsert": "AutoInsert_on",//自动插入
+			"AutoCopy": "AutoCopy_off",//自动复制 默认关闭
+			"edit_uploadArea_width": 32,//宽度
+			"edit_uploadArea_height": 30,//高度
+			"edit_uploadArea_Location": 34,//位置
+			"edit_uploadArea_opacity": 0.3,//透明度
+			"edit_uploadArea_auto_close_time": 2,//关闭时间
+			"edit_uploadArea_Left_or_Right": "Right"
+		});
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
@@ -85,6 +86,7 @@ const getSave = [
 	"options_album_id", //相册
 	"options_nsfw_select",//是否健康
 	"options_permission_select",//是否公开
+	"AutoCopy",
 	//自定义请求
 	"options_apihost",
 	"options_parameter",
@@ -153,6 +155,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		let options_album_id = result.options_album_id
 		let options_nsfw_select = result.options_nsfw_select || 0
 		let options_permission_select = result.options_permission_select || 0
+		let AutoCopy = result.AutoCopy
 		//自定义请求
 		let options_apihost = result.options_apihost
 		let options_parameter = result.options_parameter
@@ -348,6 +351,19 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							imageUrl = res.url
 							break;
 					}
+
+					if (AutoCopy == "AutoCopy_on") {
+						//复制
+						try {
+							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+								let currentTabId = tabs[0].id;
+								chrome.tabs.sendMessage(currentTabId, { AutoCopy: imageUrl })
+							});
+						} catch (error) {
+							console.log(error);
+						}
+					}
+
 					chrome.storage.local.get('UploadLog', function (result) {
 						let UploadLog = result.UploadLog || [];
 						if (!Array.isArray(UploadLog)) {

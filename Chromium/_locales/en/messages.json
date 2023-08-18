@@ -137,6 +137,9 @@
   "AutoInsert": {
     "message": "Automatic Insertion"
   },
+  "AutoCopy": {
+    "message": "Automatic replication"
+  },
   "on": {
     "message": "Enable"
   },

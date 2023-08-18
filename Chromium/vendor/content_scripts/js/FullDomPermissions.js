@@ -1,6 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
-    console.log(event.data.type + "——Write")
+    console.log("盘络上传postMessage监听: " + event.data.type);
     if (event.data.type === 'CodeMirror') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
@@ -93,6 +93,18 @@ window.addEventListener('message', function (event) {
         } catch (error) {
         }
 
+    }
+    //自动复制
+    if (event.data.type === 'AutoCopy') {
+        let value = event.data.data;
+        // 使用 Clipboard API 复制文本内容到剪贴板
+        navigator.clipboard.writeText(value)
+            .then(() => {
+                console.log("已复制到剪贴板：" + value);
+            })
+            .catch(error => {
+                console.error("复制到剪贴板失败：" + error);
+            });
     }
 });
 

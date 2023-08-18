@@ -413,6 +413,10 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
             }
         }
+        //自动复制消息中转
+        if (request.AutoCopy) {
+            window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');
+        }
     });
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {

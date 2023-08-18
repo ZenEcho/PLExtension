@@ -732,17 +732,23 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             Region: options_Region,
             Key: filename,
             Body: file,
-        }, function (err, data) {
+        }, async function (err, data) {
             if (data) {
                 callback(data, null);
                 imageUrl = options_Custom_domain_name + filename
                 options_host = options_Bucket
+                chrome.storage.local.get(["AutoCopy"], function (result) {
+                    if (result.AutoCopy == "AutoCopy_on") {
+                        window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
+                    }
+                });
                 LocalStorage(filename, imageUrl, file)
             }
             if (err) {
                 console.error(err);
                 callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                 chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
+
             }
         });
     }
@@ -760,6 +766,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             callback(result, null);
             imageUrl = options_Custom_domain_name + filename
             options_host = options_Endpoint
+            chrome.storage.local.get(["AutoCopy"], function (result) {
+                if (result.AutoCopy == "AutoCopy_on") {
+                    window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
+                }
+            });
             LocalStorage(filename, imageUrl, file)
         }).catch((err) => {
             console.error(err);
@@ -801,6 +812,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             callback(data, null);
             imageUrl = options_Custom_domain_name + filename;
             options_host = options_Endpoint;
+            chrome.storage.local.get(["AutoCopy"], function (result) {
+                if (result.AutoCopy == "AutoCopy_on") {
+                    window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
+                }
+            });
             LocalStorage(filename, imageUrl, file);
         })
 
@@ -852,6 +868,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     callback(res, null);
                     options_host = "GitHub.com"
                     imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + UrlImgNema
+                    chrome.storage.local.get(["AutoCopy"], function (result) {
+                        if (result.AutoCopy == "AutoCopy_on") {
+                            window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
+                        }
+                    });
                     LocalStorage(UrlImgNema, imageUrl, file)
                 }).catch(error => {
                     console.log(error)
@@ -863,7 +884,6 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
 
     }
 }
-
 /**
  * @param {string} filename 文件名字 
  * @param {url} imageUrl 上传成功后的url
