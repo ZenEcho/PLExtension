@@ -413,6 +413,10 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
             }
         }
+        //进度条
+        if (request.Progress_bar) {
+            window.postMessage({ type: 'Progress_bar', data: request.Progress_bar }, '*');
+        }
         //自动复制消息中转
         if (request.AutoCopy) {
             window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');

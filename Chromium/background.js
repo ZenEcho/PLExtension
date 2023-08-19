@@ -214,218 +214,252 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			showNotification(null, chrome.i18n.getMessage("Upload_prompt1"))
 			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
 			const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
-			const formData = new FormData();
-			// 自定义上传属性
-			let optionsUrl
-			let optionHeaders
+			try {
+				chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+					let currentTabId = tabs[0].id;
+					console.log(tabs);
+					chrome.tabs.sendMessage(currentTabId, { Progress_bar: { filename: UrlImgNema, status: 1 } })
+				});
+				setTimeout(function () {
+					chrome.tabs.query({ active: true }, function (tabs) {
+						console.log(tabs);
+					});
+				}, 3000);
 
-			/**
-			 * 上传到图床
-			 */
-			switch (options_exe) {
-				case 'Lsky':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
-					optionHeaders = { "Authorization": options_token };
-					formData.append('file', file);
-					if (options_source_select) {
-						formData.append("strategy_id", options_source_select);
-					}
-					if (options_album_id) {
-						formData.append("album_id", options_album_id);
-					}
-					formData.append("permission", options_permission_select);
-					break;
-				case 'EasyImages':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/index.php";
-					formData.append('image', file);
-					formData.append('token', options_token);
-					break;
-				case 'ImgURL':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v2/upload";
-					formData.append('uid', options_uid);
-					formData.append('token', options_token);
-					formData.append('file', file);
-					break;
-				case 'SM_MS':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v2/upload";
-					optionHeaders = { "Authorization": options_token };
-					formData.append('smfile', file);
-					break;
-				case 'Chevereto':
-					let Temporary_URL = ""
-					if (options_expiration_select != "NODEL") {
-						Temporary_URL += "&expiration=" + options_expiration_select
-					}
-					if (options_album_id) {
-						Temporary_URL += "&album_id=" + options_album_id
-					}
-					if (options_nsfw_select) {
-						Temporary_URL += "&nsfw=" + options_nsfw_select
-					}
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token;
-					optionHeaders = { "Authorization": options_token };
-					formData.append('source', file);
-					break;
-				case 'Hellohao':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/uploadbytoken/";
-					formData.append('file', file);
-					formData.append('token', options_token);
-					formData.append('source', options_source);
-					break;
-				case 'Imgur':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/3/upload";
-					optionHeaders = { "Authorization": 'Client-ID ' + options_token };
-					formData.append("image", file);
-					break;
-				case 'UserDiy':
-					optionsUrl = options_proxy_server + options_apihost;
-					formData.append(options_parameter, file);
-					optionHeaders = options_Headers;
-					for (let key in options_Body) {
-						formData.append(key, options_Body[key]);
-					}
-					break;
-				case 'Telegra_ph':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/upload";
-					optionHeaders = { "Accept": "application/json" };
-					formData.append("file", file);
-					break;
-				case 'imgdd':
-					optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
-					optionHeaders = { "Accept": "application/json", "User-Agent": "PLExtension" };
-					formData.append("image", file);
-					break;
+			} catch (error) {
+				console.log(error)
 			}
-			fetch(optionsUrl, {
-				method: 'POST',
-				body: formData,
-				headers: optionHeaders
-			})
-				.then(response => response.json())
-				.then(res => {
-					console.log(res);
-					let imageUrl
-					switch (options_exe) {
-						case 'Lsky':
-							imageUrl = res.data.links.url
-							break;
-						case 'EasyImages':
-							imageUrl = res.url
-							break;
-						case 'ImgURL':
-							imageUrl = res.data.url
-							break;
-						case 'SM_MS':
-							if (res.code == "image_repeated") {
-								imageUrl = res.images
-							} else {
-								imageUrl = res.data.url
-							}
-							break;
-						case 'Chevereto':
-							imageUrl = res.image.url
-							break;
-						case 'Hellohao':
-							imageUrl = res.data.url
-							break;
-						case 'Imgur':
-							imageUrl = res.data.link
-							break;
-						case 'UserDiy':
-							const options_return_success_value = res;
-							options_return_success.split('.').forEach(function (prop) {
-								if (options_return_success_value) {
-									options_return_success_value = options_return_success_value[prop];
-								}
-							});
-							imageUrl = options_return_success_value
-							break;
-						case 'Telegra_ph':
-							if (res.error) {
-								showNotification(null, res.error)
-								return;
-							}
-							imageUrl = `https://telegra.ph/` + res[0].src
-							break;
-						case 'imgdd':
-							imageUrl = res.url
-							break;
-					}
+			finally {
+				const formData = new FormData();
+				// 自定义上传属性
+				let optionsUrl
+				let optionHeaders
 
-					if (AutoCopy == "AutoCopy_on") {
-						//复制
+				/**
+				 * 上传到图床
+				 */
+				switch (options_exe) {
+					case 'Lsky':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
+						optionHeaders = { "Authorization": options_token };
+						formData.append('file', file);
+						if (options_source_select) {
+							formData.append("strategy_id", options_source_select);
+						}
+						if (options_album_id) {
+							formData.append("album_id", options_album_id);
+						}
+						formData.append("permission", options_permission_select);
+						break;
+					case 'EasyImages':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/index.php";
+						formData.append('image', file);
+						formData.append('token', options_token);
+						break;
+					case 'ImgURL':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/v2/upload";
+						formData.append('uid', options_uid);
+						formData.append('token', options_token);
+						formData.append('file', file);
+						break;
+					case 'SM_MS':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/v2/upload";
+						optionHeaders = { "Authorization": options_token };
+						formData.append('smfile', file);
+						break;
+					case 'Chevereto':
+						let Temporary_URL = ""
+						if (options_expiration_select != "NODEL") {
+							Temporary_URL += "&expiration=" + options_expiration_select
+						}
+						if (options_album_id) {
+							Temporary_URL += "&album_id=" + options_album_id
+						}
+						if (options_nsfw_select) {
+							Temporary_URL += "&nsfw=" + options_nsfw_select
+						}
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/1/upload/?key=" + options_token;
+						optionHeaders = { "Authorization": options_token };
+						formData.append('source', file);
+						break;
+					case 'Hellohao':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/uploadbytoken/";
+						formData.append('file', file);
+						formData.append('token', options_token);
+						formData.append('source', options_source);
+						break;
+					case 'Imgur':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/3/upload";
+						optionHeaders = { "Authorization": 'Client-ID ' + options_token };
+						formData.append("image", file);
+						break;
+					case 'UserDiy':
+						optionsUrl = options_proxy_server + options_apihost;
+						formData.append(options_parameter, file);
+						optionHeaders = options_Headers;
+						for (let key in options_Body) {
+							formData.append(key, options_Body[key]);
+						}
+						break;
+					case 'Telegra_ph':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/upload";
+						optionHeaders = { "Accept": "application/json" };
+						formData.append("file", file);
+						break;
+					case 'imgdd':
+						optionsUrl = options_proxy_server + "https://" + options_host + "/api/v1/upload";
+						optionHeaders = { "Accept": "application/json", "User-Agent": "PLExtension" };
+						formData.append("image", file);
+						break;
+				}
+				fetch(optionsUrl, {
+					method: 'POST',
+					body: formData,
+					headers: optionHeaders
+				})
+					.then(response => response.json())
+					.then(res => {
+						console.log(res);
+						let imageUrl
+						switch (options_exe) {
+							case 'Lsky':
+								imageUrl = res.data.links.url
+								break;
+							case 'EasyImages':
+								imageUrl = res.url
+								break;
+							case 'ImgURL':
+								imageUrl = res.data.url
+								break;
+							case 'SM_MS':
+								if (res.code == "image_repeated") {
+									imageUrl = res.images
+								} else {
+									imageUrl = res.data.url
+								}
+								break;
+							case 'Chevereto':
+								imageUrl = res.image.url
+								break;
+							case 'Hellohao':
+								imageUrl = res.data.url
+								break;
+							case 'Imgur':
+								imageUrl = res.data.link
+								break;
+							case 'UserDiy':
+								const options_return_success_value = res;
+								options_return_success.split('.').forEach(function (prop) {
+									if (options_return_success_value) {
+										options_return_success_value = options_return_success_value[prop];
+									}
+								});
+								imageUrl = options_return_success_value
+								break;
+							case 'Telegra_ph':
+								if (res.error) {
+									showNotification(null, res.error)
+									return;
+								}
+								imageUrl = `https://telegra.ph/` + res[0].src
+								break;
+							case 'imgdd':
+								imageUrl = res.url
+								break;
+						}
+
+						if (AutoCopy == "AutoCopy_on") {
+							//复制
+							try {
+								chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+									let currentTabId = tabs[0].id;
+									chrome.tabs.sendMessage(currentTabId, { AutoCopy: imageUrl })
+								});
+							} catch (error) {
+								console.log(error);
+							}
+						}
+
 						try {
 							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 								let currentTabId = tabs[0].id;
-								chrome.tabs.sendMessage(currentTabId, { AutoCopy: imageUrl })
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { filename: UrlImgNema, status: 2 } })
 							});
 						} catch (error) {
 							console.log(error);
 						}
-					}
 
-					chrome.storage.local.get('UploadLog', function (result) {
-						let UploadLog = result.UploadLog || [];
-						if (!Array.isArray(UploadLog)) {
-							UploadLog = [];
-						}
-						function generateRandomKey() {
-							return new Promise(resolve => {
-								const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-								let key = '';
-								for (let i = 0; i < 6; i++) {
-									key += characters.charAt(Math.floor(Math.random() * characters.length));
-								}
-								// 确保不会重复
-								while (UploadLog.some(log => log.id === key)) {
-									key = '';
+						chrome.storage.local.get('UploadLog', function (result) {
+							let UploadLog = result.UploadLog || [];
+							if (!Array.isArray(UploadLog)) {
+								UploadLog = [];
+							}
+							function generateRandomKey() {
+								return new Promise(resolve => {
+									const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+									let key = '';
 									for (let i = 0; i < 6; i++) {
 										key += characters.charAt(Math.floor(Math.random() * characters.length));
 									}
-								}
-								resolve(key);
-							});
-						}
-						generateRandomKey().then(key => {
-							const UploadLogData = {
-								key: key,
-								url: imageUrl,
-								uploadExe: options_exe + "-" + MethodName,
-								upload_domain_name: options_host,
-								original_file_name: UrlImgNema,
-								file_size: file.size,
-								img_file_size: chrome.i18n.getMessage("img_file_size"),
-								uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
-							}
-							if (typeof UploadLog !== 'object') {
-								UploadLog = JSON.parse(UploadLog);
-							}
-							UploadLog.push(UploadLogData);
-							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
-								showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
-							})
-							callback(res, null);
-							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-								let currentTabId
-								try {
-									currentTabId = tabs[0].id;
-									chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
-										if (chrome.runtime.lastError) {
-											//发送失败
-											return;
+									// 确保不会重复
+									while (UploadLog.some(log => log.id === key)) {
+										key = '';
+										for (let i = 0; i < 6; i++) {
+											key += characters.charAt(Math.floor(Math.random() * characters.length));
 										}
-									});
-								} catch (error) {
+									}
+									resolve(key);
+								});
+							}
+							generateRandomKey().then(key => {
+								const UploadLogData = {
+									key: key,
+									url: imageUrl,
+									uploadExe: options_exe + "-" + MethodName,
+									upload_domain_name: options_host,
+									original_file_name: UrlImgNema,
+									file_size: file.size,
+									img_file_size: chrome.i18n.getMessage("img_file_size"),
+									uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
 								}
+								if (typeof UploadLog !== 'object') {
+									UploadLog = JSON.parse(UploadLog);
+								}
+								UploadLog.push(UploadLogData);
+								chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
+									showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
+								})
+								callback(res, null);
+								chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+									let currentTabId
+									try {
+										currentTabId = tabs[0].id;
+										chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
+											if (chrome.runtime.lastError) {
+												//发送失败
+												return;
+											}
+										});
+									} catch (error) {
+									}
+								});
 							});
 						});
+					})
+					.catch(error => {
+						console.error(error);
+						callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
+						showNotification(null, chrome.i18n.getMessage("Upload_prompt4") + error.toString())
+						try {
+							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+								let currentTabId = tabs[0].id;
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { filename: UrlImgNema, status: 0 } })
+							});
+						} catch (error) {
+							console.log(error);
+						}
 					});
-				})
-				.catch(error => {
-					console.error(error);
-					callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
-					showNotification(null, chrome.i18n.getMessage("Upload_prompt4") + error.toString())
-				});
+			}
 		}
 
 		/**
