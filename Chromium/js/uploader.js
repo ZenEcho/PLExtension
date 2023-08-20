@@ -726,6 +726,8 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
+        window.postMessage({ type: 'Progress_bar', data: {} }, '*');
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         cos.uploadFile({
             Bucket: options_Bucket,
@@ -742,13 +744,14 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                         window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
                     }
                 });
+
                 LocalStorage(filename, imageUrl, file)
             }
             if (err) {
                 console.error(err);
                 callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                 chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
-
+                chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
             }
         });
     }
@@ -776,6 +779,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             console.error(err);
             callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
             chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
+            chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
         });
     }
     function S3_uploadFile(blob,) {
@@ -807,6 +811,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                 console.error(err);
                 chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
+                chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
                 return;
             }
             callback(data, null);
@@ -851,6 +856,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             .catch(error => {
                 console.log(error);
                 chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
+                chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
             });
 
         function Upload_method() {
@@ -878,6 +884,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     console.log(error)
                     callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                     chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
+                    chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
                     return;
                 })
         }
@@ -892,6 +899,7 @@ function LocalStorage(filename, imageUrl, file) {
     if (!filename) {
         filename = file.name
     }
+    chrome.runtime.sendMessage({ "Progress_bar": { "filename": file.name, "status": 2 } });
     chrome.storage.local.get('UploadLog', function (result) {
         UploadLog = result.UploadLog || [];
         if (!Array.isArray(UploadLog)) {

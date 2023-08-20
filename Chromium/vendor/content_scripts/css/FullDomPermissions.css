@@ -47,6 +47,7 @@
  }
 
  .PLprogress-box {
+   font-size: 16px;
    position: relative;
    display: flex;
    flex-direction: column;
@@ -115,4 +116,87 @@
  .progressBoxRemove:hover {
    transform: scale3d(1.1, 1.1, 1.1);
    background: #dc3545;
+ }
+
+ .PL-EmoticonBox {
+   user-select: none;
+   border-radius: 14px;
+   width: 420px;
+   height: 200px;
+   background-color: #dddddd26;
+   display: none;
+   position: absolute;
+   padding: 0;
+   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+   z-index: 1000;
+   /* 确保在其他内容上方显示 */
+   max-height: 200px;
+   /* 设置最大高度以防止内容溢出 */
+ }
+
+ .StickerBox {
+   display: flex;
+   flex-direction: column;
+ }
+
+ .StickerBoxRemove {
+   position: absolute;
+   width: 2em;
+   line-height: 2em;
+   top: -1em;
+   right: -1em;
+   border-radius: 50%;
+   color: white;
+   background-color: #F44336;
+   text-align: center;
+ }
+
+ .StickerBoxRemove:hover {
+   background-color: #cf372c;
+
+ }
+
+ .StickerBoxhead {
+   border-radius: 14px 14px 0 0;
+   background-color: #0f62fe;
+   color: white;
+   display: flex;
+   overflow-x: auto;
+   white-space: nowrap;
+   padding: 0em 16px;
+   overflow-y: auto;
+   /* 添加滚动条以处理溢出内容 */
+ }
+
+ .StickerBoxheadtem {
+   user-select: none;
+   font-size: 1em;
+   padding: 6px 1em;
+   min-width: 4em;
+   margin: 5px 0;
+   border-radius: 14px;
+ }
+
+ .StickerBoxheadtem:hover {
+   background: #3a86ff;
+ }
+
+ .StickerBoxContent {
+   height: 148px;
+   display: flex;
+   flex-wrap: wrap;
+   margin-top: 4px;
+   padding: 4px;
+   justify-content: center;
+   align-items: center;
+   overflow: auto;
+ }
+
+ .StickerBoxContentitem {
+   user-select: none;
+   margin: 5px
+ }
+
+ .StickerBoxContentitem img {
+   width: 4em;
  }
