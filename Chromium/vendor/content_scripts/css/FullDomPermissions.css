@@ -169,8 +169,8 @@
 
  .StickerBoxLeftBut {
    position: absolute;
-   top: 42px;
-   left: 2px;
+   top: 50%;
+   left: 1px;
    font-size: 14px;
    line-height: 14px;
    text-align: center;
@@ -221,7 +221,7 @@
  }
 
  .StickerBoxContent {
-   height: 148px;
+   height: 120px;
    display: flex;
    flex-wrap: wrap;
    margin-top: 4px;
@@ -234,6 +234,10 @@
  .StickerBoxContentitem {
    user-select: none;
    margin: 5px
+ }
+
+ .StickerBoxContentitem:hover {
+   transform: scale3d(1.1, 1.1, 1.1);
  }
 
  .StickerBoxContentitem img {

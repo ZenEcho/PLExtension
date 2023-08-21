@@ -1,0 +1,46 @@
+{
+    "sticker": [
+        {
+            "StickerTitle": "贴吧表情",
+            "StickerDescribe": "贴吧的表情",
+            "StickerAuthor": "盘络收藏",
+            "StickerData": [
+                {
+                    "StickerName": "呵呵",
+                    "StickerURL": "https://cdn-us.imgs.moe/2023/08/21/64e2d2c41d1c6.webp"
+                },
+                {
+                    "StickerName": "哈哈",
+                    "StickerURL": "https://cdn-us.imgs.moe/2023/08/21/64e2d2c42b210.webp"
+                },
+                {
+                    "StickerName": "捂嘴坏笑",
+                    "StickerURL": "https://cdn-us.imgs.moe/2023/08/21/64e2d2c450b24.webp"
+                },
+                {
+                    "StickerName": "吐舌头",
+                    "StickerURL": "https://cdn-us.imgs.moe/2023/08/21/64e2d2c43705d.webp"
+                }
+            ]
+        },
+        {
+            "StickerTitle": "bili小黄豆",
+            "StickerDescribe": "哔哩哔哩的小黄豆",
+            "StickerAuthor": "盘络收藏",
+            "StickerData": [
+                {
+                    "StickerName": "0",
+                    "StickerURL": "https://cdn-us.imgs.moe/Sticker/bili/0.webp"
+                },
+                {
+                    "StickerName": "1",
+                    "StickerURL": "https://cdn-us.imgs.moe/Sticker/bili/1.webp"
+                },
+                {
+                    "StickerName": "2",
+                    "StickerURL": "https://cdn-us.imgs.moe/Sticker/bili/2.webp"
+                }
+            ]
+        }
+    ]
+}

@@ -2149,6 +2149,22 @@ $(document).ready(function () {
     return 0; // 版本号相等
   }
 
+  $("#StickerSave").click(function () {
+    let value = $("#StickerInput").val()
+    if (value) {
+      chrome.storage.local.set({ "StickerURL": value })
+    } else {
+      chrome.storage.local.set({ "StickerURL": "https://sh.233404.xyz/1.json" })
+    }
+    toastItem({
+      toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+    })
+  })
+  chrome.storage.local.get(["StickerURL"], function (result) {
+    if (result.StickerURL != "https://sh.233404.xyz/1.json") {
+      $("#StickerInput").val(result.StickerURL)
+    }
+  })
   animation_button2('.Animation_button2').then(function () {
     overlayElement.remove()
   });

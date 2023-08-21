@@ -765,6 +765,9 @@ setTimeout(() => {
     let timerShow;
     let timerHide;
     let getStickerStatus = false;
+    if (!insertContentPrompt) {
+        return;
+    }
     insertContentPrompt.addEventListener('mouseenter', () => {
         clearTimeout(timerHide); // 鼠标进入时清除隐藏的定时器
         timerShow = setTimeout(() => {
@@ -772,22 +775,22 @@ setTimeout(() => {
         }, 800);
     });
 
-    // insertContentPrompt.addEventListener('mouseleave', () => {
-    //     clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
-    //     timerHide = setTimeout(() => {
-    //         hideEmoticonBox();
-    //     }, 1000); // 一秒后隐藏
-    // });
+    insertContentPrompt.addEventListener('mouseleave', () => {
+        clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 1000); // 一秒后隐藏
+    });
 
-    // emoticonBox.addEventListener('mouseenter', () => {
-    //     clearTimeout(timerHide); // 鼠标进入 emoticonBox 时清除隐藏的定时器
-    // });
+    emoticonBox.addEventListener('mouseenter', () => {
+        clearTimeout(timerHide); // 鼠标进入 emoticonBox 时清除隐藏的定时器
+    });
 
-    // emoticonBox.addEventListener('mouseleave', () => {
-    //     timerHide = setTimeout(() => {
-    //         hideEmoticonBox();
-    //     }, 2000); // 一秒后隐藏
-    // });
+    emoticonBox.addEventListener('mouseleave', () => {
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 2000); // 一秒后隐藏
+    });
 
 
     function showEmoticonBox() {
@@ -811,98 +814,99 @@ setTimeout(() => {
     })
 
     function getSticker() {
-        fetch('https://cors-anywhere.pnglog.com/https://sh.233404.xyz/1.json')
-            .then(response => {
-                return response.json(); // 解析JSON数据
-            })
-            .then(data => {
-                const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
-                const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
-
-
-                function updateSelectedStatus(selectedIndex) {
-                    const selectedItems = document.querySelectorAll('.StickerBoxheadtem');
-                    selectedItems.forEach((item, index) => {
-                        item.style.color = index === selectedIndex ? "red" : "#fff";
-                    });
-                }
-
-                StickerBoxhead.innerHTML = '';
-                data.sticker.forEach(function (sticker, index) {
-                    const StickerBoxheadtem = document.createElement('div');
-                    StickerBoxheadtem.className = 'StickerBoxheadtem';
-                    StickerBoxheadtem.textContent = sticker.StickerTitle;
-                    StickerBoxhead.appendChild(StickerBoxheadtem);
-                    StickerBoxheadtem.addEventListener('click', function (event) {
-                        updateSelectedStatus(index);
-                        StickerDataItem(index);
-                    })
+        chrome.storage.local.get(["StickerURL"], function (result) {
+            fetch('https://cors-anywhere.pnglog.com/' + result.StickerURL)
+                .then(response => {
+                    return response.json(); // 解析JSON数据
                 })
-                function StickerDataItem(index) {
-                    StickerBoxContent.innerHTML = '';
-                    if (data.sticker[index].StickerData.length == 0) {
-                        StickerBoxContent.innerHTML = '数据为空';
-                        return;
-                    }
-                    const EmotionPreview = document.getElementById('PL-EmotionPreview')
-                    data.sticker[index].StickerData.forEach(sticker => {
-                        const StickerBoxContentitem = document.createElement('div');
+                .then(data => {
+                    const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
+                    const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
 
-                        StickerBoxContentitem.className = 'StickerBoxContentitem';
 
-                        const img = document.createElement('img');
-                        img.src = sticker.StickerURL;
-                        img.alt = sticker.StickerName;
-                        img.title = sticker.StickerName;
-                        img.loading = "lazy";
-                        img.addEventListener('click', function (event) {
-                            console.log(StickerOptional);
-                            if (StickerOptional == 1) {
-                                chrome.storage.local.get(['StickerCodeSelect'], function (result) {
-                                    const selectedValue = result.StickerCodeSelect;
-                                    let url;
-                                    switch (selectedValue) {
-                                        case 'URL':
-                                            url = sticker.StickerURL
-                                            break;
-                                        case 'HTML':
-                                            url = '<img src="' + sticker.StickerURL + '" alt="" title="' + sticker.StickerName + '" >'
-                                            break;
-                                        case 'BBCode':
-                                            url = '[img]' + sticker.StickerURL + '[/img]'
-                                            break;
-                                        case 'Markdown':
-                                            url = '![' + sticker.StickerName + '](' + sticker.StickerURL + ')'
-                                            break;
-                                        case 'MD with link':
-                                            url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
-                                            break;
-                                    }
-                                    document.execCommand('insertText', false, url);
-                                    // AutoInsertFun(url, 1)
-                                    // window.postMessage({ type: 'StickerOptional', data: url }, '*');
-                                });
-
-                                return
-                            }
-                            AutoInsertFun(sticker.StickerURL, 0)
-                        })
-                        img.addEventListener('mouseover', function () {
-                            EmotionPreview.src = this.src;
-
+                    function updateSelectedStatus(selectedIndex) {
+                        const selectedItems = document.querySelectorAll('.StickerBoxheadtem');
+                        selectedItems.forEach((item, index) => {
+                            item.style.color = index === selectedIndex ? "red" : "#fff";
                         });
-                        StickerBoxContentitem.appendChild(img);
-                        StickerBoxContent.appendChild(StickerBoxContentitem);
-                    });
-                }
+                    }
 
-                updateSelectedStatus(0);
-                StickerDataItem(0);
-                getStickerStatus = true
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-            });
+                    StickerBoxhead.innerHTML = '';
+                    data.sticker.forEach(function (sticker, index) {
+                        const StickerBoxheadtem = document.createElement('div');
+                        StickerBoxheadtem.className = 'StickerBoxheadtem';
+                        StickerBoxheadtem.textContent = sticker.StickerTitle;
+                        StickerBoxhead.appendChild(StickerBoxheadtem);
+                        StickerBoxheadtem.addEventListener('click', function (event) {
+                            updateSelectedStatus(index);
+                            StickerDataItem(index);
+                        })
+                    })
+                    function StickerDataItem(index) {
+                        StickerBoxContent.innerHTML = '';
+                        if (data.sticker[index].StickerData.length == 0) {
+                            StickerBoxContent.innerHTML = '数据为空';
+                            return;
+                        }
+                        const EmotionPreview = document.getElementById('PL-EmotionPreview')
+                        data.sticker[index].StickerData.forEach(sticker => {
+                            const StickerBoxContentitem = document.createElement('div');
+
+                            StickerBoxContentitem.className = 'StickerBoxContentitem';
+
+                            const img = document.createElement('img');
+                            img.src = sticker.StickerURL;
+                            img.alt = sticker.StickerName;
+                            img.title = sticker.StickerName;
+                            img.loading = "lazy";
+                            img.addEventListener('click', function (event) {
+                                if (StickerOptional == 1) {
+                                    chrome.storage.local.get(['StickerCodeSelect'], function (result) {
+                                        const selectedValue = result.StickerCodeSelect;
+                                        let url;
+                                        switch (selectedValue) {
+                                            case 'URL':
+                                                url = sticker.StickerURL
+                                                break;
+                                            case 'HTML':
+                                                url = '<img src="' + sticker.StickerURL + '" alt="" title="' + sticker.StickerName + '" >'
+                                                break;
+                                            case 'BBCode':
+                                                url = '[img]' + sticker.StickerURL + '[/img]'
+                                                break;
+                                            case 'Markdown':
+                                                url = '![' + sticker.StickerName + '](' + sticker.StickerURL + ')'
+                                                break;
+                                            case 'MD with link':
+                                                url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
+                                                break;
+                                        }
+                                        // document.execCommand('insertText', false, url);
+                                        AutoInsertFun(url, 1)
+                                        // window.postMessage({ type: 'StickerOptional', data: url }, '*');
+                                    });
+
+                                    return
+                                }
+                                AutoInsertFun(sticker.StickerURL, 0)
+                            })
+                            img.addEventListener('mouseover', function () {
+                                EmotionPreview.src = this.src;
+
+                            });
+                            StickerBoxContentitem.appendChild(img);
+                            StickerBoxContent.appendChild(StickerBoxContentitem);
+                        });
+                    }
+
+                    updateSelectedStatus(0);
+                    StickerDataItem(0);
+                    getStickerStatus = true
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        })
 
     }
 

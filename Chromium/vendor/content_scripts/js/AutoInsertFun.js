@@ -109,8 +109,6 @@ function insertContentIntoEditorState() {
      */
 function AutoInsertFun(AutoInsert_message_content, Start_URL) {
     chrome.storage.local.get(["AutoInsert"], function (result) {
-        console.log(AutoInsert_message_content);
-        console.log(Start_URL);
         if (result.AutoInsert != "AutoInsert_on") { return; }
         let Find_Editor = false
         let pageText = document.body.innerText;
