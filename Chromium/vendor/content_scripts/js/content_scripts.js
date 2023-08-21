@@ -656,7 +656,7 @@ function StatusProgressBar(filename, Status, IsID) {
 
 }
 
-
+let StickerOptional;
 function EmoticonBox() {
     let EmoticonBox = document.createElement('div');
     EmoticonBox.className = 'PL-EmoticonBox';
@@ -669,9 +669,65 @@ function EmoticonBox() {
                 <div class="PL-loading"></div>
             </div>
             <span class="StickerBoxRemove">X</span>
+            <span class="StickerBoxLeftBut">👈</span>
+            <div class="StickerBoxLeft">
+                <p><input type="checkbox" id="StickerOptional">自选插入格式</p>
+                <select name="HTML" id="StickerCodeSelect">
+                    <option value="URL">URL</option>
+                    <option value="HTML">HTML</option>
+                    <option value="BBCode">BBCode</option>
+                    <option value="Markdown">Markdown</option>
+                    <option value="MD with link">MD with link</option>
+                </select>
+            </div>
+            <div class="StickerBoxright">
+                <img src="" id="PL-EmotionPreview">
+            </div>
         </div>
         `
         document.body.appendChild(EmoticonBox);
+
+        chrome.storage.local.get(['StickerOptional'], function (result) {
+            document.getElementById("StickerOptional").checked = result.StickerOptional
+            StickerOptional = result.StickerOptional
+        });
+        document.getElementById("StickerOptional").addEventListener('click', function (event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                chrome.storage.local.set({ 'StickerOptional': 1 });
+
+            } else {
+                // 存储为0
+                chrome.storage.local.set({ 'StickerOptional': 0 });
+            }
+            StickerOptional = isChecked
+        });
+
+        chrome.storage.local.get(['StickerCodeSelect'], function (result) {
+            const selectedValue = result.StickerCodeSelect;
+            const StickerCodeSelect = document.getElementById("StickerCodeSelect");
+            if (selectedValue) {
+                StickerCodeSelect.value = selectedValue;
+            }
+        });
+        document.getElementById("StickerCodeSelect").addEventListener('change', function (event) {
+            const selectedValue = this.value
+            chrome.storage.local.set({ "StickerCodeSelect": selectedValue });
+        });
+        let StickerBoxLeftBut = 0
+        document.querySelector(".StickerBoxLeftBut").addEventListener('click', function (event) {
+            if (StickerBoxLeftBut == 0) {
+                this.innerText = '👉'
+                document.querySelector(".StickerBoxLeft").style.display = 'flex';
+                StickerBoxLeftBut = 1
+            } else {
+                this.innerText = '👈'
+                document.querySelector(".StickerBoxLeft").style.display = 'none';
+                StickerBoxLeftBut = 0
+            }
+
+        });
+
 
         // 添加拖动逻辑
         let isDragging = false;
@@ -760,7 +816,6 @@ setTimeout(() => {
                 return response.json(); // 解析JSON数据
             })
             .then(data => {
-                console.log(data); // 打印解析后的对象
                 const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
                 const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
 
@@ -789,6 +844,7 @@ setTimeout(() => {
                         StickerBoxContent.innerHTML = '数据为空';
                         return;
                     }
+                    const EmotionPreview = document.getElementById('PL-EmotionPreview')
                     data.sticker[index].StickerData.forEach(sticker => {
                         const StickerBoxContentitem = document.createElement('div');
 
@@ -798,9 +854,43 @@ setTimeout(() => {
                         img.src = sticker.StickerURL;
                         img.alt = sticker.StickerName;
                         img.title = sticker.StickerName;
+                        img.loading = "lazy";
                         img.addEventListener('click', function (event) {
-                            AutoInsertFun(sticker.StickerURL)
+                            console.log(StickerOptional);
+                            if (StickerOptional == 1) {
+                                chrome.storage.local.get(['StickerCodeSelect'], function (result) {
+                                    const selectedValue = result.StickerCodeSelect;
+                                    let url;
+                                    switch (selectedValue) {
+                                        case 'URL':
+                                            url = sticker.StickerURL
+                                            break;
+                                        case 'HTML':
+                                            url = '<img src="' + sticker.StickerURL + '" alt="" title="' + sticker.StickerName + '" >'
+                                            break;
+                                        case 'BBCode':
+                                            url = '[img]' + sticker.StickerURL + '[/img]'
+                                            break;
+                                        case 'Markdown':
+                                            url = '![' + sticker.StickerName + '](' + sticker.StickerURL + ')'
+                                            break;
+                                        case 'MD with link':
+                                            url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
+                                            break;
+                                    }
+                                    document.execCommand('insertText', false, url);
+                                    // AutoInsertFun(url, 1)
+                                    // window.postMessage({ type: 'StickerOptional', data: url }, '*');
+                                });
+
+                                return
+                            }
+                            AutoInsertFun(sticker.StickerURL, 0)
                         })
+                        img.addEventListener('mouseover', function () {
+                            EmotionPreview.src = this.src;
+
+                        });
                         StickerBoxContentitem.appendChild(img);
                         StickerBoxContent.appendChild(StickerBoxContentitem);
                     });

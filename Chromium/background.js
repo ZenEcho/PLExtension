@@ -51,7 +51,9 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			"edit_uploadArea_Location": 34,//位置
 			"edit_uploadArea_opacity": 0.3,//透明度
 			"edit_uploadArea_auto_close_time": 2,//关闭时间
-			"edit_uploadArea_Left_or_Right": "Right"
+			"edit_uploadArea_Left_or_Right": "Right",
+			"StickerOptional": 0, //自选贴纸格式开关
+			"StickerCodeSelect": "URL" //贴纸格式
 		});
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
@@ -684,7 +686,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 				} else {
 					// 新页面更新状态
 					chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": false } })
-					
+
 					// 初始页更新状态
 					chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
 				}
