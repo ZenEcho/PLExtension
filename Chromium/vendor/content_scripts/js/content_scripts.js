@@ -368,7 +368,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         if (request.AutoInsert_message) {
             let AutoInsert_message_content = request.AutoInsert_message
-            AutoInsertFun(AutoInsert_message_content)
+            AutoInsertFun(AutoInsert_message_content, 0)
         }
         if (request.Demonstration_middleware) {
             if (request.Demonstration_middleware == "Drag_upload_0") {
@@ -732,7 +732,7 @@ function EmoticonBox() {
         let isDragging = false;
         let offsetX, offsetY;
 
-        EmoticonBox.querySelector('.StickerBoxhead').addEventListener('mousedown', startDrag);
+        EmoticonBox.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', stopDrag);
 
@@ -818,15 +818,22 @@ setTimeout(() => {
         } else {
             emoticonBox.style.top = `${promptRect.top + scrollY - emoticonBoxHeight - 10}px`;
         }
-
         emoticonBox.style.display = 'block';
-        if (getStickerStatus == false) {
-            getSticker()
-        }
+        setTimeout(() => {
+            emoticonBox.style.width = "420px";
+            if (getStickerStatus == false) {
+                getSticker()
+            }
+        }, 50)
+
     }
     // 隐藏表情框
     function hideEmoticonBox() {
-        emoticonBox.style.display = 'none';
+        emoticonBox.style.width = "0px";
+        setTimeout(() => {
+            emoticonBox.style.display = 'none';
+        }, 500)
+
     }
     document.querySelector(".StickerBox .StickerBoxRemove").addEventListener('click', function (event) {
         hideEmoticonBox()
@@ -926,7 +933,6 @@ setTimeout(() => {
                     console.error('Fetch error:', error);
                 });
         })
-
     }
 
 }, 1000);

@@ -213,7 +213,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		if (!options_proxy_server) {
 			options_proxy_server = ""
 		}
-		let currentTabId1;
+
 		async function Img_Request_Success(blob) {
 			showNotification(null, chrome.i18n.getMessage("Upload_prompt1"))
 			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
@@ -433,6 +433,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					showNotification(null, chrome.i18n.getMessage("Upload_prompt4") + error.toString())
 					UploadStatus(0)
 				});
+			let currentTabId1;
 			function UploadStatus(Status) {
 				if (Status == 1) {
 					try {

@@ -91,6 +91,17 @@ window.addEventListener('message', function (event) {
         }
 
     }
+    if (event.data.type === 'phpbbForum') {
+        try {
+            let phpbbForum = phpbb;
+            if (phpbbForum) {
+                let phpbbEditor = document.getElementById("message")
+                phpbbEditor.value += event.data.data;
+            }
+        } catch (error) {
+        }
+
+    }
     //自动复制
     if (event.data.type === 'AutoCopy') {
         let value = event.data.data;
@@ -143,6 +154,15 @@ try {
     let ueditor_Elements_Node = ueditor_Elements.container
     if (ueditor_Elements_Node) {
         plB(ueditor_Elements_Node)
+    }
+} catch (error) {
+}
+// phpbb
+try {
+    let phpbbForum = phpbb;
+    if (phpbbForum) {
+        let phpbbEditor = document.getElementById("message").parentElement
+        plB(phpbbEditor)
     }
 } catch (error) {
 }

@@ -941,7 +941,7 @@ function LocalStorage(filename, imageUrl, file) {
             chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
                 if (window.location.href.startsWith('http')) {
                     chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt2") });
-                    AutoInsertFun(imageUrl)
+                    AutoInsertFun(imageUrl, 0)
                 }
             })
         });

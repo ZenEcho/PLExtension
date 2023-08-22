@@ -121,17 +121,16 @@
  .PL-EmoticonBox {
    user-select: none;
    border-radius: 14px;
-   width: 420px;
+   width: 0px;
    height: 200px;
    background-color: #dddddd26;
-   display: none;
    position: absolute;
    padding: 0;
    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
    z-index: 1000;
-   /* 确保在其他内容上方显示 */
    max-height: 200px;
-   /* 设置最大高度以防止内容溢出 */
+   display: none;
+   transition: width .5s ease;
  }
 
  .StickerBox {
@@ -186,8 +185,9 @@
    align-items: center;
  }
 
- .StickerBoxright img {
-   width: 100%;
+ img {
+   box-shadow: none !important;
+   border: none !important;
  }
 
  .StickerBoxRemove:hover {

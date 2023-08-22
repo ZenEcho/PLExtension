@@ -65,12 +65,17 @@ function insertContentIntoEditorState() {
             Typecho.parentNode.appendChild(item)
         }
     }
-
+    //lowendtalk
+    if (pageText.toLowerCase().includes("lowendtalk")) {
+        let lowendtalkEditor = document.getElementById("Form_Body")
+        if (lowendtalkEditor) {
+            lowendtalkEditor.parentNode.appendChild(item)
+        }
+    }
     //CodeMirror Editor
     let editorElement = document.querySelector(".CodeMirror");
     if (editorElement) {
         editorElement.parentNode.appendChild(item)
-
     }
     //Gutenberg Editor
     let Gutenberg = document.getElementById("wpbody-content")
@@ -87,6 +92,8 @@ function insertContentIntoEditorState() {
         let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
         HaloEditorHeader.appendChild(item)
     }
+
+
     function FullDomPermissionsCSS(file) {
         let link = document.createElement('link');
         link.href = chrome.runtime.getURL(file);
@@ -170,9 +177,9 @@ function AutoInsertFun(AutoInsert_message_content, Start_URL) {
         //v2exReply
         if (pageText.toLowerCase().includes("v2ex")) {
             if (pageText.toLowerCase().includes("主题创建指南")) {
+                if (Find_Editor == true) { return; }
                 let reply_content_Advanced = document.getElementById("topic_content")
                 if (reply_content_Advanced) {
-                    if (Find_Editor == true) { return; }
                     let originalContent = reply_content_Advanced.value;
                     if (Start_URL == 0) {
                         reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
@@ -188,9 +195,9 @@ function AutoInsertFun(AutoInsert_message_content, Start_URL) {
         }
         //nodeseek
         if (pageText.toLowerCase().includes("nodeseek")) {
+            if (Find_Editor == true) { return; }
             let nodeseek = document.getElementById("markdown-input")
             if (nodeseek) {
-                if (Find_Editor == true) { return; }
                 let originalContent = nodeseek.value;
                 if (Start_URL == 0) {
                     nodeseek.value = originalContent + "\n" + '![' + "图片" + '](' + AutoInsert_message_content + ')'
@@ -205,9 +212,9 @@ function AutoInsertFun(AutoInsert_message_content, Start_URL) {
         }
         //hostevaluate
         if (pageText.toLowerCase().includes("hostevaluate")) {
+            if (Find_Editor == true) { return; }
             let hostevaluate = document.getElementsByClassName("write-container")
             if (hostevaluate.length) {
-                if (Find_Editor == true) { return; }
                 let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
                 let originalContent = write.value;
                 if (Start_URL == 0) {
@@ -220,11 +227,24 @@ function AutoInsertFun(AutoInsert_message_content, Start_URL) {
                 Find_Editor = true
             }
         }
+        //lowendtalk
+        if (pageText.toLowerCase().includes("lowendtalk")) {
+            if (Find_Editor == true) { return; }
+            let lowendtalkEditor = document.getElementById("Form_Body")
+            if (lowendtalkEditor) {
+                if (Start_URL == 0) {
+                    lowendtalkEditor.value += '![' + "图片" + '](' + AutoInsert_message_content + ')';
+                } else {
+                    lowendtalkEditor.value += AutoInsert_message_content;
+                }
+                Find_Editor = true
+            }
+        }
         //Typecho
         if (pageText.toLowerCase().includes("typecho")) {
+            if (Find_Editor == true) { return; }
             let text = document.getElementById("text")
             if (text) {
-                if (Find_Editor == true) { return; }
                 let originalContent = text.value;
                 if (Start_URL == 0) {
                     text.value = originalContent + "\n" + '![' + "图片" + '](' + AutoInsert_message_content + ')'
@@ -235,6 +255,18 @@ function AutoInsertFun(AutoInsert_message_content, Start_URL) {
                 text.dispatchEvent(inputEvent);
                 Find_Editor = true
             }
+        }
+        // phpbb
+        let phpbbForum = document.getElementById("phpbb")
+        if (phpbbForum) {
+            if (Find_Editor == true) { return; }
+            if (Start_URL == 0) {
+                window.postMessage({ type: 'phpbbForum', data: '[img]' + AutoInsert_message_content + '[/img]' }, '*');
+            } else {
+                window.postMessage({ type: 'phpbbForum', data: AutoInsert_message_content }, '*');
+            }
+
+            Find_Editor = true
         }
         //CodeMirror
         let CodeMirror = document.querySelector(".CodeMirror");
