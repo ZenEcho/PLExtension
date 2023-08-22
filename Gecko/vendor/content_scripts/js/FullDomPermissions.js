@@ -1,6 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
-    console.log(event.data.type + "——Write")
+    console.log("盘络上传postMessage监听: " + event.data.type);
     if (event.data.type === 'CodeMirror') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
@@ -23,7 +23,6 @@ window.addEventListener('message', function (event) {
     if (event.data.type === 'TinyMCE') {
         try {
             let TinyMCEs = tinymce.activeEditor;
-            console.log(TinyMCEs)
             if (TinyMCEs) {
                 tinymce.activeEditor.execCommand('mceInsertContent', false, event.data.data);
             }
@@ -43,7 +42,6 @@ window.addEventListener('message', function (event) {
     if (event.data.type === 'ckeditor') {
         try {
             let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
-            console.log(ckeditor_Element)
             if (ckeditor_Element) {
                 ckeditor_Element.insertHtml(event.data.data);
             }
@@ -63,7 +61,6 @@ window.addEventListener('message', function (event) {
     if (event.data.type === 'ckeditor4') {
         try {
             let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
-            console.log(ckeditor_Element)
             if (ckeditor_Element) {
                 ckeditor_Element.insertHtml(event.data.data);
             }
@@ -94,8 +91,19 @@ window.addEventListener('message', function (event) {
         }
 
     }
+    //自动复制
+    if (event.data.type === 'AutoCopy') {
+        let value = event.data.data;
+        // 使用 Clipboard API 复制文本内容到剪贴板
+        navigator.clipboard.writeText(value)
+            .then(() => {
+                console.log("已复制到剪贴板：" + value);
+            })
+            .catch(error => {
+                console.error("复制到剪贴板失败：" + error);
+            });
+    }
 });
-
 function plB(Element) {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"

@@ -41,17 +41,21 @@ chrome.runtime.onInstalled.addListener(function (details) {
 				console.log(chrome.i18n.getMessage("Installing_initialization"));
 			});
 		}
-		chrome.storage.local.set({ "GlobalUpload": "GlobalUpload_Default" }) //全局上传
-		chrome.storage.local.set({ "Right_click_menu_upload": "on" }) //右键上传
-		chrome.storage.local.set({ "AutoInsert": "AutoInsert_on" }) //自动插入
-
-		chrome.storage.local.set({ "edit_uploadArea_width": 32 }) //宽度
-		chrome.storage.local.set({ "edit_uploadArea_height": 30 }) //高度
-		chrome.storage.local.set({ "edit_uploadArea_Location": 34 }) //位置
-		chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 }) //透明度
-		chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 }) //关闭时间
-		chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-
+		chrome.storage.local.set({
+			"GlobalUpload": "GlobalUpload_Default", //全局上传
+			"Right_click_menu_upload": "on",//右键上传
+			"AutoInsert": "AutoInsert_on",//自动插入
+			"AutoCopy": "AutoCopy_off",//自动复制 默认关闭
+			"edit_uploadArea_width": 32,//宽度
+			"edit_uploadArea_height": 30,//高度
+			"edit_uploadArea_Location": 34,//位置
+			"edit_uploadArea_opacity": 0.3,//透明度
+			"edit_uploadArea_auto_close_time": 2,//关闭时间
+			"edit_uploadArea_Left_or_Right": "Right",
+			"StickerOptional": 0, //自选贴纸格式开关
+			"StickerCodeSelect": "URL", //贴纸格式
+			"StickerURL": "https://plextension-sticker.pnglog.com/sticker.json" //贴纸链接
+		});
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
@@ -85,6 +89,7 @@ const getSave = [
 	"options_album_id", //相册
 	"options_nsfw_select",//是否健康
 	"options_permission_select",//是否公开
+	"AutoCopy",
 	//自定义请求
 	"options_apihost",
 	"options_parameter",
@@ -119,10 +124,10 @@ chrome.contextMenus.onClicked.addListener(function (info) {
 	}
 
 });
-
+let ProgressDATA = []; // 保存创建的进度条元素
 function Fetch_Upload(imgUrl, data, MethodName, callback) {
 	if (Simulated_upload == true) {
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+		chrome.tabs.query({ active: true }, function (tabs) {
 			let currentTabId
 			try {
 				currentTabId = tabs[0].id;
@@ -153,6 +158,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		let options_album_id = result.options_album_id
 		let options_nsfw_select = result.options_nsfw_select || 0
 		let options_permission_select = result.options_permission_select || 0
+		let AutoCopy = result.AutoCopy
 		//自定义请求
 		let options_apihost = result.options_apihost
 		let options_parameter = result.options_parameter
@@ -207,11 +213,13 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 		if (!options_proxy_server) {
 			options_proxy_server = ""
 		}
+		let currentTabId1;
 		async function Img_Request_Success(blob) {
 			showNotification(null, chrome.i18n.getMessage("Upload_prompt1"))
 			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
 			const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
 			const formData = new FormData();
+			UploadStatus(1)
 			// 自定义上传属性
 			let optionsUrl
 			let optionHeaders
@@ -329,7 +337,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							imageUrl = res.data.link
 							break;
 						case 'UserDiy':
-							const options_return_success_value = res;
+							let options_return_success_value = res;
 							options_return_success.split('.').forEach(function (prop) {
 								if (options_return_success_value) {
 									options_return_success_value = options_return_success_value[prop];
@@ -340,6 +348,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 						case 'Telegra_ph':
 							if (res.error) {
 								showNotification(null, res.error)
+								UploadStatus(0)
 								return;
 							}
 							imageUrl = `https://telegra.ph/` + res[0].src
@@ -348,6 +357,19 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							imageUrl = res.url
 							break;
 					}
+
+					if (AutoCopy == "AutoCopy_on") {
+						//复制
+						try {
+							chrome.tabs.query({ active: true }, function (tabs) {
+								let currentTabId = tabs[0].id;
+								chrome.tabs.sendMessage(currentTabId, { AutoCopy: imageUrl })
+							});
+						} catch (error) {
+							console.log(error);
+						}
+					}
+					UploadStatus(2)
 					chrome.storage.local.get('UploadLog', function (result) {
 						let UploadLog = result.UploadLog || [];
 						if (!Array.isArray(UploadLog)) {
@@ -389,7 +411,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
 							})
 							callback(res, null);
-							chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+							chrome.tabs.query({ active: true }, function (tabs) {
 								let currentTabId
 								try {
 									currentTabId = tabs[0].id;
@@ -409,7 +431,52 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					console.error(error);
 					callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
 					showNotification(null, chrome.i18n.getMessage("Upload_prompt4") + error.toString())
+					UploadStatus(0)
 				});
+			function UploadStatus(Status) {
+				if (Status == 1) {
+					try {
+						chrome.tabs.query({ active: true }, function (tabs) {
+							currentTabId1 = tabs[0].id;
+							chrome.tabs.sendMessage(currentTabId1, { Progress_bar: { "filename": UrlImgNema, "status": 1, "IsCurrentTabId": true } })
+						});
+
+					} catch (error) {
+						console.log(error)
+					}
+				}
+				if (Status == 2) {
+					try {
+						chrome.tabs.query({ active: true }, function (tabs) {
+							let currentTabId = tabs[0].id;
+							if (currentTabId1 == currentTabId) {
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": UrlImgNema, "status": 2, "IsCurrentTabId": true } })
+							} else {
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": UrlImgNema, "status": 2, "IsCurrentTabId": false } })
+								chrome.tabs.sendMessage(currentTabId1, { Progress_bar: { "filename": UrlImgNema, "status": 2, "IsCurrentTabId": true } })
+							}
+
+						});
+					} catch (error) {
+						console.log(error);
+					}
+				}
+				if (Status == 0) {
+					try {
+						chrome.tabs.query({ active: true }, function (tabs) {
+							let currentTabId = tabs[0].id;
+							if (currentTabId1 == currentTabId) {
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": UrlImgNema, "status": 0, "IsCurrentTabId": true } })
+							} else {
+								chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": UrlImgNema, "status": 0, "IsCurrentTabId": false } })
+								chrome.tabs.sendMessage(currentTabId1, { Progress_bar: { "filename": UrlImgNema, "status": 0, "IsCurrentTabId": true } })
+							}
+						});
+					} catch (error) {
+						console.log(error);
+					}
+				}
+			}
 		}
 
 		/**
@@ -420,28 +487,28 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			return;
 		}
 		if (options_exe == "Tencent_COS") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { Tencent_COS_contextMenus: imgUrl })
 			});
 			return;
 		}
 		if (options_exe == "Aliyun_OSS") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { Aliyun_OSS_contextMenus: imgUrl })
 			});
 			return;
 		}
 		if (options_exe == "AWS_S3") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { AWS_S3_contextMenus: imgUrl })
 			});
 			return;
 		}
 		if (options_exe == "GitHubUP") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: { url: imgUrl, Metho: MethodName }, })
 			});
@@ -475,6 +542,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
  * request返回信息
  * sender发送信息页面以及它的详细信息
  */
+let TabId
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	//大喇叭
 	if (request.Loudspeaker) {
@@ -511,7 +579,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	if (request.Middleware_AutoInsert_message) {
 		let AutoInsert_message_content = request.Middleware_AutoInsert_message
 		//向当前选项卡发送消息
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+		chrome.tabs.query({ active: true }, function (tabs) {
 			let currentTabId
 			try {
 				currentTabId = tabs[0].id;
@@ -534,7 +602,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		 * 粘贴演示完成
 		 */
 		if (request.Demonstration_middleware == "Paste_Upload_100") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId
 				try {
 					currentTabId = tabs[0].id;
@@ -553,7 +621,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		 * 拖拽演示完成
 		 */
 		if (request.Demonstration_middleware == "Drag_upload_100") {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId
 				try {
 					currentTabId = tabs[0].id;
@@ -580,7 +648,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		// 关闭演示
 		if (request.Demonstration_middleware == "closeIntro") {
 			Simulated_upload = false
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			chrome.tabs.query({ active: true }, function (tabs) {
 				let currentTabId
 				try {
 					currentTabId = tabs[0].id;
@@ -598,7 +666,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 	//演示模式
 	if (request.Functional_Demonstration) {
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+		chrome.tabs.query({ active: true }, function (tabs) {
 			let currentTabId
 			try {
 				currentTabId = tabs[0].id;
@@ -611,6 +679,29 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			} catch (error) {
 			}
 		});
+	}
+	if (request.Progress_bar) {
+		if (request.Progress_bar.status == 1) {
+			chrome.tabs.query({ active: true }, function (tabs) {
+				TabId = tabs[0].id;
+				chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
+			});
+		}
+		if (request.Progress_bar.status == 2 || request.Progress_bar.status == 0) {
+			chrome.tabs.query({ active: true }, function (tabs) {
+				let currentTabId = tabs[0].id;
+				if (TabId == currentTabId) { //如果是提示状态初始页
+					chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
+				} else {
+					// 新页面更新状态
+					chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": false } })
+
+					// 初始页更新状态
+					chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
+				}
+			});
+		}
+
 	}
 });
 let Simulated_upload = false//模拟上传

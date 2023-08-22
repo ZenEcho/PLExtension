@@ -2054,6 +2054,37 @@ $(document).ready(function () {
     });
   })
 
+  chrome.storage.local.get(["AutoCopy"], function (result) {
+    if ($('a[value="' + result.AutoCopy + '"]').length) {
+      $('a[value="' + result.AutoCopy + '"]').addClass("active")
+    } else {
+      chrome.storage.local.set({ "AutoCopy": "AutoCopy_off" })
+      $('a[value="AutoCopy_off"]').addClass("active")
+    }
+    if (result.AutoCopy == "AutoCopy_on") {
+      $("#AutoCopy button").addClass("btn-primary")
+    } else if (result.AutoCopy == "AutoCopy_off") {
+      $("#AutoCopy button").addClass("btn-dark")
+    }
+
+
+    $('#AutoCopy .dropdown-item').click(function () {
+      let val = $(this).attr("value")
+      $("#AutoCopy button").removeClass("btn-primary btn-dark")
+      if (val == "AutoCopy_on") {
+        toastItem({
+          toast_content: chrome.i18n.getMessage("Successfully_opened_1")
+        });
+        $("#AutoCopy button").addClass("btn-primary")
+      } else if (val == "AutoCopy_off") {
+        $("#AutoCopy button").addClass("btn-dark")
+      }
+
+      chrome.storage.local.set({ "AutoCopy": val })
+      $('#AutoCopy .dropdown-item').removeClass("active")
+      $(this).addClass("active")
+    });
+  })
   chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
     if (result.Right_click_menu_upload == "on") {
       $('#Right_click_menu_upload').attr('checked', true);
@@ -2118,6 +2149,22 @@ $(document).ready(function () {
     return 0; // 版本号相等
   }
 
+  $("#StickerSave").click(function () {
+    let value = $("#StickerInput").val()
+    if (value) {
+      chrome.storage.local.set({ "StickerURL": value })
+    } else {
+      chrome.storage.local.set({ "StickerURL": "https://plextension-sticker.pnglog.com/sticker.json" })
+    }
+    toastItem({
+      toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+    })
+  })
+  chrome.storage.local.get(["StickerURL"], function (result) {
+    if (result.StickerURL != "https://plextension-sticker.pnglog.com/sticker.json") {
+      $("#StickerInput").val(result.StickerURL)
+    }
+  })
   animation_button2('.Animation_button2').then(function () {
     overlayElement.remove()
   });

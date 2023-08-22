@@ -26,11 +26,11 @@ chrome.storage.local.get(storagelocal, function (result) {
     let iframe_mouseover = false // 定义iframe状态
     GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
 
-    let uploadArea = document.createElement('div'); //定义上传区域/侧边栏
+    let uploadArea = document.createElement('PLExtension'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
 
 
-    let uploadAreaTips = document.createElement('div'); //定义上传区域的提示
+    let uploadAreaTips = document.createElement('PLExtension-tips'); //定义上传区域的提示
     uploadAreaTips.className = 'uploadAreaTips';
     uploadAreaTips.id = "uploadAreaTips"
     let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
@@ -413,6 +413,14 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
             }
         }
+        //进度条
+        if (request.Progress_bar) {
+            StatusProgressBar(request.Progress_bar.filename, request.Progress_bar.status, request.Progress_bar.IsCurrentTabId)
+        }
+        //自动复制消息中转
+        if (request.AutoCopy) {
+            window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');
+        }
     });
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
@@ -522,3 +530,403 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
     }
 })
+
+let progressBars = []; // 保存创建的进度条元素
+function ProgressBar() {
+    let progressBar = document.createElement('div');
+    progressBar.className = 'PLprogress';
+    if (!document.getElementsByClassName("PLprogress").length) {
+        document.body.appendChild(progressBar);
+    }
+}
+ProgressBar()
+
+function removeProgressBar(filename) {
+    const index = progressBars.findIndex(item => item.filename === filename);
+    if (index !== -1) {
+        const progressBar = progressBars[index].element;
+        progressBar.remove();
+        progressBars.splice(index, 1);
+    }
+}
+function StatusProgressBar(filename, Status, IsID) {
+    ProgressBar()
+    if (Status == 1) {
+        if (progressBars.length >= 6) { //限制数量
+            const oldestFilename = progressBars[0].filename;
+            removeProgressBar(oldestFilename);
+        }
+
+        let progressBox = document.createElement('div');
+        progressBox.className = 'PLprogress-box';
+        progressBox.innerHTML = `
+            <div>${filename}</div>
+            <div class="PL-loading"></div>
+            <button class="progressBoxRemove" data-filename="${filename}">X</button>
+        `;
+        progressBox.querySelector('.progressBoxRemove').addEventListener('click', function (event) {
+            const filename = event.target.dataset.filename; // 获取按钮的data属性值
+            removeProgressBar(filename);
+        });
+        progressBars.push({ filename, element: progressBox });
+        document.getElementsByClassName("PLprogress")[0].appendChild(progressBox);
+    }
+
+    if (Status == 2 || Status == 0) {
+        let countdownInterval; // 用于存储倒计时的 setInterval 返回值
+        let remainingTime = 10000; // 初始倒计时时间，单位是毫秒
+
+        const successHTML = ` 
+        <div>` + filename + `</div><svg t="1692415044921" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4316" width="48" height="48"><path d="M511.950005 512.049995m-447.956254 0a447.956254 447.956254 0 1 0 895.912508 0 447.956254 447.956254 0 1 0-895.912508 0Z" fill="#20B759" p-id="4317"></path><path d="M458.95518 649.636559L289.271751 479.95313c-11.698858-11.698858-30.697002-11.698858-42.39586 0s-11.698858 30.697002 0 42.395859l169.683429 169.68343c11.698858 11.698858 30.697002 11.698858 42.39586 0 11.798848-11.598867 11.798848-30.597012 0-42.39586z" fill="#FFFFFF" p-id="4318"></path><path d="M777.62406 332.267552c-11.698858-11.698858-30.697002-11.698858-42.39586 0L424.158578 643.437164c-11.698858 11.698858-11.698858 30.697002 0 42.39586s30.697002 11.698858 42.39586 0l311.069622-311.069622c11.798848-11.798848 11.798848-30.796992 0-42.49585z" fill="#FFFFFF" p-id="4319"></path></svg>
+        <button class="progressBoxRemove" data-filename="`+ filename + `">X</button>
+        <span style=" position: absolute; left: 5px; bottom: 0; "></span>`
+        const errorHTML = `<div>` + filename + `</div>
+        <svg t="1692431664801" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1808" width="48" height="48"><path d="M512.8 512m-423 0a423 423 0 1 0 846 0 423 423 0 1 0-846 0Z" fill="#FF7575" p-id="1809"></path><path d="M481.3 590.7c5.3 15.8 15.8 26.2 31.5 26.2 15.8 0 26.2-10.5 31.5-26.2l21-288.7c0-31.5-26.2-52.5-52.5-52.5-31.5 0-52.5 26.2-52.5 57.8l21 283.4z m31.5 78.8c-31.5 0-52.5 21-52.5 52.5s21 52.5 52.5 52.5 52.5-21 52.5-52.5-21-52.5-52.5-52.5z m0 0" fill="#FFFFFF" p-id="1810"></path></svg>
+        <button class="progressBoxRemove" data-filename="`+ filename + `">X</button>
+        <span style=" position: absolute; left: 5px; bottom: 0; "></span>`
+        const index = progressBars.findIndex(item => item.filename === filename);
+        if (index !== -1) {
+            const progressBar = progressBars[index].element;
+            if (Status == 2) { //成功
+                progressBar.innerHTML = successHTML
+                progressBar.style.background = "#33CC66"
+            }
+            if (Status == 0) { //失败
+                progressBar.innerHTML = errorHTML
+                progressBar.style.background = "#cc0000"
+            }
+            progressBar.querySelector('.progressBoxRemove').addEventListener('click', function (event) {
+                progressBar.remove();
+            });
+            document.addEventListener('visibilitychange', handleVisibilityChange(progressBar));
+        } else {
+            if (progressBars.length >= 6) { //限制数量
+                const oldestFilename = progressBars[0].filename;
+                removeProgressBar(oldestFilename);
+            }
+
+            let progressBar = document.createElement('div');
+            progressBar.className = 'PLprogress-box';
+            if (Status == 2) { //成功
+                progressBar.innerHTML = successHTML;
+                progressBar.style.background = "#33CC66"
+            }
+            if (Status == 0) { //成功
+                progressBar.innerHTML = errorHTML;
+                progressBar.style.background = "#cc0000"
+            }
+            progressBar.querySelector('.progressBoxRemove').addEventListener('click', function (event) {
+                progressBar.remove();
+                progressBars.splice(index, 1);
+
+            });
+            progressBars.push({ filename, element: progressBar });
+            document.getElementsByClassName("PLprogress")[0].appendChild(progressBar);
+            document.addEventListener('visibilitychange', handleVisibilityChange(progressBar));
+        }
+
+
+        function startCountdown(progressBar) {
+            const timeSpan = progressBar.querySelector('span'); // 获取 <span> 元素
+            countdownInterval = setInterval(function () {
+                timeSpan.textContent = remainingTime / 1000;
+                if (remainingTime <= 0) {
+                    progressBar.remove();
+                    progressBars.splice(index, 1);
+                    clearInterval(countdownInterval);
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                } else {
+                    remainingTime -= 1000; // 减去一秒
+                }
+            }, 1000);
+        }
+
+        function stopCountdown() {
+            clearInterval(countdownInterval);
+        }
+        function handleVisibilityChange(progressBar) {
+            if (document.visibilityState === 'visible') {
+                startCountdown(progressBar);
+            } else {
+                stopCountdown();
+            }
+        }
+    }
+
+}
+
+let StickerOptional;
+function EmoticonBox() {
+    let EmoticonBox = document.createElement('div');
+    EmoticonBox.className = 'PL-EmoticonBox';
+    if (!document.getElementsByClassName("PL-EmoticonBox").length) {
+        EmoticonBox.innerHTML = `
+        <div class="StickerBox">
+            <div class="StickerBoxhead">
+            </div>
+            <div class="StickerBoxContent">
+                <div class="PL-loading"></div>
+            </div>
+            <span class="StickerBoxRemove">X</span>
+            <span class="StickerBoxLeftBut">👈</span>
+            <div class="StickerBoxLeft">
+                <p><input type="checkbox" id="StickerOptional">自选插入格式</p>
+                <select name="HTML" id="StickerCodeSelect">
+                    <option value="URL">URL</option>
+                    <option value="HTML">HTML</option>
+                    <option value="BBCode">BBCode</option>
+                    <option value="Markdown">Markdown</option>
+                    <option value="MD with link">MD with link</option>
+                </select>
+            </div>
+            <div class="StickerBoxright">
+                <img src="" id="PL-EmotionPreview">
+            </div>
+        </div>
+        `
+        document.body.appendChild(EmoticonBox);
+
+        chrome.storage.local.get(['StickerOptional'], function (result) {
+            document.getElementById("StickerOptional").checked = result.StickerOptional
+            StickerOptional = result.StickerOptional
+        });
+        document.getElementById("StickerOptional").addEventListener('click', function (event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                chrome.storage.local.set({ 'StickerOptional': 1 });
+
+            } else {
+                // 存储为0
+                chrome.storage.local.set({ 'StickerOptional': 0 });
+            }
+            StickerOptional = isChecked
+        });
+
+        chrome.storage.local.get(['StickerCodeSelect'], function (result) {
+            const selectedValue = result.StickerCodeSelect;
+            const StickerCodeSelect = document.getElementById("StickerCodeSelect");
+            if (selectedValue) {
+                StickerCodeSelect.value = selectedValue;
+            }
+        });
+        document.getElementById("StickerCodeSelect").addEventListener('change', function (event) {
+            const selectedValue = this.value
+            chrome.storage.local.set({ "StickerCodeSelect": selectedValue });
+        });
+        let StickerBoxLeftBut = 0
+        document.querySelector(".StickerBoxLeftBut").addEventListener('click', function (event) {
+            if (StickerBoxLeftBut == 0) {
+                this.innerText = '👉'
+                document.querySelector(".StickerBoxLeft").style.display = 'flex';
+                StickerBoxLeftBut = 1
+            } else {
+                this.innerText = '👈'
+                document.querySelector(".StickerBoxLeft").style.display = 'none';
+                StickerBoxLeftBut = 0
+            }
+
+        });
+
+
+        // 添加拖动逻辑
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        EmoticonBox.querySelector('.StickerBoxhead').addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+
+        function startDrag(event) {
+            isDragging = true;
+            offsetX = event.clientX - EmoticonBox.offsetLeft;
+            offsetY = event.clientY - EmoticonBox.offsetTop;
+        }
+
+        function drag(event) {
+            if (isDragging) {
+                const x = event.clientX - offsetX;
+                const y = event.clientY - offsetY;
+                EmoticonBox.style.left = x + 'px';
+                EmoticonBox.style.top = y + 'px';
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+        }
+    }
+}
+EmoticonBox()
+
+setTimeout(() => {
+    const insertContentPrompt = document.querySelector('.insertContentIntoEditorPrompt');
+    const emoticonBox = document.querySelector('.PL-EmoticonBox');
+    let timerShow;
+    let timerHide;
+    let getStickerStatus = false;
+    if (!insertContentPrompt) {
+        return;
+    }
+    insertContentPrompt.addEventListener('mouseenter', () => {
+        clearTimeout(timerHide); // 鼠标进入时清除隐藏的定时器
+        timerShow = setTimeout(() => {
+            showEmoticonBox();
+        }, 800);
+    });
+    insertContentPrompt.addEventListener('mouseleave', () => {
+        clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 1000); // 一秒后隐藏
+    });
+
+    emoticonBox.addEventListener('mouseenter', () => {
+        clearTimeout(timerHide); // 鼠标进入 emoticonBox 时清除隐藏的定时器
+    });
+
+    emoticonBox.addEventListener('mouseleave', () => {
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 2000); // 一秒后隐藏
+    });
+
+    function showEmoticonBox() {
+        clearTimeout(timerHide);
+        const promptRect = insertContentPrompt.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset; //滚动条位置
+        const scrollX = window.scrollX || window.pageXOffset; //滚动条位置
+
+        const emoticonBoxWidth = 420  //表情盒子的宽度
+        const emoticonBoxHeight = 200  //表情盒子的高度
+
+        const viewportWidth = window.innerWidth;// 获取视口的可见宽
+        const viewportHeight = window.innerHeight;// 获取视口的可见高度
+
+        const spaceBelow = (scrollY + viewportHeight) - (scrollY + promptRect.bottom)
+
+        const LeftRightPositions = scrollX + promptRect.left
+        if (LeftRightPositions >= emoticonBoxWidth) {
+            emoticonBox.style.left = `${promptRect.right - emoticonBoxWidth + 12}px`;
+
+        } else {
+            emoticonBox.style.left = `${promptRect.left}px`;
+        }
+
+        if (spaceBelow >= emoticonBoxHeight) {
+            // 下方空间足够，显示在下方
+            emoticonBox.style.top = `${promptRect.bottom + scrollY + 10}px`;
+        } else {
+            emoticonBox.style.top = `${promptRect.top + scrollY - emoticonBoxHeight - 10}px`;
+        }
+
+        emoticonBox.style.display = 'block';
+        if (getStickerStatus == false) {
+            getSticker()
+        }
+    }
+    // 隐藏表情框
+    function hideEmoticonBox() {
+        emoticonBox.style.display = 'none';
+    }
+    document.querySelector(".StickerBox .StickerBoxRemove").addEventListener('click', function (event) {
+        hideEmoticonBox()
+    })
+
+    function getSticker() {
+        chrome.storage.local.get(["StickerURL"], function (result) {
+            fetch('https://cors-anywhere.pnglog.com/' + result.StickerURL)
+                .then(response => {
+                    return response.json(); // 解析JSON数据
+                })
+                .then(data => {
+                    const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
+                    const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
+
+
+                    function updateSelectedStatus(selectedIndex) {
+                        const selectedItems = document.querySelectorAll('.StickerBoxheadtem');
+                        selectedItems.forEach((item, index) => {
+                            item.style.color = index === selectedIndex ? "red" : "#fff";
+                        });
+                    }
+
+                    StickerBoxhead.innerHTML = '';
+                    data.sticker.forEach(function (sticker, index) {
+                        const StickerBoxheadtem = document.createElement('div');
+                        StickerBoxheadtem.className = 'StickerBoxheadtem';
+                        StickerBoxheadtem.textContent = sticker.StickerTitle;
+                        StickerBoxhead.appendChild(StickerBoxheadtem);
+                        StickerBoxheadtem.addEventListener('click', function (event) {
+                            updateSelectedStatus(index);
+                            StickerDataItem(index);
+                        })
+                    })
+                    function StickerDataItem(index) {
+                        StickerBoxContent.innerHTML = '';
+                        if (data.sticker[index].StickerData.length == 0) {
+                            StickerBoxContent.innerHTML = '数据为空';
+                            return;
+                        }
+                        const EmotionPreview = document.getElementById('PL-EmotionPreview')
+                        data.sticker[index].StickerData.forEach(sticker => {
+                            const StickerBoxContentitem = document.createElement('div');
+
+                            StickerBoxContentitem.className = 'StickerBoxContentitem';
+
+                            const img = document.createElement('img');
+                            img.src = sticker.StickerURL;
+                            img.alt = sticker.StickerName;
+                            img.title = sticker.StickerName;
+                            img.loading = "lazy";
+                            img.addEventListener('click', function (event) {
+                                if (StickerOptional == 1) {
+                                    chrome.storage.local.get(['StickerCodeSelect'], function (result) {
+                                        const selectedValue = result.StickerCodeSelect;
+                                        let url;
+                                        switch (selectedValue) {
+                                            case 'URL':
+                                                url = sticker.StickerURL
+                                                break;
+                                            case 'HTML':
+                                                url = '<img src="' + sticker.StickerURL + '" alt="" title="' + sticker.StickerName + '" >'
+                                                break;
+                                            case 'BBCode':
+                                                url = '[img]' + sticker.StickerURL + '[/img]'
+                                                break;
+                                            case 'Markdown':
+                                                url = '![' + sticker.StickerName + '](' + sticker.StickerURL + ')'
+                                                break;
+                                            case 'MD with link':
+                                                url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
+                                                break;
+                                        }
+                                        // document.execCommand('insertText', false, url);
+                                        AutoInsertFun(url, 1)
+                                        // window.postMessage({ type: 'StickerOptional', data: url }, '*');
+                                    });
+
+                                    return
+                                }
+                                AutoInsertFun(sticker.StickerURL, 0)
+                            })
+                            img.addEventListener('mouseover', function () {
+                                EmotionPreview.src = this.src;
+
+                            });
+                            StickerBoxContentitem.appendChild(img);
+                            StickerBoxContent.appendChild(StickerBoxContentitem);
+                        });
+                    }
+
+                    updateSelectedStatus(0);
+                    StickerDataItem(0);
+                    getStickerStatus = true
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        })
+
+    }
+
+}, 1000);

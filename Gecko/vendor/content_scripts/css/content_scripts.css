@@ -65,8 +65,8 @@
 }
 .PNGiframe {
     position: fixed;
-    width: 780px;
-    height: 100%;
+    width: 780px !important;
+    height: 100% !important;
     bottom: 0;
     border: none;
     transition: left right 0.4s ease;

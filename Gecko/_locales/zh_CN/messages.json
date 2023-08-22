@@ -137,6 +137,9 @@
   "AutoInsert": {
     "message": "自动插入"
   },
+  "AutoCopy": {
+    "message": "自动复制"
+  },
   "on": {
     "message": "开启"
   },

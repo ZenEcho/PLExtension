@@ -1,37 +1,245 @@
  .insertContentIntoEditorPrompt {
-    min-width: 2em;
-    height: 1em;
-    line-height: 1em;
-    color: #fff;
-    padding: 5px 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    outline: none;
-    overflow: hidden;
-    border-radius: 5px;
-    border: none;
-    background-color: #3a86ff
-  }
-  .insertContentIntoEditorPrompt:hover {
-    border-radius: 5px;
-    padding-right: 24px;
-    padding-left:8px;
-  }
-  .insertContentIntoEditorPrompt:hover:after {
-    opacity: 1;
-    right: 10px;
-  }
-  .insertContentIntoEditorPrompt:after {
-    content: "\00BB";
-    position: absolute;
-    opacity: 0;
-    font-size: 1em;
-    line-height: 1em;
-    padding: 5px 0;
-    top: 0;
-    right: -20px;
-    transition: 0.4s;
-  }
+   min-width: 2em;
+   height: 1em;
+   line-height: 1em;
+   color: #fff;
+   padding: 5px 10px;
+   font-weight: bold;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   position: relative;
+   display: inline-block;
+   outline: none;
+   overflow: hidden;
+   border-radius: 5px;
+   border: none;
+   background-color: #3a86ff
+ }
+
+ .insertContentIntoEditorPrompt:hover {
+   border-radius: 5px;
+   padding-right: 24px;
+   padding-left: 8px;
+ }
+
+ .insertContentIntoEditorPrompt:hover:after {
+   opacity: 1;
+   right: 10px;
+ }
+
+ .insertContentIntoEditorPrompt:after {
+   content: "\00BB";
+   position: absolute;
+   opacity: 0;
+   font-size: 1em;
+   line-height: 1em;
+   padding: 5px 0;
+   top: 0;
+   right: -20px;
+   transition: 0.4s;
+ }
+
+ .PLprogress {
+   position: fixed;
+   bottom: 20px;
+   right: 20px;
+   z-index: 100000;
+ }
+
+ .PLprogress-box {
+   font-size: 16px;
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   background-color: #888888;
+   color: white;
+   margin: 1em 0;
+   padding: 10px;
+   border-radius: 5px;
+   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+   height: 100px;
+ }
+
+ .PLprogress-box div:nth-child(1) {
+   margin-bottom: 8px;
+ }
+
+ .PL-loading {
+   width: 32px;
+   height: 32px;
+   border: 3px solid #ddd;
+   border-radius: 50%;
+   display: inline-block;
+   position: relative;
+   animation: rotation 1s linear infinite;
+ }
+
+ .PL-loading:after {
+   content: "";
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 42px;
+   height: 42px;
+   border-radius: 50%;
+   border: 3px solid;
+   border-color: #ff3d00 transparent;
+ }
+
+ @keyframes rotation {
+   0% {
+     transform: rotate(0deg);
+   }
+
+   100% {
+     transform: rotate(360deg);
+   }
+ }
+
+ .progressBoxRemove {
+   border-radius: 50%;
+   width: 24px;
+   height: 24px;
+   border: none;
+   position: absolute;
+   right: -8px;
+   top: -8px;
+   font-size: 16px;
+   background: #FF3333;
+   color: white;
+   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+ }
+
+ .progressBoxRemove:hover {
+   transform: scale3d(1.1, 1.1, 1.1);
+   background: #dc3545;
+ }
+
+ .PL-EmoticonBox {
+   user-select: none;
+   border-radius: 14px;
+   width: 420px;
+   height: 200px;
+   background-color: #dddddd26;
+   display: none;
+   position: absolute;
+   padding: 0;
+   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+   z-index: 1000;
+   /* 确保在其他内容上方显示 */
+   max-height: 200px;
+   /* 设置最大高度以防止内容溢出 */
+ }
+
+ .StickerBox {
+   display: flex;
+   flex-direction: column;
+ }
+
+ .StickerBoxRemove {
+   position: absolute;
+   width: 2em;
+   line-height: 2em;
+   top: -1em;
+   right: -1em;
+   border-radius: 50%;
+   color: white;
+   background-color: #F44336;
+   text-align: center;
+ }
+
+ .StickerBoxLeft {
+   display: none;
+   position: absolute;
+   left: -100px;
+   top: 40px;
+   width: 100px;
+   height: 120px;
+   background: #eee;
+   border-radius: 14px 0px 0 14px;
+   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+ }
+
+ .StickerBoxLeftBut {
+   position: absolute;
+   top: 50%;
+   left: 1px;
+   font-size: 14px;
+   line-height: 14px;
+   text-align: center;
+ }
+
+ .StickerBoxright {
+   display: flex;
+   position: absolute;
+   right: -155px;
+   top: 40px;
+   width: 150px;
+   height: 160px;
+   align-items: center;
+ }
+
+ .StickerBoxright img {
+   width: 100%;
+ }
+
+ .StickerBoxRemove:hover {
+   background-color: #cf372c;
+
+ }
+
+ .StickerBoxhead {
+   border-radius: 14px 14px 0 0;
+   background-color: #0f62fe;
+   color: white;
+   display: flex;
+   overflow-x: auto;
+   white-space: nowrap;
+   padding: 0em 16px;
+   overflow-y: auto;
+   /* 添加滚动条以处理溢出内容 */
+ }
+
+ .StickerBoxheadtem {
+   user-select: none;
+   font-size: 1em;
+   padding: 6px 1em;
+   min-width: 4em;
+   margin: 5px 0;
+   border-radius: 14px;
+ }
+
+ .StickerBoxheadtem:hover {
+   background: #3a86ff;
+ }
+
+ .StickerBoxContent {
+   height: 120px;
+   display: flex;
+   flex-wrap: wrap;
+   margin-top: 4px;
+   padding: 4px;
+   justify-content: center;
+   align-items: center;
+   overflow: auto;
+ }
+
+ .StickerBoxContentitem {
+   user-select: none;
+   margin: 5px
+ }
+
+ .StickerBoxContentitem:hover {
+   transform: scale3d(1.1, 1.1, 1.1);
+ }
+
+ .StickerBoxContentitem img {
+   width: 4em;
+ }

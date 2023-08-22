@@ -97,7 +97,6 @@ $(document).ready(function () {
         }
         // 判断复制模式
         if (!Copy_Selected_Mode) {
-            chrome.storage.local.set({ 'Copy_Selected_Mode': "URL" })
             Copy_Selected_Mode = "URL"
         }
         let Sorting_Plan;

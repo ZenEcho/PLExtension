@@ -415,7 +415,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         //进度条
         if (request.Progress_bar) {
-            // window.postMessage({ type: 'Progress_bar', data: request.Progress_bar }, '*');
             StatusProgressBar(request.Progress_bar.filename, request.Progress_bar.status, request.Progress_bar.IsCurrentTabId)
         }
         //自动复制消息中转
@@ -573,7 +572,7 @@ function StatusProgressBar(filename, Status, IsID) {
         document.getElementsByClassName("PLprogress")[0].appendChild(progressBox);
     }
 
-    if (Status == 2 || Status == 3) {
+    if (Status == 2 || Status == 0) {
         let countdownInterval; // 用于存储倒计时的 setInterval 返回值
         let remainingTime = 10000; // 初始倒计时时间，单位是毫秒
 
@@ -774,7 +773,6 @@ setTimeout(() => {
             showEmoticonBox();
         }, 800);
     });
-
     insertContentPrompt.addEventListener('mouseleave', () => {
         clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
         timerHide = setTimeout(() => {
@@ -792,14 +790,35 @@ setTimeout(() => {
         }, 2000); // 一秒后隐藏
     });
 
-
     function showEmoticonBox() {
         clearTimeout(timerHide);
         const promptRect = insertContentPrompt.getBoundingClientRect();
-        const scrollY = window.scrollY || window.pageYOffset;
-        emoticonBox.style.top = `${promptRect.bottom + scrollY}px`;
+        const scrollY = window.scrollY || window.pageYOffset; //滚动条位置
+        const scrollX = window.scrollX || window.pageXOffset; //滚动条位置
 
-        emoticonBox.style.left = `${promptRect.left}px`;
+        const emoticonBoxWidth = 420  //表情盒子的宽度
+        const emoticonBoxHeight = 200  //表情盒子的高度
+
+        const viewportWidth = window.innerWidth;// 获取视口的可见宽
+        const viewportHeight = window.innerHeight;// 获取视口的可见高度
+
+        const spaceBelow = (scrollY + viewportHeight) - (scrollY + promptRect.bottom)
+
+        const LeftRightPositions = scrollX + promptRect.left
+        if (LeftRightPositions >= emoticonBoxWidth) {
+            emoticonBox.style.left = `${promptRect.right - emoticonBoxWidth + 12}px`;
+
+        } else {
+            emoticonBox.style.left = `${promptRect.left}px`;
+        }
+
+        if (spaceBelow >= emoticonBoxHeight) {
+            // 下方空间足够，显示在下方
+            emoticonBox.style.top = `${promptRect.bottom + scrollY + 10}px`;
+        } else {
+            emoticonBox.style.top = `${promptRect.top + scrollY - emoticonBoxHeight - 10}px`;
+        }
+
         emoticonBox.style.display = 'block';
         if (getStickerStatus == false) {
             getSticker()

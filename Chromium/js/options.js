@@ -2154,14 +2154,14 @@ $(document).ready(function () {
     if (value) {
       chrome.storage.local.set({ "StickerURL": value })
     } else {
-      chrome.storage.local.set({ "StickerURL": "https://sh.233404.xyz/1.json" })
+      chrome.storage.local.set({ "StickerURL": "https://plextension-sticker.pnglog.com/sticker.json" })
     }
     toastItem({
       toast_content: chrome.i18n.getMessage("Successfully_saved_2")
     })
   })
   chrome.storage.local.get(["StickerURL"], function (result) {
-    if (result.StickerURL != "https://sh.233404.xyz/1.json") {
+    if (result.StickerURL != "https://plextension-sticker.pnglog.com/sticker.json") {
       $("#StickerInput").val(result.StickerURL)
     }
   })

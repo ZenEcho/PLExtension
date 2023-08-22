@@ -146,15 +146,3 @@ try {
     }
 } catch (error) {
 }
-
-
-// function insertTextAtCursor(url) {
-//     const textarea = document.activeElement;
-//     const value = textarea.value;
-
-//     const newValue = value + url
-//     console.log(newValue);
-//     textarea.value = newValue;
-//     console.log(textarea.value);
-//     textarea.dispatchEvent(new Event('input', { bubbles: true }));
-// }

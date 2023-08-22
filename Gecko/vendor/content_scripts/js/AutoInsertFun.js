@@ -107,7 +107,7 @@ function insertContentIntoEditorState() {
 /**
      * @param {url} AutoInsert_message_content 上传成功后返回的url
      */
-function AutoInsertFun(AutoInsert_message_content) {
+function AutoInsertFun(AutoInsert_message_content, Start_URL) {
     chrome.storage.local.get(["AutoInsert"], function (result) {
         if (result.AutoInsert != "AutoInsert_on") { return; }
         let Find_Editor = false
@@ -128,31 +128,40 @@ function AutoInsertFun(AutoInsert_message_content) {
             if (Discuz_Interactive_reply) {
                 if (Find_Editor == true) { return; }
                 //如果是回复楼层
-
                 let originalContent = Discuz_Interactive_reply.value;
-                Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                if (Start_URL == 0) {
+                    Discuz_Interactive_reply.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                } else {
+                    Discuz_Interactive_reply.value = originalContent + "\n" + AutoInsert_message_content
+                }
                 Find_Editor = true
             } else if (Discuz) {
                 if (Find_Editor == true) { return; }
                 //如果是回复楼主
 
                 let originalContent = Discuz.value;
-                Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                if (Start_URL == 0) {
+                    Discuz.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]'
+                } else {
+                    Discuz.value = originalContent + "\n" + AutoInsert_message_content
+                }
                 Find_Editor = true
             }
             if (Discuz_Advanced) {
                 if (Find_Editor == true) { return; }
                 if (Discuz_Advanced_iframe) {
-
                     let bodyElement = Discuz_Advanced_iframe.contentDocument.body
                     let img = document.createElement('img')
                     img.src = AutoInsert_message_content
                     bodyElement.appendChild(img)
                     Find_Editor = true
                 } else {
-
                     let originalContent = Discuz_Advanced.value;
-                    Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
+                    if (Start_URL == 0) {
+                        Discuz_Advanced.value = originalContent + "\n" + '[img]' + AutoInsert_message_content + '[/img]';
+                    } else {
+                        Discuz_Advanced.value = originalContent + "\n" + AutoInsert_message_content
+                    }
                     Find_Editor = true
                 }
             }
@@ -165,7 +174,13 @@ function AutoInsertFun(AutoInsert_message_content) {
                 if (reply_content_Advanced) {
                     if (Find_Editor == true) { return; }
                     let originalContent = reply_content_Advanced.value;
-                    reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                    if (Start_URL == 0) {
+                        reply_content_Advanced.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                    } else {
+                        reply_content_Advanced.value = originalContent + "\n" + AutoInsert_message_content
+                    }
+                    let inputEvent = new Event('input', { bubbles: true });
+                    reply_content_Advanced.dispatchEvent(inputEvent);
                     Find_Editor = true
                 }
             }
@@ -177,8 +192,14 @@ function AutoInsertFun(AutoInsert_message_content) {
             if (nodeseek) {
                 if (Find_Editor == true) { return; }
                 let originalContent = nodeseek.value;
-                nodeseek.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                if (Start_URL == 0) {
+                    nodeseek.value = originalContent + "\n" + '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                } else {
+                    nodeseek.value = originalContent + "\n" + AutoInsert_message_content
+                }
                 Find_Editor = true
+                let inputEvent = new Event('input', { bubbles: true });
+                nodeseek.dispatchEvent(inputEvent);
             }
 
         }
@@ -189,7 +210,13 @@ function AutoInsertFun(AutoInsert_message_content) {
                 if (Find_Editor == true) { return; }
                 let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
                 let originalContent = write.value;
-                write.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                if (Start_URL == 0) {
+                    write.value = originalContent + "\n" + '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                } else {
+                    write.value = originalContent + "\n" + AutoInsert_message_content
+                }
+                let inputEvent = new Event('input', { bubbles: true });
+                write.dispatchEvent(inputEvent);
                 Find_Editor = true
             }
         }
@@ -199,7 +226,13 @@ function AutoInsertFun(AutoInsert_message_content) {
             if (text) {
                 if (Find_Editor == true) { return; }
                 let originalContent = text.value;
-                text.value = originalContent + "\n" + '![' + "请输入内容来激活本次插入" + '](' + AutoInsert_message_content + ')'
+                if (Start_URL == 0) {
+                    text.value = originalContent + "\n" + '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                } else {
+                    text.value = originalContent + "\n" + AutoInsert_message_content
+                }
+                let inputEvent = new Event('input', { bubbles: true });
+                text.dispatchEvent(inputEvent);
                 Find_Editor = true
             }
         }
@@ -207,7 +240,11 @@ function AutoInsertFun(AutoInsert_message_content) {
         let CodeMirror = document.querySelector(".CodeMirror");
         if (CodeMirror) {
             if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+            if (Start_URL == 0) {
+                window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+            } else {
+                window.postMessage({ type: 'CodeMirror', data: AutoInsert_message_content }, '*');
+            }
             Find_Editor = true
         }
         //Gutenberg Editor
@@ -223,32 +260,53 @@ function AutoInsertFun(AutoInsert_message_content) {
 
             // TinyMCE 5/6 Editor
             if (src && src.includes('tinymce')) {
-                window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                if (Start_URL == 0) {
+                    window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                } else {
+                    window.postMessage({ type: 'TinyMCE', data: AutoInsert_message_content }, '*');
+                }
                 Find_Editor = true
                 break; // 终止整个循环
             }
             // wangeditor
             if (src && src.includes('wangeditor')) {
-                window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                if (Start_URL == 0) {
+                    window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                } else {
+                    window.postMessage({ type: 'wangeditor', data: AutoInsert_message_content }, '*');
+                }
                 Find_Editor = true
                 break;
             }
             // ckeditor4
             if (src && src.includes('ckeditor4')) {
-                window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                if (Start_URL == 0) {
+                    window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                } else {
+                    window.postMessage({ type: 'ckeditor4', data: AutoInsert_message_content }, '*');
+                }
+
                 Find_Editor = true
                 break;
             }
             // ckeditor5
             if (src && src.includes('ckeditor5')) {
-                window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                if (Start_URL == 0) {
+                    window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                } else {
+                    window.postMessage({ type: 'ckeditor5', data: AutoInsert_message_content }, '*');
+                }
                 Find_Editor = true
                 break;
             }
             // ckeditor4/5
             if (src && src.includes('ckeditor')) {
                 // 当不是4和5的时候，执行这条命令然后使用4的方法注入
-                window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                if (Start_URL == 0) {
+                    window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                } else {
+                    window.postMessage({ type: 'ckeditor', data: AutoInsert_message_content }, '*');
+                }
                 Find_Editor = true
                 break;
             }
@@ -269,55 +327,6 @@ function AutoInsertFun(AutoInsert_message_content) {
                 break;
             }
         }
-        // scripts.forEach(function (script) {
-        //     if (Find_Editor == true) { return; }
-        //     let src = script.getAttribute('src');
-        //     //TinyMCE 5/6 Editor
-        //     if (src && src.includes('tinymce')) {
-        //         window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //wangeditor
-        //     if (src && src.includes('wangeditor')) {
-        //         window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //ckeditor4
-        //     if (src && src.includes('ckeditor4')) {
-        //         window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //ckeditor5
-        //     if (src && src.includes('ckeditor5')) {
-        //         window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //ckeditor4/5
-        //     if (src && src.includes('ckeditor')) {
-        //         window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //Halo
-        //     if (src && src.includes('halo')) {
-        //         let HaloEditor_Element = document.querySelector('.ProseMirror');
-        //         if (HaloEditor_Element) {
-        //             HaloEditor_Element.focus();
-        //             document.execCommand('insertImage', false, AutoInsert_message_content);
-        //         }
-        //         Find_Editor = true
-        //         return;
-        //     }
-        //     //ueditor 百度
-        //     if (src && src.includes('ueditor')) {
-        //         window.postMessage({ type: 'ueditor', data: AutoInsert_message_content }, '*');
-        //         Find_Editor = true
-        //         return;
-        //     }
-        // });
     })
 }
+
