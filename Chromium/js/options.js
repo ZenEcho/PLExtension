@@ -2156,6 +2156,7 @@ $(document).ready(function () {
     } else {
       chrome.storage.local.set({ "StickerURL": "https://plextension-sticker.pnglog.com/sticker.json" })
     }
+    chrome.storage.local.set({ 'StickerDATA': [] }) //表情包数据
     toastItem({
       toast_content: chrome.i18n.getMessage("Successfully_saved_2")
     })

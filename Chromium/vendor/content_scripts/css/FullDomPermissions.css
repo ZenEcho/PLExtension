@@ -214,6 +214,7 @@
    min-width: 4em;
    margin: 5px 0;
    border-radius: 14px;
+   text-align: center;
  }
 
  .StickerBoxheadtem:hover {
