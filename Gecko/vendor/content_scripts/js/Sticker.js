@@ -143,22 +143,22 @@ function mainLogic() {
             showEmoticonBox();
         }, 800);
     });
-    // insertContentPrompt.addEventListener('mouseleave', () => {
-    //     clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
-    //     timerHide = setTimeout(() => {
-    //         hideEmoticonBox();
-    //     }, 1000); // 一秒后隐藏
-    // });
+    insertContentPrompt.addEventListener('mouseleave', () => {
+        clearTimeout(timerShow); // 鼠标离开时清除显示的定时器
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 1000); // 一秒后隐藏
+    });
 
-    // emoticonBox.addEventListener('mouseenter', () => {
-    //     clearTimeout(timerHide); // 鼠标进入 emoticonBox 时清除隐藏的定时器
-    // });
+    emoticonBox.addEventListener('mouseenter', () => {
+        clearTimeout(timerHide); // 鼠标进入 emoticonBox 时清除隐藏的定时器
+    });
 
-    // emoticonBox.addEventListener('mouseleave', () => {
-    //     timerHide = setTimeout(() => {
-    //         hideEmoticonBox();
-    //     }, 2000); // 一秒后隐藏
-    // });
+    emoticonBox.addEventListener('mouseleave', () => {
+        timerHide = setTimeout(() => {
+            hideEmoticonBox();
+        }, 2000); // 一秒后隐藏
+    });
 
     function showEmoticonBox() {
         clearTimeout(timerHide);
