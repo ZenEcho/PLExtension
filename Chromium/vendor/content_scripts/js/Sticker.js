@@ -189,9 +189,10 @@ function mainLogic() {
             emoticonBox.style.top = `${promptRect.top + scrollY - emoticonBoxHeight - 10}px`;
         }
         emoticonBox.style.display = 'block';
-        chrome.storage.local.get(["StickerDATA"], function (result) {
+        chrome.storage.local.get(["StickerDATA", "StickerHeadSelected"], function (result) {
             emoticonBox.style.width = "420px";
             let StickerDATA = result.StickerDATA || []
+            let StickerHeadSelected = result.StickerHeadSelected || 0
             if (getStickerStatus == true) {
                 getSticker(1)
                 return;
@@ -201,7 +202,7 @@ function mainLogic() {
                 getSticker(0)
             } else {
                 //存储里的贴纸
-                DataRendering(StickerDATA)
+                DataRendering(StickerDATA, StickerHeadSelected)
             }
         })
 
@@ -232,17 +233,17 @@ function mainLogic() {
                         if (IsGet == 1) {
                             return;
                         }
-                        DataRendering(data.sticker)
+                        DataRendering(data.sticker, 0)
                     }
                 })
                 .catch(error => {
-                    console.error('Fetch error:', error);
+                    console.error(error);
                 });
         })
     }
 
     // 表情包渲染
-    function DataRendering(data) {
+    function DataRendering(data, StickerHeadSelected) {
         const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
         const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
         function updateSelectedStatus(selectedIndex) {
@@ -262,6 +263,7 @@ function mainLogic() {
             StickerBoxheadtem.addEventListener('click', function (event) {
                 updateSelectedStatus(index);
                 StickerDataItem(index);
+                chrome.storage.local.set({ 'StickerHeadSelected': index })
             })
         })
         function StickerDataItem(index) {
@@ -310,16 +312,19 @@ function mainLogic() {
                     AutoInsertFun(sticker.StickerURL, 0)
                 })
                 img.addEventListener('mouseover', function () {
+                    EmotionPreview.style.display="block"
                     EmotionPreview.src = this.src;
-
+                });
+                img.addEventListener('mouseleave', function () {
+                    EmotionPreview.style.display="none"
                 });
                 StickerBoxContentitem.appendChild(img);
                 StickerBoxContent.appendChild(StickerBoxContentitem);
             });
         }
 
-        updateSelectedStatus(0);
-        StickerDataItem(0);
+        updateSelectedStatus(StickerHeadSelected);
+        StickerDataItem(StickerHeadSelected);
         getStickerStatus = true
     }
 }
