@@ -34,7 +34,9 @@
         "js/public.js",
         "vendor/content_scripts/js/content_scripts.js",
         "js/uploader.js",
-        "vendor/content_scripts/js/AutoInsertFun.js"
+        "vendor/content_scripts/js/AutoInsertFun.js",
+        "vendor/content_scripts/js/ProgressBar.js",
+        "vendor/content_scripts/js/Sticker.js"
       ],
       "css": [
         "vendor/content_scripts/css/content_scripts.css"

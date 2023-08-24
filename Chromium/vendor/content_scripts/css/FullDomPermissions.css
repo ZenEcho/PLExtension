@@ -119,6 +119,7 @@
  }
 
  .PL-EmoticonBox {
+   font-size: 14px;
    user-select: none;
    border-radius: 14px;
    width: 0px;
@@ -153,10 +154,10 @@
  .StickerBoxLeft {
    display: none;
    position: absolute;
-   left: -100px;
+   left: -120px;
    top: 40px;
-   width: 100px;
-   height: 120px;
+   width: 120px;
+   height: 150px;
    background: #eee;
    border-radius: 14px 0px 0 14px;
    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
@@ -168,8 +169,8 @@
 
  .StickerBoxLeftBut {
    position: absolute;
-   top: 50%;
-   left: 1px;
+   top: 40px;
+   left: 0px;
    font-size: 14px;
    line-height: 14px;
    text-align: center;
@@ -185,6 +186,10 @@
    align-items: center;
  }
 
+ .StickerBoxright img {
+   max-height: 160px;
+ }
+
  img {
    box-shadow: none !important;
    border: none !important;
@@ -195,22 +200,30 @@
 
  }
 
+ .StickerHead {
+   height: 40px;
+ }
+
  .StickerBoxhead {
    border-radius: 14px 14px 0 0;
    background-color: #0f62fe;
    color: white;
    display: flex;
-   overflow-x: auto;
+   overflow-x: hidden;
    white-space: nowrap;
    padding: 0em 16px;
-   overflow-y: auto;
    /* 添加滚动条以处理溢出内容 */
+ }
+
+ .StickerBoxhead:active {
+   cursor: grabbing;
+   /* 设置鼠标样式为“抓取中” */
  }
 
  .StickerBoxheadtem {
    user-select: none;
-   font-size: 1em;
-   padding: 6px 1em;
+   font-size: 16px;
+   padding: 3px 1em;
    min-width: 4em;
    margin: 5px 0;
    border-radius: 14px;
@@ -222,11 +235,11 @@
  }
 
  .StickerBoxContent {
-   height: 120px;
+   height: 156px;
    display: flex;
    flex-wrap: wrap;
    margin-top: 4px;
-   padding: 4px;
+   padding: 0 4px;
    justify-content: center;
    align-items: center;
    overflow: auto;
@@ -243,4 +256,8 @@
 
  .StickerBoxContentitem img {
    width: 4em;
+ }
+ .StickerAuthor{
+  width: 100%;
+  text-align: center;
  }
