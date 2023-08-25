@@ -15,7 +15,7 @@ function EmoticonBox() {
             <span class="StickerBoxRemove">X</span>
             <span class="StickerBoxLeftBut">👈</span>
             <div class="StickerBoxLeft">
-                <p><input type="checkbox" id="StickerOptional">自选插入格式</p>
+                <p><input type="checkbox" id="StickerOptional">焦点插入</p>
                 <select name="HTML" id="StickerCodeSelect">
                     <option value="URL">URL</option>
                     <option value="HTML">HTML</option>
@@ -305,11 +305,11 @@ function mainLogic() {
                                     url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
                                     break;
                             }
-                            AutoInsertFun(url, 1)
+                            AutoInsertFun(url, true)
                         });
                         return
                     }
-                    AutoInsertFun(sticker.StickerURL, 0)
+                    AutoInsertFun(sticker.StickerURL, false)
                 })
                 img.addEventListener('mouseover', function () {
                     EmotionPreview.style.display="block"

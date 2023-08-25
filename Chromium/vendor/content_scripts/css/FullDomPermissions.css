@@ -1,9 +1,11 @@
  .insertContentIntoEditorPrompt {
-   min-width: 2em;
-   height: 1em;
-   line-height: 1em;
+   text-align: center;
+   font-size: 14px;
+   width: 52px;
+   height: 14px;
+   line-height: 14px;
    color: #fff;
-   padding: 5px 10px;
+   padding: 5px 10px !important;
    font-weight: bold;
    cursor: pointer;
    transition: all 0.3s ease;
@@ -13,26 +15,25 @@
    overflow: hidden;
    border-radius: 5px;
    border: none;
-   background-color: #3a86ff
+   background-color: #3a86ff;
  }
 
  .insertContentIntoEditorPrompt:hover {
-   border-radius: 5px;
-   padding-right: 24px;
-   padding-left: 8px;
+   padding-right: 14px !important;
+   padding-left: 12px !important;
  }
 
  .insertContentIntoEditorPrompt:hover:after {
    opacity: 1;
-   right: 10px;
+   right: 4px;
  }
 
  .insertContentIntoEditorPrompt:after {
    content: "\00BB";
    position: absolute;
    opacity: 0;
-   font-size: 1em;
-   line-height: 1em;
+   font-size: 14px;
+   line-height: 14px;
    padding: 5px 0;
    top: 0;
    right: -20px;
@@ -223,10 +224,9 @@
  .StickerBoxheadtem {
    user-select: none;
    font-size: 16px;
-   padding: 3px 1em;
-   min-width: 4em;
-   margin: 5px 0;
-   border-radius: 14px;
+   padding: 3px 16px !important;
+   margin: 5px 0px !important;
+   border-radius: 16px;
    text-align: center;
  }
 
@@ -255,9 +255,10 @@
  }
 
  .StickerBoxContentitem img {
-   width: 4em;
+   width: 54px;
  }
- .StickerAuthor{
-  width: 100%;
-  text-align: center;
+
+ .StickerAuthor {
+   width: 100%;
+   text-align: center;
  }
