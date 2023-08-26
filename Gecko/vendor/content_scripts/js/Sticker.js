@@ -81,6 +81,9 @@ function EmoticonBox() {
         document.addEventListener('mouseup', stopDrag);
 
         function startDrag(event) {
+            if (event.target.tagName.toLowerCase() === 'img') {
+                return; // 如果拖动的是 <img> 元素，不进行拖动处理
+            }
             isDragging = true;
             offsetX = event.clientX - EmoticonBox.offsetLeft;
             offsetY = event.clientY - EmoticonBox.offsetTop;
@@ -137,6 +140,7 @@ function mainLogic() {
     let timerShow;
     let timerHide;
     let getStickerStatus = false;
+    
     insertContentPrompt.addEventListener('mouseenter', () => {
         clearTimeout(timerHide); // 鼠标进入时清除隐藏的定时器
         timerShow = setTimeout(() => {
@@ -166,8 +170,8 @@ function mainLogic() {
         const scrollY = window.scrollY || window.pageYOffset; //滚动条位置
         const scrollX = window.scrollX || window.pageXOffset; //滚动条位置
 
-        const emoticonBoxWidth = 420  //表情盒子的宽度
-        const emoticonBoxHeight = 200  //表情盒子的高度
+        const emoticonBoxWidth = 420  //贴纸盒子的宽度
+        const emoticonBoxHeight = 200  //贴纸盒子的高度
 
         const viewportWidth = window.innerWidth;// 获取视口的可见宽
         const viewportHeight = window.innerHeight;// 获取视口的可见高度
@@ -208,7 +212,7 @@ function mainLogic() {
 
     }
 
-    // 隐藏表情框
+    // 隐藏贴纸框
     function hideEmoticonBox() {
         emoticonBox.style.width = "0px";
         setTimeout(() => {
@@ -220,7 +224,7 @@ function mainLogic() {
         hideEmoticonBox()
     })
 
-    // 获取网络表情包
+    // 获取网络贴纸
     function getSticker(IsGet) {
         chrome.storage.local.get(["StickerURL"], function (result) {
             fetch('https://cors-anywhere.pnglog.com/' + result.StickerURL)
@@ -242,7 +246,7 @@ function mainLogic() {
         })
     }
 
-    // 表情包渲染
+    // 贴纸渲染
     function DataRendering(data, StickerHeadSelected) {
         const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
         const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
@@ -312,11 +316,11 @@ function mainLogic() {
                     AutoInsertFun(sticker.StickerURL, false)
                 })
                 img.addEventListener('mouseover', function () {
-                    EmotionPreview.style.display="block"
+                    EmotionPreview.style.display = "block"
                     EmotionPreview.src = this.src;
                 });
                 img.addEventListener('mouseleave', function () {
-                    EmotionPreview.style.display="none"
+                    EmotionPreview.style.display = "none"
                 });
                 StickerBoxContentitem.appendChild(img);
                 StickerBoxContent.appendChild(StickerBoxContentitem);
@@ -330,6 +334,6 @@ function mainLogic() {
 }
 setTimeout(() => {
     if (document.querySelector('.insertContentIntoEditorPrompt')) {
-        mainLogic(); // 调用主要逻辑函数
+        mainLogic(); 
     }
 }, 1000);

@@ -36,20 +36,23 @@ function insertContentIntoEditorState() {
         // url转图片
         const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
         const replyContentElements = Array.from(document.querySelectorAll('.reply_content'));
-
         for (const replyContent of replyContentElements) {
             const anchorElements = Array.from(replyContent.querySelectorAll('a'));
 
             for (const anchorElement of anchorElements) {
-                const href = anchorElement.getAttribute('href');
-                const lowerCaseHref = href.toLowerCase();
-                if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
-                    const imgElement = document.createElement('img');
-                    imgElement.className = "embedded_image";
-                    imgElement.src = href;
-                    imgElement.loading = "lazy";
-                    imgElement.alt = 'Image';
-                    anchorElement.parentNode.replaceChild(imgElement, anchorElement);
+                const imgElements = Array.from(anchorElement.querySelectorAll('img')); // 获取 <a> 元素内的所有 <img> 元素
+
+                if (imgElements.length === 0) {
+                    const href = anchorElement.getAttribute('href');
+                    const lowerCaseHref = href.toLowerCase();
+
+                    if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
+                        anchorElement.innerHTML = `
+                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="Image">
+                        `
+                        anchorElement.className = "PL-v2exImg"
+                        anchorElement.style.position = "relative"
+                    }
                 }
             }
         }
@@ -168,15 +171,15 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                     const inputElements = commonAncestor.querySelectorAll('input');
                     const textareaElements = commonAncestor.querySelectorAll('textarea');
                     const contentEditableElements = commonAncestor.querySelectorAll('[contenteditable="true"]');
-                    if (inputElements.length > 0 && Find_Editor != true) {
+                    if (inputElements.length > 0) {
                         // 方法1: 处理input元素
                         document.execCommand('insertText', false, AutoInsert_message_content);
                         Find_Editor = true
-                    } else if (textareaElements.length > 0 && Find_Editor != true) {
+                    } else if (textareaElements.length > 0) {
                         // 方法2: 处理textarea元素
                         document.execCommand('insertText', false, AutoInsert_message_content);
                         Find_Editor = true
-                    } else if (contentEditableElements.length > 0 && Find_Editor != true) {
+                    } else if (contentEditableElements.length > 0) {
                         // 方法3: 处理具有contenteditable属性的元素
                         const imgElement = document.createElement('img');
                         imgElement.src = AutoInsert_message_content; // 替换成你的图片URL
@@ -312,35 +315,6 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             Find_Editor = true
         }
 
-        // iframe套娃编辑器插入
-        let iframe = document.querySelector('iframe');
-        if (iframe) {
-            if (Find_Editor == true) { return; }
-            let iframeStyles = window.getComputedStyle(iframe);
-            if (iframeStyles.display === 'none') {
-                let textarea = document.querySelector('textarea')
-                let textareaStyles = window.getComputedStyle(textarea);
-                if (textareaStyles.display === 'none') {
-                    return;
-                }
-                textarea.value += '[img]' + AutoInsert_message_content + '[/img]'
-                Find_Editor = true
-            }
-
-            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
-
-            if (editableElement) {
-                console.log(editableElement);
-                // 创建图片元素并设置属性
-                let imgElement = document.createElement('img');
-                imgElement.src = AutoInsert_message_content;
-                imgElement.alt = '图片';
-                // 插入图片元素
-                editableElement.appendChild(imgElement);
-                Find_Editor = true
-            }
-        }
 
         for (let i = 0; i < scripts.length; i++) {
             if (Find_Editor == true) { return; }
@@ -395,7 +369,34 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             }
         }
 
+        // iframe套娃编辑器插入
+        let iframe = document.querySelector('iframe');
+        if (iframe) {
+            if (Find_Editor == true) { return; }
+            let iframeStyles = window.getComputedStyle(iframe);
+            if (iframeStyles.display === 'none') {
+                let textarea = document.querySelector('textarea')
+                let textareaStyles = window.getComputedStyle(textarea);
+                if (textareaStyles.display === 'none') {
+                    return;
+                }
+                textarea.value += '[img]' + AutoInsert_message_content + '[/img]'
+                Find_Editor = true
+            }
 
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
+
+            if (editableElement) {
+                // 创建图片元素并设置属性
+                let imgElement = document.createElement('img');
+                imgElement.src = AutoInsert_message_content;
+                imgElement.alt = '图片';
+                // 插入图片元素
+                editableElement.appendChild(imgElement);
+                Find_Editor = true
+            }
+        }
     })
 }
 

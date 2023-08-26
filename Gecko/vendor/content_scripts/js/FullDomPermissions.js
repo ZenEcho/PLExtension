@@ -116,53 +116,58 @@ window.addEventListener('message', function (event) {
     }
 });
 function plB(Element) {
-    let item = document.createElement('div');
-    item.className = "insertContentIntoEditorPrompt"
-    item.innerText = "😍盘络"
-    Element.appendChild(item)
+    if (!document.querySelector(".insertContentIntoEditorPrompt")) {
+        let item = document.createElement('div');
+        item.className = "insertContentIntoEditorPrompt"
+        item.innerText = "😍盘络"
+        Element.appendChild(item)
+    }
 }
 
-//TinyMCE 5/6
-try {
-    let TinyMCE_Elements = tinymce.activeEditor
-    if (TinyMCE_Elements) {
-        let container = TinyMCE_Elements.getContainer();
-        plB(container)
+setTimeout(() => {
+    //TinyMCE 5/6
+    try {
+        let TinyMCE_Elements = tinymce.activeEditor
+        if (TinyMCE_Elements) {
+            let container = TinyMCE_Elements.getContainer();
+            plB(container)
+        }
+    } catch (error) {
     }
-} catch (error) {
-}
 
-try {
-    let wangeditor_Elements = editor.getEditableContainer()
-    if (wangeditor_Elements) {
-        plB(wangeditor_Elements)
+    try {
+        let wangeditor_Elements = editor.getEditableContainer()
+        if (wangeditor_Elements) {
+            plB(wangeditor_Elements)
+        }
+    } catch (error) {
     }
-} catch (error) {
-}
-//ckeditor 4
-try {
-    let ckeditor_Elements = Object.values(CKEDITOR.instances)[0];
-    let ckeditor_Element_Node = ckeditor_Elements.container.$
-    if (ckeditor_Element_Node) {
-        plB(ckeditor_Element_Node)
+    //ckeditor 4
+    try {
+        let ckeditor_Elements = Object.values(CKEDITOR.instances)[0];
+        let ckeditor_Element_Node = ckeditor_Elements.container.$
+        if (ckeditor_Element_Node) {
+            plB(ckeditor_Element_Node)
+        }
+    } catch (error) {
     }
-} catch (error) {
-}
-//ueditor
-try {
-    let ueditor_Elements = UE.getEditor("editor_content");
-    let ueditor_Elements_Node = ueditor_Elements.container
-    if (ueditor_Elements_Node) {
-        plB(ueditor_Elements_Node)
+    //ueditor
+    try {
+        let ueditor_Elements = UE.getEditor("editor_content");
+        let ueditor_Elements_Node = ueditor_Elements.container
+        if (ueditor_Elements_Node) {
+            plB(ueditor_Elements_Node)
+        }
+    } catch (error) {
     }
-} catch (error) {
-}
-// phpbb
-try {
-    let phpbbForum = phpbb;
-    if (phpbbForum) {
-        let phpbbEditor = document.getElementById("message").parentElement
-        plB(phpbbEditor)
+    // phpbb
+    try {
+        let phpbbForum = phpbb;
+        if (phpbbForum) {
+            let phpbbEditor = document.getElementById("message").parentElement
+            plB(phpbbEditor)
+        }
+    } catch (error) {
     }
-} catch (error) {
-}
+}, 200);
+

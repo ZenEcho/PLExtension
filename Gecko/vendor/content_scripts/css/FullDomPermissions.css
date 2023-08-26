@@ -262,3 +262,14 @@
    width: 100%;
    text-align: center;
  }
+
+ .PL-v2exImg::before {
+
+   position: absolute;
+   bottom: 0px;
+   right: 0;
+   content: "◆";
+   font-size: 16px;
+   line-height: 10px;
+   color: red;
+ }
