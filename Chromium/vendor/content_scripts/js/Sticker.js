@@ -2,6 +2,7 @@ let StickerOptional;
 function EmoticonBox() {
     let EmoticonBox = document.createElement('div');
     EmoticonBox.className = 'PL-EmoticonBox';
+    EmoticonBox.style.display="none"
     if (!document.getElementsByClassName("PL-EmoticonBox").length) {
         EmoticonBox.innerHTML = `
         <div class="StickerBox">
@@ -25,7 +26,7 @@ function EmoticonBox() {
                 </select>
             </div>
             <div class="StickerBoxright">
-                <img src="" id="PL-EmotionPreview">
+                <img src="${chrome.runtime.getURL("icons/logo128.png")}" id="PL-EmotionPreview">
             </div>
         </div>
         `
@@ -134,8 +135,7 @@ function makeHorizontalDraggable(element) {
 makeHorizontalDraggable(document.querySelector('.StickerBoxhead'));
 
 
-function mainLogic() {
-    const insertContentPrompt = document.querySelector('.insertContentIntoEditorPrompt');
+function mainLogic(insertContentPrompt) {
     const emoticonBox = document.querySelector('.PL-EmoticonBox');
     let timerShow;
     let timerHide;
@@ -332,8 +332,4 @@ function mainLogic() {
         getStickerStatus = true
     }
 }
-setTimeout(() => {
-    if (document.querySelector('.insertContentIntoEditorPrompt')) {
-        mainLogic(); 
-    }
-}, 1000);
+

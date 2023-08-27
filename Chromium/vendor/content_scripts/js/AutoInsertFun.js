@@ -2,133 +2,6 @@
     * 编辑器的初始识别和状态
     */
 function insertContentIntoEditorState() {
-    let pageText = document.body.innerText;
-    let item = document.createElement('div');
-    item.className = "insertContentIntoEditorPrompt"
-    item.innerText = "😍盘络"
-    //Discuz
-    if (pageText.toLowerCase().includes("discuz") || pageText.toLowerCase().includes("论坛") == true) {
-        let DiscuzReply = document.getElementById("fastpostmessage")
-        let Discuz_ReplyAdvanced = document.getElementById("e_textarea")
-        if (DiscuzReply) {
-            let fastpostsubmit = document.getElementById("fastpostsubmit")
-            fastpostsubmit.parentNode.appendChild(item)
-        }
-        if (Discuz_ReplyAdvanced) {
-            Discuz_ReplyAdvanced.parentNode.parentNode.appendChild(item)
-        }
-
-    }
-    //v2exReply
-    if (pageText.toLowerCase().includes("v2ex")) {
-        let topic_content = document.getElementById("topic_content")
-        if (pageText.toLowerCase().includes("主题创建指南")) {
-            if (topic_content) {
-                topic_content.parentNode.appendChild(item)
-            }
-        }
-        let reply_content = document.getElementById("reply_content")
-        if (reply_content) {
-            reply_content.parentNode.appendChild(item)
-            item.innerText = "😭盘络"
-            item.title = "仅支持表情插入"
-        }
-        // url转图片
-        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
-        const replyContentElements = Array.from(document.querySelectorAll('.reply_content'));
-        for (const replyContent of replyContentElements) {
-            const anchorElements = Array.from(replyContent.querySelectorAll('a'));
-
-            for (const anchorElement of anchorElements) {
-                const imgElements = Array.from(anchorElement.querySelectorAll('img')); // 获取 <a> 元素内的所有 <img> 元素
-
-                if (imgElements.length === 0) {
-                    const href = anchorElement.getAttribute('href');
-                    const lowerCaseHref = href.toLowerCase();
-
-                    if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
-                        anchorElement.innerHTML = `
-                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="Image">
-                        `
-                        anchorElement.className = "PL-v2exImg"
-                        anchorElement.style.position = "relative"
-                    }
-                }
-            }
-        }
-
-    }
-    //nodeseek
-    if (pageText.toLowerCase().includes("nodeseek")) {
-        let nodeseek = document.getElementById("markdown-input")
-        if (nodeseek) {
-            nodeseek.parentNode.parentNode.appendChild(item)
-        }
-    }
-    //Xiuno
-    if (pageText.toLowerCase().includes("xiuno")) {
-        if (pageText.toLowerCase().includes("粗体") || pageText.toLowerCase().includes("回帖")) {
-            let Xiuno = document.getElementById("message")
-            if (Xiuno) {
-                Xiuno.parentNode.parentNode.appendChild(item)
-            }
-        }
-        if (pageText.toLowerCase().includes("回复") || pageText.toLowerCase().includes("楼主")) {
-            item.innerText = "😭盘络"
-        }
-
-
-    }
-    //hostevaluate
-    if (pageText.toLowerCase().includes("hostevaluate")) {
-        let new_topic = document.getElementById("new_topic")
-        if (new_topic) {
-            new_topic.parentNode.appendChild(item)
-        }
-    }
-    //typecho
-    if (pageText.toLowerCase().includes("typecho")) {
-        let Typecho = document.getElementById("btn-submit")
-        if (Typecho) {
-            Typecho.parentNode.appendChild(item)
-        }
-    }
-    //lowendtalk
-    if (pageText.toLowerCase().includes("lowendtalk")) {
-        let lowendtalkEditor = document.getElementById("Form_Body")
-        if (lowendtalkEditor) {
-            lowendtalkEditor.parentNode.appendChild(item)
-        }
-    }
-    //CodeMirror Editor
-    let editorElement = document.querySelector(".CodeMirror");
-    if (editorElement) {
-        editorElement.parentNode.appendChild(item)
-    }
-    //Gutenberg Editor
-    let Gutenberg = document.getElementById("wpbody-content")
-    if (Gutenberg) {
-        let wpfooter = document.getElementsByClassName("interface-interface-skeleton__footer")
-        if (wpfooter.length) {
-            wpfooter[wpfooter.length - 1].appendChild(item)
-        }
-
-    }
-    //halo
-    let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
-    if (HaloEditorElement.length) {
-        let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
-        HaloEditorHeader.appendChild(item)
-    }
-    let iframe = document.querySelector('iframe');
-    if (iframe) {
-        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
-
-        if (editableElement) {
-            iframe.parentNode.appendChild(item)
-        }
-    }
 
     function FullDomPermissionsCSS(file) {
         let link = document.createElement('link');
@@ -146,7 +19,13 @@ function insertContentIntoEditorState() {
         (document.head || document.documentElement).appendChild(script);
     }
     FullDomPermissionsJs('vendor/content_scripts/js/FullDomPermissions.js');
+
 }
+window.addEventListener('message', function (event) {
+    if (event.data.type === 'insertContentIntoEditorState') {
+        mainLogic(document.querySelector(".insertContentIntoEditorPrompt"));
+    }
+})
 /**
      * @param {url} AutoInsert_message_content 上传成功后返回的url
      */
@@ -157,9 +36,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
         let pageText = document.body.innerText;
         let pageHtml = document.documentElement.innerHTML;
         let scripts = document.querySelectorAll('script');
-        if (pageText.toLowerCase().includes("v2ex")) {
-            FocusInsert = true
-        }
+        let currentURL = window.location.href;
         if (FocusInsert == true) {
             //焦点插入
             const selection = window.getSelection();
@@ -236,21 +113,28 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
 
         }
         //v2exReply
-        if (pageText.toLowerCase().includes("v2ex")) {
-            if (pageText.toLowerCase().includes("主题创建指南")) {
+        if (currentURL.toLowerCase().includes("v2ex.com")) {
+            if (Find_Editor == true) { return; }
+            let reply_content_Advanced = document.getElementById("topic_content")
+            if (reply_content_Advanced && reply_content_Advanced.type != "hidden") {
+                reply_content_Advanced.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                let inputEvent = new Event('input', { bubbles: true });
+                reply_content_Advanced.dispatchEvent(inputEvent);
+                Find_Editor = true
+            }
+            if (pageText.toLowerCase().includes("请尽量让自己的回复能够对别人有帮助")) {
                 if (Find_Editor == true) { return; }
-                let reply_content_Advanced = document.getElementById("topic_content")
-                if (reply_content_Advanced) {
-                    reply_content_Advanced.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                let reply_content = document.getElementById("reply_content")
+                if (reply_content) {
+                    reply_content.value += AutoInsert_message_content
                     let inputEvent = new Event('input', { bubbles: true });
-                    reply_content_Advanced.dispatchEvent(inputEvent);
+                    reply_content.dispatchEvent(inputEvent);
                     Find_Editor = true
                 }
             }
-
         }
         //nodeseek
-        if (pageText.toLowerCase().includes("nodeseek")) {
+        if (currentURL.toLowerCase().includes("nodeseek.com")) {
             if (Find_Editor == true) { return; }
             let nodeseek = document.getElementById("markdown-input")
             if (nodeseek) {
@@ -262,7 +146,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
 
         }
         //hostevaluate
-        if (pageText.toLowerCase().includes("hostevaluate")) {
+        if (currentURL.toLowerCase().includes("hostevaluate.com")) {
             if (Find_Editor == true) { return; }
             let hostevaluate = document.getElementsByClassName("write-container")
             if (hostevaluate.length) {
@@ -273,8 +157,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                 Find_Editor = true
             }
         }
-        //lowendtalk
-        if (pageText.toLowerCase().includes("lowendtalk")) {
+        if (currentURL.toLowerCase().includes("lowendtalk.com")) {
             if (Find_Editor == true) { return; }
             let lowendtalkEditor = document.getElementById("Form_Body")
             if (lowendtalkEditor) {
@@ -300,11 +183,23 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             window.postMessage({ type: 'phpbbForum', data: '[img]' + AutoInsert_message_content + '[/img]' }, '*');
             Find_Editor = true
         }
-        //CodeMirror
+        //CodeMirror5
         let CodeMirror = document.querySelector(".CodeMirror");
         if (CodeMirror) {
             if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'CodeMirror', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+            window.postMessage({ type: 'CodeMirror5', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+            Find_Editor = true
+        }
+        //CodeMirror6
+        let CodeMirror6 = document.querySelector(".cm-content");
+        if (CodeMirror6) {
+            if (Find_Editor == true) { return; }
+            let item = document.createElement('div');
+            item.className = "cm-line"
+            item.dir = "auto"
+            item.innerText = '![' + "描述" + '](' + AutoInsert_message_content + ')'
+            CodeMirror6.appendChild(item)
+            console.log(CodeMirror6);
             Find_Editor = true
         }
         //Gutenberg Editor

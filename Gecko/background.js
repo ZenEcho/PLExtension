@@ -683,6 +683,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 	if (request.Progress_bar) {
 		if (request.Progress_bar.status == 1) {
+			console.log("999");
 			chrome.tabs.query({ active: true }, function (tabs) {
 				TabId = tabs[0].id;
 				chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
@@ -696,9 +697,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 				} else {
 					// 新页面更新状态
 					chrome.tabs.sendMessage(currentTabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": false } })
-
-					// 初始页更新状态
-					chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
+					if (TabId) {
+						// 初始页更新状态
+						chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })
+					}
 				}
 			});
 		}

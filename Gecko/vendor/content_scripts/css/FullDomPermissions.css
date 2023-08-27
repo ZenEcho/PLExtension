@@ -1,9 +1,9 @@
  .insertContentIntoEditorPrompt {
    text-align: center;
    font-size: 14px;
-   width: 52px;
+   /* width: 52px;
    height: 14px;
-   line-height: 14px;
+   line-height: 14px; */
    color: #fff;
    padding: 5px 10px !important;
    font-weight: bold;
@@ -33,7 +33,7 @@
    position: absolute;
    opacity: 0;
    font-size: 14px;
-   line-height: 14px;
+   /* line-height: 14px; */
    padding: 5px 0;
    top: 0;
    right: -20px;
@@ -264,12 +264,11 @@
  }
 
  .PL-v2exImg::before {
-
    position: absolute;
    bottom: 0px;
    right: 0;
-   content: "◆";
-   font-size: 16px;
-   line-height: 10px;
+   content: "❤️";
+   font-size: 12px;
+   line-height: 12px;
    color: red;
  }

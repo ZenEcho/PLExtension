@@ -1,7 +1,7 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
     console.log("盘络上传postMessage监听: " + event.data.type);
-    if (event.data.type === 'CodeMirror') {
+    if (event.data.type === 'CodeMirror5') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
             const content = editorElement.CodeMirror.getValue();
@@ -115,59 +115,279 @@ window.addEventListener('message', function (event) {
             });
     }
 });
-function plB(Element) {
-    if (!document.querySelector(".insertContentIntoEditorPrompt")) {
-        let item = document.createElement('div');
-        item.className = "insertContentIntoEditorPrompt"
-        item.innerText = "😍盘络"
-        Element.appendChild(item)
+function detectEncoding() {
+    const charsetMeta = document.querySelector('meta[charset]');
+    if (charsetMeta) {
+        return charsetMeta.getAttribute('charset').toLowerCase();
     }
+    return 'unknown';
 }
 
-setTimeout(() => {
-    //TinyMCE 5/6
+function FullDomAutoInsert() {
+    let item = document.createElement('div');
+    item.className = "insertContentIntoEditorPrompt"
+    item.innerText = "😍盘络"
+    const detectedEncoding = detectEncoding();
+    if (detectedEncoding !== 'utf-8') {
+        // 不是utf-8
+        item.innerText = "PL-Upload"
+    }
+
+    let success = false;
+    let pageText = document.body.innerText;
+    //Discuz
+    if (pageText.toLowerCase().includes("discuz") || pageText.toLowerCase().includes("论坛") == true) {
+        let DiscuzReply = document.getElementById("fastpostmessage")
+        let Discuz_ReplyAdvanced = document.getElementById("e_textarea")
+        if (DiscuzReply) {
+            let fastpostsubmit = document.getElementById("fastpostsubmit")
+            fastpostsubmit.parentNode.appendChild(item)
+            success = "Discuz"
+        }
+        if (Discuz_ReplyAdvanced) {
+            Discuz_ReplyAdvanced.parentNode.parentNode.appendChild(item)
+            success = "Discuz"
+        }
+
+    }
+    //v2exReply
+    if (pageText.toLowerCase().includes("v2ex")) {
+        if (success != false) {
+            return success;
+        }
+        let topic_content = document.getElementById("topic_content")
+        if (pageText.toLowerCase().includes("主题创建指南")) {
+            if (topic_content) {
+                topic_content.parentNode.appendChild(item)
+                success = true
+            }
+        }
+        let reply_content = document.getElementById("reply_content")
+        if (reply_content) {
+            reply_content.parentNode.appendChild(item)
+            item.title = "v2ex提示:非imgur图床,未安装用户无法预览"
+            success = true
+        }
+        // url转图片
+        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
+        const topicContentElements = Array.from(document.querySelectorAll('.topic_content'));
+        ContentElements(topicContentElements)
+        const replyContentElements = Array.from(document.querySelectorAll('.reply_content'));
+        ContentElements(replyContentElements)
+        function ContentElements(ContentElements) {
+            if (ContentElements.length < 1) {
+                return
+            }
+            for (const replyContent of ContentElements) {
+                const anchorElements = Array.from(replyContent.querySelectorAll('a'));
+                for (const anchorElement of anchorElements) {
+                    const imgElements = Array.from(anchorElement.querySelectorAll('img')); // 获取 <a> 元素内的所有 <img> 元素
+
+                    if (imgElements.length === 0) {
+                        const href = anchorElement.getAttribute('href');
+                        const lowerCaseHref = href.toLowerCase();
+
+                        if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
+                            anchorElement.innerHTML = `
+                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="Image">
+                        `
+                            anchorElement.className = "PL-v2exImg"
+                            anchorElement.style.position = "relative"
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    //nodeseek
+    if (pageText.toLowerCase().includes("nodeseek")) {
+        if (success != false) {
+            return success;
+        }
+        let nodeseek = document.getElementById("markdown-input")
+        if (nodeseek) {
+            nodeseek.parentNode.parentNode.appendChild(item)
+            success = "nodeseek"
+        }
+    }
+    //Xiuno
+    if (pageText.toLowerCase().includes("xiuno")) {
+        if (success != false) {
+            return success;
+        }
+        if (pageText.toLowerCase().includes("粗体") || pageText.toLowerCase().includes("回帖")) {
+            let Xiuno = document.getElementById("message")
+            if (Xiuno) {
+                Xiuno.parentNode.parentNode.appendChild(item)
+                success = "Xiuno"
+            }
+        }
+        if (pageText.toLowerCase().includes("回复") || pageText.toLowerCase().includes("楼主")) {
+            item.innerText = "😭盘络"
+        }
+    }
+    //hostevaluate
+    if (pageText.toLowerCase().includes("hostevaluate")) {
+        if (success != false) {
+            return success;
+        }
+        let new_topic = document.getElementById("new_topic")
+        if (new_topic) {
+            new_topic.parentNode.appendChild(item)
+            success = "hostevaluate"
+        }
+    }
+    //typecho
+    if (pageText.toLowerCase().includes("typecho")) {
+        if (success != false) {
+            return success;
+        }
+        let Typecho = document.getElementById("btn-submit")
+        if (Typecho) {
+            Typecho.parentNode.appendChild(item)
+            success = "typecho"
+        }
+    }
+    //lowendtalk
+    if (pageText.toLowerCase().includes("lowendtalk")) {
+        if (success != false) {
+            return success;
+        }
+        let lowendtalkEditor = document.getElementById("Form_Body")
+        if (lowendtalkEditor) {
+            lowendtalkEditor.parentNode.appendChild(item)
+            success = "lowendtalk"
+        }
+    }
+    //CodeMirror Editor
+    let editorElement = document.querySelector(".CodeMirror");
+    if (editorElement) {
+        if (success != false) {
+            return success;
+        }
+        editorElement.parentNode.appendChild(item)
+        success = "CodeMirror"
+    }
+    //Gutenberg Editor
+    let Gutenberg = document.getElementById("wpbody-content")
+    if (Gutenberg) {
+        if (success != false) {
+            return success;
+        }
+        let wpfooter = document.getElementsByClassName("interface-interface-skeleton__footer")
+        if (wpfooter.length) {
+            wpfooter[wpfooter.length - 1].appendChild(item)
+            success = "Gutenberg"
+        }
+
+    }
+    //halo
+    let HaloEditorElement = document.getElementsByClassName("halo-rich-text-editor")
+    if (HaloEditorElement.length) {
+        if (success != false) {
+            return success;
+        }
+        let HaloEditorHeader = HaloEditorElement[0].querySelector('.editor-header');
+        HaloEditorHeader.appendChild(item)
+        success = "halo"
+    }
+    let CodeMirror6 = document.querySelector(".cm-editor");
+    if (CodeMirror6) {
+        if (success != false) {
+            return success;
+        }
+        CodeMirror6.parentNode.appendChild(item)
+        success = "CodeMirror6"
+    }
+    //tinymce
     try {
+        if (success != false) {
+            return success;
+        }
         let TinyMCE_Elements = tinymce.activeEditor
         if (TinyMCE_Elements) {
             let container = TinyMCE_Elements.getContainer();
-            plB(container)
+            container.appendChild(item)
+            success = "tinymce";
         }
     } catch (error) {
     }
-
+    //wangeditor
     try {
+        if (success != false) {
+            return success;
+        }
         let wangeditor_Elements = editor.getEditableContainer()
         if (wangeditor_Elements) {
-            plB(wangeditor_Elements)
+            wangeditor_Elements.appendChild(item)
+            success = "wangeditor";
         }
     } catch (error) {
+
     }
     //ckeditor 4
     try {
+        if (success != false) {
+            return success;
+        }
         let ckeditor_Elements = Object.values(CKEDITOR.instances)[0];
         let ckeditor_Element_Node = ckeditor_Elements.container.$
         if (ckeditor_Element_Node) {
-            plB(ckeditor_Element_Node)
+            ckeditor_Element_Node.appendChild(item)
+            success = "ckeditor4";
         }
     } catch (error) {
     }
     //ueditor
     try {
+        if (success != false) {
+            return success;
+        }
         let ueditor_Elements = UE.getEditor("editor_content");
         let ueditor_Elements_Node = ueditor_Elements.container
         if (ueditor_Elements_Node) {
-            plB(ueditor_Elements_Node)
+            ueditor_Elements_Node.appendChild(item)
+            success = "ueditor";
         }
     } catch (error) {
+
     }
     // phpbb
     try {
+        if (success != false) {
+            return success;
+        }
         let phpbbForum = phpbb;
         if (phpbbForum) {
             let phpbbEditor = document.getElementById("message").parentElement
-            plB(phpbbEditor)
+            phpbbEditor.appendChild(item)
+            success = "phpbb";
         }
     } catch (error) {
     }
-}, 200);
+
+
+    let iframe = document.querySelector('iframe');
+    if (iframe) {
+        if (success != false) {
+            return success;
+        }
+        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
+
+        if (editableElement) {
+            iframe.parentNode.appendChild(item)
+            success = "iframe";
+        }
+    }
+    return success;
+}
+setTimeout(() => {
+    let AutoInsert = FullDomAutoInsert()
+    if (AutoInsert != false) {
+        window.postMessage({ type: 'insertContentIntoEditorState', data: true }, '*');
+    }
+}, 800);
+
 
