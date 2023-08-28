@@ -127,6 +127,8 @@ function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
     item.innerText = "😍盘络"
+
+    const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
     const detectedEncoding = detectEncoding();
     if (detectedEncoding !== 'utf-8') {
         // 不是utf-8
@@ -149,10 +151,9 @@ function FullDomAutoInsert() {
             success = "Discuz"
         }
 
-        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
+        // url转图片
         const topicContentElements = Array.from(document.querySelectorAll('.t_f'));
         ContentElements(topicContentElements);
-
         function ContentElements(ContentElements) {
             if (ContentElements.length < 1) {
                 return;
@@ -161,9 +162,7 @@ function FullDomAutoInsert() {
                 const text = replyContent.innerHTML;
                 const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
                 //  去除图像链接末尾的任何内容
-                const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
-                console.log(imageLinks);
-                console.log(cleanedImageLinks);
+                const cleanedImageLinks = imageLinks.map(link => link.replace(/(<.*?>)?([^<]*)$/, '$2'));
                 cleanedImageLinks.forEach(link => {
                     if (supportedImageFormats.some(format => link.endsWith(format))) {
                         const imgDiv = document.createElement('div');
@@ -200,7 +199,6 @@ function FullDomAutoInsert() {
             success = true
         }
         // url转图片
-        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
         const topicContentElements = Array.from(document.querySelectorAll('.topic_content'));
         ContentElements(topicContentElements)
         const replyContentElements = Array.from(document.querySelectorAll('.reply_content'));
@@ -242,10 +240,8 @@ function FullDomAutoInsert() {
             success = "nodeseek"
         }
 
-        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
         const topicContentElements = Array.from(document.querySelectorAll('.post-content'));
         ContentElements(topicContentElements);
-
         function ContentElements(ContentElements) {
             if (ContentElements.length < 1) {
                 return;
@@ -257,7 +253,8 @@ function FullDomAutoInsert() {
                     const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
 
                     // 去除图像链接末尾的任何内容
-                    const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
+                    // const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
+                    const cleanedImageLinks = imageLinks.map(link => link.replace(/(<.*?>)?([^<]*)$/, '$2'));
                     cleanedImageLinks.forEach(link => {
                         if (supportedImageFormats.some(format => link.endsWith(format))) {
                             const imgDiv = document.createElement('div');
@@ -431,7 +428,6 @@ function FullDomAutoInsert() {
         }
     } catch (error) {
     }
-
 
     let iframe = document.querySelector('iframe');
     if (iframe) {

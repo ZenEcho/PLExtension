@@ -199,7 +199,6 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             item.dir = "auto"
             item.innerText = '![' + "描述" + '](' + AutoInsert_message_content + ')'
             CodeMirror6.appendChild(item)
-            console.log(CodeMirror6);
             Find_Editor = true
         }
         //Gutenberg Editor
