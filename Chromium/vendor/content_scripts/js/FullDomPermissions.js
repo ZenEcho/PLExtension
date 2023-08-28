@@ -149,6 +149,37 @@ function FullDomAutoInsert() {
             success = "Discuz"
         }
 
+        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
+        const topicContentElements = Array.from(document.querySelectorAll('.t_f'));
+        ContentElements(topicContentElements);
+
+        function ContentElements(ContentElements) {
+            if (ContentElements.length < 1) {
+                return;
+            }
+            for (const replyContent of ContentElements) {
+                const text = replyContent.innerHTML;
+                const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
+                //  去除图像链接末尾的任何内容
+                const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
+                console.log(imageLinks);
+                console.log(cleanedImageLinks);
+                cleanedImageLinks.forEach(link => {
+                    if (supportedImageFormats.some(format => link.endsWith(format))) {
+                        const imgDiv = document.createElement('div');
+                        const imgElement = document.createElement('img');
+                        imgDiv.className = "position-relative PL-DiscuzImgMark"
+                        imgElement.src = link;
+                        imgElement.alt = "盘络转换";
+                        imgElement.title = link;
+                        imgDiv.appendChild(imgElement);
+                        replyContent.appendChild(imgDiv);
+                    }
+                });
+            }
+        }
+
+
     }
     //v2exReply
     if (pageText.toLowerCase().includes("v2ex")) {
@@ -189,9 +220,9 @@ function FullDomAutoInsert() {
 
                         if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
                             anchorElement.innerHTML = `
-                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="Image">
+                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="盘络转换">
                         `
-                            anchorElement.className = "PL-v2exImg"
+                            anchorElement.className = "PL-v2exImgMark"
                             anchorElement.style.position = "relative"
                         }
                     }
@@ -210,6 +241,40 @@ function FullDomAutoInsert() {
             nodeseek.parentNode.parentNode.appendChild(item)
             success = "nodeseek"
         }
+
+        const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
+        const topicContentElements = Array.from(document.querySelectorAll('.post-content'));
+        ContentElements(topicContentElements);
+
+        function ContentElements(ContentElements) {
+            if (ContentElements.length < 1) {
+                return;
+            }
+            for (const replyContent of ContentElements) {
+                const anchorElements = Array.from(replyContent.querySelectorAll('p'));
+                for (const anchorElement of anchorElements) {
+                    const text = anchorElement.innerHTML;
+                    const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
+
+                    // 去除图像链接末尾的任何内容
+                    const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
+                    cleanedImageLinks.forEach(link => {
+                        if (supportedImageFormats.some(format => link.endsWith(format))) {
+                            const imgDiv = document.createElement('div');
+                            const imgElement = document.createElement('img');
+                            imgDiv.className = "position-relative PL-NodeseekImgMark"
+                            imgElement.src = link;
+                            imgElement.alt = "盘络转换";
+                            imgElement.title = link;
+                            imgDiv.appendChild(imgElement);
+                            anchorElement.appendChild(imgDiv);
+                        }
+                    });
+                }
+            }
+        }
+
+
     }
     //Xiuno
     if (pageText.toLowerCase().includes("xiuno")) {

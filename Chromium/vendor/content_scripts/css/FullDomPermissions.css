@@ -263,7 +263,7 @@
    text-align: center;
  }
 
- .PL-v2exImg::before {
+ .PL-v2exImgMark::before {
    position: absolute;
    bottom: 0px;
    right: 0;
@@ -271,4 +271,27 @@
    font-size: 12px;
    line-height: 12px;
    color: red;
+ }
+
+ .PL-NodeseekImgMark::before {
+   position: absolute;
+   top: 16px;
+   left: 16px;
+   content: "❤️";
+   font-size: 12px;
+   line-height: 12px;
+   color: red;
+ }
+ .PL-DiscuzImgMark::before {
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   content: "❤️";
+   font-size: 12px;
+   line-height: 12px;
+   color: red;
+ }
+
+ .position-relative {
+   position: relative;
  }
