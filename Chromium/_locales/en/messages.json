@@ -123,7 +123,7 @@
     "message": "Open in Internal Page"
   },
   "Local_Global": {
-    "message": "Local Global + Drag Upload"
+    "message": "Global Drag Upload"
   },
   "Local_Global_on": {
     "message": "<i class='bi bi-battery-half'></i>Enable (Network Resources + Local Resources to Sidebar)"

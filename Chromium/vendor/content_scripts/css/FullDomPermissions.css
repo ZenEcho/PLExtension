@@ -272,17 +272,7 @@
    line-height: 12px;
    color: red;
  }
-
- .PL-NodeseekImgMark::before {
-   position: absolute;
-   top: 16px;
-   left: 16px;
-   content: "❤️";
-   font-size: 12px;
-   line-height: 12px;
-   color: red;
- }
- .PL-DiscuzImgMark::before {
+ .PL-ImgMark::before {
    position: absolute;
    top: 0px;
    left: 0px;

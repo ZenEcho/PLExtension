@@ -39,6 +39,29 @@ code {
   background: #2e1bff;
 }
 
+.Config-Box-Log {
+  position: fixed;
+  right: 0;
+  min-width: 230px;
+  min-height: 100px;
+  z-index: 1;
+  border-radius: 16px;
+}
+
+.Config-Box-Log-haed {
+  text-align: center;
+  background-color: #03a9f4;
+  border-radius: 16px 16px 0 0;
+  padding: 8px;
+}
+
+.Config-Box-Log-item {
+  background-color: white;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .Config-Box .Config-Box-Left {
   width: 14rem;
   border-right: #eee 1px solid;
@@ -76,6 +99,7 @@ code {
 .Config-Bottom-Boxs {
   padding: 5px 10px;
 }
+
 .Config-Bottom-Boxs .Config-Bottom-Box {
   padding: .5rem .2rem;
 }

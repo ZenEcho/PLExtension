@@ -123,7 +123,7 @@
     "message": "在内置页打开"
   },
   "Local_Global": {
-    "message": "本地全局+拖拽上传"
+    "message": "全局拖拽上传"
   },
   "Local_Global_on": {
     "message": "<i class='bi bi-battery-half'></i>开启(网络资源+本地资源到侧边栏)"

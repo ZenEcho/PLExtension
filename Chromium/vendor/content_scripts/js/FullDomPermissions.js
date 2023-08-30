@@ -123,6 +123,26 @@ function detectEncoding() {
     return 'unknown';
 }
 
+
+function insertImageDiv(element, link, CssName) {
+    const imgDiv = document.createElement('div');
+    const imgElement = document.createElement('img');
+    imgDiv.className = `position-relative PL-ImgMark`;
+    imgElement.src = link;
+    if (CssName) {
+        imgElement.className = CssName;
+    }
+    imgElement.loading = "lazy";
+    imgElement.alt = "盘络转换";
+    imgElement.title = link;
+
+    imgDiv.appendChild(imgElement);
+    element.appendChild(imgDiv);
+    imgElement.onerror = function () {
+        imgDiv.remove()
+    };
+}
+
 function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
@@ -137,6 +157,7 @@ function FullDomAutoInsert() {
 
     let success = false;
     let pageText = document.body.innerText;
+    let currentURL = window.location.href;
     //Discuz
     if (pageText.toLowerCase().includes("discuz") || pageText.toLowerCase().includes("论坛") == true) {
         let DiscuzReply = document.getElementById("fastpostmessage")
@@ -159,21 +180,18 @@ function FullDomAutoInsert() {
                 return;
             }
             for (const replyContent of ContentElements) {
-                const text = replyContent.innerHTML;
+                const clonedParagraph = replyContent.cloneNode(true);
+                const imgElements = Array.from(clonedParagraph.querySelectorAll('img'));
+                for (const imgElement of imgElements) {
+                    imgElement.remove();
+                }
+
+                const text = clonedParagraph.textContent;
                 const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
-                //  去除图像链接末尾的任何内容
-                const cleanedImageLinks = imageLinks.map(link => link.replace(/(<.*?>)?([^<]*)$/, '$2'));
+                // 去除屁股的html标签
+                const cleanedImageLinks = imageLinks.map(link => link.replace(/<\/?[^>]+(>|$)/g, ''));
                 cleanedImageLinks.forEach(link => {
-                    if (supportedImageFormats.some(format => link.endsWith(format))) {
-                        const imgDiv = document.createElement('div');
-                        const imgElement = document.createElement('img');
-                        imgDiv.className = "position-relative PL-DiscuzImgMark"
-                        imgElement.src = link;
-                        imgElement.alt = "盘络转换";
-                        imgElement.title = link;
-                        imgDiv.appendChild(imgElement);
-                        replyContent.appendChild(imgDiv);
-                    }
+                    insertImageDiv(replyContent, link);
                 });
             }
         }
@@ -181,7 +199,7 @@ function FullDomAutoInsert() {
 
     }
     //v2exReply
-    if (pageText.toLowerCase().includes("v2ex")) {
+    if (currentURL.toLowerCase().includes("v2ex.com")) {
         if (success != false) {
             return success;
         }
@@ -210,19 +228,10 @@ function FullDomAutoInsert() {
             for (const replyContent of ContentElements) {
                 const anchorElements = Array.from(replyContent.querySelectorAll('a'));
                 for (const anchorElement of anchorElements) {
-                    const imgElements = Array.from(anchorElement.querySelectorAll('img')); // 获取 <a> 元素内的所有 <img> 元素
-
+                    const imgElements = Array.from(anchorElement.querySelectorAll('img'));
                     if (imgElements.length === 0) {
                         const href = anchorElement.getAttribute('href');
-                        const lowerCaseHref = href.toLowerCase();
-
-                        if (supportedImageFormats.some(format => lowerCaseHref.endsWith(format))) {
-                            anchorElement.innerHTML = `
-                        <img class="embedded_image " src="`+ href + `" loading="lazy" alt="盘络转换">
-                        `
-                            anchorElement.className = "PL-v2exImgMark"
-                            anchorElement.style.position = "relative"
-                        }
+                        insertImageDiv(anchorElement, href, "embedded_image");
                     }
                 }
             }
@@ -230,7 +239,7 @@ function FullDomAutoInsert() {
 
     }
     //nodeseek
-    if (pageText.toLowerCase().includes("nodeseek")) {
+    if (currentURL.toLowerCase().includes("nodeseek.com")) {
         if (success != false) {
             return success;
         }
@@ -249,23 +258,17 @@ function FullDomAutoInsert() {
             for (const replyContent of ContentElements) {
                 const anchorElements = Array.from(replyContent.querySelectorAll('p'));
                 for (const anchorElement of anchorElements) {
-                    const text = anchorElement.innerHTML;
+                    const clonedParagraph = anchorElement.cloneNode(true);
+                    const imgElements = Array.from(clonedParagraph.querySelectorAll('img'));
+                    for (const imgElement of imgElements) {
+                        imgElement.remove();
+                    }
+                    const text = clonedParagraph.textContent;
                     const imageLinks = text.match(/https?:\/\/[^\s]+/g) || [];
-
-                    // 去除图像链接末尾的任何内容
-                    // const cleanedImageLinks = imageLinks.map(link => link.replace(/(<br>|<\/?[^>]+>)$/, ''));
-                    const cleanedImageLinks = imageLinks.map(link => link.replace(/(<.*?>)?([^<]*)$/, '$2'));
+                    // 去除屁股的html标签
+                    const cleanedImageLinks = imageLinks.map(link => link.replace(/<\/?[^>]+(>|$)/g, ''));
                     cleanedImageLinks.forEach(link => {
-                        if (supportedImageFormats.some(format => link.endsWith(format))) {
-                            const imgDiv = document.createElement('div');
-                            const imgElement = document.createElement('img');
-                            imgDiv.className = "position-relative PL-NodeseekImgMark"
-                            imgElement.src = link;
-                            imgElement.alt = "盘络转换";
-                            imgElement.title = link;
-                            imgDiv.appendChild(imgElement);
-                            anchorElement.appendChild(imgDiv);
-                        }
+                        insertImageDiv(anchorElement, link);
                     });
                 }
             }
@@ -290,7 +293,7 @@ function FullDomAutoInsert() {
         }
     }
     //hostevaluate
-    if (pageText.toLowerCase().includes("hostevaluate")) {
+    if (currentURL.toLowerCase().includes("hostevaluate.com")) {
         if (success != false) {
             return success;
         }
@@ -312,7 +315,7 @@ function FullDomAutoInsert() {
         }
     }
     //lowendtalk
-    if (pageText.toLowerCase().includes("lowendtalk")) {
+    if (currentURL.toLowerCase().includes("lowendtalk.com")) {
         if (success != false) {
             return success;
         }
