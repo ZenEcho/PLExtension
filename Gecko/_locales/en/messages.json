@@ -114,16 +114,16 @@
     "message": "Save"
   },
   "Open_Method1": {
-    "message": "Open in tab"
+    "message": "<i class='bi bi-window'></i>Open in tab"
   },
   "Open_Method2": {
-    "message": "Open in window"
+    "message": "<i class='bi bi-window-stack'></i>Open in window"
   },
   "Open_Method3": {
-    "message": "Open in popup"
+    "message": "<i class='bi bi-window-sidebar'></i>Open in popup"
   },
   "Local_Global": {
-    "message": "Drag Upload"
+    "message": "<i class='bi bi-arrows-move'></i> Drag Upload"
   },
   "Local_Global_on": {
     "message": "<i class='bi bi-battery-half'></i>Enable (Network Resources + Local Resources to Sidebar)"
@@ -132,13 +132,13 @@
     "message": "<i class='bi bi-battery'></i>Disable (Use Right-click Upload Honestly)"
   },
   "Side_Panel_Area": {
-    "message": "Side Area"
+    "message": "<i class='bi bi-layout-sidebar-inset-reverse'></i> Side Area"
   },
   "AutoInsert": {
-    "message": "Auto Insertion"
+    "message": "<i class='bi bi-textarea-t'></i> Auto Insertion"
   },
   "AutoCopy": {
-    "message": "Auto Copying"
+    "message": "<i class='bi bi-clipboard-plus-fill'></i> Auto Copying"
   },
   "on": {
     "message": "Enable"
@@ -147,7 +147,7 @@
     "message": "Disable"
   },
   "Right_click_menu_upload": {
-    "message": "RightClick Upload"
+    "message": "<i class='bi bi-hand-index'></i> RightClick Upload"
   },
   "options_host": {
     "message": "Website domain name<p>(Do not include any prefixes or suffixes, enter the domain name only)</p>"

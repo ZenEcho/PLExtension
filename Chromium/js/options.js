@@ -2025,15 +2025,15 @@ $(document).ready(function () {
     if (result.browser_Open_with === 1) {
       //在标签页打开
       $("#options_Open_with_Tab a").addClass('active');
-      button.text($("#options_Open_with_Tab a").text())
+      button.html($("#options_Open_with_Tab a").html())
     }
     if (result.browser_Open_with === 2) {
       $("#options_Open_with_Window a").addClass('active');
-      button.text($("#options_Open_with_Window a").text())
+      button.html($("#options_Open_with_Window a").html())
     }
     if (result.browser_Open_with === 3) {
       $("#options_Open_with_Inside a").addClass('active');
-      button.text($("#options_Open_with_Inside a").text())
+      button.html($("#options_Open_with_Inside a").html())
     }
   });
 

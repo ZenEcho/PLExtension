@@ -114,31 +114,31 @@
     "message": "保存"
   },
   "Open_Method1": {
-    "message": "标签打开"
+    "message": "<i class='bi bi-window'></i> 标签打开"
   },
   "Open_Method2": {
-    "message": "在新窗口打开"
+    "message": "<i class='bi bi-window-stack'></i> 窗口打开"
   },
   "Open_Method3": {
-    "message": "在内置页打开"
+    "message": "<i class='bi bi-window-sidebar'></i> 内置打开"
   },
   "Local_Global": {
-    "message": "拖拽上传"
+    "message": "<i class='bi bi-arrows-move'></i> 拖拽上传"
   },
   "Local_Global_on": {
-    "message": "<i class='bi bi-battery-half'></i>开启(网络资源+本地资源到侧边栏)"
+    "message": "<i class='bi bi-battery-half'></i> 开启(网络资源+本地资源到侧边栏)"
   },
   "Local_Global_off": {
-    "message": "<i class='bi bi-battery'></i>关闭(老老实实用右键上传)"
+    "message": "<i class='bi bi-battery'></i> 关闭(老老实实用右键上传)"
   },
   "Side_Panel_Area": {
-    "message": "侧边栏区域"
+    "message": "<i class='bi bi-layout-sidebar-inset-reverse'></i> 侧边栏"
   },
   "AutoInsert": {
-    "message": "自动插入"
+    "message": "<i class='bi bi-textarea-t'></i> 自动插入"
   },
   "AutoCopy": {
-    "message": "自动复制"
+    "message": "<i class='bi bi-clipboard-plus-fill'></i> 自动复制"
   },
   "on": {
     "message": "开启"
@@ -147,7 +147,7 @@
     "message": "关闭"
   },
   "Right_click_menu_upload": {
-    "message": "右键上传"
+    "message": "<i class='bi bi-hand-index'></i> 右键上传"
   },
   "options_host": {
     "message": "网站域名<p>(不需要携带任何前后缀,输入域名即可)</p>"
