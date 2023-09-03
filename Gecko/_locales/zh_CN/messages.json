@@ -114,7 +114,7 @@
     "message": "保存"
   },
   "Open_Method1": {
-    "message": "在标签页打开"
+    "message": "标签打开"
   },
   "Open_Method2": {
     "message": "在新窗口打开"
@@ -123,7 +123,7 @@
     "message": "在内置页打开"
   },
   "Local_Global": {
-    "message": "本地全局+拖拽上传"
+    "message": "拖拽上传"
   },
   "Local_Global_on": {
     "message": "<i class='bi bi-battery-half'></i>开启(网络资源+本地资源到侧边栏)"
@@ -147,7 +147,7 @@
     "message": "关闭"
   },
   "Right_click_menu_upload": {
-    "message": "右键菜单上传(需重启)"
+    "message": "右键上传"
   },
   "options_host": {
     "message": "网站域名<p>(不需要携带任何前后缀,输入域名即可)</p>"
@@ -537,7 +537,7 @@
     "message": "盘络上传是可以对着图片右键上传的喔"
   },
   "You_know_what_2": {
-    "message": "盘络还可以全局拖拽上传"
+    "message": "盘络还可以拖拽上传"
   },
   "You_know_what_3": {
     "message": "粘贴上传,图片转存也不再话下啦!"

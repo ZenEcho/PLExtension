@@ -114,16 +114,16 @@
     "message": "Save"
   },
   "Open_Method1": {
-    "message": "Open in a New Tab"
+    "message": "Open in tab"
   },
   "Open_Method2": {
-    "message": "Open in New Window"
+    "message": "Open in window"
   },
   "Open_Method3": {
-    "message": "Open in Internal Page"
+    "message": "Open in popup"
   },
   "Local_Global": {
-    "message": "Local Global + Drag Upload"
+    "message": "Drag Upload"
   },
   "Local_Global_on": {
     "message": "<i class='bi bi-battery-half'></i>Enable (Network Resources + Local Resources to Sidebar)"
@@ -132,13 +132,13 @@
     "message": "<i class='bi bi-battery'></i>Disable (Use Right-click Upload Honestly)"
   },
   "Side_Panel_Area": {
-    "message": "Side Panel Area"
+    "message": "Side Area"
   },
   "AutoInsert": {
-    "message": "Automatic Insertion"
+    "message": "Auto Insertion"
   },
   "AutoCopy": {
-    "message": "Automatic replication"
+    "message": "Auto Copying"
   },
   "on": {
     "message": "Enable"
@@ -147,7 +147,7 @@
     "message": "Disable"
   },
   "Right_click_menu_upload": {
-    "message": "Right-click Upload (Requires Restart)"
+    "message": "RightClick Upload"
   },
   "options_host": {
     "message": "Website domain name<p>(Do not include any prefixes or suffixes, enter the domain name only)</p>"

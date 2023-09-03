@@ -127,17 +127,19 @@ function detectEncoding() {
 function insertImageDiv(element, link, CssName) {
     const imgDiv = document.createElement('div');
     const imgElement = document.createElement('img');
-    imgDiv.className = `position-relative PL-ImgMark`;
     imgElement.src = link;
     if (CssName) {
         imgElement.className = CssName;
     }
     imgElement.loading = "lazy";
-    imgElement.alt = "盘络转换";
-    imgElement.title = link;
 
     imgDiv.appendChild(imgElement);
     element.appendChild(imgDiv);
+    imgElement.onload = function () {
+        imgDiv.className = `position-relative PL-ImgMark`;
+        imgElement.alt = "盘络转换";
+        imgElement.title = link;
+    };
     imgElement.onerror = function () {
         imgDiv.remove()
     };

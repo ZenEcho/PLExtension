@@ -268,3 +268,34 @@ textarea {
 .Copy_Selected button:nth-child(2) {
     border-left: 1px;
 }
+
+@media screen and (max-width: 1280px) {
+    .container-md.border-bottom.head {
+        display: block;
+        columns: 3;
+    }
+
+    .container-md.border-bottom.head div,
+    .container-md.border-bottom.head .Selected_But button {
+        width: 100%;
+    }
+
+    #dropdown-button {
+        width: auto;
+    }
+
+    .container-md.border-bottom.head div {
+        margin-bottom: 10px;
+    }
+
+    .container-md.border-bottom.head .Selected_But button#Copy_Selected {
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .container-md.border-bottom.head {
+        display: block;
+        columns: 2;
+    }
+}

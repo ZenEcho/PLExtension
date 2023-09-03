@@ -20,6 +20,48 @@ code {
   border-bottom: 1px solid #eee;
 }
 
+.main {
+  display: flex;
+  justify-content: center;
+}
+
+.main .main-left {
+  border-radius: 20px;
+  position: relative;
+  margin: 10px;
+  min-width: 600px;
+  width: 60vw;
+}
+
+.main .main-right {
+  display: block;
+  margin: 10px;
+}
+
+.Config-Bottom-Boxs {
+  border-radius: 20px;
+  padding: 10px;
+  margin: 14px 0;
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) {
+  column-count: 2;
+  text-align: center
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) div,
+.main-right .Config-Bottom-Boxs:nth-child(1) button {
+  width: 100%;
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) {
+  margin-top: 0;
+}
+
+.Config-Bottom-Boxs .Config-Bottom-Box {
+  padding: 4px 0;
+}
+
 #options_exe {
   margin-top: 1rem;
   margin-bottom: 1.5rem;
@@ -39,8 +81,68 @@ code {
   background: #2e1bff;
 }
 
+.BedConfigShow {
+  position: absolute;
+  font-size: 24px;
+  right: 10px;
+  top: 0px;
+}
+
+.BedConfigShow:hover {
+  color: #2e1bff;
+}
+
+.Config-Box {
+  display: flex;
+}
+
+.Config-Box-Log-haed {
+  text-align: center;
+  background-color: #03a9f4;
+  border-radius: 16px 16px 0 0;
+  padding: 8px;
+  user-select: none;
+}
+
+.Config-Box-Log-haed-del {
+  position: absolute;
+  right: 8px;
+  color: white;
+}
+
+.Config-Box-Log-haed-del:hover {
+  color: #2e1bff;
+}
+
+.Config-Box-Log-item {
+  background-color: white;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.BedConfigName {
+  width: 100%;
+  user-select: none;
+}
+
+.Config-Box-Log-item:hover .BedConfigName span {
+  color: #6c757d;
+}
+
+.Config-Box-Log-item .button {
+  margin: 0 4px;
+  user-select: none;
+  color: #2e1bff;
+}
+
+.Config-Box-Log-item .button:hover {
+  color: red;
+}
+
+
 .Config-Box .Config-Box-Left {
-  width: 14rem;
+  width: 160px;
   border-right: #eee 1px solid;
 }
 
@@ -49,47 +151,42 @@ code {
 }
 
 .Config-Box-Right:nth-child(2) {
-  padding-top: 1rem;
+  padding: 0 5px;
 }
 
 .Config-Box-Right-header {
-  padding: .5rem;
+  padding: .5rem 0;
+  display: flex;
 }
 
 .Config-Box-Right-header div {
-  padding: 0;
-  padding-left: .5rem;
+  margin: 0 5px;
 }
 
 .Config-Box-Right-header div:nth-child(1) {
-  width: 9em;
+  margin-left: 0;
 }
 
-.Config-Box-Right-header div:nth-child(2) {
-  width: 10em;
-}
-
-.Config-Box-Right-header div:nth-child(3) {
-  width: 10em;
-}
-
-.Config-Bottom-Boxs {
-  padding: 5px 10px;
-}
-.Config-Bottom-Boxs .Config-Bottom-Box {
-  padding: .5rem .2rem;
-}
-
-@media screen and (max-width: 960px) {
-  .Config-Box-Right-header div {
-    margin-top: .2rem;
-    margin-bottom: .2rem;
-    width: 100%;
+@media screen and (max-width: 1000px) {
+  .main {
     flex-direction: column;
   }
 
+  .main .main-left{
+    width: auto;
+  }
+  .main .main-right {
+    padding: 0 10px;
+    margin: 20px 0px;
+    width: 100%;
+
+  }
+
+}
+
+@media screen and (max-width: 960px) {
   .Config-Box .Config-Box-Left {
-    width: 12rem;
+    width: 140px;
   }
 }
 
@@ -221,7 +318,6 @@ input:checked+.slider:before {
 }
 
 .css-button-rounded--sky {
-  min-width: 130px;
   height: 40px;
   color: #fff;
   padding: 5px 10px;
@@ -395,4 +491,9 @@ input:checked+.slider:before {
   width: 0;
   height: 100%;
   background: #4433ff;
+}
+
+#carouselExampleCaptions,
+#carouselExampleCaptions img {
+  width: 550px;
 }

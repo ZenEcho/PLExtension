@@ -2,7 +2,7 @@ let StickerOptional;
 function EmoticonBox() {
     let EmoticonBox = document.createElement('div');
     EmoticonBox.className = 'PL-EmoticonBox';
-    EmoticonBox.style.display="none"
+    EmoticonBox.style.display = "none"
     if (!document.getElementsByClassName("PL-EmoticonBox").length) {
         EmoticonBox.innerHTML = `
         <div class="StickerBox">
@@ -140,7 +140,7 @@ function mainLogic(insertContentPrompt) {
     let timerShow;
     let timerHide;
     let getStickerStatus = false;
-    
+
     insertContentPrompt.addEventListener('mouseenter', () => {
         clearTimeout(timerHide); // 鼠标进入时清除隐藏的定时器
         timerShow = setTimeout(() => {
@@ -250,6 +250,10 @@ function mainLogic(insertContentPrompt) {
     function DataRendering(data, StickerHeadSelected) {
         const StickerBoxhead = document.querySelector('.StickerBoxhead'); // 获取贴纸标题元素
         const StickerBoxContent = document.querySelector('.StickerBoxContent'); // 获取贴纸内容元素
+        StickerBoxContent.innerHTML = '';
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let Selected = StickerHeadSelected
         function updateSelectedStatus(selectedIndex) {
             const selectedItems = document.querySelectorAll('.StickerBoxheadtem');
             selectedItems.forEach((item, index) => {
@@ -257,7 +261,6 @@ function mainLogic(insertContentPrompt) {
             });
         }
 
-        StickerBoxhead.innerHTML = '';
         data.forEach(function (sticker, index) {
             const StickerBoxheadtem = document.createElement('div');
             StickerBoxheadtem.className = 'StickerBoxheadtem';
@@ -265,23 +268,29 @@ function mainLogic(insertContentPrompt) {
             StickerBoxheadtem.title = sticker.StickerAuthor;
             StickerBoxhead.appendChild(StickerBoxheadtem);
             StickerBoxheadtem.addEventListener('click', function (event) {
+                StickerBoxContent.innerHTML = '';
+                currentPage = 1;
+                Selected = index
                 updateSelectedStatus(index);
                 StickerDataItem(index);
                 chrome.storage.local.set({ 'StickerHeadSelected': index })
             })
         })
         function StickerDataItem(index) {
-            StickerBoxContent.innerHTML = '';
             if (data[index].StickerData.length == 0) {
                 StickerBoxContent.innerHTML = '数据为空';
                 return;
             }
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
             const EmotionPreview = document.getElementById('PL-EmotionPreview')
-            data[index].StickerData.forEach((sticker, stickerIndex) => {
+            const stickersToDisplay = data[index].StickerData.slice(startIndex, endIndex);
+
+            // 贴纸遍历
+            stickersToDisplay.forEach((sticker, stickerIndex) => {
                 const StickerBoxContentitem = document.createElement('div');
-
                 StickerBoxContentitem.className = 'StickerBoxContentitem';
-
                 const img = document.createElement('img');
                 img.src = sticker.StickerURL;
                 img.alt = sticker.StickerName;
@@ -324,11 +333,43 @@ function mainLogic(insertContentPrompt) {
                 });
                 StickerBoxContentitem.appendChild(img);
                 StickerBoxContent.appendChild(StickerBoxContentitem);
+                if (stickerIndex === stickersToDisplay.length - 1) {
+                    img.parentNode.classList.add('lastSticker');
+                }
             });
-        }
 
-        updateSelectedStatus(StickerHeadSelected);
-        StickerDataItem(StickerHeadSelected);
+
+            // 视口懒加载
+            function handleIntersection(entries, observer) {
+                let foundLastSticker = false;
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        try {
+                            document.querySelector('.lastSticker').classList.remove('lastSticker');
+                            currentPage++;
+                            StickerDataItem(Selected);
+                            foundLastSticker = true;
+                        } catch (error) {
+                            return;
+                        }
+                    }
+                });
+                // 如果没有找到 .lastSticker 元素，取消监听
+                if (foundLastSticker) {
+                    observer.disconnect();
+                }
+            }
+            const observer = new IntersectionObserver(handleIntersection);
+            setTimeout(() => {
+                const elementsWithLastStickerClass = document.querySelectorAll('.lastSticker');
+                elementsWithLastStickerClass.forEach(element => {
+                    observer.observe(element);
+                });
+            }, 500);
+
+        }
+        updateSelectedStatus(Selected);
+        StickerDataItem(Selected);
         getStickerStatus = true
     }
 }

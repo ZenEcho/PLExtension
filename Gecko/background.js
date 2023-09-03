@@ -43,7 +43,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		}
 		chrome.storage.local.set({
 			"GlobalUpload": "GlobalUpload_Default", //全局上传
-			"Right_click_menu_upload": "on",//右键上传
+			"Right_click_menu_upload": "Right_click_menu_upload_on",//右键上传
 			"AutoInsert": "AutoInsert_on",//自动插入
 			"AutoCopy": "AutoCopy_off",//自动复制 默认关闭
 			"edit_uploadArea_width": 32,//宽度
@@ -100,7 +100,7 @@ const getSave = [
 ]
 
 chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
-	if (result.Right_click_menu_upload == "on") {
+	if (result.Right_click_menu_upload == "Right_click_menu_upload_on") {
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],

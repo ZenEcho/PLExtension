@@ -10,7 +10,7 @@ body {
 
 #header {
   z-index: 9990;
-  background-color: #1E90FF;
+  background-color: #0f62fe;
   position: sticky;
   top: 0;
 }
@@ -590,7 +590,7 @@ h1:hover {
 .css-button-arrow--sky {
   height: 40px;
   color: #fff;
-  padding: 5px 10px;
+  padding: 5px 30px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -605,8 +605,6 @@ h1:hover {
 
 .css-button-arrow--sky:hover {
   border-radius: 5px;
-  padding-right: 24px;
-  padding-left: 8px;
 }
 
 .css-button-arrow--sky:hover:after {
