@@ -272,6 +272,11 @@
    line-height: 12px;
    color: red;
  }
+
+ .PL-ImgMark {
+   width: 100%;
+ }
+
  .PL-ImgMark::before {
    position: absolute;
    top: 0px;

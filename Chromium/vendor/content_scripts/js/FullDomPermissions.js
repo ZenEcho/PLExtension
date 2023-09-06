@@ -125,6 +125,7 @@ function detectEncoding() {
 
 
 function insertImageDiv(element, link, CssName) {
+    console.log(element);
     const imgDiv = document.createElement('div');
     const imgElement = document.createElement('img');
     imgElement.src = link;
@@ -139,6 +140,14 @@ function insertImageDiv(element, link, CssName) {
         imgDiv.className = `position-relative PL-ImgMark`;
         imgElement.alt = "盘络转换";
         imgElement.title = link;
+
+        if (!CssName) {
+            // 如果图片宽度大于父元素宽度，将图片宽度设置为100%
+            if (imgElement.width > element.clientWidth) {
+                imgElement.style.width = "100%";
+            }
+        }
+
     };
     imgElement.onerror = function () {
         imgDiv.remove()
