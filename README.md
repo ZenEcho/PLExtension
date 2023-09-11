@@ -62,7 +62,7 @@
 **盘络提供的表情不合你胃口？你可以在配置信息底部,可以填写你自定义的表情贴纸数据,[数据参考](https://github.com/ZenEcho/PLExtension/blob/master/%E8%87%AA%E5%BB%BA%E8%A1%A8%E6%83%85%E5%8C%85%E6%95%B0%E6%8D%AE%E5%8F%82%E8%80%83.json)**
 
 ## 问题反馈
- [插件交流反馈群](https://github.com/ZenEcho/PLExtension/issues)
+ [插件反馈](https://github.com/ZenEcho/PLExtension/issues)
 
 ### 火狐浏览器注意
 
