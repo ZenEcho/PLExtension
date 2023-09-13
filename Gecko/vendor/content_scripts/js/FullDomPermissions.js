@@ -139,6 +139,14 @@ function insertImageDiv(element, link, CssName) {
         imgDiv.className = `position-relative PL-ImgMark`;
         imgElement.alt = "盘络转换";
         imgElement.title = link;
+
+        if (!CssName) {
+            // 如果图片宽度大于父元素宽度，将图片宽度设置为100%
+            if (imgElement.width > element.clientWidth) {
+                imgElement.style.width = "100%";
+            }
+        }
+
     };
     imgElement.onerror = function () {
         imgDiv.remove()
@@ -149,7 +157,9 @@ function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
     item.innerText = "😍盘络"
-
+    item.addEventListener('click', function () {
+        window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
+    });
     const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
     const detectedEncoding = detectEncoding();
     if (detectedEncoding !== 'utf-8') {

@@ -98,6 +98,9 @@ function plB(Element) {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
     item.innerText = "😍盘络"
+    item.addEventListener('click', function () {
+        window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
+    });
     Element.appendChild(item)
 }
 
