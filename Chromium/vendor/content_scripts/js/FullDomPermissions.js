@@ -125,7 +125,6 @@ function detectEncoding() {
 
 
 function insertImageDiv(element, link, CssName) {
-    console.log(element);
     const imgDiv = document.createElement('div');
     const imgElement = document.createElement('img');
     imgElement.src = link;
@@ -158,7 +157,9 @@ function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
     item.innerText = "😍盘络"
-
+    item.addEventListener('click', function () {
+        window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
+    });
     const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
     const detectedEncoding = detectEncoding();
     if (detectedEncoding !== 'utf-8') {

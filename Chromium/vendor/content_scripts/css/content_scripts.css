@@ -1,7 +1,7 @@
 #uploadArea {
     position: fixed;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-
+    user-select: none;
 }
 #PL_JS_Alerts {
     position: fixed;

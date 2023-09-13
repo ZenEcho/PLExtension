@@ -93,68 +93,103 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
     }
     /**
-     * 实现获取侧边栏的位置信息
-     */
+       * 实现获取侧边栏的位置信息
+       */
     let PNGsidebarRect = uploadArea.getBoundingClientRect();
     window.addEventListener('resize', function () {
         uploadArea.style.display = "block"
         PNGsidebarRect = uploadArea.getBoundingClientRect();
     });
-
     /**
      * 实现左右侧边栏
      */
+    let isDragging = false;
+    let startY, startTop;
+    let isMouseOverSidebar = false;
+
     switch (edit_uploadArea_Left_or_Right) {
         case "Left":
             uploadArea.style.borderRadius = "0px 10px 10px 0px"
-            uploadArea.style.left = "-" + edit_uploadArea_width + "px"
+            uploadArea.style.left = "-" + (edit_uploadArea_width + 4) + "px"
             uploadArea.style.transition = "left 0.3s ease-in-out"
-            iframe.style.left = "-800px"
+            iframe.style.left = "-810px"
             iframe.style.transition = "left 0.3s ease-in-out"
-            document.addEventListener("mousemove", function (event) {
-                // 获取鼠标在页面上的位置
-                let x = event.clientX;
-                let y = event.clientY;
-                // 获取页面宽度和高度
-                let w = window.innerWidth;
-                let h = window.innerHeight;
-                // 如果鼠标在侧边栏范围内，显示侧边栏
-                if (x < PNGsidebarRect.width && y > PNGsidebarRect.top && y < PNGsidebarRect.top + PNGsidebarRect.height) {
-                    uploadArea.style.left = "0";
-                } else {
-                    uploadArea.style.left = "-" + edit_uploadArea_width + "px"
-                }
-            });
-
             break;
         case "Right":
             uploadArea.style.borderRadius = "10px 0px 0px 10px"
-            uploadArea.style.right = "-" + edit_uploadArea_width + "px"
+            uploadArea.style.right = "-" + (edit_uploadArea_width + 4) + "px"
             uploadArea.style.transition = "right 0.3s ease-in-out"
-            iframe.style.right = "-800px"
+            iframe.style.right = "-810px"
             iframe.style.transition = "right 0.3s ease-in-out"
-            document.addEventListener("mousemove", function (event) {
-                // 获取鼠标在页面上的位置
-                let x = event.clientX;
-                let y = event.clientY;
-                // 获取页面宽度和高度，包括滚动条宽度
-                let w = window.innerWidth;
-                let h = window.innerHeight;
-                // 如果页面有滚动条，则需要将宽度和高度减去滚动条宽度
-                if (document.body.scrollHeight > window.innerHeight) {
-                    w -= window.innerWidth - document.body.clientWidth;
-                    h -= window.innerHeight - document.body.clientHeight;
-                }
-                // 如果鼠标在侧边栏范围内，显示侧边栏
-                if (x > w - PNGsidebarRect.width && y > PNGsidebarRect.top && y < PNGsidebarRect.top + PNGsidebarRect.height
-                ) {
-                    uploadArea.style.right = "0";
-                } else {
-                    uploadArea.style.right = "-" + edit_uploadArea_width + "px";
-                }
-            });
             break;
     }
+
+    // 鼠标按下事件监听
+    uploadArea.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startY = e.clientY;
+        startTop = uploadArea.offsetTop;
+    });
+
+    // 鼠标松开事件监听
+    document.addEventListener('mouseup', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = false;
+        uploadArea.style.display = "block"
+        PNGsidebarRect = uploadArea.getBoundingClientRect();
+    });
+
+    // 鼠标移动事件监听
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        if (isDragging) {
+            const deltaY = y - startY;
+            const newTop = startTop + deltaY;
+            // 限制上传区域不超出父元素的边界
+            if (newTop >= 0 && newTop + uploadArea.clientHeight <= uploadArea.parentElement.clientHeight) {
+                uploadArea.style.top = newTop + 'px';
+                if (edit_uploadArea_Left_or_Right === 'Left') {
+                    uploadArea.style.left = '0';
+                } else {
+                    uploadArea.style.right = '0';
+                }
+                return;
+            }
+        }
+        // 根据鼠标位置显示/隐藏侧边栏
+        if (
+            edit_uploadArea_Left_or_Right === 'Left' &&
+            x < PNGsidebarRect.width &&
+            y > PNGsidebarRect.top &&
+            y < PNGsidebarRect.top + PNGsidebarRect.height
+        ) {
+            uploadArea.style.left = '0';
+            isMouseOverSidebar = true;
+        } else if (
+            edit_uploadArea_Left_or_Right === 'Right' &&
+            x > w - PNGsidebarRect.width &&
+            y > PNGsidebarRect.top &&
+            y < PNGsidebarRect.top + PNGsidebarRect.height
+        ) {
+            uploadArea.style.right = '0';
+            isMouseOverSidebar = true;
+        } else {
+            isMouseOverSidebar = false;
+        }
+
+        // 如果不在侧边栏范围内，根据编辑区域的方向来隐藏侧边栏
+        if (!isMouseOverSidebar) {
+            if (edit_uploadArea_Left_or_Right === 'Left') {
+                uploadArea.style.left = '-' + (edit_uploadArea_width + 4) + 'px';
+            } else if (edit_uploadArea_Left_or_Right === 'Right') {
+                uploadArea.style.right = '-' + (edit_uploadArea_width + 4) + 'px';
+            }
+        }
+    });
 
     /**
      * 实现根据侧边栏宽度切换logo
@@ -185,17 +220,15 @@ chrome.storage.local.get(storagelocal, function (result) {
      * 点击文档执行关闭操作
      */
     document.addEventListener('click', function (event) {
-        // 检查 uploadArea 元素是否已被点击
         /**
          * 实现点击侧边栏弹出框架
          */
-        if (event.target.closest('#uploadArea') || event.target.closest('.insertContentIntoEditorPrompt') || event.target.closest('.Function_Start_button')) {
-            //点击元素打开
-            iframeShow()
-        } else {
-            iframeHide()
-        }
-
+        // if (!event.target.closest('#uploadArea') || !event.target.closest('.insertContentIntoEditorPrompt') || !event.target.closest('.Function_Start_button')) {
+        //     iframeHide()
+        // }
+    });
+    uploadArea.addEventListener('click', function () {
+        iframeShow()
     });
     function iframeShow() {
         let iframesrc = iframe.src
@@ -244,10 +277,10 @@ chrome.storage.local.get(storagelocal, function (result) {
         Animation_time = setTimeout(function () {
             switch (edit_uploadArea_Left_or_Right) {
                 case "Left":
-                    iframe.style.left = "-800px"
+                    iframe.style.left = "-810px"
                     break;
                 case "Right":
-                    iframe.style.right = "-800px"
+                    iframe.style.right = "-810px"
                     break;
             }
             iframe_mouseover = false
@@ -422,6 +455,7 @@ chrome.storage.local.get(storagelocal, function (result) {
             window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');
         }
     });
+
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
@@ -435,6 +469,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }, 800); // 延迟1秒执行
             })
 
+        }
+        if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
+            iframeShow()
         }
 
     });
