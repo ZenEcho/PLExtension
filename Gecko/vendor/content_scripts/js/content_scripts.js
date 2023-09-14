@@ -28,6 +28,7 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     let uploadArea = document.createElement('PL-Extension'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
+    uploadArea.setAttribute('title', '长按拖动');
 
 
     let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
@@ -123,20 +124,29 @@ chrome.storage.local.get(storagelocal, function (result) {
             iframe.style.transition = "right 0.3s ease-in-out"
             break;
     }
-
+    let delayTimeout;
     // 鼠标按下事件监听
     uploadArea.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startY = e.clientY;
-        startTop = uploadArea.offsetTop;
+        delayTimeout = setTimeout(() => {
+            isDragging = true;
+            startY = e.clientY;
+            startTop = uploadArea.offsetTop;
+            uploadArea.classList.remove('box-shadow-Blink');
+            uploadArea.classList.add('box-shadow-Blink');
+        }, 500);
     });
 
     // 鼠标松开事件监听
     document.addEventListener('mouseup', (e) => {
+        clearTimeout(delayTimeout);
         isDragging = false;
-        uploadArea.style.display = "block"
-        PNGsidebarRect = uploadArea.getBoundingClientRect();
-        setTimeout(() => { isPreventingClick = false }, 100)
+        if (isPreventingClick) {
+            uploadArea.style.display = "block"
+            PNGsidebarRect = uploadArea.getBoundingClientRect();
+            uploadArea.classList.remove('box-shadow-Blink');
+            setTimeout(() => { isPreventingClick = false }, 100)
+        }
+
     });
 
     // 鼠标移动事件监听
@@ -158,8 +168,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                     uploadArea.style.right = '0';
                 }
                 isPreventingClick = true;
-                return;
+
             }
+            return;
         }
 
         const isLeft = edit_uploadArea_Left_or_Right === 'Left';
@@ -220,6 +231,9 @@ chrome.storage.local.get(storagelocal, function (result) {
         let iframesrc = iframe.src
         if (!iframesrc) {
             iframe.src = popupUrl
+            iframe.onload = function () {
+                iframe.contentWindow.focus();
+            };
         }
         switch (edit_uploadArea_Left_or_Right) {
             case "Left":
@@ -229,6 +243,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                 iframe.style.right = "1px"
                 break;
         }
+        iframe.contentWindow.focus();
         iframe_mouseover = true
         uploadArea.style.display = "none"
     }

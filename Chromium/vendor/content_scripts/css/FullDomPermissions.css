@@ -7,6 +7,27 @@
    background-color: rgb(0 0 0 / 4%);
  }
 
+ @keyframes box-shadow-Blink {
+   0% {
+    box-shadow: rgb(0 0 0 / 30%) 0px 0px 10px, rgba(0, 0, 0, 0.06) 0px 2px 4px;
+   }
+
+   50% {
+    box-shadow: #3a86ff 0px 0px 10px, #3a86ff 0px 2px 4px;
+     /* 闪烁的颜色 */
+   }
+
+   100% {
+    box-shadow: rgb(0 0 0 / 30%) 0px 0px 10px, rgba(0, 0, 0, 0.06) 0px 2px 4px;
+   }
+ }
+
+ /* 定义闪烁类 */
+ .box-shadow-Blink {
+   animation: box-shadow-Blink 1s infinite;
+ }
+
+
  .insertContentIntoEditorPrompt {
    text-align: center;
    font-size: 14px;

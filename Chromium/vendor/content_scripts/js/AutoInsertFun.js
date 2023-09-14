@@ -204,9 +204,11 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
         //Gutenberg Editor
         let Gutenberg = document.getElementById("wpbody-content")
         if (Gutenberg) {
-            if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
-            Find_Editor = true
+            if (currentURL.toLowerCase().includes("post-new.php")) {
+                if (Find_Editor == true) { return; }
+                window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
+                Find_Editor = true
+            }
         }
 
 
