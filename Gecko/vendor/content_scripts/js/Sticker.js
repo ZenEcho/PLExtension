@@ -373,4 +373,3 @@ function mainLogic(insertContentPrompt) {
         getStickerStatus = true
     }
 }
-

@@ -4,7 +4,6 @@
 var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
-    let imageUrl
     options_exe = result.options_exe
     options_proxy_server_state = result.options_proxy_server_state
     options_proxy_server = result.options_proxy_server
@@ -146,7 +145,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             uploadArea.classList.remove('box-shadow-Blink');
             setTimeout(() => { isPreventingClick = false }, 100)
         }
-
     });
 
     // 鼠标移动事件监听
@@ -207,13 +205,42 @@ chrome.storage.local.get(storagelocal, function (result) {
     } else if (edit_uploadArea_width > 64) {//大于
         uploadArea.style.background = "url(" + PNGlogo64 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
     }
-    /**
-     * 实现全局上传模式
-     */
-    document.addEventListener("dragover", document_uploadArea_dragover);//拖拽过程
+
+
+    // ####################################################
+    // #拖拽上传
+    // ####################################################
+    document.addEventListener("dragover", (event) => {
+        let uploadAreaRect = uploadArea.getBoundingClientRect();
+        let uploadAreaX = event.clientX - uploadAreaRect.left;
+        let uploadAreaY = event.clientY - uploadAreaRect.top;
+        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (event.target.tagName === "IMG") {
+            if (GlobalUpload == "GlobalUpload_Default") {
+                uploadArea.classList.remove('box-shadow-Blink');
+                uploadArea.classList.add('box-shadow-Blink');
+                // 判断拖拽点是否在上传区域内
+                if (edit_uploadArea_Left_or_Right == "Left") {
+                    uploadArea.style.left = "0";
+                } else {
+                    uploadArea.style.right = "0";
+                }
+            }
+        }
+    });//拖拽过程
+    document.addEventListener("dragend", (event) => {
+        uploadArea.classList.remove('box-shadow-Blink');
+    });
     switch (GlobalUpload) {
         case 'GlobalUpload_Default':
-            uploadArea.addEventListener("drop", uploadArea_drop_Default);// 拖拽到元素
+            uploadArea.addEventListener("drop", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                content_scripts_CheckUploadModel(event, Simulated_upload)
+            });// 拖拽到元素
             break;
         case 'GlobalUpload_off':
             uploadArea_status = uploadArea_status - 1
@@ -283,44 +310,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         iframe.remove();
         document.getElementsByClassName("insertContentIntoEditorPrompt").remove()
     }
-    // ------------------------------------------------------------------------------------
-    // ↓↓↓***全局上传***↓↓↓
-    // ↓↓↓***全局上传***↓↓↓
-    // ↓↓↓***全局上传***↓↓↓
-    // ------------------------------------------------------------------------------------
 
-    /**
-     * 拖拽到文档的过程
-     */
-    function document_uploadArea_dragover(event) {
-        //拖动过程
-        let uploadAreaRect = uploadArea.getBoundingClientRect();
-        let uploadAreaX = event.clientX - uploadAreaRect.left;
-        let uploadAreaY = event.clientY - uploadAreaRect.top;
-
-        if (GlobalUpload == "GlobalUpload_Default") {
-            // 判断拖拽点是否在上传区域内
-            if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            if (edit_uploadArea_Left_or_Right == "Left") {
-                uploadArea.style.left = "0";
-            } else {
-                uploadArea.style.right = "0";
-            }
-        }
-    }
-
-    /**
-     *  普通模式拖拽到uploadArea就上传uploadAreaFunction(event)
-     */
-    function uploadArea_drop_Default(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        content_scripts_CheckUploadModel(event, Simulated_upload)
-
-    }
     chrome.storage.local.get(["AutoInsert"], function (result) {
         if (result.AutoInsert == "AutoInsert_on") {
             insertContentIntoEditorState()
@@ -403,6 +393,10 @@ chrome.storage.local.get(storagelocal, function (result) {
             window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');
         }
     });
+
+    // ####################################################
+    // #功能演示
+    // ####################################################
 
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
