@@ -182,7 +182,6 @@ function FullDomAutoInsert() {
             Discuz_ReplyAdvanced.parentNode.parentNode.appendChild(item)
             success = "Discuz"
         }
-
         // url转图片
         const topicContentElements = Array.from(document.querySelectorAll('.t_f'));
         ContentElements(topicContentElements);
@@ -468,3 +467,4 @@ setTimeout(() => {
         window.postMessage({ type: 'insertContentIntoEditorState', data: true }, '*');
     }
 }, 800);
+

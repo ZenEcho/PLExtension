@@ -46,6 +46,8 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			"Right_click_menu_upload": "Right_click_menu_upload_on",//右键上传
 			"AutoInsert": "AutoInsert_on",//自动插入
 			"AutoCopy": "AutoCopy_off",//自动复制 默认关闭
+			"ImageProxy": "0",//图片代理 默认关闭
+			"EditPasteUpload": "off",//编辑框粘贴 默认关闭
 			"edit_uploadArea_width": 32,//宽度
 			"edit_uploadArea_height": 30,//高度
 			"edit_uploadArea_Location": 34,//位置
@@ -552,7 +554,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { fiftyEight_contextMenus: { url: imgUrl, Metho: MethodName }, })
 			});
-		
+
 			return;
 		}
 		fetch(options_proxy_server + imgUrl)
@@ -723,7 +725,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 	if (request.Progress_bar) {
 		if (request.Progress_bar.status == 1) {
-			console.log("999");
 			chrome.tabs.query({ active: true }, function (tabs) {
 				TabId = tabs[0].id;
 				chrome.tabs.sendMessage(TabId, { Progress_bar: { "filename": request.Progress_bar.filename, "status": request.Progress_bar.status, "IsCurrentTabId": true } })

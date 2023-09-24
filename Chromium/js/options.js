@@ -1937,163 +1937,66 @@ $(document).ready(function () {
         </div>
         </div>
         `)
-      }
-    })
-
-    $("#Sidebar_area").click(function () {
-      let edit_uploadArea_width_value //宽度
-      let edit_uploadArea_height_value //高度
-      let edit_uploadArea_Location_value //位置
-      let edit_uploadArea_opacity_value //透明度
-      let edit_uploadArea_auto_close_time_value //自动关闭时间
+        let edit_uploadArea_width_value //宽度
+        let edit_uploadArea_height_value //高度
+        let edit_uploadArea_Location_value //位置
+        let edit_uploadArea_opacity_value //透明度
+        let edit_uploadArea_auto_close_time_value //自动关闭时间
 
 
-      let edit_uploadArea = $("#edit_uploadArea")
-      let uploadAreaParent = $("#PNGmodal-body")
-      // 定义初始变量
-      let isDragging = false;
-      let dragStart = 0;
-      let dragOffset = 0;
-      // 监听鼠标按下事件
-      edit_uploadArea.mousedown(function (event) {
-        isDragging = true;
-        dragStart = event.clientY;
-        dragOffset = edit_uploadArea.offset().top - uploadAreaParent.offset().top;
-      });
-      $(document).mousemove(function (event) {
-        let parentHeight = uploadAreaParent.height();
-        if (isDragging) {
-          let dragPos = event.clientY - dragStart + dragOffset;
-          if (dragPos < 0) {
-            dragPos = 0;
+        let edit_uploadArea = $("#edit_uploadArea")
+        let uploadAreaParent = $("#PNGmodal-body")
+        // 定义初始变量
+        let isDragging = false;
+        let dragStart = 0;
+        let dragOffset = 0;
+        // 监听鼠标按下事件
+        edit_uploadArea.mousedown(function (event) {
+          isDragging = true;
+          dragStart = event.clientY;
+          dragOffset = edit_uploadArea.offset().top - uploadAreaParent.offset().top;
+        });
+        $(document).mousemove(function (event) {
+          let parentHeight = uploadAreaParent.height();
+          if (isDragging) {
+            let dragPos = event.clientY - dragStart + dragOffset;
+            if (dragPos < 0) {
+              dragPos = 0;
+            }
+            if (dragPos > uploadAreaParent.height() - edit_uploadArea.height()) {
+              dragPos = uploadAreaParent.height() - edit_uploadArea.height();
+            }
+            edit_uploadArea_Location_value = parseInt(dragPos / (parentHeight / 100));
+            $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ":" + edit_uploadArea_Location_value + "%");
+            edit_uploadArea_Location = edit_uploadArea_Location_value
+            edit_uploadArea.css("top", dragPos);
+            uploadAreaParent.scrollTop(dragPos);
           }
-          if (dragPos > uploadAreaParent.height() - edit_uploadArea.height()) {
-            dragPos = uploadAreaParent.height() - edit_uploadArea.height();
-          }
-          edit_uploadArea_Location_value = parseInt(dragPos / (parentHeight / 100));
-          $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ":" + edit_uploadArea_Location_value + "%");
-          edit_uploadArea_Location = edit_uploadArea_Location_value
-          edit_uploadArea.css("top", dragPos);
-          uploadAreaParent.scrollTop(dragPos);
-        }
-      });
+        });
 
-      // 监听鼠标松开事件
-      $(document).mouseup(function () {
-        isDragging = false;
-      });
-      // 宽度
-      edit_uploadArea.css('width', edit_uploadArea_width + 'px');
-      $("#edit_uploadArea_width").attr("value", edit_uploadArea_width)
-      $("#edit_uploadArea_width").prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width + "px");
-      // 高度
+        // 监听鼠标松开事件
+        $(document).mouseup(function () {
+          isDragging = false;
+        });
+        // 宽度
+        edit_uploadArea.css('width', edit_uploadArea_width + 'px');
+        $("#edit_uploadArea_width").attr("value", edit_uploadArea_width)
+        $("#edit_uploadArea_width").prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width + "px");
+        // 高度
 
-      edit_uploadArea.css('height', edit_uploadArea_height + '%');
-      $("#edit_uploadArea_height").attr("value", edit_uploadArea_height)
-      $("#edit_uploadArea_height").prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height + "%");
-      switch (edit_uploadArea_Left_or_Right) {
-        case 'Left':
-          if (edit_uploadArea_height > 99) {
-            edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
-          } else {
-            edit_uploadArea.css("border-radius", "0")
-          }
-          break;
-        case 'Right':
-          if (edit_uploadArea_height > 99) {
-            edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
-          } else {
-            edit_uploadArea.css("border-radius", "0")
-          }
-          break;
-      }
-
-      //位置
-      edit_uploadArea.css('top', (edit_uploadArea_Location * ($("#PNGmodal-body").height() / 100)) + 'px');
-      $("#edit_uploadArea_Location").attr("value", edit_uploadArea_Location)
-      $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + (edit_uploadArea_Location) + "%");
-
-      //透明
-      edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity + `)`)
-      $("#edit_uploadArea_opacity").attr("value", edit_uploadArea_opacity * 100)
-      $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity);
-
-      //自动关闭时间
-      $("#edit_uploadArea_auto_close_time").attr("value", edit_uploadArea_auto_close_time)
-      $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time + "s");
-      switch (edit_uploadArea_Left_or_Right) {
-        case 'Left':
-          $("#edit_uploadArea_Left").attr("checked", true)
-          edit_uploadArea.css("left", "0");
-          break;
-        case 'Right':
-          $("#edit_uploadArea_Right").attr("checked", true)
-          edit_uploadArea.css("right", "0");
-          break;
-      }
-
-
-      $("#edit_uploadArea_Left").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Left" })
-        edit_uploadArea_Left_or_Right = "Left"
-        edit_uploadArea.css("left", "0");
-        if (edit_uploadArea_height > 99) {
-          edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
-        } else {
-          edit_uploadArea.css("border-radius", "0")
-        }
-      })
-      $("#edit_uploadArea_Right").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-        edit_uploadArea_Left_or_Right = "Right"
-        edit_uploadArea.css("left", uploadAreaParent.width() - edit_uploadArea.width() + "px");
-        if (edit_uploadArea_height > 99) {
-          edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
-        } else {
-          edit_uploadArea.css("border-radius", "0")
-        }
-      })
-
-
-      $('#edit_uploadArea_width').on('input', function () {
-        edit_uploadArea_width_value = $(this).val();
-        $(this).prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width_value + "px");
-        edit_uploadArea.css('width', edit_uploadArea_width_value + 'px');
-        edit_uploadArea_width = edit_uploadArea_width_value
-        switch (edit_uploadArea_Left_or_Right) {
-          case 'Right':
-            edit_uploadArea.css('left', uploadAreaParent.width() - edit_uploadArea_width_value + 'px');
-            break;
-        }
-      });
-
-
-
-      $('#edit_uploadArea_height').on('input', function () {
-        edit_uploadArea_height_value = $(this).val();
-        let areaOffset = edit_uploadArea.offset();
-        let parentOffset = edit_uploadArea.parent().offset();
-        let top = areaOffset.top - parentOffset.top;
-        let parentHeight = edit_uploadArea.parent().height();
-
-        edit_uploadArea_Location_value = parseInt((top / parentHeight) * 100);
-        let from_border = edit_uploadArea_Location_value + parseInt(edit_uploadArea_height_value)
-        $(this).prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height_value + "%");
-        $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + edit_uploadArea_Location_value + "%");
-        if (from_border > 99) {
-          edit_uploadArea.css("top", 0)
-        }
-
+        edit_uploadArea.css('height', edit_uploadArea_height + '%');
+        $("#edit_uploadArea_height").attr("value", edit_uploadArea_height)
+        $("#edit_uploadArea_height").prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height + "%");
         switch (edit_uploadArea_Left_or_Right) {
           case 'Left':
-            if (edit_uploadArea_height_value > 99) {
+            if (edit_uploadArea_height > 99) {
               edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
             } else {
               edit_uploadArea.css("border-radius", "0")
             }
             break;
           case 'Right':
-            if (edit_uploadArea_height_value > 99) {
+            if (edit_uploadArea_height > 99) {
               edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
             } else {
               edit_uploadArea.css("border-radius", "0")
@@ -2101,54 +2004,140 @@ $(document).ready(function () {
             break;
         }
 
+        //位置
+        edit_uploadArea.css('top', (edit_uploadArea_Location * ($("#PNGmodal-body").height() / 100)) + 'px');
+        $("#edit_uploadArea_Location").attr("value", edit_uploadArea_Location)
+        $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + (edit_uploadArea_Location) + "%");
 
+        //透明
+        edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity + `)`)
+        $("#edit_uploadArea_opacity").attr("value", edit_uploadArea_opacity * 100)
+        $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity);
 
+        //自动关闭时间
+        $("#edit_uploadArea_auto_close_time").attr("value", edit_uploadArea_auto_close_time)
+        $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time + "s");
+        switch (edit_uploadArea_Left_or_Right) {
+          case 'Left':
+            $("#edit_uploadArea_Left").attr("checked", true)
+            edit_uploadArea.css("left", "0");
+            break;
+          case 'Right':
+            $("#edit_uploadArea_Right").attr("checked", true)
+            edit_uploadArea.css("right", "0");
+            break;
+        }
 
-        edit_uploadArea.css('height', edit_uploadArea_height_value + '%');
-        edit_uploadArea_height = edit_uploadArea_height_value
-        edit_uploadArea_Location = edit_uploadArea_Location_value
-
-      });
-
-
-      $('#edit_uploadArea_opacity').on('input', function () {
-        edit_uploadArea_opacity_value = $(this).val() / 100;
-        $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity_value);
-        edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity_value + `)`)
-        edit_uploadArea_opacity = edit_uploadArea_opacity_value
-      });
-
-      $('#edit_uploadArea_auto_close_time').on('input', function () {
-        edit_uploadArea_auto_close_time_value = $(this).val();
-        $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time_value + "s");
-        edit_uploadArea_auto_close_time = edit_uploadArea_auto_close_time_value
-      });
-
-
-      $("#edit_uploadArea_save").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_width": edit_uploadArea_width_value })
-        chrome.storage.local.set({ "edit_uploadArea_height": edit_uploadArea_height_value })
-        chrome.storage.local.set({ "edit_uploadArea_Location": edit_uploadArea_Location_value })
-        chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
-        chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
-        toastItem({
-          toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+        $("#edit_uploadArea_Left").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Left" })
+          edit_uploadArea_Left_or_Right = "Left"
+          edit_uploadArea.css("left", "0");
+          if (edit_uploadArea_height > 99) {
+            edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
+          } else {
+            edit_uploadArea.css("border-radius", "0")
+          }
+        })
+        $("#edit_uploadArea_Right").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          edit_uploadArea_Left_or_Right = "Right"
+          edit_uploadArea.css("left", uploadAreaParent.width() - edit_uploadArea.width() + "px");
+          if (edit_uploadArea_height > 99) {
+            edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
+          } else {
+            edit_uploadArea.css("border-radius", "0")
+          }
         })
 
-      })
-      $("#edit_uploadArea_reset").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_width": 32 })
-        chrome.storage.local.set({ "edit_uploadArea_height": 30 })
-        chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
-        chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
-        chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-        toastItem({
-          toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
+        $('#edit_uploadArea_width').on('input', function () {
+          edit_uploadArea_width_value = $(this).val();
+          $(this).prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width_value + "px");
+          edit_uploadArea.css('width', edit_uploadArea_width_value + 'px');
+          edit_uploadArea_width = edit_uploadArea_width_value
+          switch (edit_uploadArea_Left_or_Right) {
+            case 'Right':
+              edit_uploadArea.css('left', uploadAreaParent.width() - edit_uploadArea_width_value + 'px');
+              break;
+          }
+        });
+
+        $('#edit_uploadArea_height').on('input', function () {
+          edit_uploadArea_height_value = $(this).val();
+          let areaOffset = edit_uploadArea.offset();
+          let parentOffset = edit_uploadArea.parent().offset();
+          let top = areaOffset.top - parentOffset.top;
+          let parentHeight = edit_uploadArea.parent().height();
+
+          edit_uploadArea_Location_value = parseInt((top / parentHeight) * 100);
+          let from_border = edit_uploadArea_Location_value + parseInt(edit_uploadArea_height_value)
+          $(this).prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height_value + "%");
+          $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + edit_uploadArea_Location_value + "%");
+          if (from_border > 99) {
+            edit_uploadArea.css("top", 0)
+          }
+
+          switch (edit_uploadArea_Left_or_Right) {
+            case 'Left':
+              if (edit_uploadArea_height_value > 99) {
+                edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
+              } else {
+                edit_uploadArea.css("border-radius", "0")
+              }
+              break;
+            case 'Right':
+              if (edit_uploadArea_height_value > 99) {
+                edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
+              } else {
+                edit_uploadArea.css("border-radius", "0")
+              }
+              break;
+          }
+
+
+
+
+          edit_uploadArea.css('height', edit_uploadArea_height_value + '%');
+          edit_uploadArea_height = edit_uploadArea_height_value
+          edit_uploadArea_Location = edit_uploadArea_Location_value
+
+        });
+
+        $('#edit_uploadArea_opacity').on('input', function () {
+          edit_uploadArea_opacity_value = $(this).val() / 100;
+          $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity_value);
+          edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity_value + `)`)
+          edit_uploadArea_opacity = edit_uploadArea_opacity_value
+        });
+
+        $('#edit_uploadArea_auto_close_time').on('input', function () {
+          edit_uploadArea_auto_close_time_value = $(this).val();
+          $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time_value + "s");
+          edit_uploadArea_auto_close_time = edit_uploadArea_auto_close_time_value
+        });
+
+        $("#edit_uploadArea_save").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_width": edit_uploadArea_width_value })
+          chrome.storage.local.set({ "edit_uploadArea_height": edit_uploadArea_height_value })
+          chrome.storage.local.set({ "edit_uploadArea_Location": edit_uploadArea_Location_value })
+          chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
+          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+          })
+
         })
-
-      })
-
+        $("#edit_uploadArea_reset").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_width": 32 })
+          chrome.storage.local.set({ "edit_uploadArea_height": 30 })
+          chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
+          chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
+          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
+          })
+        })
+      }
     })
 
   })//chrome get
@@ -2316,11 +2305,11 @@ $(document).ready(function () {
     });
   })
   chrome.storage.local.get(["ImageProxy"], function (result) {
-    if ($('a[value="' + result.ImageProxy + '"]').length) {
-      $('a[value="' + result.ImageProxy + '"]').addClass("active")
+    if ($('#Image_Proxy a[value="' + result.ImageProxy + '"]').length) {
+      $('#Image_Proxy a[value="' + result.ImageProxy + '"]').addClass("active")
     } else {
       chrome.storage.local.set({ "ImageProxy": "0" })
-      $('a[value="nodel"]').addClass("active")
+      $('#Image_Proxy a[value="0"]').addClass("active")
     }
     $('#Image_Proxy .dropdown-item').click(function () {
       let val = $(this).attr("value")
@@ -2330,6 +2319,24 @@ $(document).ready(function () {
       $(this).addClass("active")
       toastItem({
         toast_content: "图片代理设置成功"
+      });
+    });
+  })
+  chrome.storage.local.get(["EditPasteUpload"], function (result) {
+    if ($('#EditPasteUpload a[value="' + result.EditPasteUpload + '"]').length) {
+      $('#EditPasteUpload a[value="' + result.EditPasteUpload + '"]').addClass("active")
+    } else {
+      chrome.storage.local.set({ "EditPasteUpload": "off" })
+      $('#EditPasteUpload a[value="off"]').addClass("active")
+    }
+    $('#EditPasteUpload .dropdown-item').click(function () {
+      let val = $(this).attr("value")
+      $("#EditPasteUpload button").removeClass("btn-primary btn-dark")
+      chrome.storage.local.set({ "EditPasteUpload": val })
+      $('#EditPasteUpload .dropdown-item').removeClass("active")
+      $(this).addClass("active")
+      toastItem({
+        toast_content: "编辑框粘贴上传设置成功"
       });
     });
   })

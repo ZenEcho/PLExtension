@@ -445,7 +445,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
             iframeShow()
         }
-
     });
 
     function Drag_upload_animations() {

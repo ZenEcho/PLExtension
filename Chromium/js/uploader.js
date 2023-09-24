@@ -1,6 +1,10 @@
-
+window.addEventListener('message', function (event) {
+    // 编辑框粘贴上传
+    if (event.data.type === 'EditPasteUpload') {
+        content_scripts_CheckUploadModel(event.data.data, false, true)
+    }
+})
 function popup_Uploader() {
-    console.log(options_exe);
     switch (options_exe) {
         // 自定义上传属性
         case 'Lsky':
@@ -721,7 +725,7 @@ function popup_Uploader() {
 
 // content_scripts
 // 拖拽上传
-function content_scripts_CheckUploadModel(event, Simulated_upload) {
+function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUpload) {
     if (Simulated_upload == true) {
         let confirm_input = confirm(chrome.i18n.getMessage("Function_demonstration_12"))
         Simulated_upload = false //恢复上传
@@ -747,6 +751,10 @@ function content_scripts_CheckUploadModel(event, Simulated_upload) {
         }
         return;
     }
+    if (EditPasteUpload == true) {
+        filesUP(event)
+        return;
+    }
     if (event.dataTransfer.types.includes('text/uri-list')) {
         // 拖拽的是网络资源（URL）
         let htmlData = event.dataTransfer.getData('text/html');
@@ -766,52 +774,56 @@ function content_scripts_CheckUploadModel(event, Simulated_upload) {
         // 拖拽的是本地资源（文件）
         let files = event.dataTransfer.files;
         if (files.length > 0) {
-            if (options_exe === "Tencent_COS" || options_exe === 'Aliyun_OSS' || options_exe === 'AWS_S3' || options_exe === 'GitHubUP' || options_exe === 'fiftyEight') {
-                function processFile(fileIndex) {
-                    if (fileIndex < files.length) {
-                        let file = files[fileIndex];
-                        if (options_exe == 'GitHubUP' || options_exe === 'fiftyEight') {
-                            // 需要转码的
-                            let reader = new FileReader();
-                            reader.onload = function () {
-                                content_scripts_HandleUploadWithMode({ btoa: btoa(reader.result), file: file }, "GlobalUpload", () => {
-                                    setTimeout(function () {
-                                        processFile(fileIndex + 1);
-                                    }, 150);
-                                }, Simulated_upload);
-                            };
-                            reader.readAsBinaryString(file);
-                        } else {
-                            //Tencent_COS,Aliyun_OSS,AWS_S3
-                            content_scripts_HandleUploadWithMode(file, "GlobalUpload", () => {
+            filesUP(files)
+        }
+
+    }
+    function filesUP(files) {
+        if (options_exe === "Tencent_COS" || options_exe === 'Aliyun_OSS' || options_exe === 'AWS_S3' || options_exe === 'GitHubUP' || options_exe === 'fiftyEight') {
+            function processFile(fileIndex) {
+                if (fileIndex < files.length) {
+                    let file = files[fileIndex];
+                    if (options_exe == 'GitHubUP' || options_exe === 'fiftyEight') {
+                        // 需要转码的
+                        let reader = new FileReader();
+                        reader.onload = function () {
+                            content_scripts_HandleUploadWithMode({ btoa: btoa(reader.result), file: file }, "GlobalUpload", () => {
                                 setTimeout(function () {
                                     processFile(fileIndex + 1);
                                 }, 150);
                             }, Simulated_upload);
-                        }
-
-                        console.log("全局上传执行成功");
-                    }
-                }
-                processFile(0)
-            } else {
-                let base64Strings = [];
-                for (let i = 0; i < files.length; i++) {
-                    (function (file) {
-                        let reader = new FileReader();
-                        reader.onload = function () {
-                            // 将二进制数据编码为base64字符串并存储在数组中
-                            base64Strings.push(btoa(reader.result));
-                            if (base64Strings.length == files.length) {
-                                chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
-                            }
-                            console.log("全局上传执行成功")
-                        }
-                        // 读取当前文件的内容
+                        };
                         reader.readAsBinaryString(file);
+                    } else {
+                        //Tencent_COS,Aliyun_OSS,AWS_S3
+                        content_scripts_HandleUploadWithMode(file, "GlobalUpload", () => {
+                            setTimeout(function () {
+                                processFile(fileIndex + 1);
+                            }, 150);
+                        }, Simulated_upload);
+                    }
 
-                    })(files[i]);
+                    console.log("全局上传执行成功");
                 }
+            }
+            processFile(0)
+        } else {
+            let base64Strings = [];
+            for (let i = 0; i < files.length; i++) {
+                (function (file) {
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        // 将二进制数据编码为base64字符串并存储在数组中
+                        base64Strings.push(btoa(reader.result));
+                        if (base64Strings.length == files.length) {
+                            chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
+                        }
+                        console.log("全局上传执行成功")
+                    }
+                    // 读取当前文件的内容
+                    reader.readAsBinaryString(file);
+
+                })(files[i]);
             }
         }
     }
@@ -894,7 +906,6 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
-        window.postMessage({ type: 'Progress_bar', data: {} }, '*');
         chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         cos.uploadFile({
@@ -927,6 +938,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         oss.put(filename, file, {
             headers: {
@@ -954,6 +966,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         let params;
         if (options_Endpoint.includes('amazonaws.com')) {
@@ -999,6 +1012,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
 
         let date = new Date();
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         // 查询是否冲突
         let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
         data.content = blob
@@ -1066,6 +1080,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
 
         let date = new Date();
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
         let dataToSend = {
             "Pic-Size": "0*0",
             "Pic-Encoding": "base64",
