@@ -146,6 +146,7 @@ var storagelocal = [
   "options_proxy_server",
   "options_host",
   "options_token",
+  "options_CSRF",
   "options_uid",
   "options_source",
   "options_imgur_post_mode",
@@ -154,6 +155,7 @@ var storagelocal = [
   "options_album_id", //相册
   "options_nsfw_select",//是否健康
   "options_permission_select",//是否公开
+  "ImageProxy",//图片代理
   //自定义请求
   "options_apihost",
   "options_parameter",
@@ -192,6 +194,7 @@ var options_exe,
   options_proxy_server,
   options_host,
   options_token,
+  options_CSRF,
   options_uid,
   options_source,
   options_imgur_post_mode,
@@ -200,6 +203,7 @@ var options_exe,
   options_album_id,//相册
   options_nsfw_select,//是否健康
   options_permission_select,//是否公开
+  ImageProxy,//图片代理
   //自定义请求
   options_apihost,
   options_parameter,
@@ -518,6 +522,7 @@ if (currentURL === pluginURL) {
       localStorage.options_webtitle_status = 0
       return;
     }
+
     if (options_host) {
       // 自定义ajax函数属性
       if (options_exe == "Lsky") {
@@ -637,7 +642,7 @@ if (currentURL === pluginURL) {
           } catch (error) {
             $('.userBox').hide()
           }
-          
+
         }, 1500)
 
       })

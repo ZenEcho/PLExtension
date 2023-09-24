@@ -25,12 +25,12 @@
 textarea:focus{outline:none;border:#03a9f4 1px solid}
 .dropzone{min-height:284px;border:none;transition:min-height 1s ease-in-out}
 .dz-button{transition:margin-top 1s ease-in-out}
+.p_urls{word-break:break-word}
 @media screen and (min-height:680px){.dropzone{min-height:420px}
 }@media screen and (min-height:780px){.dropzone{min-height:520px}
 }@media screen and (min-height:880px){.dropzone{min-height:620px}
 }@media screen and (min-height:1080px){.dropzone{min-height:820px}
 }@media screen and (max-width:780px){#ButtonBox{width:100%}
-.p_urls{word-break:break-word}
 .selector_p_urls{width:2.5rem}
 .copy{width:2.5rem}
 }@media screen and (min-width:768px){#ButtonBox{width:9rem;border-right:1px solid #eee}

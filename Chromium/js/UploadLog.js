@@ -8,7 +8,7 @@ $(document).ready(function () {
         options_proxy_server_state = result.options_proxy_server_state
         Browse_mode_switching_status = result.Browse_mode_switching_status
         Copy_Selected_Mode = result.Copy_Selected_Mode
-
+        ImageProxy = result.ImageProxy || 0
         //对象存储
         options_SecretId = result.options_SecretId
         options_SecretKey = result.options_SecretKey
@@ -115,6 +115,27 @@ $(document).ready(function () {
                   </div>
                 `);
             }
+        }
+        function Image_Proxy(src) {
+            switch (ImageProxy) {
+                case "1":
+                    let index = parseInt(Math.random() * 3);
+                    src = `https://i${index}.wp.com/${src.replace(/^https:\/\//, '')}`;
+                    break;
+                case "2":
+                    src = `https://images.weserv.nl/?url=${src}`;
+                    break;
+                case "3":
+                    src = `https://imageproxy.pimg.tw/resize?url=${src}`
+                    break;
+                case "4":
+                    src = `https://pic1.xuehuaimg.com/proxy/${src}`
+                    break;
+                case "5":
+                    src = `https://cors.zme.ink/${src}`
+                    break;
+            }
+            return src;
         }
         function Program_Start_Execution() {
             $('.pagination').twbsPagination('destroy')
@@ -311,22 +332,23 @@ $(document).ready(function () {
                                 item.find('.copy').click(function () {
                                     let name = $('.logurl').find('li').eq(0).text();
                                     let src = item.find(".FileMedia").attr("PLlink");
+                                    const transformedSrc = Image_Proxy(src) //图片代理
                                     let url;
                                     switch (Copy_Selected_Mode) {
                                         case 'URL':
-                                            url = src
+                                            url = transformedSrc
                                             break;
                                         case 'HTML':
-                                            url = '<img src="' + src + '" alt="' + name + '" title="' + name + '" >'
+                                            url = '<img src="' + transformedSrc + '" alt="' + name + '" title="' + name + '" >'
                                             break;
                                         case 'BBCode':
-                                            url = '[img]' + src + '[/img]'
+                                            url = '[img]' + transformedSrc + '[/img]'
                                             break;
                                         case 'Markdown':
-                                            url = '![' + name + '](' + src + ')'
+                                            url = '![' + name + '](' + transformedSrc + ')'
                                             break;
                                         case 'MD with link':
-                                            url = '[![' + name + '](' + src + ')](' + src + ')'
+                                            url = '[![' + name + '](' + transformedSrc + ')](' + transformedSrc + ')'
                                             break;
                                     }
                                     let $temp = $("<input>");
@@ -426,21 +448,22 @@ $(document).ready(function () {
                             selectedImgs.each(function () {
                                 let link = $(this).attr("PLlink")
                                 let links
+                                const transformedSrc = Image_Proxy(link) //图片代理
                                 switch (Copy_Selected_Mode) {
                                     case 'URL':
-                                        links = link
+                                        links = transformedSrc
                                         break;
                                     case 'HTML':
-                                        links = '<img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
+                                        links = '<img src="' + transformedSrc + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
                                         break;
                                     case 'BBCode':
-                                        links = '[img]' + link + '[/img]'
+                                        links = '[img]' + transformedSrc + '[/img]'
                                         break;
                                     case 'Markdown':
-                                        links = '![' + selectedsrcName + '](' + link + ')'
+                                        links = '![' + selectedsrcName + '](' + transformedSrc + ')'
                                         break;
                                     case 'MD with link':
-                                        links = '[![' + selectedsrcName + '](' + link + ')](' + link + ')'
+                                        links = '[![' + selectedsrcName + '](' + transformedSrc + ')](' + transformedSrc + ')'
                                         break;
                                 }
                                 imgSrcs.push(links);
@@ -1479,9 +1502,14 @@ $(document).ready(function () {
                                     if (!item_liImgName.endsWith('/')) {
                                         val = item_liImgName + '/'
                                     }
-                                    chrome.storage.local.set({ 'options_UploadPath': val }, function () {
-                                        window.location.reload();
+                                    chrome.storage.local.get("options_UploadPath", function (res) {
+                                        val = res.options_UploadPath + val
+                                        chrome.storage.local.set({ 'options_UploadPath': val }, function () {
+                                            window.location.reload();
+                                        })
                                     })
+
+
                                 } else {
                                     OverlayProject(item, item_imgUrl)
                                 }
@@ -1492,22 +1520,23 @@ $(document).ready(function () {
                         item.find('.copy').click(function () {
                             let name = $('.logurl').find('li').eq(0).text();
                             let src = item.find(".FileMedia").attr("PLlink");
+                            const transformedSrc = Image_Proxy(src) //图片代理
                             let url;
                             switch (Copy_Selected_Mode) {
                                 case 'URL':
-                                    url = src
+                                    url = transformedSrc
                                     break;
                                 case 'HTML':
-                                    url = '<img src="' + src + '" alt="' + name + '" title="' + name + '" >'
+                                    url = '<img src="' + transformedSrc + '" alt="' + name + '" title="' + name + '" >'
                                     break;
                                 case 'BBCode':
-                                    url = '[img]' + src + '[/img]'
+                                    url = '[img]' + transformedSrc + '[/img]'
                                     break;
                                 case 'Markdown':
-                                    url = '![' + name + '](' + src + ')'
+                                    url = '![' + name + '](' + transformedSrc + ')'
                                     break;
                                 case 'MD with link':
-                                    url = '[![' + name + '](' + src + ')](' + src + ')'
+                                    url = '[![' + name + '](' + transformedSrc + ')](' + transformedSrc + ')'
                                     break;
                             }
                             let $temp = $("<input>");
@@ -1822,21 +1851,22 @@ $(document).ready(function () {
                     selectedImgs.each(function () {
                         let link = $(this).attr("PLlink")
                         let links
+                        const transformedSrc = Image_Proxy(link) //图片代理
                         switch (Copy_Selected_Mode) {
                             case 'URL':
-                                links = link
+                                links = transformedSrc
                                 break;
                             case 'HTML':
-                                links = '<img src="' + link + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
+                                links = '<img src="' + transformedSrc + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
                                 break;
                             case 'BBCode':
-                                links = '[img]' + link + '[/img]'
+                                links = '[img]' + transformedSrc + '[/img]'
                                 break;
                             case 'Markdown':
-                                links = '![' + selectedsrcName + '](' + link + ')'
+                                links = '![' + selectedsrcName + '](' + transformedSrc + ')'
                                 break;
                             case 'MD with link':
-                                links = '[![' + selectedsrcName + '](' + link + ')](' + link + ')'
+                                links = '[![' + selectedsrcName + '](' + transformedSrc + ')](' + transformedSrc + ')'
                                 break;
                         }
                         imgSrcs.push(links);

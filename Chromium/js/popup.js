@@ -7,6 +7,7 @@ $(document).ready(function () {
     options_proxy_server = result.options_proxy_server
     options_host = result.options_host
     options_token = result.options_token
+    options_CSRF = result.options_CSRF
     options_uid = result.options_uid
     options_source = result.options_source
     options_imgur_post_mode = result.options_imgur_post_mode
@@ -15,6 +16,7 @@ $(document).ready(function () {
     options_album_id = result.options_album_id
     options_nsfw_select = result.options_nsfw_select || 0
     options_permission_select = result.options_permission_select || 0
+    ImageProxy = result.ImageProxy || 0
     //自定义请求
     options_apihost = result.options_apihost
     options_parameter = result.options_parameter
@@ -106,7 +108,6 @@ $(document).ready(function () {
     <i class="bi bi-bar-chart-line"></i>`+ chrome.i18n.getMessage("Used") + `:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
     <i class="bi bi-image"></i>`+ chrome.i18n.getMessage("Number_images") + `:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
-
     let LinksUrl = []
     let imageUrl
     let filePreviewElements = [];
@@ -290,7 +291,6 @@ $(document).ready(function () {
         toast_content: chrome.i18n.getMessage("Delete_successful")
       })
     });//文件删除
-
     uploader.on("success", async function (file, res) {
       console.log(res)
       textFrame()
@@ -400,6 +400,36 @@ $(document).ready(function () {
           case 'imgdd':
             imageUrl = res.url
             break;
+          case 'fiftyEight':
+            if (res && res.indexOf("n_v2") > -1) {
+              let index = parseInt(Math.random() * 8) + 1;
+              imageUrl = "https://pic" + index + ".58cdn.com.cn/nowater/webim/big/" + res;
+            }
+            break;
+          case 'BilibliBed':
+            imageUrl = res.data.image_url
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            break;
+          case 'BaiJiaHaoBed':
+            imageUrl = res.ret.https_url;
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            break;
+          case 'freebufBed':
+            imageUrl = res.data.url.replace(/\\/g, "").replace('!small', '');
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            break;
+          case 'toutiaoBed':
+            imageUrl = res.data.url_list[0].url;
+            toastItem({
+              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+            })
+            break;
         }
       } catch (error) {
         if (!imageUrl) {
@@ -423,11 +453,6 @@ $(document).ready(function () {
         name: file.name
       }
       LinksUrl.push(info)
-      // LinksUrl.push('file：' + file.upload.filename + "-error")
-      // LinksHtml.push('file：' + file.upload.filename + "-error")
-      // LinksBBCode.push('file：' + file.upload.filename + "-error")
-      // LinksMarkdown.push('file：' + file.upload.filename + "-error")
-      // LinksMDwithlink.push('file：' + file.upload.filename + "-error")
       switch (options_exe) {
         case 'Lsky':
           toastItem({
@@ -479,28 +504,46 @@ $(document).ready(function () {
       }
       $('.textFrame').empty();
       LinksUrl.forEach((e, i) => {
+        let eUrl = e.url
+        switch (ImageProxy) {
+          case "1":
+            let index = parseInt(Math.random() * 3);
+            eUrl = `https://i` + index + `.wp.com/` + eUrl.replace(/^https:\/\//, '')
+            break;
+          case "2":
+            eUrl = `https://images.weserv.nl/?url=` + eUrl
+            break;
+          case "3":
+            eUrl = `https://imageproxy.pimg.tw/resize?url=` + eUrl
+            break;
+          case "4":
+            eUrl = `https://pic1.xuehuaimg.com/proxy/` + eUrl
+            break;
+          case "5":
+            eUrl = `https://cors.zme.ink/` + eUrl
+            break;
+        }
         switch (Copy_Selected_Mode) {
           case 'URL':
-            newUrl = e.url
+            newUrl = eUrl
             break;
           case 'HTML':
-            newUrl = '&lt;img src="' + e.url + '" alt="' + e.name + '" title="' + e.name + '" /&gt;'
+            newUrl = '&lt;img src="' + eUrl + '" alt="' + e.name + '" title="' + e.name + '" /&gt;'
             break;
           case 'BBCode':
-            newUrl = '[img]' + e.url + '[/img]'
+            newUrl = '[img]' + eUrl + '[/img]'
             break;
           case 'Markdown':
-            newUrl = '![' + e.name + '](' + e.url + ')'
+            newUrl = '![' + e.name + '](' + eUrl + ')'
             break;
           case 'MDWithLink':
-            newUrl = '[![' + e.name + '](' + e.url + ')](' + e.url + ')'
+            newUrl = '[![' + e.name + '](' + eUrl + ')](' + eUrl + ')'
             break;
-
         }
         $('.textFrame').append(`
       <div class="Upload_Return_Box">
         <div class="col">
-          <p class="p_urls">${newUrl}</p>
+          <p class="p_urls">`+ newUrl + `</p>
         </div>
         <div class="text-center selector_p_urls">
           <span>`+ chrome.i18n.getMessage("Selected") + `</span>

@@ -120,7 +120,7 @@ chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
 chrome.contextMenus.onClicked.addListener(function (info) {
 	if (info.menuItemId === "upload_imagea") {
 		const imgUrl = info.srcUrl;
-		Fetch_Upload(imgUrl, null, "Rightupload")
+		Fetch_Upload(imgUrl, null, "Right_Upload")
 	}
 
 });
@@ -300,6 +300,32 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					optionHeaders = { "Accept": "application/json", "User-Agent": "PLExtension" };
 					formData.append("image", file);
 					break;
+				case 'BaiJiaHaoBed':
+					optionsUrl = options_proxy_server + "https://baijiahao.baidu.com/pcui/picture/upload";
+					optionHeaders = { "Accept": "application/json" };
+					formData.append("media", file);
+					formData.append("type", "image");
+					break;
+				case 'freebufBed':
+					optionsUrl = options_proxy_server + "https://www.freebuf.com/fapi/frontend/upload/image";
+					optionHeaders = {
+						"Accept": "application/json, text/plain, */*",
+						"Referer": "https://www.freebuf.com/write",
+						"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+					};
+					formData.append("file", file);
+					break;
+				case 'toutiaoBed':
+					const randomAid = Math.floor(Math.random() * 24) + 1;
+					optionsUrl = options_proxy_server + `https://i.snssdk.com/feedback/image/v1/upload/?appkey=toutiao_web-web&aid=` + randomAid + `&app_name=toutiao_web`;
+					optionHeaders = {
+						"Accept": "application/json, text/plain, */*",
+						"Referer": "https://helpdesk.bytedance.com/",
+						"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.31"
+					};
+					formData.append("image", file);
+					formData.append("app_id", randomAid);
+					break;
 			}
 			fetch(optionsUrl, {
 				method: 'POST',
@@ -355,6 +381,12 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							break;
 						case 'imgdd':
 							imageUrl = res.url
+							break;
+						case 'BaiJiaHaoBed':
+							imageUrl = res.ret.https_url;
+							break;
+						case 'freebufBed':
+							imageUrl = res.data.url.replace(/\\/g, "").replace('!small', '');
 							break;
 					}
 
@@ -513,6 +545,14 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				let currentTabId = tabs[0].id;
 				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: { url: imgUrl, Metho: MethodName }, })
 			});
+			return;
+		}
+		if (options_exe == "fiftyEight") {
+			chrome.tabs.query({ active: true }, function (tabs) {
+				let currentTabId = tabs[0].id;
+				chrome.tabs.sendMessage(currentTabId, { fiftyEight_contextMenus: { url: imgUrl, Metho: MethodName }, })
+			});
+		
 			return;
 		}
 		fetch(options_proxy_server + imgUrl)
@@ -706,6 +746,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 
 	}
+	if (request.exe_BilibliBed) {
+		getOptionsFromStorage()
+	}
 });
 let Simulated_upload = false//模拟上传
 
@@ -738,3 +781,42 @@ chrome.action.onClicked.addListener(function (tab) {
 });
 
 
+// 获取cookie #已弃用
+// 需manifest.json调用  "webRequest", "cookies"权限
+function onRequestCompleted(details) {
+	if (!cookieFound && details.type === "xmlhttprequest") {
+		chrome.cookies.getAll({ url: details.initiator }, function (cookies) {
+			cookies.forEach(function (cookie) {
+				if (cookie.name === "SESSDATA" || cookie.name === "bili_jct") {
+					// 存储找到的Cookie
+					foundCookies[cookie.name] = decodeURIComponent(cookie.value);
+				}
+			});
+			// 检查是否找到了SESSDATA和bili_jct
+			if (foundCookies["SESSDATA"] && foundCookies["bili_jct"]) {
+				// 找到所需的Cookie，设置标志为true，并停止监听XHR请求
+				console.log(foundCookies);
+				chrome.storage.local.set({ 'options_token': foundCookies["SESSDATA"] })
+				chrome.storage.local.set({ 'options_CSRF': foundCookies["bili_jct"] })
+				cookieFound = true;
+				chrome.webRequest.onCompleted.removeListener(onRequestCompleted);
+			}
+		});
+	}
+}
+let cookieFound = false; // 标志用于表示是否已获取所需的Cookie
+let foundCookies = {}; // 用于存储找到的Cookie
+
+function getOptionsFromStorage() {
+	console.log("自动获取cookie中...");
+	chrome.storage.local.get(["options_exe", "options_token", "options_CSRF"], function (result) {
+		let { options_exe, options_token, options_CSRF } = result;
+		if (options_exe == "BilibliBed" && !options_token && !options_CSRF) {
+			// 添加监听器
+			cookieFound = false
+			foundCookies = {}
+			chrome.webRequest.onCompleted.addListener(onRequestCompleted, { urls: ["*://*.bilibili.com/*"] });
+		}
+
+	})
+}

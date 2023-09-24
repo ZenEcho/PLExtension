@@ -102,39 +102,38 @@ function EmoticonBox() {
         function stopDrag() {
             isDragging = false;
         }
+
+
+
+        function makeHorizontalDraggable(element) {
+            let isDragging = false;
+            let startPosX = 0;
+            let startScrollLeft = 0;
+
+            element.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startPosX = e.clientX;
+                startScrollLeft = element.scrollLeft;
+                element.style.cursor = 'grabbing';
+                e.preventDefault(); // 防止选中文字
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - startPosX;
+                element.scrollLeft = startScrollLeft - deltaX;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                element.style.cursor = 'grab';
+            });
+        }
+        makeHorizontalDraggable(document.querySelector('.StickerBoxhead'));
     }
 }
-
 EmoticonBox()
-
-function makeHorizontalDraggable(element) {
-    let isDragging = false;
-    let startPosX = 0;
-    let startScrollLeft = 0;
-
-    element.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startPosX = e.clientX;
-        startScrollLeft = element.scrollLeft;
-        element.style.cursor = 'grabbing';
-        e.preventDefault(); // 防止选中文字
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-
-        const deltaX = e.clientX - startPosX;
-        element.scrollLeft = startScrollLeft - deltaX;
-    });
-
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        element.style.cursor = 'grab';
-    });
-}
-makeHorizontalDraggable(document.querySelector('.StickerBoxhead'));
-
-
 function mainLogic(insertContentPrompt) {
     const emoticonBox = document.querySelector('.PL-EmoticonBox');
     let timerShow;
@@ -218,7 +217,6 @@ function mainLogic(insertContentPrompt) {
         setTimeout(() => {
             emoticonBox.style.display = 'none';
         }, 500)
-
     }
     document.querySelector(".StickerBox .StickerBoxRemove").addEventListener('click', function (event) {
         hideEmoticonBox()
@@ -373,3 +371,4 @@ function mainLogic(insertContentPrompt) {
         getStickerStatus = true
     }
 }
+

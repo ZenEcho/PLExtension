@@ -60,5 +60,8 @@
     "storage",
     "contextMenus",
     "notifications"
+  ],
+  "host_permissions": [
+    "*://*.bilibili.com/*"
   ]
 }

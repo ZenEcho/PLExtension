@@ -128,6 +128,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     uploadArea.addEventListener('mousedown', (e) => {
         delayTimeout = setTimeout(() => {
             isDragging = true;
+            isPreventingClick = false;
             startY = e.clientY;
             startTop = uploadArea.offsetTop;
             uploadArea.classList.remove('box-shadow-Blink');
@@ -153,7 +154,6 @@ chrome.storage.local.get(storagelocal, function (result) {
         let y = e.clientY;
         let w = window.innerWidth;
         let h = window.innerHeight;
-
         if (isDragging) {
             const deltaY = y - startY;
             const newTop = startTop + deltaY;
@@ -211,15 +211,17 @@ chrome.storage.local.get(storagelocal, function (result) {
     // #拖拽上传
     // ####################################################
     document.addEventListener("dragover", (event) => {
+        //拖拽过程
         let uploadAreaRect = uploadArea.getBoundingClientRect();
         let uploadAreaX = event.clientX - uploadAreaRect.left;
         let uploadAreaY = event.clientY - uploadAreaRect.top;
-        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
+        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height || event.dataTransfer.types.includes("Files")) {
             event.preventDefault();
             event.stopPropagation();
         }
-        if (event.target.tagName === "IMG") {
+        if (event.target.tagName === "IMG" || event.dataTransfer.types.includes("Files")) {
             if (GlobalUpload == "GlobalUpload_Default") {
+                event.target.setAttribute("data-PLExtension", "true");
                 uploadArea.classList.remove('box-shadow-Blink');
                 uploadArea.classList.add('box-shadow-Blink');
                 // 判断拖拽点是否在上传区域内
@@ -230,9 +232,23 @@ chrome.storage.local.get(storagelocal, function (result) {
                 }
             }
         }
-    });//拖拽过程
+    });
     document.addEventListener("dragend", (event) => {
+        let uploadAreaRect = uploadArea.getBoundingClientRect();
+        let uploadAreaX = event.clientX - uploadAreaRect.left;
+        let uploadAreaY = event.clientY - uploadAreaRect.top;
+        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         uploadArea.classList.remove('box-shadow-Blink');
+    });
+    document.addEventListener('drop', function (event) {
+        if (event.dataTransfer.types.includes("Files")) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadArea.classList.remove('box-shadow-Blink');
+        }
     });
     switch (GlobalUpload) {
         case 'GlobalUpload_Default':
@@ -240,7 +256,10 @@ chrome.storage.local.get(storagelocal, function (result) {
                 event.preventDefault();
                 event.stopPropagation();
                 content_scripts_CheckUploadModel(event, Simulated_upload)
+                uploadArea.classList.remove('box-shadow-Blink');
             });// 拖拽到元素
+
+
             break;
         case 'GlobalUpload_off':
             uploadArea_status = uploadArea_status - 1
@@ -323,18 +342,22 @@ chrome.storage.local.get(storagelocal, function (result) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.Tencent_COS_contextMenus) {
             let imgUrl = request.Tencent_COS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.Aliyun_OSS_contextMenus) {
             let imgUrl = request.Aliyun_OSS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.AWS_S3_contextMenus) {
             let imgUrl = request.AWS_S3_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.GitHubUP_contextMenus) {
             let imgUrl = request.GitHubUP_contextMenus
+            content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
+        }
+        if (request.fiftyEight_contextMenus) {
+            let imgUrl = request.fiftyEight_contextMenus
             content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
         }
         if (request.AutoInsert_message) {
@@ -410,7 +433,14 @@ chrome.storage.local.get(storagelocal, function (result) {
                     chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
                 }, 800); // 延迟1秒执行
             })
-
+        }
+        if (event.data.type === 'Extension') {
+            let extensionInfo = {
+                name: "盘络上传",
+                projectName: chrome.runtime.getManifest().name,
+                version: chrome.runtime.getManifest().version
+            };
+            window.postMessage({ type: 'ExtensionResponse', data: extensionInfo }, event.origin);
         }
         if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
             iframeShow()
@@ -508,4 +538,5 @@ chrome.storage.local.get(storagelocal, function (result) {
         } catch (error) {
         }
     }
+
 })

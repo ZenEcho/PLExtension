@@ -1,6 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
-    console.log("盘络上传postMessage监听: " + event.data.type);
+    console.log("盘络上传postMessage监听: ", event.data);
     if (event.data.type === 'CodeMirror5') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
@@ -122,7 +122,6 @@ function detectEncoding() {
     }
     return 'unknown';
 }
-
 
 function insertImageDiv(element, link, CssName) {
     const imgDiv = document.createElement('div');
@@ -449,12 +448,16 @@ function FullDomAutoInsert() {
         if (success != false) {
             return success;
         }
-        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
+        try {
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
 
-        if (editableElement) {
-            iframe.parentNode.appendChild(item)
-            success = "iframe";
+            if (editableElement) {
+                iframe.parentNode.appendChild(item)
+                success = "iframe";
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
     return success;
@@ -465,5 +468,3 @@ setTimeout(() => {
         window.postMessage({ type: 'insertContentIntoEditorState', data: true }, '*');
     }
 }, 800);
-
-
