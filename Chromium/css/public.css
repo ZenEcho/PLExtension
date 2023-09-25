@@ -2,7 +2,7 @@ body{padding:0px;margin:0px;min-width:500px}
 .container-md{transition:max-width 1s ease-in-out}
 #header{z-index:9990;background-color:#0f62fe;position:sticky;top:0}
 #header .nav .nav-item a{color:#eee}
-#header .nav .nav-item a:hover{font-weight:bold;color:white}
+#header .nav .nav-item a:hover{transform: scale3d(1.1, 1.1, 1.1);color:white}
 .title-a{text-shadow:2px 2px #03a9f4;text-decoration:none}
 h1{text-align:center;background:-webkit-linear-gradient(135deg,#0eaf6d,#ff6ac6 25%,#147b96 50%,#e6d205 55%,#2cc4e0 60%,#8b2ce0 80%,#ff6384 95%,#08dfb4);-webkit-text-fill-color:transparent;-webkit-background-clip:text;-webkit-background-size:200% 100%;-webkit-animation:flowCss 12s infinite linear}
 @-webkit-keyframes flowCss{0%{background-position:0 0}

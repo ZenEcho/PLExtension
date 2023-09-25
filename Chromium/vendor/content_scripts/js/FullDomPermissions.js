@@ -1,6 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
-    console.log("盘络上传postMessage监听: " + event.data.type);
+    console.log("盘络上传postMessage监听: ", event.data);
     if (event.data.type === 'CodeMirror5') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
@@ -123,7 +123,6 @@ function detectEncoding() {
     return 'unknown';
 }
 
-
 function insertImageDiv(element, link, CssName) {
     const imgDiv = document.createElement('div');
     const imgElement = document.createElement('img');
@@ -139,6 +138,14 @@ function insertImageDiv(element, link, CssName) {
         imgDiv.className = `position-relative PL-ImgMark`;
         imgElement.alt = "盘络转换";
         imgElement.title = link;
+
+        if (!CssName) {
+            // 如果图片宽度大于父元素宽度，将图片宽度设置为100%
+            if (imgElement.width > element.clientWidth) {
+                imgElement.style.width = "100%";
+            }
+        }
+
     };
     imgElement.onerror = function () {
         imgDiv.remove()
@@ -149,7 +156,9 @@ function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
     item.innerText = "😍盘络"
-
+    item.addEventListener('click', function () {
+        window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
+    });
     const supportedImageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.ico'];
     const detectedEncoding = detectEncoding();
     if (detectedEncoding !== 'utf-8') {
@@ -173,7 +182,6 @@ function FullDomAutoInsert() {
             Discuz_ReplyAdvanced.parentNode.parentNode.appendChild(item)
             success = "Discuz"
         }
-
         // url转图片
         const topicContentElements = Array.from(document.querySelectorAll('.t_f'));
         ContentElements(topicContentElements);
@@ -439,12 +447,16 @@ function FullDomAutoInsert() {
         if (success != false) {
             return success;
         }
-        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
+        try {
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
 
-        if (editableElement) {
-            iframe.parentNode.appendChild(item)
-            success = "iframe";
+            if (editableElement) {
+                iframe.parentNode.appendChild(item)
+                success = "iframe";
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
     return success;
@@ -455,5 +467,4 @@ setTimeout(() => {
         window.postMessage({ type: 'insertContentIntoEditorState', data: true }, '*');
     }
 }, 800);
-
 

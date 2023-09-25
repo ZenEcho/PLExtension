@@ -1,7 +1,7 @@
 #uploadArea {
     position: fixed;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-
+    user-select: none;
 }
 #PL_JS_Alerts {
     position: fixed;
@@ -37,20 +37,6 @@
     text-align: right;
     font-size: 0.5rem;
 }
-.uploadAreaTips {
-    font-size: 16px;
-    position: fixed;
-    left: 50%;
-    padding: 16px;
-    bottom: -100px;
-    transform: translate(-50%, 0);
-    background-color: #2196f3;
-    color: white;
-    text-align: center;
-    transition: bottom 0.3s ease-in-out;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-
-}
 #PNG_upload_prompt {
     font-size: 16px;
     position: fixed;
@@ -63,14 +49,14 @@
     padding: 16px;
     text-align: center;
 }
-.PNGiframe {
+.PL-iframe {
     position: fixed;
     width: 780px !important;
     height: 100% !important;
     bottom: 0;
     border: none;
     transition: left right 0.4s ease;
-    box-shadow: rgb(0 0 0 / 30%) 0px 0px 3rem, rgba(0, 0, 0, 0.06) 0px 2px 4px;
+    box-shadow: rgb(0 0 0 / 30%) 0px 0px 10px, rgba(0, 0, 0, 0.06) 0px 2px 4px;
 }
 
 .Functional_animation span {

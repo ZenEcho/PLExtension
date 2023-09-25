@@ -84,7 +84,7 @@
     "message": "Imgur"
   },
   "IMGDD": {
-    "message": "IMGDD"
+    "message": "IMGDD(免登)"
   },
   "Tencent_COS": {
     "message": "腾讯云 COS"
@@ -354,7 +354,7 @@
     "message": "如:data.links.url"
   },
   "open_json_button": {
-    "message": "转到JSON<p>(将字符串转化为JSON)"
+    "message": "返回JSON结果<p>(将上传完毕的信息,化为JSON)</p>"
   },
   "options_owner": {
     "message": "用户名<p class='options_owner_tips'><span style='color: red;'>*</span>(GitHub用户名)</p>"

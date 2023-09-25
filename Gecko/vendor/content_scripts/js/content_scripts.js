@@ -4,7 +4,6 @@
 var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
-    let imageUrl
     options_exe = result.options_exe
     options_proxy_server_state = result.options_proxy_server_state
     options_proxy_server = result.options_proxy_server
@@ -26,26 +25,26 @@ chrome.storage.local.get(storagelocal, function (result) {
     let iframe_mouseover = false // 定义iframe状态
     GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
 
-    let uploadArea = document.createElement('PLExtension'); //定义上传区域/侧边栏
+    let uploadArea = document.createElement('PL-Extension'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
+    uploadArea.setAttribute('title', '长按拖动');
 
 
-    let uploadAreaTips = document.createElement('PLExtension-tips'); //定义上传区域的提示
-    uploadAreaTips.className = 'uploadAreaTips';
-    uploadAreaTips.id = "uploadAreaTips"
     let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
     let PNGlogo32 = chrome.runtime.getURL("icons/logo32.png");
     let PNGlogo64 = chrome.runtime.getURL("icons/logo64.png");
     let PNGlogo128 = chrome.runtime.getURL("icons/logo128.png");
     let finger = chrome.runtime.getURL("icons/dh/t.png");
     document.body.appendChild(uploadArea);
-    document.body.appendChild(uploadAreaTips);
+
 
     let popupUrl = chrome.runtime.getURL('popup.html');
     // 创建一个iframe元素
+    let iframeBox = document.createElement('PL-IframeBox');
     let iframe = document.createElement('iframe');
-    iframe.className = 'PNGiframe'
-    document.body.appendChild(iframe);
+    iframe.className = 'PL-iframe'
+    iframeBox.appendChild(iframe);
+    document.body.appendChild(iframeBox);
 
     //自定义图标区域
     edit_uploadArea_width = result.edit_uploadArea_width
@@ -60,7 +59,8 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     const maxZIndex = Math.pow(2, 31) - 1; //设置index
     uploadArea.style.zIndex = maxZIndex.toString();
-    uploadAreaTips.style.zIndex = maxZIndex.toString();
+
+    iframeBox.style.zIndex = maxZIndex.toString() - 1;
     iframe.style.zIndex = maxZIndex.toString();
 
     // 判断跨域开关
@@ -93,68 +93,107 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
     }
     /**
-     * 实现获取侧边栏的位置信息
-     */
+       * 实现获取侧边栏的位置信息
+       */
     let PNGsidebarRect = uploadArea.getBoundingClientRect();
     window.addEventListener('resize', function () {
         uploadArea.style.display = "block"
         PNGsidebarRect = uploadArea.getBoundingClientRect();
     });
-
     /**
      * 实现左右侧边栏
      */
+    let isDragging = false;
+    let startY, startTop;
+    let isPreventingClick = false;
+    let isMouseOverSidebar = false;
     switch (edit_uploadArea_Left_or_Right) {
         case "Left":
             uploadArea.style.borderRadius = "0px 10px 10px 0px"
-            uploadArea.style.left = "-" + edit_uploadArea_width + "px"
+            uploadArea.style.left = "-" + (edit_uploadArea_width + 10) + "px"
             uploadArea.style.transition = "left 0.3s ease-in-out"
-            iframe.style.left = "-800px"
+            iframe.style.left = "-900px"
             iframe.style.transition = "left 0.3s ease-in-out"
-            document.addEventListener("mousemove", function (event) {
-                // 获取鼠标在页面上的位置
-                let x = event.clientX;
-                let y = event.clientY;
-                // 获取页面宽度和高度
-                let w = window.innerWidth;
-                let h = window.innerHeight;
-                // 如果鼠标在侧边栏范围内，显示侧边栏
-                if (x < PNGsidebarRect.width && y > PNGsidebarRect.top && y < PNGsidebarRect.top + PNGsidebarRect.height) {
-                    uploadArea.style.left = "0";
-                } else {
-                    uploadArea.style.left = "-" + edit_uploadArea_width + "px"
-                }
-            });
-
             break;
         case "Right":
             uploadArea.style.borderRadius = "10px 0px 0px 10px"
-            uploadArea.style.right = "-" + edit_uploadArea_width + "px"
+            uploadArea.style.right = "-" + (edit_uploadArea_width + 10) + "px"
             uploadArea.style.transition = "right 0.3s ease-in-out"
-            iframe.style.right = "-800px"
+            iframe.style.right = "-900px"
             iframe.style.transition = "right 0.3s ease-in-out"
-            document.addEventListener("mousemove", function (event) {
-                // 获取鼠标在页面上的位置
-                let x = event.clientX;
-                let y = event.clientY;
-                // 获取页面宽度和高度，包括滚动条宽度
-                let w = window.innerWidth;
-                let h = window.innerHeight;
-                // 如果页面有滚动条，则需要将宽度和高度减去滚动条宽度
-                if (document.body.scrollHeight > window.innerHeight) {
-                    w -= window.innerWidth - document.body.clientWidth;
-                    h -= window.innerHeight - document.body.clientHeight;
-                }
-                // 如果鼠标在侧边栏范围内，显示侧边栏
-                if (x > w - PNGsidebarRect.width && y > PNGsidebarRect.top && y < PNGsidebarRect.top + PNGsidebarRect.height
-                ) {
-                    uploadArea.style.right = "0";
-                } else {
-                    uploadArea.style.right = "-" + edit_uploadArea_width + "px";
-                }
-            });
             break;
     }
+    let delayTimeout;
+    // 鼠标按下事件监听
+    uploadArea.addEventListener('mousedown', (e) => {
+        delayTimeout = setTimeout(() => {
+            isDragging = true;
+            isPreventingClick = false;
+            startY = e.clientY;
+            startTop = uploadArea.offsetTop;
+            uploadArea.classList.remove('box-shadow-Blink');
+            uploadArea.classList.add('box-shadow-Blink');
+        }, 500);
+    });
+
+    // 鼠标松开事件监听
+    document.addEventListener('mouseup', (e) => {
+        clearTimeout(delayTimeout);
+        isDragging = false;
+        if (isPreventingClick) {
+            uploadArea.style.display = "block"
+            PNGsidebarRect = uploadArea.getBoundingClientRect();
+            uploadArea.classList.remove('box-shadow-Blink');
+            setTimeout(() => { isPreventingClick = false }, 100)
+        }
+    });
+
+    // 鼠标移动事件监听
+    document.addEventListener('mousemove', (e) => {
+        let x = e.clientX;
+        let y = e.clientY;
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+        if (isDragging) {
+            const deltaY = y - startY;
+            const newTop = startTop + deltaY;
+            // 限制上传区域不超出父元素的边界
+            if (newTop >= 0 && newTop + uploadArea.clientHeight <= uploadArea.parentElement.clientHeight) {
+                uploadArea.style.top = newTop + 'px';
+                if (edit_uploadArea_Left_or_Right === 'Left') {
+                    uploadArea.style.left = '0';
+                } else {
+                    uploadArea.style.right = '0';
+                }
+                isPreventingClick = true;
+
+            }
+            return;
+        }
+
+        const isLeft = edit_uploadArea_Left_or_Right === 'Left';
+        const isRight = edit_uploadArea_Left_or_Right === 'Right';
+
+        if (isRight && document.body.scrollHeight > window.innerHeight) {
+            w -= window.innerWidth - document.body.clientWidth;
+            h -= window.innerHeight - document.body.clientHeight;
+        }
+
+        const isXWithinSidebar =
+            (isLeft && x < PNGsidebarRect.width) ||
+            (isRight && x > w - PNGsidebarRect.width);
+
+        if (isXWithinSidebar && y > PNGsidebarRect.top && y < PNGsidebarRect.top + PNGsidebarRect.height) {
+            uploadArea.style[isLeft ? 'left' : 'right'] = '0';
+            isMouseOverSidebar = true;
+        } else {
+            isMouseOverSidebar = false;
+        }
+
+        if (!isMouseOverSidebar) {
+            uploadArea.style[isLeft ? 'left' : 'right'] = `-` + (edit_uploadArea_width + 10) + `px`;
+        }
+    });
 
     /**
      * 实现根据侧边栏宽度切换logo
@@ -166,41 +205,81 @@ chrome.storage.local.get(storagelocal, function (result) {
     } else if (edit_uploadArea_width > 64) {//大于
         uploadArea.style.background = "url(" + PNGlogo64 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
     }
-    /**
-     * 实现全局上传模式
-     */
-    document.addEventListener("dragstart", document_dragstart);//拖拽过程
-    document.addEventListener("dragover", document_uploadArea_dragover);//拖拽过程
-    uploadAreaTips.addEventListener("drop", uploadAreaTips_drop_Cancel);//拖拽到元素
+
+
+    // ####################################################
+    // #拖拽上传
+    // ####################################################
+    document.addEventListener("dragover", (event) => {
+        //拖拽过程
+        let uploadAreaRect = uploadArea.getBoundingClientRect();
+        let uploadAreaX = event.clientX - uploadAreaRect.left;
+        let uploadAreaY = event.clientY - uploadAreaRect.top;
+        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height || event.dataTransfer.types.includes("Files")) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (event.target.tagName === "IMG" || event.dataTransfer.types.includes("Files")) {
+            if (GlobalUpload == "GlobalUpload_Default") {
+                event.target.setAttribute("data-PLExtension", "true");
+                uploadArea.classList.remove('box-shadow-Blink');
+                uploadArea.classList.add('box-shadow-Blink');
+                // 判断拖拽点是否在上传区域内
+                if (edit_uploadArea_Left_or_Right == "Left") {
+                    uploadArea.style.left = "0";
+                } else {
+                    uploadArea.style.right = "0";
+                }
+            }
+        }
+    });
+    document.addEventListener("dragend", (event) => {
+        let uploadAreaRect = uploadArea.getBoundingClientRect();
+        let uploadAreaX = event.clientX - uploadAreaRect.left;
+        let uploadAreaY = event.clientY - uploadAreaRect.top;
+        if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        uploadArea.classList.remove('box-shadow-Blink');
+    });
+    document.addEventListener('drop', function (event) {
+        if (event.dataTransfer.types.includes("Files")) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadArea.classList.remove('box-shadow-Blink');
+        }
+    });
     switch (GlobalUpload) {
         case 'GlobalUpload_Default':
-            uploadArea.addEventListener("drop", uploadArea_drop_Default);// 拖拽到元素
+            uploadArea.addEventListener("drop", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                content_scripts_CheckUploadModel(event, Simulated_upload)
+                uploadArea.classList.remove('box-shadow-Blink');
+            });// 拖拽到元素
+
+
             break;
         case 'GlobalUpload_off':
             uploadArea_status = uploadArea_status - 1
             break;
     }
-
-    /**
-     * 点击文档执行关闭操作
-     */
-    document.addEventListener('click', function (event) {
-        // 检查 uploadArea 元素是否已被点击
-        /**
-         * 实现点击侧边栏弹出框架
-         */
-        if (event.target.closest('#uploadArea') || event.target.closest('.insertContentIntoEditorPrompt') || event.target.closest('.Function_Start_button')) {
-            //点击元素打开
-            iframeShow()
-        } else {
-            iframeHide()
-        }
-
+    uploadArea.addEventListener('click', function () {
+        if (isPreventingClick) { return; }
+        iframeShow()
+    });
+    iframeBox.addEventListener('click', function () {
+        iframeHide()
     });
     function iframeShow() {
+        iframeBox.classList.add('PL-IframeBox');
         let iframesrc = iframe.src
         if (!iframesrc) {
             iframe.src = popupUrl
+            iframe.onload = function () {
+                iframe.contentWindow.focus();
+            };
         }
         switch (edit_uploadArea_Left_or_Right) {
             case "Left":
@@ -210,48 +289,33 @@ chrome.storage.local.get(storagelocal, function (result) {
                 iframe.style.right = "1px"
                 break;
         }
+        iframe.contentWindow.focus();
         iframe_mouseover = true
         uploadArea.style.display = "none"
     }
     function iframeHide() {
-        uploadAreaTips.style.bottom = "-100px";
-        uploadAreaTips.innerText = '';
+        iframeBox.classList.remove('PL-IframeBox');
         clearTimeout(Animation_time);
         //如果iframe_mouseover是打开状态
         if (iframe_mouseover == true) {
             iframe_mouseover = false
             switch (edit_uploadArea_Left_or_Right) {
                 case "Left":
-                    iframe.style.left = "-800px"
+                    iframe.style.left = "-900px"
                     break;
                 case "Right":
-                    iframe.style.right = "-800px"
+                    iframe.style.right = "-900px"
                     break;
             }
             uploadArea.style.display = "block"
         }
     }
-    /**
-     * 拖拽结束的事件
-     */
-    document.addEventListener("dragend", function (event) {
-        uploadAreaTips.style.bottom = "-100px";
-        uploadAreaTips.innerText = '';
-    });
+
     // 添加鼠标移出iframe的事件监听器
     iframe.addEventListener('mouseout', function () {
         iframe_mouseover = true //只要移出iframe就改为打开状态
         Animation_time = setTimeout(function () {
-            switch (edit_uploadArea_Left_or_Right) {
-                case "Left":
-                    iframe.style.left = "-800px"
-                    break;
-                case "Right":
-                    iframe.style.right = "-800px"
-                    break;
-            }
-            iframe_mouseover = false
-            uploadArea.style.display = "block"
+            iframeHide()
         }, edit_uploadArea_auto_close_time * 1000);
     });
     // 添加鼠标移入iframe的事件监听器
@@ -263,83 +327,9 @@ chrome.storage.local.get(storagelocal, function (result) {
     if (uploadArea_status == 0) {
         uploadArea.remove();
         iframe.remove();
-        uploadAreaTips.remove();
         document.getElementsByClassName("insertContentIntoEditorPrompt").remove()
     }
-    // ------------------------------------------------------------------------------------
-    // ↓↓↓***全局上传***↓↓↓
-    // ↓↓↓***全局上传***↓↓↓
-    // ↓↓↓***全局上传***↓↓↓
-    // ------------------------------------------------------------------------------------
-    function document_dragstart(event) {
-        switch (GlobalUpload) {
-            case 'GlobalUpload_Default':
-                uploadAreaTips.innerText = '默认模式:移到此取消上传';
-                break;
-            case 'GlobalUpload_off':
-                break;
-        }
-    }
-    /**
-     * 拖拽到文档的过程
-     */
-    function document_uploadArea_dragover(event) {
-        //拖动过程
-        let uploadAreaRect = uploadArea.getBoundingClientRect();
-        let uploadAreaX = event.clientX - uploadAreaRect.left;
-        let uploadAreaY = event.clientY - uploadAreaRect.top;
 
-        let uploadAreaTipsRect = uploadAreaTips.getBoundingClientRect();
-        let uploadAreaTipsX = event.clientX - uploadAreaTipsRect.left;
-        let uploadAreaTipsY = event.clientY - uploadAreaTipsRect.top;
-        if (GlobalUpload == "GlobalUpload_Default") {
-            // 判断拖拽点是否在上传区域内
-            if (uploadAreaX >= 0 && uploadAreaX <= uploadAreaRect.width && uploadAreaY >= 0 && uploadAreaY <= uploadAreaRect.height) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            if (uploadAreaTipsX >= 0 && uploadAreaTipsX <= uploadAreaTipsRect.width && uploadAreaTipsY >= 0 && uploadAreaTipsY <= uploadAreaTipsRect.height) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            uploadAreaTips.style.bottom = "10px";
-            if (edit_uploadArea_Left_or_Right == "Left") {
-                uploadArea.style.left = "0";
-            } else {
-                uploadArea.style.right = "0";
-            }
-        }
-    }
-    /**
-     *  拖拽到uploadAreaTips就取消上传
-     */
-    function uploadAreaTips_drop_Cancel(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        let uploadAreaTipsRect = uploadAreaTips.getBoundingClientRect();
-        let uploadAreaTipsX = event.clientX - uploadAreaTipsRect.left;
-        let uploadAreaTipsY = event.clientY - uploadAreaTipsRect.top;
-        if (uploadAreaTipsX >= 0 && uploadAreaTipsX <= uploadAreaTipsRect.width && uploadAreaTipsY >= 0 && uploadAreaTipsY <= uploadAreaTipsRect.height) {
-            console.log("取消上传")
-            uploadAreaTips.style.bottom = "-100px";
-            uploadAreaTips.innerText = '';
-            return;
-        }
-    }
-
-    /**
-     *  普通模式拖拽到uploadArea就上传uploadAreaFunction(event)
-     */
-    function uploadArea_drop_Default(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!event.target.closest('#uploadAreaTips')) {
-            content_scripts_CheckUploadModel(event, Simulated_upload)
-        }
-        uploadAreaTips.style.bottom = "-100px";
-        uploadAreaTips.innerText = '';
-    }
     chrome.storage.local.get(["AutoInsert"], function (result) {
         if (result.AutoInsert == "AutoInsert_on") {
             insertContentIntoEditorState()
@@ -352,18 +342,22 @@ chrome.storage.local.get(storagelocal, function (result) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.Tencent_COS_contextMenus) {
             let imgUrl = request.Tencent_COS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.Aliyun_OSS_contextMenus) {
             let imgUrl = request.Aliyun_OSS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.AWS_S3_contextMenus) {
             let imgUrl = request.AWS_S3_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, "Rightupload", Simulated_upload)
+            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
         }
         if (request.GitHubUP_contextMenus) {
             let imgUrl = request.GitHubUP_contextMenus
+            content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
+        }
+        if (request.fiftyEight_contextMenus) {
+            let imgUrl = request.fiftyEight_contextMenus
             content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
         }
         if (request.AutoInsert_message) {
@@ -422,6 +416,11 @@ chrome.storage.local.get(storagelocal, function (result) {
             window.postMessage({ type: 'AutoCopy', data: request.AutoCopy }, '*');
         }
     });
+
+    // ####################################################
+    // #功能演示
+    // ####################################################
+
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
@@ -434,9 +433,18 @@ chrome.storage.local.get(storagelocal, function (result) {
                     chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
                 }, 800); // 延迟1秒执行
             })
-
         }
-
+        if (event.data.type === 'Extension') {
+            let extensionInfo = {
+                name: "盘络上传",
+                projectName: chrome.runtime.getManifest().name,
+                version: chrome.runtime.getManifest().version
+            };
+            window.postMessage({ type: 'ExtensionResponse', data: extensionInfo }, event.origin);
+        }
+        if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
+            iframeShow()
+        }
     });
 
     function Drag_upload_animations() {
@@ -529,4 +537,5 @@ chrome.storage.local.get(storagelocal, function (result) {
         } catch (error) {
         }
     }
+
 })

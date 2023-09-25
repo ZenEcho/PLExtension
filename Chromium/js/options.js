@@ -5,10 +5,12 @@ $(document).ready(function () {
   chrome.storage.local.get(storagelocal, function (result) {
     // 获取程序以及状态
     options_exe = result.options_exe
+
     options_proxy_server_state = result.options_proxy_server_state
     options_proxy_server = result.options_proxy_server
     options_host = result.options_host
     options_token = result.options_token
+    options_CSRF = result.options_CSRF
     options_uid = result.options_uid
     options_source = result.options_source
     options_imgur_post_mode = result.options_imgur_post_mode
@@ -476,7 +478,7 @@ $(document).ready(function () {
     <input type="url" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder_Telegra_ph") + `" />
     </div>
       `
-    const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷，但跑起来就会生风`
+    const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷,但跑起来就会生风。`
 
     const html_exe_imgdd = `
       <div class="form-group">
@@ -485,6 +487,75 @@ $(document).ready(function () {
         <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_imgdd") + `" value="imgdd.com"/>
       </div>
     `
+    const html_exe_fiftyEight = `
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">58同城接口</h4>
+      <p>无需配置,保存即可使用</p>
+      <hr>
+      <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+    </div>
+    `
+
+    const html_exe_BilibliBed = `
+    <div class="alert alert-danger" role="alert">哔哩哔哩上传完全依赖后端上传,请部署后端服务!</div>
+    <div class="form-group">
+      <label for="options_apihost" class="options_apihost">后端请求地址<p>(为空时使用默认后端)</p>
+      </label>
+      <input required type="url" class="form-control box-shadow" id="options_apihost" placeholder="无法携带cookie，填写完整url" />
+    </div>
+    <div class="form-group">
+      <label for="options_token" class="options_token ">SESSDATA<p>(为空时:登录哔哩哔哩自动获取)</p></label>
+        <input type="text" class="form-control box-shadow" id="options_token" placeholder="SESSDATA值" />
+    </div>
+    <div class="form-group">
+      <label for="options_CSRF" class="options_CSRF">CSRF<p>(为空时:登录哔哩哔哩自动获取)</p></label>
+      <input type="text" class="form-control box-shadow" id="options_CSRF" placeholder="CSRF值" />
+    </div>
+    <div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>
+    `
+
+    const html_exe_BaiJiaHaoBed = `
+    <div class="alert alert-warning" role="alert">
+      <h4 class="alert-heading">百家号接口</h4>
+      <p>使用,请保持百度登录</p>
+      <hr>
+      <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+    </div>
+    `
+    const html_exe_freebufBed = `
+    <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">freebuf接口</h4>
+    <p>无需配置,保存即可使用</p>
+    <hr>
+    <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+  </div>
+    `
+    const html_exe_toutiaoBed = `
+    <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">今日头条接口</h4>
+    <p>无需配置,保存即可使用</p>
+    <hr>
+    <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+  </div>
+    `
+    const html_exe_toutiaoBed2 = `
+    <div class="alert alert-danger" role="alert">今日头条2接口上传完全依赖后端上传,请部署后端服务!</div>
+    <div class="form-group">
+      <label for="options_apihost" class="options_apihost">后端请求地址<p>(为空时使用默认后端)</p></p>
+      </label>
+      <input required type="url" class="form-control box-shadow" id="options_apihost" placeholder="无法携带cookie，填写完整url" />
+    </div>
+    <div class="form-group">
+      <label for="options_token" class="options_token ">SESSDATA<p>(为空时:登录今日头条自动获取)</p></label>
+        <input type="text" class="form-control box-shadow" id="options_token" placeholder="SESSDATA值" />
+    </div>
+    <div class="form-group">
+      <label for="options_CSRF" class="options_CSRF">CSRF<p>(为空时:登今日头条自动获取)</p></label>
+      <input type="text" class="form-control box-shadow" id="options_CSRF" placeholder="CSRF值" />
+    </div>
+    <div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>
+    `
+
     let optionsProg = {
       '#exe_Lsky': {
         'needUid': 1,
@@ -541,6 +612,30 @@ $(document).ready(function () {
       "#exe_imgdd": {
         'needUid': 14,
         'html_exeBox': html_exe_imgdd,
+      },
+      "#exe_fiftyEight": {
+        'needUid': 15,
+        'html_exeBox': html_exe_fiftyEight,
+      },
+      "#exe_BilibliBed": {
+        'needUid': 16,
+        'html_exeBox': html_exe_BilibliBed,
+      },
+      "#exe_BaiJiaHaoBed": {
+        'needUid': 17,
+        'html_exeBox': html_exe_BaiJiaHaoBed,
+      },
+      "#exe_freebufBed": {
+        'needUid': 18,
+        'html_exeBox': html_exe_freebufBed,
+      },
+      "#exe_toutiaoBed": {
+        'needUid': 19,
+        'html_exeBox': html_exe_toutiaoBed,
+      },
+      "#exe_toutiaoBed2": {
+        'needUid': 20,
+        'html_exeBox': html_exe_toutiaoBed2,
       },
       'default': {
         'body': `
@@ -711,6 +806,25 @@ $(document).ready(function () {
           $("#exe_imgdd").addClass('active');
           $('#options_host').attr("disabled", true)
           break;
+        case 'fiftyEight':
+          $("#exe_fiftyEight").addClass('active');
+          break;
+        case 'BilibliBed':
+          $("#exe_BilibliBed").addClass('active');
+          $("#options_CSRF").val(options_CSRF);
+          break;
+        case 'BaiJiaHaoBed':
+          $("#exe_BaiJiaHaoBed").addClass('active');
+          break;
+        case 'freebufBed':
+          $("#exe_freebufBed").addClass('active');
+          break;
+        case 'toutiaoBed':
+          $("#exe_toutiaoBed").addClass('active');
+          break;
+        case 'toutiaoBed2':
+          $("#exe_toutiaoBed2").addClass('active');
+          break;
         default:
           if (window.navigator.userAgent.indexOf('Firefox') > -1) {
             $("#carouselExampleCaptions").prepend(`<button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>`)
@@ -861,6 +975,26 @@ $(document).ready(function () {
         $('.options-form').append(prog.html_exeBox);
         $('#options_host').val("imgdd.com")
         $('#options_host').attr("disabled", true)
+      }
+      if (prog.needUid == 15) {//58
+        $('.options-form').append(prog.html_exeBox);
+      }
+      if (prog.needUid == 16) {//哔哩哔哩
+        $('.options-form').append(prog.html_exeBox);
+        $("#options_token").val(options_token);
+        $("#options_CSRF").val(options_CSRF);
+      }
+      if (prog.needUid == 17) {//百家号
+        $('.options-form').append(prog.html_exeBox);
+      }
+      if (prog.needUid == 18) {//freebufBed
+        $('.options-form').append(prog.html_exeBox);
+      }
+      if (prog.needUid == 19) {//头条
+        $('.options-form').append(prog.html_exeBox);
+      }
+      if (prog.needUid == 20) {//头条
+        $('.options-form').append(prog.html_exeBox);
       }
 
       //判断cors开关
@@ -1383,6 +1517,21 @@ $(document).ready(function () {
           chrome.storage.local.set({ 'open_json_button': $('#open_json_button').is(':checked') })
           FormData['open_json_button'] = $('#open_json_button').is(':checked')
         }
+        if ($('#exe_fiftyEight').hasClass('active')) {
+          chrome.storage.local.set({ 'options_host': "cn.58.com" })
+        }
+        // if ($('#exe_BilibliBed').hasClass('active')) {
+        //   chrome.runtime.sendMessage({ exe_BilibliBed: "save" });
+        // }
+        if ($('#exe_BaiJiaHaoBed').hasClass('active')) {
+          chrome.storage.local.set({ 'options_host': "baijiahao.baidu.com" })
+        }
+        if ($('#exe_freebufBed').hasClass('active')) {
+          chrome.storage.local.set({ 'options_host': "www.freebuf.com" })
+        }
+        if ($('#exe_toutiaoBed').hasClass('active') || $('#exe_toutiaoBed2').hasClass('active')) {
+          chrome.storage.local.set({ 'options_host': "www.toutiao.com" })
+        }
         localStorage.options_webtitle_status = 1
         toastItem({
           toast_content: chrome.i18n.getMessage("Successfully_saved_1")
@@ -1788,163 +1937,66 @@ $(document).ready(function () {
         </div>
         </div>
         `)
-      }
-    })
-
-    $("#Sidebar_area").click(function () {
-      let edit_uploadArea_width_value //宽度
-      let edit_uploadArea_height_value //高度
-      let edit_uploadArea_Location_value //位置
-      let edit_uploadArea_opacity_value //透明度
-      let edit_uploadArea_auto_close_time_value //自动关闭时间
+        let edit_uploadArea_width_value //宽度
+        let edit_uploadArea_height_value //高度
+        let edit_uploadArea_Location_value //位置
+        let edit_uploadArea_opacity_value //透明度
+        let edit_uploadArea_auto_close_time_value //自动关闭时间
 
 
-      let edit_uploadArea = $("#edit_uploadArea")
-      let uploadAreaParent = $("#PNGmodal-body")
-      // 定义初始变量
-      let isDragging = false;
-      let dragStart = 0;
-      let dragOffset = 0;
-      // 监听鼠标按下事件
-      edit_uploadArea.mousedown(function (event) {
-        isDragging = true;
-        dragStart = event.clientY;
-        dragOffset = edit_uploadArea.offset().top - uploadAreaParent.offset().top;
-      });
-      $(document).mousemove(function (event) {
-        let parentHeight = uploadAreaParent.height();
-        if (isDragging) {
-          let dragPos = event.clientY - dragStart + dragOffset;
-          if (dragPos < 0) {
-            dragPos = 0;
+        let edit_uploadArea = $("#edit_uploadArea")
+        let uploadAreaParent = $("#PNGmodal-body")
+        // 定义初始变量
+        let isDragging = false;
+        let dragStart = 0;
+        let dragOffset = 0;
+        // 监听鼠标按下事件
+        edit_uploadArea.mousedown(function (event) {
+          isDragging = true;
+          dragStart = event.clientY;
+          dragOffset = edit_uploadArea.offset().top - uploadAreaParent.offset().top;
+        });
+        $(document).mousemove(function (event) {
+          let parentHeight = uploadAreaParent.height();
+          if (isDragging) {
+            let dragPos = event.clientY - dragStart + dragOffset;
+            if (dragPos < 0) {
+              dragPos = 0;
+            }
+            if (dragPos > uploadAreaParent.height() - edit_uploadArea.height()) {
+              dragPos = uploadAreaParent.height() - edit_uploadArea.height();
+            }
+            edit_uploadArea_Location_value = parseInt(dragPos / (parentHeight / 100));
+            $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ":" + edit_uploadArea_Location_value + "%");
+            edit_uploadArea_Location = edit_uploadArea_Location_value
+            edit_uploadArea.css("top", dragPos);
+            uploadAreaParent.scrollTop(dragPos);
           }
-          if (dragPos > uploadAreaParent.height() - edit_uploadArea.height()) {
-            dragPos = uploadAreaParent.height() - edit_uploadArea.height();
-          }
-          edit_uploadArea_Location_value = parseInt(dragPos / (parentHeight / 100));
-          $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ":" + edit_uploadArea_Location_value + "%");
-          edit_uploadArea_Location = edit_uploadArea_Location_value
-          edit_uploadArea.css("top", dragPos);
-          uploadAreaParent.scrollTop(dragPos);
-        }
-      });
+        });
 
-      // 监听鼠标松开事件
-      $(document).mouseup(function () {
-        isDragging = false;
-      });
-      // 宽度
-      edit_uploadArea.css('width', edit_uploadArea_width + 'px');
-      $("#edit_uploadArea_width").attr("value", edit_uploadArea_width)
-      $("#edit_uploadArea_width").prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width + "px");
-      // 高度
+        // 监听鼠标松开事件
+        $(document).mouseup(function () {
+          isDragging = false;
+        });
+        // 宽度
+        edit_uploadArea.css('width', edit_uploadArea_width + 'px');
+        $("#edit_uploadArea_width").attr("value", edit_uploadArea_width)
+        $("#edit_uploadArea_width").prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width + "px");
+        // 高度
 
-      edit_uploadArea.css('height', edit_uploadArea_height + '%');
-      $("#edit_uploadArea_height").attr("value", edit_uploadArea_height)
-      $("#edit_uploadArea_height").prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height + "%");
-      switch (edit_uploadArea_Left_or_Right) {
-        case 'Left':
-          if (edit_uploadArea_height > 99) {
-            edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
-          } else {
-            edit_uploadArea.css("border-radius", "0")
-          }
-          break;
-        case 'Right':
-          if (edit_uploadArea_height > 99) {
-            edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
-          } else {
-            edit_uploadArea.css("border-radius", "0")
-          }
-          break;
-      }
-
-      //位置
-      edit_uploadArea.css('top', (edit_uploadArea_Location * ($("#PNGmodal-body").height() / 100)) + 'px');
-      $("#edit_uploadArea_Location").attr("value", edit_uploadArea_Location)
-      $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + (edit_uploadArea_Location) + "%");
-
-      //透明
-      edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity + `)`)
-      $("#edit_uploadArea_opacity").attr("value", edit_uploadArea_opacity * 100)
-      $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity);
-
-      //自动关闭时间
-      $("#edit_uploadArea_auto_close_time").attr("value", edit_uploadArea_auto_close_time)
-      $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time + "s");
-      switch (edit_uploadArea_Left_or_Right) {
-        case 'Left':
-          $("#edit_uploadArea_Left").attr("checked", true)
-          edit_uploadArea.css("left", "0");
-          break;
-        case 'Right':
-          $("#edit_uploadArea_Right").attr("checked", true)
-          edit_uploadArea.css("right", "0");
-          break;
-      }
-
-
-      $("#edit_uploadArea_Left").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Left" })
-        edit_uploadArea_Left_or_Right = "Left"
-        edit_uploadArea.css("left", "0");
-        if (edit_uploadArea_height > 99) {
-          edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
-        } else {
-          edit_uploadArea.css("border-radius", "0")
-        }
-      })
-      $("#edit_uploadArea_Right").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-        edit_uploadArea_Left_or_Right = "Right"
-        edit_uploadArea.css("left", uploadAreaParent.width() - edit_uploadArea.width() + "px");
-        if (edit_uploadArea_height > 99) {
-          edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
-        } else {
-          edit_uploadArea.css("border-radius", "0")
-        }
-      })
-
-
-      $('#edit_uploadArea_width').on('input', function () {
-        edit_uploadArea_width_value = $(this).val();
-        $(this).prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width_value + "px");
-        edit_uploadArea.css('width', edit_uploadArea_width_value + 'px');
-        edit_uploadArea_width = edit_uploadArea_width_value
-        switch (edit_uploadArea_Left_or_Right) {
-          case 'Right':
-            edit_uploadArea.css('left', uploadAreaParent.width() - edit_uploadArea_width_value + 'px');
-            break;
-        }
-      });
-
-
-
-      $('#edit_uploadArea_height').on('input', function () {
-        edit_uploadArea_height_value = $(this).val();
-        let areaOffset = edit_uploadArea.offset();
-        let parentOffset = edit_uploadArea.parent().offset();
-        let top = areaOffset.top - parentOffset.top;
-        let parentHeight = edit_uploadArea.parent().height();
-
-        edit_uploadArea_Location_value = parseInt((top / parentHeight) * 100);
-        let from_border = edit_uploadArea_Location_value + parseInt(edit_uploadArea_height_value)
-        $(this).prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height_value + "%");
-        $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + edit_uploadArea_Location_value + "%");
-        if (from_border > 99) {
-          edit_uploadArea.css("top", 0)
-        }
-
+        edit_uploadArea.css('height', edit_uploadArea_height + '%');
+        $("#edit_uploadArea_height").attr("value", edit_uploadArea_height)
+        $("#edit_uploadArea_height").prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height + "%");
         switch (edit_uploadArea_Left_or_Right) {
           case 'Left':
-            if (edit_uploadArea_height_value > 99) {
+            if (edit_uploadArea_height > 99) {
               edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
             } else {
               edit_uploadArea.css("border-radius", "0")
             }
             break;
           case 'Right':
-            if (edit_uploadArea_height_value > 99) {
+            if (edit_uploadArea_height > 99) {
               edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
             } else {
               edit_uploadArea.css("border-radius", "0")
@@ -1952,54 +2004,140 @@ $(document).ready(function () {
             break;
         }
 
+        //位置
+        edit_uploadArea.css('top', (edit_uploadArea_Location * ($("#PNGmodal-body").height() / 100)) + 'px');
+        $("#edit_uploadArea_Location").attr("value", edit_uploadArea_Location)
+        $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + (edit_uploadArea_Location) + "%");
 
+        //透明
+        edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity + `)`)
+        $("#edit_uploadArea_opacity").attr("value", edit_uploadArea_opacity * 100)
+        $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity);
 
+        //自动关闭时间
+        $("#edit_uploadArea_auto_close_time").attr("value", edit_uploadArea_auto_close_time)
+        $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time + "s");
+        switch (edit_uploadArea_Left_or_Right) {
+          case 'Left':
+            $("#edit_uploadArea_Left").attr("checked", true)
+            edit_uploadArea.css("left", "0");
+            break;
+          case 'Right':
+            $("#edit_uploadArea_Right").attr("checked", true)
+            edit_uploadArea.css("right", "0");
+            break;
+        }
 
-        edit_uploadArea.css('height', edit_uploadArea_height_value + '%');
-        edit_uploadArea_height = edit_uploadArea_height_value
-        edit_uploadArea_Location = edit_uploadArea_Location_value
-
-      });
-
-
-      $('#edit_uploadArea_opacity').on('input', function () {
-        edit_uploadArea_opacity_value = $(this).val() / 100;
-        $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity_value);
-        edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity_value + `)`)
-        edit_uploadArea_opacity = edit_uploadArea_opacity_value
-      });
-
-      $('#edit_uploadArea_auto_close_time').on('input', function () {
-        edit_uploadArea_auto_close_time_value = $(this).val();
-        $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time_value + "s");
-        edit_uploadArea_auto_close_time = edit_uploadArea_auto_close_time_value
-      });
-
-
-      $("#edit_uploadArea_save").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_width": edit_uploadArea_width_value })
-        chrome.storage.local.set({ "edit_uploadArea_height": edit_uploadArea_height_value })
-        chrome.storage.local.set({ "edit_uploadArea_Location": edit_uploadArea_Location_value })
-        chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
-        chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
-        toastItem({
-          toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+        $("#edit_uploadArea_Left").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Left" })
+          edit_uploadArea_Left_or_Right = "Left"
+          edit_uploadArea.css("left", "0");
+          if (edit_uploadArea_height > 99) {
+            edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
+          } else {
+            edit_uploadArea.css("border-radius", "0")
+          }
+        })
+        $("#edit_uploadArea_Right").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          edit_uploadArea_Left_or_Right = "Right"
+          edit_uploadArea.css("left", uploadAreaParent.width() - edit_uploadArea.width() + "px");
+          if (edit_uploadArea_height > 99) {
+            edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
+          } else {
+            edit_uploadArea.css("border-radius", "0")
+          }
         })
 
-      })
-      $("#edit_uploadArea_reset").click(function () {
-        chrome.storage.local.set({ "edit_uploadArea_width": 32 })
-        chrome.storage.local.set({ "edit_uploadArea_height": 30 })
-        chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
-        chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
-        chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
-        chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
-        toastItem({
-          toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
+        $('#edit_uploadArea_width').on('input', function () {
+          edit_uploadArea_width_value = $(this).val();
+          $(this).prev('label').text(chrome.i18n.getMessage("width") + ':' + edit_uploadArea_width_value + "px");
+          edit_uploadArea.css('width', edit_uploadArea_width_value + 'px');
+          edit_uploadArea_width = edit_uploadArea_width_value
+          switch (edit_uploadArea_Left_or_Right) {
+            case 'Right':
+              edit_uploadArea.css('left', uploadAreaParent.width() - edit_uploadArea_width_value + 'px');
+              break;
+          }
+        });
+
+        $('#edit_uploadArea_height').on('input', function () {
+          edit_uploadArea_height_value = $(this).val();
+          let areaOffset = edit_uploadArea.offset();
+          let parentOffset = edit_uploadArea.parent().offset();
+          let top = areaOffset.top - parentOffset.top;
+          let parentHeight = edit_uploadArea.parent().height();
+
+          edit_uploadArea_Location_value = parseInt((top / parentHeight) * 100);
+          let from_border = edit_uploadArea_Location_value + parseInt(edit_uploadArea_height_value)
+          $(this).prev('label').text(chrome.i18n.getMessage("height") + ':' + edit_uploadArea_height_value + "%");
+          $("#edit_uploadArea_Location").prev('label').text(chrome.i18n.getMessage("Location") + ':' + edit_uploadArea_Location_value + "%");
+          if (from_border > 99) {
+            edit_uploadArea.css("top", 0)
+          }
+
+          switch (edit_uploadArea_Left_or_Right) {
+            case 'Left':
+              if (edit_uploadArea_height_value > 99) {
+                edit_uploadArea.css("border-radius", "0px 10px 10px 0px")
+              } else {
+                edit_uploadArea.css("border-radius", "0")
+              }
+              break;
+            case 'Right':
+              if (edit_uploadArea_height_value > 99) {
+                edit_uploadArea.css("border-radius", "10px 0px 0px 10px")
+              } else {
+                edit_uploadArea.css("border-radius", "0")
+              }
+              break;
+          }
+
+
+
+
+          edit_uploadArea.css('height', edit_uploadArea_height_value + '%');
+          edit_uploadArea_height = edit_uploadArea_height_value
+          edit_uploadArea_Location = edit_uploadArea_Location_value
+
+        });
+
+        $('#edit_uploadArea_opacity').on('input', function () {
+          edit_uploadArea_opacity_value = $(this).val() / 100;
+          $("#edit_uploadArea_opacity").prev('label').text(chrome.i18n.getMessage("opacity") + ':' + edit_uploadArea_opacity_value);
+          edit_uploadArea.css("background-color", `rgba(60,64,67,` + edit_uploadArea_opacity_value + `)`)
+          edit_uploadArea_opacity = edit_uploadArea_opacity_value
+        });
+
+        $('#edit_uploadArea_auto_close_time').on('input', function () {
+          edit_uploadArea_auto_close_time_value = $(this).val();
+          $("#edit_uploadArea_auto_close_time").prev('label').text(chrome.i18n.getMessage("auto_close_time") + ':' + edit_uploadArea_auto_close_time_value + "s");
+          edit_uploadArea_auto_close_time = edit_uploadArea_auto_close_time_value
+        });
+
+        $("#edit_uploadArea_save").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_width": edit_uploadArea_width_value })
+          chrome.storage.local.set({ "edit_uploadArea_height": edit_uploadArea_height_value })
+          chrome.storage.local.set({ "edit_uploadArea_Location": edit_uploadArea_Location_value })
+          chrome.storage.local.set({ "edit_uploadArea_opacity": edit_uploadArea_opacity_value })
+          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": edit_uploadArea_auto_close_time_value })
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Successfully_saved_2")
+          })
+
         })
-
-      })
-
+        $("#edit_uploadArea_reset").click(function () {
+          chrome.storage.local.set({ "edit_uploadArea_width": 32 })
+          chrome.storage.local.set({ "edit_uploadArea_height": 30 })
+          chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
+          chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
+          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
+          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
+          })
+        })
+      }
     })
 
   })//chrome get
@@ -2166,6 +2304,42 @@ $(document).ready(function () {
       $(this).addClass("active")
     });
   })
+  chrome.storage.local.get(["ImageProxy"], function (result) {
+    if ($('#Image_Proxy a[value="' + result.ImageProxy + '"]').length) {
+      $('#Image_Proxy a[value="' + result.ImageProxy + '"]').addClass("active")
+    } else {
+      chrome.storage.local.set({ "ImageProxy": "0" })
+      $('#Image_Proxy a[value="0"]').addClass("active")
+    }
+    $('#Image_Proxy .dropdown-item').click(function () {
+      let val = $(this).attr("value")
+      $("#Image_Proxy button").removeClass("btn-primary btn-dark")
+      chrome.storage.local.set({ "ImageProxy": val })
+      $('#Image_Proxy .dropdown-item').removeClass("active")
+      $(this).addClass("active")
+      toastItem({
+        toast_content: "图片代理设置成功"
+      });
+    });
+  })
+  chrome.storage.local.get(["EditPasteUpload"], function (result) {
+    if ($('#EditPasteUpload a[value="' + result.EditPasteUpload + '"]').length) {
+      $('#EditPasteUpload a[value="' + result.EditPasteUpload + '"]').addClass("active")
+    } else {
+      chrome.storage.local.set({ "EditPasteUpload": "off" })
+      $('#EditPasteUpload a[value="off"]').addClass("active")
+    }
+    $('#EditPasteUpload .dropdown-item').click(function () {
+      let val = $(this).attr("value")
+      $("#EditPasteUpload button").removeClass("btn-primary btn-dark")
+      chrome.storage.local.set({ "EditPasteUpload": val })
+      $('#EditPasteUpload .dropdown-item').removeClass("active")
+      $(this).addClass("active")
+      toastItem({
+        toast_content: "编辑框粘贴上传设置成功"
+      });
+    });
+  })
   chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
     if ($('a[value="' + result.Right_click_menu_upload + '"]').length) {
       $('a[value="' + result.Right_click_menu_upload + '"]').addClass("active")
@@ -2187,6 +2361,7 @@ $(document).ready(function () {
     });
 
   })
+
   $("#VERSION").text(chrome.i18n.getMessage("VERSION_1") + ":V" + chrome.runtime.getManifest().version)
   $("#VERSION").click(function () {
     $("#VERSION").text(chrome.i18n.getMessage("Obtaining"))

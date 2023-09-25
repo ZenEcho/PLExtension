@@ -24,14 +24,40 @@ function insertContentIntoEditorState() {
 window.addEventListener('message', function (event) {
     if (event.data.type === 'insertContentIntoEditorState') {
         mainLogic(document.querySelector(".insertContentIntoEditorPrompt"));
+        chrome.storage.local.get(["EditPasteUpload"], function (result) {
+            if (result.EditPasteUpload == "on") {
+                handlePasteEventOnFocus()
+            }
+        })
     }
 })
 /**
-     * @param {url} AutoInsert_message_content 上传成功后返回的url
+     * @param {url} UpUrl 上传成功后返回的url
      */
 function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
-    chrome.storage.local.get(["AutoInsert"], function (result) {
+    chrome.storage.local.get(["AutoInsert", "ImageProxy"], function (result) {
         if (result.AutoInsert != "AutoInsert_on") { return; }
+        ImageProxy = result.ImageProxy || 0
+        let UpUrl = AutoInsert_message_content
+        switch (ImageProxy) {
+            case "1":
+                let index = parseInt(Math.random() * 3);
+                UpUrl = `https://i` + index + `.wp.com/` + UpUrl.replace(/^https:\/\//, '')
+                break;
+            case "2":
+                UpUrl = `https://images.weserv.nl/?url=` + UpUrl
+                break;
+            case "3":
+                UpUrl = `https://imageproxy.pimg.tw/resize?url=` + UpUrl
+                break;
+            case "4":
+                UpUrl = `https://pic1.xuehuaimg.com/proxy/` + UpUrl
+                break;
+            case "5":
+                UpUrl = `https://cors.zme.ink/` + UpUrl
+                break;
+        }
+
         let Find_Editor = false
         let pageText = document.body.innerText;
         let pageHtml = document.documentElement.innerHTML;
@@ -50,23 +76,23 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                     const contentEditableElements = commonAncestor.querySelectorAll('[contenteditable="true"]');
                     if (inputElements.length > 0) {
                         // 方法1: 处理input元素
-                        document.execCommand('insertText', false, AutoInsert_message_content);
+                        document.execCommand('insertText', false, UpUrl);
                         Find_Editor = true
                     } else if (textareaElements.length > 0) {
                         // 方法2: 处理textarea元素
-                        document.execCommand('insertText', false, AutoInsert_message_content);
+                        document.execCommand('insertText', false, UpUrl);
                         Find_Editor = true
                     } else if (contentEditableElements.length > 0) {
                         // 方法3: 处理具有contenteditable属性的元素
                         const imgElement = document.createElement('img');
-                        imgElement.src = AutoInsert_message_content; // 替换成你的图片URL
+                        imgElement.src = UpUrl; // 替换成你的图片URL
                         imgElement.alt = '图片';
                         contentEditableElements[0].appendChild(imgElement);
                         Find_Editor = true
                     }
                 } else if (commonAncestor.nodeType === Node.TEXT_NODE && commonAncestor.parentElement && commonAncestor.parentElement.hasAttribute('contenteditable')) {
-                    // commonAncestor.textContent += AutoInsert_message_content
-                    document.execCommand('insertText', false, AutoInsert_message_content);
+                    // commonAncestor.textContent += UpUrl
+                    document.execCommand('insertText', false, UpUrl);
                     Find_Editor = true
                 }
 
@@ -82,12 +108,12 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (Discuz_Interactive_reply) {
                 if (Find_Editor == true) { return; }
                 //回复楼层
-                Discuz_Interactive_reply.value += '[img]' + AutoInsert_message_content + '[/img]'
+                Discuz_Interactive_reply.value += '[img]' + UpUrl + '[/img]'
                 Find_Editor = true
             } else if (Discuz) {
                 if (Find_Editor == true) { return; }
                 //回复楼主
-                Discuz.value += '[img]' + AutoInsert_message_content + '[/img]'
+                Discuz.value += '[img]' + UpUrl + '[/img]'
                 Find_Editor = true
             }
             if (Discuz_Advanced) {
@@ -99,12 +125,12 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                     if (Discuz_Advanced_iframe) {
                         let bodyElement = Discuz_Advanced_iframe.contentDocument.body
                         let img = document.createElement('img')
-                        img.src = AutoInsert_message_content
+                        img.src = UpUrl
                         bodyElement.appendChild(img)
                         Find_Editor = true
                     }
                     else {
-                        Discuz_Advanced.value += '[img]' + AutoInsert_message_content + '[/img]'
+                        Discuz_Advanced.value += '[img]' + UpUrl + '[/img]'
                         Find_Editor = true
                     }
                 } catch (error) {
@@ -117,7 +143,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (Find_Editor == true) { return; }
             let reply_content_Advanced = document.getElementById("topic_content")
             if (reply_content_Advanced && reply_content_Advanced.type != "hidden") {
-                reply_content_Advanced.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                reply_content_Advanced.value += '![' + "图片" + '](' + UpUrl + ')'
                 let inputEvent = new Event('input', { bubbles: true });
                 reply_content_Advanced.dispatchEvent(inputEvent);
                 Find_Editor = true
@@ -126,7 +152,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                 if (Find_Editor == true) { return; }
                 let reply_content = document.getElementById("reply_content")
                 if (reply_content) {
-                    reply_content.value += AutoInsert_message_content
+                    reply_content.value += UpUrl
                     let inputEvent = new Event('input', { bubbles: true });
                     reply_content.dispatchEvent(inputEvent);
                     Find_Editor = true
@@ -138,7 +164,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (Find_Editor == true) { return; }
             let nodeseek = document.getElementById("markdown-input")
             if (nodeseek) {
-                nodeseek.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                nodeseek.value += '![' + "图片" + '](' + UpUrl + ')'
                 Find_Editor = true
                 let inputEvent = new Event('input', { bubbles: true });
                 nodeseek.dispatchEvent(inputEvent);
@@ -151,7 +177,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             let hostevaluate = document.getElementsByClassName("write-container")
             if (hostevaluate.length) {
                 let write = hostevaluate[hostevaluate.length - 1].querySelector(".write")
-                write.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                write.value += '![' + "图片" + '](' + UpUrl + ')'
                 let inputEvent = new Event('input', { bubbles: true });
                 write.dispatchEvent(inputEvent);
                 Find_Editor = true
@@ -161,7 +187,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (Find_Editor == true) { return; }
             let lowendtalkEditor = document.getElementById("Form_Body")
             if (lowendtalkEditor) {
-                lowendtalkEditor.value += '![' + "图片" + '](' + AutoInsert_message_content + ')';
+                lowendtalkEditor.value += '![' + "图片" + '](' + UpUrl + ')';
                 Find_Editor = true
             }
         }
@@ -170,7 +196,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (Find_Editor == true) { return; }
             let text = document.getElementById("text")
             if (text) {
-                text.value += '![' + "图片" + '](' + AutoInsert_message_content + ')'
+                text.value += '![' + "图片" + '](' + UpUrl + ')'
                 let inputEvent = new Event('input', { bubbles: true });
                 text.dispatchEvent(inputEvent);
                 Find_Editor = true
@@ -180,14 +206,14 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
         let phpbbForum = document.getElementById("phpbb")
         if (phpbbForum) {
             if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'phpbbForum', data: '[img]' + AutoInsert_message_content + '[/img]' }, '*');
+            window.postMessage({ type: 'phpbbForum', data: '[img]' + UpUrl + '[/img]' }, '*');
             Find_Editor = true
         }
         //CodeMirror5
         let CodeMirror = document.querySelector(".CodeMirror");
         if (CodeMirror) {
             if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'CodeMirror5', data: '![' + "描述" + '](' + AutoInsert_message_content + ')' }, '*');
+            window.postMessage({ type: 'CodeMirror5', data: '![' + "描述" + '](' + UpUrl + ')' }, '*');
             Find_Editor = true
         }
         //CodeMirror6
@@ -197,16 +223,18 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             let item = document.createElement('div');
             item.className = "cm-line"
             item.dir = "auto"
-            item.innerText = '![' + "描述" + '](' + AutoInsert_message_content + ')'
+            item.innerText = '![' + "描述" + '](' + UpUrl + ')'
             CodeMirror6.appendChild(item)
             Find_Editor = true
         }
         //Gutenberg Editor
         let Gutenberg = document.getElementById("wpbody-content")
         if (Gutenberg) {
-            if (Find_Editor == true) { return; }
-            window.postMessage({ type: 'Gutenberg', data: AutoInsert_message_content }, '*');
-            Find_Editor = true
+            if (currentURL.toLowerCase().includes("post-new.php")) {
+                if (Find_Editor == true) { return; }
+                window.postMessage({ type: 'Gutenberg', data: UpUrl }, '*');
+                Find_Editor = true
+            }
         }
 
 
@@ -216,32 +244,32 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
 
             // TinyMCE 5/6 Editor
             if (src && src.includes('tinymce')) {
-                window.postMessage({ type: 'TinyMCE', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                window.postMessage({ type: 'TinyMCE', data: `<img src="` + UpUrl + `">` }, '*');
                 Find_Editor = true
                 break; // 终止整个循环
             }
             // wangeditor
             if (src && src.includes('wangeditor')) {
-                window.postMessage({ type: 'wangeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                window.postMessage({ type: 'wangeditor', data: `<img src="` + UpUrl + `">` }, '*');
                 Find_Editor = true
                 break;
             }
             // ckeditor4
             if (src && src.includes('ckeditor4')) {
-                window.postMessage({ type: 'ckeditor4', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                window.postMessage({ type: 'ckeditor4', data: `<img src="` + UpUrl + `">` }, '*');
                 Find_Editor = true
                 break;
             }
             // ckeditor5
             if (src && src.includes('ckeditor5')) {
-                window.postMessage({ type: 'ckeditor5', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                window.postMessage({ type: 'ckeditor5', data: `<img src="` + UpUrl + `">` }, '*');
                 Find_Editor = true
                 break;
             }
             // ckeditor4/5
             if (src && src.includes('ckeditor')) {
                 // 当不是4和5的时候，执行这条命令然后使用4的方法注入
-                window.postMessage({ type: 'ckeditor', data: `<img src="` + AutoInsert_message_content + `">` }, '*');
+                window.postMessage({ type: 'ckeditor', data: `<img src="` + UpUrl + `">` }, '*');
                 Find_Editor = true
                 break;
             }
@@ -250,14 +278,14 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                 let HaloEditor_Element = document.querySelector('.ProseMirror');
                 if (HaloEditor_Element) {
                     HaloEditor_Element.focus();
-                    document.execCommand('insertImage', false, AutoInsert_message_content);
+                    document.execCommand('insertImage', false, UpUrl);
                     Find_Editor = true
                 }
                 break;
             }
             // ueditor 百度
             if (src && src.includes('ueditor')) {
-                window.postMessage({ type: 'ueditor', data: AutoInsert_message_content }, '*');
+                window.postMessage({ type: 'ueditor', data: UpUrl }, '*');
                 Find_Editor = true
                 break;
             }
@@ -274,7 +302,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                 if (textareaStyles.display === 'none') {
                     return;
                 }
-                textarea.value += '[img]' + AutoInsert_message_content + '[/img]'
+                textarea.value += '[img]' + UpUrl + '[/img]'
                 Find_Editor = true
             }
 
@@ -284,7 +312,7 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
             if (editableElement) {
                 // 创建图片元素并设置属性
                 let imgElement = document.createElement('img');
-                imgElement.src = AutoInsert_message_content;
+                imgElement.src = UpUrl;
                 imgElement.alt = '图片';
                 // 插入图片元素
                 editableElement.appendChild(imgElement);
@@ -294,3 +322,41 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
     })
 }
 
+//编辑框粘贴
+function handlePasteEventOnFocus() {
+    function pasteHandler(e) {
+        const focusedElement = document.activeElement;
+
+        if (!focusedElement) {
+            return;
+        }
+        // 检查focusedElement是否不是可输入的元素
+        if (
+            !(focusedElement instanceof HTMLInputElement) &&
+            !(focusedElement instanceof HTMLTextAreaElement) &&
+            !focusedElement.isContentEditable
+        ) {
+            console.log("Input", focusedElement instanceof HTMLInputElement);
+            console.log("TextArea", focusedElement instanceof HTMLTextAreaElement);
+            console.log("contentEditable", focusedElement.isContentEditable);
+            return;
+        }
+
+        const copyFileItems = e.clipboardData.items;
+        const filesToSend = [];
+
+        for (let i = 0; i < copyFileItems.length; i++) {
+            const copyFileItem = copyFileItems[i];
+            if (copyFileItem.kind == "file") {
+                if (copyFileItem.type.indexOf("image") != -1) {
+                    const file = copyFileItem.getAsFile();
+                    filesToSend.push(file);
+                }
+            }
+        }
+        if (filesToSend.length > 0) {
+            window.postMessage({ type: 'EditPasteUpload', data: filesToSend }, '*');
+        }
+    }
+    document.addEventListener("paste", pasteHandler);
+}
