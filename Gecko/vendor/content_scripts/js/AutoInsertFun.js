@@ -324,29 +324,39 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
 
 //编辑框粘贴
 function handlePasteEventOnFocus() {
-    const focusedElement = document.activeElement;
-
-    if (!focusedElement) {
-        return;
-    }
     function pasteHandler(e) {
-        const Copy_File_Items = e.clipboardData.items;
+        const focusedElement = document.activeElement;
+
+        if (!focusedElement) {
+            return;
+        }
+        // 检查focusedElement是否不是可输入的元素
+        if (
+            !(focusedElement instanceof HTMLInputElement) &&
+            !(focusedElement instanceof HTMLTextAreaElement) &&
+            !focusedElement.isContentEditable
+        ) {
+            console.log("Input", focusedElement instanceof HTMLInputElement);
+            console.log("TextArea", focusedElement instanceof HTMLTextAreaElement);
+            console.log("contentEditable", focusedElement.isContentEditable);
+            return;
+        }
+
+        const copyFileItems = e.clipboardData.items;
         const filesToSend = [];
 
-        for (let i = 0; i < Copy_File_Items.length; i++) {
-            const Copy_File_Item = Copy_File_Items[i];
-            if (Copy_File_Item.kind == "file") { // 判断是不是文件
-                if (Copy_File_Item.type.indexOf("image") != -1) { // 判断文件类型
-                    const file = Copy_File_Item.getAsFile();
+        for (let i = 0; i < copyFileItems.length; i++) {
+            const copyFileItem = copyFileItems[i];
+            if (copyFileItem.kind == "file") {
+                if (copyFileItem.type.indexOf("image") != -1) {
+                    const file = copyFileItem.getAsFile();
                     filesToSend.push(file);
                 }
             }
         }
         if (filesToSend.length > 0) {
-            // 执行其他操作，例如发送文件
             window.postMessage({ type: 'EditPasteUpload', data: filesToSend }, '*');
         }
     }
-    focusedElement.addEventListener("paste", pasteHandler);
+    document.addEventListener("paste", pasteHandler);
 }
-
