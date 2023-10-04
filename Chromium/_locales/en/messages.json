@@ -489,7 +489,7 @@
     "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
   },
   "options_Region_placeholder_S3": {
-    "message": "For example: ap-east-1"
+    "message": "For example: ap-east-1 or auto"
   },
   "options_Endpoint_S3": {
     "message": "Endpoint<p class='options_Endpoint_tips'>(Region node, <span style='color: red;'> S3 interface compatibility (required)</span>, please provide the complete URL, leave it blank for default AWS S3.;)</p>"

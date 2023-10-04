@@ -66,7 +66,6 @@ $(document).ready(function () {
       chrome.storage.local.set({ 'open_json_button': 0 })
       open_json_button = 0
     }
-
     const html_exeLskyBox = `
     <div class="form-group">
       <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
@@ -2127,12 +2126,14 @@ $(document).ready(function () {
 
         })
         $("#edit_uploadArea_reset").click(function () {
-          chrome.storage.local.set({ "edit_uploadArea_width": 32 })
-          chrome.storage.local.set({ "edit_uploadArea_height": 30 })
-          chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
-          chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
-          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
-          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          chrome.storage.local.set({
+            "edit_uploadArea_width": 32,
+            "edit_uploadArea_height": 30,
+            "edit_uploadArea_Location": 34,
+            "edit_uploadArea_opacity": 0.3,
+            "edit_uploadArea_auto_close_time": 2,
+            "edit_uploadArea_Left_or_Right": "Right"
+          });
           toastItem({
             toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
           })

@@ -127,6 +127,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     // 鼠标按下事件监听
     uploadArea.addEventListener('mousedown', (e) => {
         delayTimeout = setTimeout(() => {
+            console.log("999");
             isDragging = true;
             isPreventingClick = false;
             startY = e.clientY;
@@ -258,8 +259,6 @@ chrome.storage.local.get(storagelocal, function (result) {
                 content_scripts_CheckUploadModel(event, Simulated_upload)
                 uploadArea.classList.remove('box-shadow-Blink');
             });// 拖拽到元素
-
-
             break;
         case 'GlobalUpload_off':
             uploadArea_status = uploadArea_status - 1
@@ -310,7 +309,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             uploadArea.style.display = "block"
         }
     }
-
     // 添加鼠标移出iframe的事件监听器
     iframe.addEventListener('mouseout', function () {
         iframe_mouseover = true //只要移出iframe就改为打开状态
@@ -327,9 +325,11 @@ chrome.storage.local.get(storagelocal, function (result) {
     if (uploadArea_status == 0) {
         uploadArea.remove();
         iframe.remove();
-        document.getElementsByClassName("insertContentIntoEditorPrompt").remove()
+        let element = document.querySelector(".insertContentIntoEditorPrompt");
+        if (element) {
+            element.remove();
+        }
     }
-
     chrome.storage.local.get(["AutoInsert"], function (result) {
         if (result.AutoInsert == "AutoInsert_on") {
             insertContentIntoEditorState()
@@ -339,26 +339,19 @@ chrome.storage.local.get(storagelocal, function (result) {
     /**
      * 收到消息的动作
      */
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        if (request.Tencent_COS_contextMenus) {
-            let imgUrl = request.Tencent_COS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
-        }
-        if (request.Aliyun_OSS_contextMenus) {
-            let imgUrl = request.Aliyun_OSS_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
-        }
-        if (request.AWS_S3_contextMenus) {
-            let imgUrl = request.AWS_S3_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl, imgUrl.Metho, Simulated_upload)
-        }
-        if (request.GitHubUP_contextMenus) {
-            let imgUrl = request.GitHubUP_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
-        }
-        if (request.fiftyEight_contextMenus) {
-            let imgUrl = request.fiftyEight_contextMenus
-            content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload)
+    chrome.runtime.onMessage.addListener(function (request) {
+        const contextMenus = [
+            request.Tencent_COS_contextMenus,
+            request.Aliyun_OSS_contextMenus,
+            request.AWS_S3_contextMenus,
+            request.GitHubUP_contextMenus,
+            request.fiftyEight_contextMenus
+        ];
+        for (const menu of contextMenus) {
+            if (menu) {
+                const imgUrl = menu;
+                content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload);
+            }
         }
         if (request.AutoInsert_message) {
             let AutoInsert_message_content = request.AutoInsert_message
@@ -420,7 +413,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     // ####################################################
     // #功能演示
     // ####################################################
-
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
