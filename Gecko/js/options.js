@@ -66,7 +66,6 @@ $(document).ready(function () {
       chrome.storage.local.set({ 'open_json_button': 0 })
       open_json_button = 0
     }
-
     const html_exeLskyBox = `
     <div class="form-group">
       <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
@@ -1623,7 +1622,7 @@ $(document).ready(function () {
         // Chrome
         chrome.storage.sync.get(keys, result => {
           $(".Config-Box-Log-content").empty()
-          if (!result.BedConfig) {
+          if (!result.BedConfig || result.BedConfig.length < 1) {
             $(".Config-Box-Log-content").html(`
               <div class="Config-Box-Log-item">
                 <div class="BedConfigName"><span >获取不到数据</span></div>
@@ -1633,64 +1632,198 @@ $(document).ready(function () {
                 </div>
               </div>       
             `)
-            return;
-          }
-          result.BedConfig.forEach((e, index) => {
-            let item = $(`
-              <div class="Config-Box-Log-item" data-index="${index}">
-                <div class="BedConfigName" title="${e.options_exe}"><span data-old-value="${e.ConfigName}" title="双击修改">${e.ConfigName}</span></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span class="BedConfigAdd button" title="加载:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-plus-circle"></i></span>
-                  <span class="BedConfigDel button" title="删除:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-x-circle"></i></span>
+          } else {
+            result.BedConfig.forEach((e, index) => {
+              let item = $(`
+                <div class="Config-Box-Log-item" data-index="${index}">
+                  <div class="BedConfigName" title="${e.options_exe}"><span data-old-value="${e.ConfigName}" title="双击修改">${e.ConfigName}</span></div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="BedConfigAdd button" title="加载:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-plus-circle"></i></span>
+                    <span class="BedConfigShare button" title="分享:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-send"></i></span>
+                    <span class="BedConfigDel button" title="删除:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-x-circle"></i></span>
+                  </div>
                 </div>
-              </div>
-            `)
-            $(".Config-Box-Log-content").append(item)
-            item.find(".BedConfigAdd").click(function () {
-              chrome.storage.sync.get(keys, data => {
-                const dataIndex = $(this).parent().parent().data("index");
-                if (dataIndex !== undefined) {
-                  const selectedData = data.BedConfig[dataIndex];
-                  const dataWithoutConfig = { ...selectedData };
-                  delete dataWithoutConfig.ConfigName;
-                  delete dataWithoutConfig.ConfigTime;
-                  chrome.storage.local.set(dataWithoutConfig, () => {
-                    toastItem({
-                      toast_content: "加载成功"
+              `)
+              $(".Config-Box-Log-content").append(item)
+              item.find(".BedConfigAdd").click(function () {
+                chrome.storage.sync.get(keys, data => {
+                  const dataIndex = $(this).parent().parent().data("index");
+                  if (dataIndex !== undefined) {
+                    const selectedData = data.BedConfig[dataIndex];
+                    const dataWithoutConfig = { ...selectedData };
+                    delete dataWithoutConfig.ConfigName;
+                    delete dataWithoutConfig.ConfigTime;
+                    chrome.storage.local.set(dataWithoutConfig, () => {
+                      toastItem({
+                        toast_content: "加载成功"
+                      });
+                      setTimeout(function () {
+                        window.location.reload();
+                      }, 1000); // 延迟 1.5 秒（1500 毫秒）
                     });
-                    setTimeout(function () {
-                      window.location.reload();
-                    }, 1000); // 延迟 1.5 秒（1500 毫秒）
+                  }
+                });
+              });
+              item.find(".BedConfigShare").click(function () {
+                chrome.storage.sync.get(keys, data => {
+                  const dataIndex = $(this).parent().parent().data("index");
+                  if (dataIndex !== undefined) {
+                    const selectedData = data.BedConfig[dataIndex];
+                    const textarea = document.createElement("textarea");
+                    textarea.value = JSON.stringify(selectedData);
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                    toastItem({
+                      toast_content: "数据已复制到剪切板"
+                    });
+                  }
+                });
+              });
+              item.find(".BedConfigDel").click(function () {
+                chrome.storage.sync.get(keys, data => {
+                  const dataIndex = $(this).parent().parent().index();
+                  if (dataIndex !== undefined) {
+                    // 使用 dataIndex 索引删除 BedConfig 数组中的元素
+
+                    if (data.BedConfig && data.BedConfig[dataIndex]) {
+                      data.BedConfig.splice(dataIndex, 1); // 删除指定索引的元素
+                    }
+
+                    // 更新数据
+                    chrome.storage.sync.set({ BedConfig: data.BedConfig }, () => {
+                      console.log(data.BedConfig);
+                      $(this).parent().parent().remove();
+                    });
+                  }
+                });
+              });
+
+              item.find(".BedConfigName span").dblclick(function () {
+                const oldValue = $(this).data("old-value");
+                const newValue = prompt("输入新的配置名:", oldValue);
+                if (newValue !== null && newValue !== "") {
+                  $(this).text(newValue);
+                  $(this).data("old-value", newValue);
+                  chrome.storage.sync.get(keys, data => {
+                    const updatedBedConfig = data.BedConfig.map(existingData => {
+                      if (existingData.ConfigName === oldValue) {
+                        existingData.ConfigName = newValue;
+                      }
+                      return existingData;
+                    });
+                    chrome.storage.sync.set({ "BedConfig": updatedBedConfig });
                   });
                 }
               });
             });
-            item.find(".BedConfigDel").click(function () {
-              chrome.storage.sync.get(keys, data => {
-                const updatedBedConfig = data.BedConfig.filter(existingData => existingData.ConfigTime !== e.ConfigTime);
-                chrome.storage.sync.set({ "BedConfig": updatedBedConfig }, () => {
-                  $(this).parent().parent().remove();
-                });
+          }
+          $(".Config-Box-Log-footer .share-button").click(function () {
+            chrome.storage.sync.get(keys, data => {
+              const textarea = document.createElement("textarea");
+              textarea.value = JSON.stringify(data.BedConfig);
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand("copy");
+              document.body.removeChild(textarea);
+              toastItem({
+                toast_content: "数据已复制到剪切板"
               });
             });
-            item.find(".BedConfigName span").dblclick(function () {
-              const oldValue = $(this).data("old-value");
-              const newValue = prompt("输入新的配置名:", oldValue);
-              if (newValue !== null && newValue !== "") {
-                $(this).text(newValue);
-                $(this).data("old-value", newValue);
-                chrome.storage.sync.get(keys, data => {
-                  const updatedBedConfig = data.BedConfig.map(existingData => {
-                    if (existingData.ConfigName === oldValue) {
-                      existingData.ConfigName = newValue;
+          })
+          $(".Config-Box-Log-footer .import-button").hover(function () {
+            if (!$("#ImportConfigurationPopup").length) {
+              let item = $(`
+              <div class="modal fade" id="ImportConfigurationPopup" tabindex="-1" aria-labelledby="ImportConfigurationPopupLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="ImportConfigurationPopupLabel">导入配置</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-floating">
+                      <textarea class="form-control" placeholder="配置信息" id="floatingTextarea"></textarea>
+                      <label for="floatingTextarea">多段数据使用,分割!</label>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary replace">替换</button>
+                    <button type="button" class="btn btn-primary append">追加</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+              `)
+              $("body").append(item)
+
+              item.find(".append").click(function () {
+                let value = item.find("#floatingTextarea").val();
+                try {
+                  let jsonArray;
+                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                    jsonArray = JSON.parse("[" + value + "]");
+                  } else {
+                    jsonArray = JSON.parse(value);
+                  }
+                  if (!Array.isArray(jsonArray)) {
+                    toastItem({
+                      toast_content: "输入数据不是有效的 JSON 数组!"
+                    });
+                    return;
+                  }
+                  chrome.storage.sync.get(keys, data => {
+                    let BedConfig = data.BedConfig || [];
+                    if (jsonArray.length > 0) {
+                      for (let i = 0; i < jsonArray.length; i++) {
+                        BedConfig.push(jsonArray[i]);
+                      }
                     }
-                    return existingData;
+                    chrome.storage.sync.set({ "BedConfig": BedConfig }, () => {
+                      item.find("#floatingTextarea").val("");
+                      readBedConfig();
+                    });
+
                   });
-                  chrome.storage.sync.set({ "BedConfig": updatedBedConfig });
-                });
-              }
-            });
-          });
+                } catch (error) {
+                  console.error("无法处理数据" + error);
+                  toastItem({
+                    toast_content: "无法处理数据,请查看报错!"
+                  });
+                }
+              });
+              item.find(".replace").click(function () {
+                let value = item.find("#floatingTextarea").val();
+                try {
+                  let jsonArray;
+                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                    jsonArray = JSON.parse("[" + value + "]");
+                  } else {
+                    jsonArray = JSON.parse(value);
+                  }
+                  if (!Array.isArray(jsonArray)) {
+                    toastItem({
+                      toast_content: "输入数据不是有效的 JSON 数组!"
+                    });
+                    return;
+                  }
+                  chrome.storage.sync.set({ "BedConfig": jsonArray }, () => {
+                    item.find("#floatingTextarea").val("");
+                    readBedConfig();
+                  });
+                } catch (error) {
+                  console.error("无法处理数据" + error);
+                  toastItem({
+                    toast_content: "无法处理数据,请查看报错!"
+                  });
+                }
+              })
+            }
+          })
+
         });
       } else if (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) {
         // Firefox
@@ -1714,6 +1847,7 @@ $(document).ready(function () {
                 <div class="BedConfigName" title="${e.options_exe}"><span data-old-value="${e.ConfigName}" title="双击修改">${e.ConfigName}</span></div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <span class="BedConfigAdd button" title="加载:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-plus-circle"></i></span>
+                  <span class="BedConfigShare button" title="分享:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-send"></i></span>
                   <span class="BedConfigDel button" title="删除:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-x-circle"></i></span>
                 </div>
               </div>
@@ -1734,6 +1868,23 @@ $(document).ready(function () {
                     setTimeout(function () {
                       window.location.reload();
                     }, 1000); // 延迟 1.5 秒（1500 毫秒）
+                  });
+                }
+              });
+            });
+            item.find(".BedConfigShare").click(function () {
+              browser.storage.sync.get(keys).then(data => {
+                const dataIndex = $(this).parent().parent().data("index");
+                if (dataIndex !== undefined) {
+                  const selectedData = data.BedConfig[dataIndex];
+                  const textarea = document.createElement("textarea");
+                  textarea.value = JSON.stringify(selectedData);
+                  document.body.appendChild(textarea);
+                  textarea.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(textarea);
+                  toastItem({
+                    toast_content: "数据已复制到剪切板"
                   });
                 }
               });
@@ -1764,6 +1915,111 @@ $(document).ready(function () {
               }
             });
           });
+          $(".Config-Box-Log-footer .share-button").click(function () {
+            browser.storage.sync.get(keys).then(data => {
+              const textarea = document.createElement("textarea");
+              textarea.value = JSON.stringify(data.BedConfig);
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand("copy");
+              document.body.removeChild(textarea);
+              toastItem({
+                toast_content: "数据已复制到剪切板"
+              });
+            });
+
+          })
+          $(".Config-Box-Log-footer .import-button").hover(function () {
+            if (!$("#ImportConfigurationPopup").length) {
+              let item = $(`
+                        <div class="modal fade" id="ImportConfigurationPopup" tabindex="-1" aria-labelledby="ImportConfigurationPopupLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="ImportConfigurationPopupLabel">导入配置</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="form-floating">
+                                <textarea class="form-control" placeholder="配置信息" id="floatingTextarea"></textarea>
+                                <label for="floatingTextarea">多段数据使用,分割!</label>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">关闭</button>
+                              <button type="button" class="btn btn-primary replace">替换</button>
+                              <button type="button" class="btn btn-primary append">追加</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                        `)
+              $("body").append(item)
+
+              item.find(".append").click(function () {
+                let value = item.find("#floatingTextarea").val();
+                try {
+                  let jsonArray;
+                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                    jsonArray = JSON.parse("[" + value + "]");
+                  } else {
+                    jsonArray = JSON.parse(value);
+                  }
+                  if (!Array.isArray(jsonArray)) {
+                    toastItem({
+                      toast_content: "输入数据不是有效的 JSON 数组!"
+                    });
+                    return;
+                  }
+                  browser.storage.sync.get(keys).then(data => {
+                    let BedConfig = data.BedConfig || [];
+                    if (jsonArray.length > 0) {
+                      for (let i = 0; i < jsonArray.length; i++) {
+                        BedConfig.push(jsonArray[i]);
+                      }
+                    }
+
+                    browser.storage.sync.set({ "BedConfig": BedConfig }).then(() => {
+                      item.find("#floatingTextarea").val("");
+                      readBedConfig();
+                    });
+                  });
+                } catch (error) {
+                  console.error("无法处理数据" + error);
+                  toastItem({
+                    toast_content: "无法处理数据,请查看报错!"
+                  });
+                }
+              });
+              item.find(".replace").click(function () {
+                let value = item.find("#floatingTextarea").val();
+                try {
+                  let jsonArray;
+                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                    jsonArray = JSON.parse("[" + value + "]");
+                  } else {
+                    jsonArray = JSON.parse(value);
+                  }
+                  if (!Array.isArray(jsonArray)) {
+                    toastItem({
+                      toast_content: "输入数据不是有效的 JSON 数组!"
+                    });
+                    return;
+                  }
+                  browser.storage.sync.set({ "BedConfig": jsonArray }).then(() => {
+                    item.find("#floatingTextarea").val("");
+                    readBedConfig();
+                  });
+                } catch (error) {
+                  console.error("无法处理数据" + error);
+                  toastItem({
+                    toast_content: "无法处理数据,请查看报错!"
+                  });
+                }
+              })
+            }
+          })
         });
       } else {
         $(".Config-Box-Log-content").html(`<p class="text-center">该浏览器不支持此功能</p>`)
@@ -2127,12 +2383,14 @@ $(document).ready(function () {
 
         })
         $("#edit_uploadArea_reset").click(function () {
-          chrome.storage.local.set({ "edit_uploadArea_width": 32 })
-          chrome.storage.local.set({ "edit_uploadArea_height": 30 })
-          chrome.storage.local.set({ "edit_uploadArea_Location": 34 })
-          chrome.storage.local.set({ "edit_uploadArea_opacity": 0.3 })
-          chrome.storage.local.set({ "edit_uploadArea_auto_close_time": 2 })
-          chrome.storage.local.set({ "edit_uploadArea_Left_or_Right": "Right" })
+          chrome.storage.local.set({
+            "edit_uploadArea_width": 32,
+            "edit_uploadArea_height": 30,
+            "edit_uploadArea_Location": 34,
+            "edit_uploadArea_opacity": 0.3,
+            "edit_uploadArea_auto_close_time": 2,
+            "edit_uploadArea_Left_or_Right": "Right"
+          });
           toastItem({
             toast_content: chrome.i18n.getMessage("Successfully_Reset_1")
           })

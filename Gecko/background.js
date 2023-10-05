@@ -372,6 +372,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								}
 							});
 							imageUrl = options_return_success_value
+							options_host = options_apihost
 							break;
 						case 'Telegra_ph':
 							if (res.error) {
@@ -521,40 +522,23 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			Img_Request_Success(data)
 			return;
 		}
-		if (options_exe == "Tencent_COS") {
-			chrome.tabs.query({ active: true }, function (tabs) {
-				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { Tencent_COS_contextMenus: imgUrl })
-			});
-			return;
-		}
-		if (options_exe == "Aliyun_OSS") {
-			chrome.tabs.query({ active: true }, function (tabs) {
-				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { Aliyun_OSS_contextMenus: imgUrl })
-			});
-			return;
-		}
-		if (options_exe == "AWS_S3") {
-			chrome.tabs.query({ active: true }, function (tabs) {
-				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { AWS_S3_contextMenus: imgUrl })
-			});
-			return;
-		}
-		if (options_exe == "GitHubUP") {
-			chrome.tabs.query({ active: true }, function (tabs) {
-				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { GitHubUP_contextMenus: { url: imgUrl, Metho: MethodName }, })
-			});
-			return;
-		}
-		if (options_exe == "fiftyEight") {
-			chrome.tabs.query({ active: true }, function (tabs) {
-				let currentTabId = tabs[0].id;
-				chrome.tabs.sendMessage(currentTabId, { fiftyEight_contextMenus: { url: imgUrl, Metho: MethodName }, })
-			});
 
+		if (options_exe === "Tencent_COS" ||
+			options_exe === "Aliyun_OSS" ||
+			options_exe === "AWS_S3" ||
+			options_exe === "GitHubUP" ||
+			options_exe === "fiftyEight") {
+			const menuData = {
+				url: imgUrl,
+				Metho: MethodName
+			};
+			chrome.tabs.query({ active: true }, function (tabs) {
+				let currentTabId = tabs[0].id;
+				const message = {};
+				message[options_exe + '_contextMenus'] = menuData;
+				chrome.tabs.sendMessage(currentTabId, message);
+
+			});
 			return;
 		}
 		fetch(options_proxy_server + imgUrl)
@@ -756,6 +740,13 @@ let Simulated_upload = false//模拟上传
 chrome.action.onClicked.addListener(function (tab) {
 	chrome.storage.local.get(["browser_Open_with"], function (result) {
 		browser_Open_with = result.browser_Open_with
+		if (!browser_Open_with) {
+			chrome.storage.local.set({ 'browser_Open_with': 1 });
+			// 在标签页打开
+			chrome.tabs.create({
+				'url': ('popup.html')
+			});
+		}
 		if (browser_Open_with == 1) {
 			// 在标签页打开
 			chrome.tabs.create({

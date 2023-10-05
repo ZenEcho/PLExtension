@@ -906,7 +906,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
-        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         cos.uploadFile({
             Bucket: options_Bucket,
@@ -938,7 +938,8 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
-        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
+        console.log(filename);
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         oss.put(filename, file, {
             headers: {
@@ -966,7 +967,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         let getMonth = date.getMonth() + 1 //月
         let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
         let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
-        chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
+        chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
         const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
         let params;
         if (options_Endpoint.includes('amazonaws.com')) {
@@ -1040,7 +1041,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             .catch(error => {
                 console.log(error);
                 chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
-                chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
+                chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 0 } });
             });
 
         function Upload_method() {
@@ -1068,7 +1069,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     console.log(error)
                     callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
                     chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
-                    chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
+                    chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 0 } });
                     return;
                 })
         }

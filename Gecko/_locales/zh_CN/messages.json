@@ -489,7 +489,7 @@
     "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
   },
   "options_Region_placeholder_S3": {
-    "message": "例如:ap-east-1"
+    "message": "例如:ap-east-1,或不知道填什么就写auto"
   },
   "options_Endpoint_S3": {
     "message": "Endpoint<p class='options_Endpoint_tips'>(区域节点,<span style='color: red;'>S3 兼容(必填)</span>对接请填写完整域名,留空默认AWS S3;)</p>"
