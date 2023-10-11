@@ -169,7 +169,7 @@
 }
 
 .LinksBox {
-    display: none
+    /* display: none */
 }
 
 textarea:focus {
@@ -240,6 +240,7 @@ textarea:focus {
         position: sticky;
         height: 100%;
         top: 90px;
+        display: block;
     }
 }
 
