@@ -758,8 +758,8 @@ chrome.action.onClicked.addListener(function (tab) {
 			chrome.windows.create({
 				type: "popup",
 				url: "popup.html",
-				width: 1024,
-				height: 730
+				width: 1200,
+				height: 750
 			});
 		}
 		if (browser_Open_with === 3) {

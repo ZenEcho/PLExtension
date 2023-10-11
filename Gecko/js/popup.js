@@ -100,7 +100,7 @@ $(document).ready(function () {
 
 
     // 定义数组
-    let SvgData = `<img class="icon" src="/icons/logo.ico">`
+    let SvgData = `<img class="icon" src="/icons/yyl_512.png">`
     let UserBox = `
     <div class="userBox"  style="display: none;">
     <i class="bi bi-person"></i>`+ chrome.i18n.getMessage("user") + `:(<span class="userName" style="color: #03a9f4;">游客</span>),
@@ -757,7 +757,11 @@ $(document).ready(function () {
   }) // chrome.storage.local.get
   animation_button('.Animation_button')// 设置按钮动画
   $('.container-md').hide().fadeIn('slow'); //全局动画
-
+  $(".dropzone ").hover(function(){
+    $(".dz-button img")[0].src="/icons/hyl_512.png"
+  },function(){
+    $(".dz-button img")[0].src="/icons/yyl_512.png"
+  })
   let Simulated_upload = false//模拟上传
   function showIntro() {
     if ($("#overlay").length == 0) {

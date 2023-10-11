@@ -410,6 +410,9 @@
   "options_Region_COS": {
     "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
   },
+  "options_Region_placeholder_COS": {
+    "message": "例如:ap-hongkong"
+  },
   "options_Custom_domain_name_COS": {
     "message": "自定义访问域名<p class='options_Custom_domain_name_tips'>(如果在<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos' target='_blank'> 腾讯云COS </a>设定了话,留空不设置;)</p>"
   },

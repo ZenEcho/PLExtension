@@ -410,6 +410,9 @@
   "options_Region_COS": {
     "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
   },
+  "options_Region_placeholder_COS": {
+    "message": "For example: ap-hongkong"
+  },
   "options_Custom_domain_name_COS": {
     "message": "Custom Access Domain Name<p class='options_Custom_domain_name_tips'>(Leave empty if not set in <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos' target='_blank'>Tencent Cloud COS</a>)</p>"
   },

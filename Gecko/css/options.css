@@ -1,75 +1,517 @@
-body{min-width:720px}
-code{white-space:nowrap}
-.modal-dialog{position:sticky !important;top:20%}
-.container-fluid{margin-top:20PX;display:flex;flex-direction:column;align-items:center;padding:20px;border-bottom:1px solid #eee}
-.main{display:flex;justify-content:center}
-.main .main-left{border-radius:20px;position:relative;margin:10px;min-width:650px;width:60vw}
-.main .main-right{display:block;margin:10px}
-.Config-Bottom-Boxs{border-radius:20px;padding:10px;margin:14px 0}
-.main-right .Config-Bottom-Boxs:nth-child(1){column-count:2;text-align:center}
-.main-right .Config-Bottom-Boxs:nth-child(1) div,.main-right .Config-Bottom-Boxs:nth-child(1) button{width:100%}
-.main-right .Config-Bottom-Boxs:nth-child(1){margin-top:0}
-.Config-Bottom-Boxs .Config-Bottom-Box{padding:4px 0}
-#options_exe{margin-top:1rem;margin-bottom:1.5rem;text-align:center;position:sticky;top:80px}
-#options_exe button{background:none;width:100%;padding:.5rem 0rem .5rem 0rem}
-#options_exe button.active{color:white;background:#2e1bff}
-.BedConfigShow{position:absolute;font-size:24px;right:10px;top:0px}
-.BedConfigShow:hover{color:#2e1bff}
-.Config-Box{display:flex}
-.Config-Box-Log-haed{text-align:center;background-color:#03a9f4;border-radius:16px 16px 0 0;padding:8px;user-select:none}
-.Config-Box-Log-haed-del{position:absolute;right:8px;color:white}
-.Config-Box-Log-haed-del:hover{color:#2e1bff}
-.Config-Box-Log-item{background-color:white;padding:5px;display:flex;justify-content:space-between}
-.BedConfigName{width:100%;user-select:none}
-.Config-Box-Log-item:hover .BedConfigName span{color:#6c757d}
-.Config-Box-Log-item .button{margin:0 4px;user-select:none;color:#2e1bff}
-.Config-Box-Log-item .button:hover{color:red}
-.Config-Box .Config-Box-Left{width:160px;border-right:#eee 1px solid}
-.Config-Box-Right{margin-top:.5rem}
-.Config-Box-Right:nth-child(2){padding:0 5px}
-.Config-Box-Right-header{padding:.5rem 0;display:flex}
-.Config-Box-Right-header div{margin:0 5px}
-.Config-Box-Right-header div:nth-child(1){margin-left:0}
-@media screen and (max-width:1000px){.main{flex-direction:column}
-.main .main-left{width:auto}
-.main .main-right{padding:0 10px;margin:20px 0px;width:100%}
-}@media screen and (max-width:960px){.Config-Box .Config-Box-Left{width:140px}
-}.form-group{width:100%;margin-bottom:20px}
-.form-group label{font-size:18px;font-weight:bolder}
-.form-group p{margin:.5rem 0rem;font-size:12px;color:#6d6d6d;display:inline-block}
-.form-group input{width:100%;border-radius:5px}
-.form-group input:focus{outline:none;border:#03a9f4 1px solid}
-.form-text{margin-bottom:10px}
-.options_Open_with{margin-top:1rem;border:none;background-color:#03a9f4;color:white;padding:.4rem}
-.options_Open_with:hover{background-color:#2196f3}
-.switch{top:.7rem;position:relative;display:inline-block;width:60px;height:34px}
-.switch input{display:none}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:.4s;transition:.4s}
-.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background-color:white;-webkit-transition:.4s;transition:.4s}
-input:checked+.slider{background-color:#2196F3}
-input:focus+.slider{box-shadow:0 0 1px #2196F3}
-input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:translateX(26px);transform:translateX(26px)}
-.slider.round{border-radius:34px}
-.slider.round:before{border-radius:50%}
-.ImgurPostModeDiv{margin:1rem;user-select:none}
-#PNGmodal-body{width:100%;height:350px;padding:0;margin:0;display:flex;user-select:none}
-#edit_uploadArea{height:64px;width:10px;cursor:move;position:absolute}
-.css-button-rounded--sky{height:40px;color:#fff;padding:5px 10px;font-weight:bold;cursor:pointer;transition:all 0.3s ease;position:relative;display:inline-block;outline:none;border-radius:5px;border:2px solid #4433ff;background:#4433ff}
-.css-button-rounded--sky:hover{background:#fff;color:#4433ff}
-.css-button-sliding-bottom{min-width:130px;height:40px;color:#fff;padding:5px 10px;font-weight:bold;cursor:pointer;transition:all 0.3s ease;position:relative;display:inline-block;outline:none;border-radius:5px;z-index:0;background:#fff;overflow:hidden;border:none;color:#4433ff}
-.css-button-sliding-bottom:hover{color:#fff}
-.css-button-sliding-bottom:hover:after{height:100%}
-.css-button-sliding-bottom:after{content:"";position:absolute;z-index:-1;transition:all 0.3s ease;left:0;top:0;height:0;width:100%;background:#4433ff}
-.css-button-sliding-top{min-width:130px;height:40px;color:#fff;padding:5px 10px;font-weight:bold;cursor:pointer;transition:all 0.3s ease;position:relative;display:inline-block;outline:none;border-radius:5px;z-index:0;background:#fff;overflow:hidden;border:none;color:#4433ff}
-.css-button-sliding-top:hover{color:#fff}
-.css-button-sliding-top:hover:after{height:100%}
-.css-button-sliding-top:after{content:"";position:absolute;z-index:-1;transition:all 0.3s ease;left:0;bottom:0;height:0;width:100%;background:#4433ff}
-.css-button-sliding-right{min-width:130px;height:40px;color:#fff;padding:5px 10px;font-weight:bold;cursor:pointer;transition:all 0.3s ease;position:relative;display:inline-block;outline:none;border-radius:5px;z-index:0;background:#fff;overflow:hidden;border:none;color:#4433ff}
-.css-button-sliding-right:hover{color:#fff}
-.css-button-sliding-right:hover:after{width:100%}
-.css-button-sliding-right:after{content:"";position:absolute;z-index:-1;transition:all 0.3s ease;left:0;top:0;width:0;height:100%;background:#4433ff}
-.css-button-sliding-left{min-width:130px;height:40px;color:#fff;padding:5px 10px;font-weight:bold;cursor:pointer;transition:all 0.3s ease;position:relative;display:inline-block;outline:none;border-radius:5px;z-index:0;background:#fff;overflow:hidden;border:none;color:#4433ff}
-.css-button-sliding-left:hover{color:#fff}
-.css-button-sliding-left:hover:after{width:100%}
-.css-button-sliding-left:after{content:"";position:absolute;z-index:-1;transition:all 0.3s ease;right:0;top:0;width:0;height:100%;background:#4433ff}
-#carouselExampleCaptions,#carouselExampleCaptions img{width:550px}
+body {
+    min-width: 720px
+}
+
+code {
+    white-space: nowrap
+}
+
+.modal-dialog {
+    position: sticky !important;
+    top: 20%
+}
+
+.container-fluid {
+    margin-top: 20PX;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee
+}
+
+.main {
+    display: flex;
+    justify-content: center
+}
+
+.main .main-left {
+    border-radius: 20px;
+    position: relative;
+    margin: 10px;
+    min-width: 650px;
+    width: 60vw
+}
+
+.main .main-right {
+    display: block;
+    margin: 10px
+}
+
+.Config-Bottom-Boxs {
+    border-radius: 20px;
+    padding: 10px;
+    margin: 14px 0
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) {
+    column-count: 2;
+    text-align: center
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) div,
+.main-right .Config-Bottom-Boxs:nth-child(1) button {
+    width: 100%
+}
+
+.main-right .Config-Bottom-Boxs:nth-child(1) {
+    margin-top: 0
+}
+
+.Config-Bottom-Boxs .Config-Bottom-Box {
+    padding: 4px 0
+}
+
+#options_exe {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: sticky;
+    top: 80px
+}
+
+#options_exe button {
+    background: none;
+    width: 100%;
+    padding: .5rem 0rem .5rem 0rem
+}
+
+#options_exe button.active {
+    color: white;
+    background: #2e1bff
+}
+
+.BedConfigShow {
+    position: absolute;
+    font-size: 24px;
+    right: 10px;
+    top: 0px
+}
+
+.BedConfigShow:hover {
+    color: #2e1bff
+}
+
+.Config-Box {
+    display: flex
+}
+
+.Config-Box-Log-haed {
+    text-align: center;
+    background-color: #03a9f4;
+    border-radius: 16px 16px 0 0;
+    padding: 8px;
+    user-select: none
+}
+
+.Config-Box-Log-haed-del {
+    position: absolute;
+    right: 8px;
+    color: white
+}
+
+.Config-Box-Log-haed-del:hover {
+    color: #2e1bff
+}
+
+.Config-Box-Log-content .moving {
+    background: transparent;
+    color: transparent;
+    animation: border-Blink 1s infinite;
+
+}
+
+@keyframes border-Blink {
+    0% {
+        border: 1px dashed #ccc;
+    }
+
+    50% {
+        border: 1px dashed #3a86ff;
+    }
+
+    100% {
+        border: 1px dashed #ccc;
+    }
+}
+
+.Config-Box-Log-item {
+    background-color: white;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between
+}
+
+.BedConfigName {
+    width: 100%;
+    user-select: none
+}
+
+.Config-Box-Log-item:hover .BedConfigName span {
+    color: #6c757d
+}
+
+.Config-Box-Log-item .button {
+    margin: 0 4px;
+    user-select: none;
+    color: #2e1bff;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.Config-Box-Log-item .button:hover {
+    color: red
+}
+
+.Config-Box .Config-Box-Left {
+    width: 160px;
+    border-right: #eee 1px solid
+}
+
+.Config-Box-Right {
+    margin-top: .5rem
+}
+
+.Config-Box-Right:nth-child(2) {
+    padding: 0 5px
+}
+
+.Config-Box-Right-header {
+    padding: .5rem 0;
+    display: flex
+}
+
+.Config-Box-Right-header div {
+    margin: 0 5px
+}
+
+.Config-Box-Right-header div:nth-child(1) {
+    margin-left: 0
+}
+
+@media screen and (max-width:1000px) {
+    .main {
+        flex-direction: column
+    }
+
+    .main .main-left {
+        width: auto
+    }
+
+    .main .main-right {
+        padding: 0 10px;
+        margin: 20px 0px;
+        width: 100%
+    }
+}
+
+@media screen and (max-width:960px) {
+    .Config-Box .Config-Box-Left {
+        width: 140px
+    }
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px
+}
+
+.form-group label {
+    font-size: 18px;
+    font-weight: bolder
+}
+
+.form-group p {
+    margin: .5rem 0rem;
+    font-size: 12px;
+    color: #6d6d6d;
+    display: inline-block
+}
+
+.form-group input {
+    width: 100%;
+    border-radius: 5px
+}
+
+.form-group input:focus {
+    outline: none;
+    border: #03a9f4 1px solid
+}
+
+.form-text {
+    margin-bottom: 10px
+}
+
+.options_Open_with {
+    margin-top: 1rem;
+    border: none;
+    background-color: #03a9f4;
+    color: white;
+    padding: .4rem
+}
+
+.options_Open_with:hover {
+    background-color: #2196f3
+}
+
+.switch {
+    top: .7rem;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px
+}
+
+.switch input {
+    display: none
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s
+}
+
+input:checked+.slider {
+    background-color: #2196F3
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px)
+}
+
+.slider.round {
+    border-radius: 34px
+}
+
+.slider.round:before {
+    border-radius: 50%
+}
+
+.ImgurPostModeDiv {
+    margin: 1rem;
+    user-select: none
+}
+
+#PNGmodal-body {
+    width: 100%;
+    height: 350px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    user-select: none
+}
+
+#edit_uploadArea {
+    height: 64px;
+    width: 10px;
+    cursor: move;
+    position: absolute
+}
+
+.css-button-rounded--sky {
+    height: 40px;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid #4433ff;
+    background: #4433ff
+}
+
+.css-button-rounded--sky:hover {
+    background: #fff;
+    color: #4433ff
+}
+
+.css-button-sliding-bottom {
+    min-width: 130px;
+    height: 40px;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    outline: none;
+    border-radius: 5px;
+    z-index: 0;
+    background: #fff;
+    overflow: hidden;
+    border: none;
+    color: #4433ff
+}
+
+.css-button-sliding-bottom:hover {
+    color: #fff
+}
+
+.css-button-sliding-bottom:hover:after {
+    height: 100%
+}
+
+.css-button-sliding-bottom:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    transition: all 0.3s ease;
+    left: 0;
+    top: 0;
+    height: 0;
+    width: 100%;
+    background: #4433ff
+}
+
+.css-button-sliding-top {
+    min-width: 130px;
+    height: 40px;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    outline: none;
+    border-radius: 5px;
+    z-index: 0;
+    background: #fff;
+    overflow: hidden;
+    border: none;
+    color: #4433ff
+}
+
+.css-button-sliding-top:hover {
+    color: #fff
+}
+
+.css-button-sliding-top:hover:after {
+    height: 100%
+}
+
+.css-button-sliding-top:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    transition: all 0.3s ease;
+    left: 0;
+    bottom: 0;
+    height: 0;
+    width: 100%;
+    background: #4433ff
+}
+
+.css-button-sliding-right {
+    min-width: 130px;
+    height: 40px;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    outline: none;
+    border-radius: 5px;
+    z-index: 0;
+    background: #fff;
+    overflow: hidden;
+    border: none;
+    color: #4433ff
+}
+
+.css-button-sliding-right:hover {
+    color: #fff
+}
+
+.css-button-sliding-right:hover:after {
+    width: 100%
+}
+
+.css-button-sliding-right:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    transition: all 0.3s ease;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: #4433ff
+}
+
+.css-button-sliding-left {
+    min-width: 130px;
+    height: 40px;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    outline: none;
+    border-radius: 5px;
+    z-index: 0;
+    background: #fff;
+    overflow: hidden;
+    border: none;
+    color: #4433ff
+}
+
+.css-button-sliding-left:hover {
+    color: #fff
+}
+
+.css-button-sliding-left:hover:after {
+    width: 100%
+}
+
+.css-button-sliding-left:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    transition: all 0.3s ease;
+    right: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: #4433ff
+}
+
+#carouselExampleCaptions,
+#carouselExampleCaptions img {
+    width: 100%;
+
+}

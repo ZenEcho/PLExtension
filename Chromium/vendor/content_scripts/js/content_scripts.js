@@ -30,10 +30,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     uploadArea.setAttribute('title', '长按拖动');
 
 
-    let PNGlogo16 = chrome.runtime.getURL("icons/logo16.png");
-    let PNGlogo32 = chrome.runtime.getURL("icons/logo32.png");
-    let PNGlogo64 = chrome.runtime.getURL("icons/logo64.png");
-    let PNGlogo128 = chrome.runtime.getURL("icons/logo128.png");
+    let PNGlogo = chrome.runtime.getURL("icons/yyl_512.png");
     let finger = chrome.runtime.getURL("icons/dh/t.png");
     document.body.appendChild(uploadArea);
 
@@ -199,14 +196,8 @@ chrome.storage.local.get(storagelocal, function (result) {
     /**
      * 实现根据侧边栏宽度切换logo
      */
-    if (edit_uploadArea_width < 32) {//小于
-        uploadArea.style.background = "url(" + PNGlogo16 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
-    } else if (edit_uploadArea_width < 64) {
-        uploadArea.style.background = "url(" + PNGlogo32 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
-    } else if (edit_uploadArea_width > 64) {//大于
-        uploadArea.style.background = "url(" + PNGlogo64 + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
-    }
-
+    uploadArea.style.background = "url(" + PNGlogo + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
+    uploadArea.style.backgroundSize="contain"
 
     // ####################################################
     // #拖拽上传
@@ -444,7 +435,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         let sectionDom = document.getElementById("section2")
         if (!sectionDom.querySelector(".Functional_animation")) {
             sectionDom.insertAdjacentHTML("beforeend", `
-            <img style="width: 128px;" src="${PNGlogo128}" alt="">
+            <img style="width: 128px;" src="${PNGlogo}" alt="">
             <div class="Functional_animation">
                 <div class="animation_finger"></div>
                 <span>拖拽图片上传</span>
@@ -472,7 +463,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         let sectionDom = document.getElementById("section2")
         if (!sectionDom.querySelector(".Functional_animation")) {
             sectionDom.insertAdjacentHTML("beforeend", `
-            <img style="width: 128px;" src="${PNGlogo128}" alt="">
+            <img style="width: 128px;" src="${PNGlogo}" alt="">
             <div class="Functional_animation">
                 <div class="animation_finger"></div>
                 <span>拖拽图片上传</span>

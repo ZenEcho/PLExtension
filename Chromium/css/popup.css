@@ -1,59 +1,375 @@
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;justify-content:center;align-items:center}
-#overlay p{margin:0;padding:0}
-#introBox{background:#6cbbfc;color:white;padding:20px;text-align:center;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
-.Functional_animation{opacity:0;position:fixed;left:0;bottom:0;z-index:9998;transition:left 1s ease,transform 1s ease}
-.animation_finger{width:155px;height:200px;background-image:url(../icons/dh/t.png)}
-.Functional_animation.active{opacity:1;transform:translate(-50%,-50%);left:50%}
-#overlay #introBox button{padding:10px 20px;font-size:16px;border:none;border-radius:4px;background-color:#007bff;color:#fff;cursor:pointer;margin-right:10px}
-#overlay #introBox button:hover{background-color:#0056b3}
-.Demo-container{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;z-index:1}
-.Demo-container .card{position:relative;width:200px;height:350px;margin:10px;border-radius:15px;background:rgba(255,255,255,0.2);overflow:hidden;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(5px)}
-.Demo-container .card:hover{background:rgba(255,255,255,0.3)}
-.Demo-container .card .content{padding:20px;text-align:center;transform:translateY(100px);opacity:0;transition:0.5s}
-.Demo-container .card:hover .content{transform:translateY(0px);opacity:1}
-.Demo-container .card h2{position:absolute;width:150px;height:150px;font-size:8em;color:rgba(255,255,255,0);pointer-events:none}
-.Demo-container .card:nth-child(1) h2{background:url(../icons/paste.webp);background-size:cover}
-.Demo-container .card:nth-child(2) h2{background:url(../icons/drag.webp);background-size:cover}
-.Demo-container .card:nth-child(3) h2{background:url(../icons/RightClick.webp);background-size:cover}
-.Demo-container .card:hover h2{color:rgba(255,255,255,0);background:none}
-.Demo-container .card .content h3{font-size:1.8em;color:#fff;z-index:1;margin-bottom:.5em}
-.Demo-container .card .content p{font-size:1em;color:#fff;font-weight:300;margin:0}
-.Demo-container .card .content a{position:relative;display:inline-block;padding:8px 20px;margin-top:15px;background:#fff;color:#000;border-radius:20px;text-decoration:none;font-weight:500;box-shadow:0 5px 15px rgba(0,0,0,0.2)}
-.popup-Select{user-select:none;padding:.6rem;text-align:center;border-radius:.6rem .6rem 0px 0px}
-.popup-Select:hover{background-color:#eee}
-.LinksBox{display:none}
-textarea:focus{outline:none;border:#03a9f4 1px solid}
-.dropzone{min-height:284px;border:none;transition:min-height 1s ease-in-out}
-.dz-button{transition:margin-top 1s ease-in-out}
-.p_urls{word-break:break-word}
-@media screen and (min-height:680px){.dropzone{min-height:420px}
-}@media screen and (min-height:780px){.dropzone{min-height:520px}
-}@media screen and (min-height:880px){.dropzone{min-height:620px}
-}@media screen and (min-height:1080px){.dropzone{min-height:820px}
-}@media screen and (max-width:780px){#ButtonBox{width:100%}
-.selector_p_urls{width:2.5rem}
-.copy{width:2.5rem}
-}@media screen and (min-width:768px){#ButtonBox{width:9rem;border-right:1px solid #eee}
-}.dropzone .icon{width:10rem;height:10rem;-webkit-user-drag:none}
-.dropzone .dz-preview{margin:.5rem}
-.dropzone .dz-preview .dz-image{width:200px;height:200px}
-.dropzone .dz-preview .dz-image img{width:100%;height:100%}
-.dz-remove{text-decoration:none;color:#000}
-fieldset{margin-top:20px;border:.2rem rgba(0,0,0,0.3) solid}
-.urlButton{overflow:hidden;user-select:none;padding:.6rem}
-.urlButton:hover{background-color:#eee}
-.Check{border-bottom:.1rem #03a9f4 solid}
-.textFrame{padding:.5rem .5rem}
-.int_urls{width:100%;min-height:100px;border-radius:5px}
-.p_urls{font-size:1rem;padding:.5rem .8rem;border-radius:5px 0px 0px 5px;margin:0px;background-color:#eee}
-.p_urls:hover{box-shadow:0 -0.2em 1em var(--bs-danger),0 0.2em 1em var(--bs-primary)}
-.IMGpreview{box-shadow:0 -0.2em 1em var(--bs-red),0 0.2em 1em var(--bs-indigo)}
-.delete{user-select:none;font-size:1rem;font-weight:bold;width:2rem;line-height:2rem;color:#2196f3;text-align:center;display:block;background-color:#eee;position:absolute;top:4px;right:4px}
-.delete:hover{color:white;background-color:red}
-.copy{user-select:none;width:3rem;display:flex;align-items:center;justify-content:center;background-color:#2196f3;color:white}
-.copy:hover{background-color:#03a9f4}
-.selector_p_urls{user-select:none;width:3rem;display:flex;align-items:center;justify-content:center;background-color:#eee;border-radius:0px 5px 5px 0px}
-.selector_p_urls:hover{background-color:#e4e4e4}
-.selector_p_urls_Click{background-color:#e0e0e0}
-.dz-remove{font-size:1rem}
-.Upload_Return_Box{display:flex;margin:.5rem 0px}
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+#overlay p {
+    margin: 0;
+    padding: 0
+}
+
+#introBox {
+    background: #6cbbfc;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)
+}
+
+.Functional_animation {
+    opacity: 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 9998;
+    transition: left 1s ease, transform 1s ease
+}
+
+.animation_finger {
+    width: 155px;
+    height: 200px;
+    background-image: url(../icons/dh/t.png)
+}
+
+.Functional_animation.active {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    left: 50%
+}
+
+#overlay #introBox button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 10px
+}
+
+#overlay #introBox button:hover {
+    background-color: #0056b3
+}
+
+.Demo-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    z-index: 1
+}
+
+.Demo-container .card {
+    position: relative;
+    width: 200px;
+    height: 350px;
+    margin: 10px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px)
+}
+
+.Demo-container .card:hover {
+    background: rgba(255, 255, 255, 0.3)
+}
+
+.Demo-container .card .content {
+    padding: 20px;
+    text-align: center;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: 0.5s
+}
+
+.Demo-container .card:hover .content {
+    transform: translateY(0px);
+    opacity: 1
+}
+
+.Demo-container .card h2 {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    font-size: 8em;
+    color: rgba(255, 255, 255, 0);
+    pointer-events: none
+}
+
+.Demo-container .card:nth-child(1) h2 {
+    background: url(../icons/paste.webp);
+    background-size: cover
+}
+
+.Demo-container .card:nth-child(2) h2 {
+    background: url(../icons/drag.webp);
+    background-size: cover
+}
+
+.Demo-container .card:nth-child(3) h2 {
+    background: url(../icons/RightClick.webp);
+    background-size: cover
+}
+
+.Demo-container .card:hover h2 {
+    color: rgba(255, 255, 255, 0);
+    background: none
+}
+
+.Demo-container .card .content h3 {
+    font-size: 1.8em;
+    color: #fff;
+    z-index: 1;
+    margin-bottom: .5em
+}
+
+.Demo-container .card .content p {
+    font-size: 1em;
+    color: #fff;
+    font-weight: 300;
+    margin: 0
+}
+
+.Demo-container .card .content a {
+    position: relative;
+    display: inline-block;
+    padding: 8px 20px;
+    margin-top: 15px;
+    background: #fff;
+    color: #000;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2)
+}
+
+.popup-Select {
+    user-select: none;
+    padding: .6rem;
+    text-align: center;
+    border-radius: .6rem .6rem 0px 0px
+}
+
+.popup-Select:hover {
+    background-color: #eee
+}
+
+.LinksBox {
+    display: none
+}
+
+textarea:focus {
+    outline: none;
+    border: #03a9f4 1px solid
+}
+
+.dropzone {
+    min-height: 284px;
+    border: none;
+    transition: min-height 1s ease-in-out
+}
+
+.dz-button {
+    transition: margin-top 1s ease-in-out
+}
+
+.p_urls {
+    word-break: break-word
+}
+
+@media screen and (min-height:680px) {
+    .dropzone {
+        min-height: 420px
+    }
+}
+
+@media screen and (min-height:780px) {
+    .dropzone {
+        min-height: 520px
+    }
+}
+
+@media screen and (min-height:880px) {
+    .dropzone {
+        min-height: 620px
+    }
+}
+
+@media screen and (min-height:1080px) {
+    .dropzone {
+        min-height: 820px
+    }
+}
+
+@media screen and (max-width:780px) {
+    #ButtonBox {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .urlButton{
+        width: 100%;
+    }
+    .selector_p_urls {
+        width: 2.5rem
+    }
+
+    .copy {
+        width: 2.5rem
+    }
+}
+
+@media screen and (min-width:768px) {
+    #ButtonBox {
+        width: 9rem;
+        border-right: 1px solid #eee;
+        position: sticky;
+        height: 100%;
+        top: 90px;
+    }
+}
+
+.dropzone .icon {
+    width: 10rem;
+    height: 10rem;
+    -webkit-user-drag: none
+}
+
+.dropzone .dz-preview {
+    margin: .5rem
+}
+
+.dropzone .dz-preview .dz-image {
+    width: 200px;
+    height: 200px
+}
+
+.dropzone .dz-preview .dz-image img {
+    width: 100%;
+    height: 100%
+}
+
+.dz-remove {
+    text-decoration: none;
+    color: #000
+}
+
+fieldset {
+    margin-top: 20px;
+    border: .2rem rgba(0, 0, 0, 0.3) solid
+}
+
+.urlButton {
+    overflow: hidden;
+    user-select: none;
+    padding: .6rem
+}
+
+.urlButton:hover {
+    background-color: #eee
+}
+
+.Check {
+    border-bottom: .1rem #03a9f4 solid
+}
+
+.textFrame {
+    padding: 0rem .5rem;
+}
+
+.int_urls {
+    width: 100%;
+    min-height: 100px;
+    border-radius: 5px
+}
+
+.p_urls {
+    font-size: 1rem;
+    padding: .5rem .8rem;
+    border-radius: 5px 0px 0px 5px;
+    margin: 0px;
+    background-color: #eee
+}
+
+.p_urls:hover {
+    box-shadow: 0 -0.2em 1em var(--bs-danger), 0 0.2em 1em var(--bs-primary)
+}
+
+.IMGpreview {
+    box-shadow: 0 -0.2em 1em var(--bs-red), 0 0.2em 1em var(--bs-indigo)
+}
+
+.delete {
+    user-select: none;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 2rem;
+    line-height: 2rem;
+    color: #2196f3;
+    text-align: center;
+    display: block;
+    background-color: #eee;
+    position: absolute;
+    top: 4px;
+    right: 4px
+}
+
+.delete:hover {
+    color: white;
+    background-color: red
+}
+
+.copy {
+    user-select: none;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2196f3;
+    color: white
+}
+
+.copy:hover {
+    background-color: #03a9f4
+}
+
+.selector_p_urls {
+    user-select: none;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eee;
+    border-radius: 0px 5px 5px 0px
+}
+
+.selector_p_urls:hover {
+    background-color: #e4e4e4
+}
+
+.selector_p_urls_Click {
+    background-color: #e0e0e0
+}
+
+.dz-remove {
+    font-size: 1rem
+}
+
+.Upload_Return_Box {
+    display: flex;
+    margin: .5rem 0px
+}

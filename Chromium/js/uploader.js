@@ -839,24 +839,27 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
 // 特殊的上传处理
 function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simulated_upload) {
     chrome.storage.local.get(null, function (result) {
-        let [
-            options_exe,
-            options_proxy_server,
-            options_token,
-            //GitHub
-            options_owner,
-            options_repository,
-
-            //对象存储
-            options_SecretId,
-            options_SecretKey,
-            options_Bucket,
-            options_AppId,
-            options_Endpoint,
-            options_Region,
-            options_UploadPath,
-            options_Custom_domain_name,
-        ] = result;
+        let options_exe = result.options_exe;
+        let options_proxy_server_state = result.options_proxy_server_state
+        let options_proxy_server = result.options_proxy_server
+        let options_token = result.options_token;
+        let options_owner = result.options_owner;
+        let options_repository = result.options_repository;
+        let options_SecretId = result.options_SecretId;
+        let options_SecretKey = result.options_SecretKey;
+        let options_Bucket = result.options_Bucket;
+        let options_AppId = result.options_AppId;
+        let options_Endpoint = result.options_Endpoint;
+        let options_Region = result.options_Region;
+        let options_UploadPath = result.options_UploadPath;
+        let options_Custom_domain_name = result.options_Custom_domain_name;
+        // 初始化新安装时的判断跨域开关
+        if (options_proxy_server_state == 0) {
+            options_proxy_server = ""
+        }
+        if (!options_proxy_server) {
+            options_proxy_server = ""
+        }
         if (Simulated_upload == true) {
             Right_click_menu_animations()
             return;
@@ -924,6 +927,34 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         }
 
         function Cos_uploadFile(blob) {
+            // 初始化 COS 对象
+            try {
+                let getAuthorization = function (options, callback) {
+                    let authorization = COS.getAuthorization({
+                        SecretId: options_SecretId,
+                        SecretKey: options_SecretKey,
+                        Method: options.Method,
+                        Pathname: options.Pathname,
+                        Query: options.Query,
+                        Headers: options.Headers,
+                        Expires: 900,
+                    });
+                    callback({ Authorization: authorization });
+                };
+                var cos = new COS({
+                    getAuthorization: getAuthorization,
+                    UploadCheckContentMd5: true,
+                    protocol: 'https:' // 强制使用 HTTPS 协议
+                });
+            } catch (error) {
+                toastItem({
+                    toast_content: error
+                });
+            }
+            //腾讯云cos拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
+            }
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
@@ -956,11 +987,29 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             });
         }
         function Oos_uploadFile(blob) {
+            try {
+                var oss = new OSS({
+                    accessKeyId: options_SecretId,
+                    accessKeySecret: options_SecretKey,
+                    bucket: options_Bucket,
+                    endpoint: options_Endpoint,
+                    region: options_Region,
+                    secure: true //强制https
+                });
+            } catch (error) {
+                toastItem({
+                    toast_content: error
+                });
+            }
+            //阿里云oss拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
+            }
+
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
             let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
-            console.log(filename);
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
             const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
             oss.put(filename, file, {
@@ -985,6 +1034,28 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             });
         }
         function S3_uploadFile(blob) {
+            //AWS S3区域拼接
+            if (!options_Endpoint) {
+                options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
+            }
+            //AWS S3拼接
+            if (!options_Custom_domain_name) {
+                options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
+            }
+            try {
+                AWS.config.update({
+                    accessKeyId: options_SecretId,
+                    secretAccessKey: options_SecretKey,
+                    region: options_Region,
+                    endpoint: options_Endpoint,
+                    signatureVersion: 'v4'
+                });
+                var s3 = new AWS.S3();
+            } catch (error) {
+                toastItem({
+                    toast_content: error
+                });
+            }
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'
@@ -1031,7 +1102,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
         }
         function GitHub_uploadFile(btoa, files) {
             const file = files || btoa.file
-            const blob = btoa.btoa
+            const blob = btoa
 
             let date = new Date();
             let UrlImgNema = options_exe + `_` + MethodName + `_` + date.getTime() + '.png'

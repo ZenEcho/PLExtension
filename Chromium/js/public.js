@@ -477,11 +477,9 @@ var fileTypeMap = {
   '.tsv': 'editable',
 };
 
-// let pluginURL = chrome.runtime.getURL("popup.html");
-// let currentURL = window.location.href;
-// if (currentURL === pluginURL) {
+let pluginURL = chrome.runtime.getURL("popup.html");
+let currentURL = window.location.href;
 
-// }
 chrome.storage.local.get(storagelocal, function (result) {
   let options_exe = result.options_exe
   let options_proxy_server = result.options_proxy_server
@@ -625,29 +623,32 @@ chrome.storage.local.get(storagelocal, function (result) {
         });
     }
   }
-  if (options_exe != "Lsky" && options_exe != "SM_MS") {
-    chrome.storage.local.get("UploadLog", function (result) {
-      setTimeout(() => {
-        let Log = result.UploadLog || [];
-        let size = 0
-        try {
-          Log.forEach(element => {
-            size = size + element.file_size
-          });
-          let NewSize = (size / 1024 / 1024).toFixed(3)
-          $(".userName").text("本地存储");
-          $(".userCapacity").text("无限");
-          $(".userSize").text(NewSize + "MB");
-          $(".userImage_num").text(Log.length);
-          $('.userBox').hide().fadeIn('slow'); // 动画
-        } catch (error) {
-          $('.userBox').hide()
-        }
+  if (currentURL === pluginURL) {
+    if (options_exe != "Lsky" && options_exe != "SM_MS") {
+      chrome.storage.local.get("UploadLog", function (result) {
+        setTimeout(() => {
+          let Log = result.UploadLog || [];
+          let size = 0
+          try {
+            Log.forEach(element => {
+              size = size + element.file_size
+            });
+            let NewSize = (size / 1024 / 1024).toFixed(3)
+            $(".userName").text("本地存储");
+            $(".userCapacity").text("无限");
+            $(".userSize").text(NewSize + "MB");
+            $(".userImage_num").text(Log.length);
+            $('.userBox').hide().fadeIn('slow'); // 动画
+          } catch (error) {
+            $('.userBox').hide()
+          }
 
-      }, 1500)
+        }, 1500)
 
-    })
+      })
+    }
   }
+
 })
 
 function measurePingDelay(callback, getUrl) {

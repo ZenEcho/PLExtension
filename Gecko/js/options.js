@@ -1,7 +1,5 @@
 const overlayElement = $(`.overlay`);
 $(document).ready(function () {
-  // 删除a标签的active达到初始化的目的
-  $("#options_exe button").removeClass('active');
   chrome.storage.local.get(storagelocal, function (result) {
     // 获取程序以及状态
     options_exe = result.options_exe
@@ -66,346 +64,689 @@ $(document).ready(function () {
       chrome.storage.local.set({ 'open_json_button': 0 })
       open_json_button = 0
     }
-    const html_exeLskyBox = `
-    <div class="form-group">
-      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_lsky") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-      </label>
-        <input required type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_lsky") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_album_id" class="options_album_id">` + chrome.i18n.getMessage("options_album_id") + `</label>
-      <select id="options_album_id" class="form-select box-shadow">
-      
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="options_permission" class="options_permission">` + chrome.i18n.getMessage("options_permission") + `
-      </label>
-      <select id="options_permission_select" class="form-select box-shadow">
-      <option selected value="0">` + chrome.i18n.getMessage("options_permission_0") + `</option>
-      <option value="1">` + chrome.i18n.getMessage("options_permission_1") + `</option>
-      </select>                
-    </div>
-    <div class="form-group">
-      <label for="options_source" class="options_source">` + chrome.i18n.getMessage("options_source_lsky") + `
-      </label>
-      <select id="options_source_select" class="form-select box-shadow">
-      </select>
-    </div>
-  `
 
-    const html_exeEasyImagesBox = `
-      <div class="form-group">
-          <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-          </label>
-          <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_EasyImages") + `" />
+    function createCustomFormGroup(options) {
+      const {
+        label: { class: labelClass = "", text: labelValue = "" } = {},
+        input: {
+          type: inputType = "text",
+          class: inputClass = "",
+          id: inputId = "",
+          inputAttr: attributes = "",
+          inputPlaceholder: placeholderKey = "",
+          required = false,
+        } = {},
+        select: {
+          id: selectId = '',
+          class: selectClass = "",
+          optionTag: {
+            value: selectOptionValue = "",
+            text: selectOptionText = "",
+            optionSelected = false
+          } = {}
+        } = {},
+        textarea: {
+          id: textareaId = "",
+          class: textareaClass = "",
+          labelText: textareaLabelText = ""
+        } = {},
+        additionalElement = [],
+      } = options;
+
+      // 构建 label 元素
+      let labelElement = `<label for="${inputId || selectId}" class="${labelClass}">${labelValue}</label>`;
+
+      // 构建 input 元素
+      let inputElement = `<input type="${inputType}" class="form-control box-shadow ${inputClass}" id="${inputId}" placeholder="${placeholderKey}"`;
+      // 添加 required 属性
+      if (required) {
+        inputElement += " required";
+      }
+      // 添加其他自定义属性
+      if (attributes) {
+        inputElement += " " + attributes;
+      }
+      inputElement += " />";
+
+      // 构建 select 元素
+      let selectElement = `<select id="${selectId}" class="form-select box-shadow ${selectClass}">`;
+      if (options.select && options.select.optionTag) {
+        options.select.optionTag.forEach((option) => {
+          let optionTag = `<option value="${option.value}"`
+          if (option.Selected == true) {
+            optionTag += ` Selected`
+          }
+          optionTag += `>${option.text}</option>`
+          selectElement += optionTag;
+        });
+      }
+      selectElement += `</select>`;
+
+      let textareaElement = `
+      <div class="form-floating">
+        <textarea  class="form-control box-shadow ${textareaClass}" id="${textareaId}"></textarea>
+        <label for="floatingTextarea">${textareaLabelText}</label>
       </div>
-      <div class="form-group">
-        <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-        </label>
-          <input required type="text" class="form-control box-shadow" id="options_token"
-                    placeholder="` + chrome.i18n.getMessage("options_token_placeholder_EasyImages") + `" />
-      </div>
-  `
-
-    const html_exeImgURLBox = `
-  <div class="form-group">
-      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_ImgURL") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_ImgURL") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_uid" class="options_uid">` + chrome.i18n.getMessage("options_uid") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_uid" placeholder="` + chrome.i18n.getMessage("options_uid_placeholder") + `" />
-    </div>
-    `
-    const html_exeSM_MSBox = `
-  <div class="form-group">
-      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_SM_MS") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-      </label>
-        <input required type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_SM_MS") + `" />
-    </div>`
-
-    const html_exeCheveretoBox = `
-  <div class="form-group">
-      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Chevereto") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-      </label>
-        <input required type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Chevereto") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_album_id" class="options_album_id">` + chrome.i18n.getMessage("options_album_id_Chevereto") + `
-      </label>
-        <input type="text" class="form-control box-shadow" id="options_album_id"
-                  placeholder="` + chrome.i18n.getMessage("options_album_id_placeholder_Chevereto") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_nsfw" class="options_nsfw">` + chrome.i18n.getMessage("options_nsfw") + `
-      </label>
-      <select id="options_nsfw_select" class="form-select box-shadow">
-      <option selected value="0">` + chrome.i18n.getMessage("options_nsfw_0") + `</option>
-      <option value="1">` + chrome.i18n.getMessage("options_nsfw_1") + `</option>
-      </select>                
-    </div>
-    <div class="form-group">
-    <label for="options_expiration" class="options_expiration">` + chrome.i18n.getMessage("options_expiration") + `
-    </label>
-    <select id="options_expiration_select" class="form-select box-shadow">
-    <option selected value="NODEL">` + chrome.i18n.getMessage("options_expiration_no") + `</option>
-    <option value="PT5M">` + chrome.i18n.getMessage("options_expiration_1") + `</option>
-    <option value="PT15M">` + chrome.i18n.getMessage("options_expiration_2") + `</option>
-    <option value="PT30M">` + chrome.i18n.getMessage("options_expiration_3") + `</option>
-    <option value="PT1H">` + chrome.i18n.getMessage("options_expiration_4") + `</option>
-    <option value="PT3H">` + chrome.i18n.getMessage("options_expiration_5") + `</option>
-    <option value="PT6H">` + chrome.i18n.getMessage("options_expiration_6") + `</option>
-    <option value="PT12H">` + chrome.i18n.getMessage("options_expiration_7") + `</option>
-    <option value="P1D">` + chrome.i18n.getMessage("options_expiration_8") + `</option>
-    <option value="P2D">` + chrome.i18n.getMessage("options_expiration_9") + `</option>
-    <option value="P3D">` + chrome.i18n.getMessage("options_expiration_10") + `</option>
-    <option value="P4D">` + chrome.i18n.getMessage("options_expiration_11") + `</option>
-    <option value="P5D">` + chrome.i18n.getMessage("options_expiration_12") + `</option>
-    <option value="P6D">` + chrome.i18n.getMessage("options_expiration_13") + `</option>
-    <option value="P1W">` + chrome.i18n.getMessage("options_expiration_14") + `</option>
-    <option value="P2W">` + chrome.i18n.getMessage("options_expiration_15") + `</option>
-    <option value="P3W">` + chrome.i18n.getMessage("options_expiration_16") + `</option>
-    <option value="P1M">` + chrome.i18n.getMessage("options_expiration_17") + `</option>
-    <option value="P2M">` + chrome.i18n.getMessage("options_expiration_18") + `</option>
-    <option value="P3M">` + chrome.i18n.getMessage("options_expiration_19") + `</option>
-    <option value="P4M">` + chrome.i18n.getMessage("options_expiration_20") + `</option>
-    <option value="P5M">` + chrome.i18n.getMessage("options_expiration_21") + `</option>
-    <option value="P6M">` + chrome.i18n.getMessage("options_expiration_22") + `</option>
-    <option value="P1Y">` + chrome.i18n.getMessage("options_expiration_23") + `</option>
-    </select>
-    </div>
-    `
-    const html_exeCORSForm = `
-  <div class="form-group CorsForm">
-    <label for="options_proxy_server" class="options_proxy_server">` + chrome.i18n.getMessage("options_proxy_server") + `
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_proxy_server" placeholder="` + chrome.i18n.getMessage("options_proxy_server_placeholder") + `" />
-  </div>`
-
-
-    const html_exe_HellohaoBox = `
-  <div class="form-group">
-      <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Hellohao") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token") + `
-      </label>
-        <input required type="text" class="form-control box-shadow" id="options_token"
-                  placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Hellohao") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_source" class="options_source">` + chrome.i18n.getMessage("options_source_Hellohao") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_source" placeholder="` + chrome.i18n.getMessage("options_source_placeholder_Hellohao") + `" />
-    </div>
-    `
-    const html_exe_ImgurBox = `
-  <div class="form-group">
-  <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-  </label>
-  <input type="text" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_Imgur") + `" />
-</div>
-<div class="form-group">
-  <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token_Imgur") + `
-  </label>
-  <input required type="text" class="form-control box-shadow" id="options_token" placeholder="` + chrome.i18n.getMessage("options_token_placeholder_Imgur") + `" />
-</div>
-<div class="ImgurPostModeDiv " style="text-align: center;">Image
-  <label class="switch">
-    <input id="options_imgur_post_mode" type="checkbox">
-    <div class="slider round"></div>
-  </label>video
-</div>
-    `
-    const html_exe_UserDiyBox = `
-  <div class="form-group">
-  <label for="options_apihost" class="options_apihost">` + chrome.i18n.getMessage("options_apihost") + `</p>
-  </label>
-  <input required type="url" class="form-control box-shadow" id="options_apihost" placeholder="` + chrome.i18n.getMessage("options_apihost_placeholder") + `" />
-</div>
-<div class="form-group">
-  <label for="options_parameter" class="options_parameter">` + chrome.i18n.getMessage("options_parameter") + `
-  </label>
-  <input required type="text" class="form-control box-shadow" id="options_parameter" placeholder="` + chrome.i18n.getMessage("options_parameter_placeholder") + `" />
-</div>
-<div class="form-group">
-  <label for="options_Headers" class="options_Headers">` + chrome.i18n.getMessage("options_Headers") + `
-  </label>
-  <div class="form-floating">
-    <textarea class="form-control box-shadow" id="options_Headers"></textarea>
-    <label for="floatingTextarea">` + chrome.i18n.getMessage("options_Headers_floatingTextarea") + `</label>
-  </div>
-</div>
-<div class="form-group">
-  <label for="options_Body" class="options_Body">` + chrome.i18n.getMessage("options_Body") + `
-  </label>
-  <div class="form-floating">
-    <textarea class="form-control box-shadow" id="options_Body"></textarea>
-    <label for="floatingTextarea">` + chrome.i18n.getMessage("options_Body_floatingTextarea") + `</label>
-  </div>
-</div>
-
-<div class="form-group">
-  <label for="options_Body" class="options_return_success">` + chrome.i18n.getMessage("options_return_success") + `
-  </label>
-  <input required type="text" class="form-control box-shadow" id="options_return_success" placeholder="` + chrome.i18n.getMessage("options_return_success_placeholder") + `" />
-  <div class="form-check form-switch" style="margin-top: 1rem;">
-   <input class="form-check-input" type="checkbox" role="switch" id="open_json_button">
-   <label class="form-check-label" for="flexSwitchCheckDefault">` + chrome.i18n.getMessage("open_json_button") + `</label>
-  </div>
-
-  </div>
-    `
-    const html_exe_GitHubUP = `
-    <div class="form-group">
-      <label for="options_owner" class="options_owner">` + chrome.i18n.getMessage("options_owner") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_owner" placeholder="` + chrome.i18n.getMessage("options_owner_placeholder") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_repository" class="options_repository">` + chrome.i18n.getMessage("options_repository") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_repository" placeholder="` + chrome.i18n.getMessage("options_repository_placeholder") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
-      </label>
-      <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">` + chrome.i18n.getMessage("options_token_GitHub") + `
-      </label>
-      <input required type="text" class="form-control box-shadow" id="options_token" placeholder="` + chrome.i18n.getMessage("options_token_placeholder_GitHub") + `" />
-    </div>
-    <div class="alert alert-warning" role="alert">
-    ` + chrome.i18n.getMessage("options_GitHub_Warning") + `
-    </div>
       `
 
-    const html_exeTencent_COS = `
-  <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_COS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_COS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_COS") + `
-    </label>
-    <input required type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_COS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_COS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_COS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_AppId" class="options_AppId">` + chrome.i18n.getMessage("options_AppId_COS") + `
-    </label>
-    <input type="text" class="form-control box-shadow" id="options_AppId" placeholder="` + chrome.i18n.getMessage("options_AppId_placeholder_COS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_COS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_COS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
-    </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_COS") + `
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder") + `" />
-  </div>
-  `
+      const additionalHtml = additionalElement ? additionalElement.join("") : "";
+      if (!options.label && additionalElement.length) {
+        return `${additionalHtml}`;
+      }
+      if (options.label) {
+        if (options.input) {
+          return `
+          <div class="form-group">
+            ${labelElement}
+            ${inputElement}
+          </div>
+          ${additionalHtml}
+        `;
+        } else if (options.select) {
+          return `
+          <div class="form-group">
+            ${labelElement}
+            ${selectElement}
+          </div>
+          ${additionalHtml}
+        `;
+        } else if (options.textarea) {
+          return `
+          <div class="form-group">
+            ${labelElement}
+            ${textareaElement}
+          </div>
+          ${additionalHtml}
+        `;
+        } else {
+          return `
+          <div class="form-group">
+            input或者select或者textarea未填写
+          </div>
+        `;
+        }
+
+      }
+    }
+
+    // 创建一个函数来生成表单组元素
+    function createFormGroups(formGroupsData) {
+      let formGroupsHtml = "";
+
+      formGroupsData.forEach((data) => {
+        const formGroupHtml = createCustomFormGroup(data);
+        formGroupsHtml += formGroupHtml;
+      });
+
+      return formGroupsHtml;
+    }
+    const lskyCustomFormGroup = [
+      {
+        label: { text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_lsky"), required: true,
+        }
+      },
+      {
+        label: { text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_lsky"), required: true,
+        }
+      },
+      {
+        label: { class: "options_album_id", text: chrome.i18n.getMessage("options_album_id") },
+        select: {
+          id: "options_album_id",
+        },
+      },
+      {
+        label: { class: "options_permission", text: chrome.i18n.getMessage("options_permission") },
+        select: {
+          id: "options_permission_select",
+          optionTag: [
+            { value: "0", text: chrome.i18n.getMessage("options_permission_0"), Selected: true },
+            { value: "1", text: chrome.i18n.getMessage("options_permission_1") },
+          ],
+        },
+      },
+      {
+        label: { class: "options_source", text: chrome.i18n.getMessage("options_source_lsky") },
+        select: {
+          id: "options_source_select",
+        },
+      },
+
+    ];
+    const EasyImagesCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_EasyImages"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_EasyImages"), required: true,
+        }
+      },
+
+    ];
+    const ImgURLCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_ImgURL"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_ImgURL"), required: true,
+        }
+      },
+      {
+        label: { class: "options_uid", text: chrome.i18n.getMessage("options_uid") },
+        input: {
+          type: "text", id: "options_uid", inputPlaceholder: chrome.i18n.getMessage("options_uid_placeholder"), required: true,
+        }
+      },
+
+    ];
+    const SM_MSCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_SM_MS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_SM_MS"), required: true,
+        }
+      },
+    ];
+    const CheveretoCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_Chevereto"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_Chevereto"), required: true,
+        }
+      },
+      {
+        label: { class: "options_album_id", text: chrome.i18n.getMessage("options_album_id_Chevereto") },
+        input: {
+          type: "text", id: "options_album_id", inputPlaceholder: chrome.i18n.getMessage("options_album_id_placeholder_Chevereto"),
+        }
+      },
+      {
+        label: { class: "options_nsfw", text: chrome.i18n.getMessage("options_nsfw") },
+        select: {
+          id: "options_nsfw_select",
+          optionTag: [
+            { value: "0", text: chrome.i18n.getMessage("options_nsfw_0"), Selected: true },
+            { value: "1", text: chrome.i18n.getMessage("options_nsfw_1") },
+          ],
+        },
+      },
+      {
+        label: { class: "options_expiration", text: chrome.i18n.getMessage("options_expiration") },
+        select: {
+          id: "options_expiration_select",
+          optionTag: [
+            { value: "NODEL", text: chrome.i18n.getMessage("options_expiration_no"), Selected: true },
+            { value: "PT5M", text: chrome.i18n.getMessage("options_expiration_1") },
+            { value: "PT15M", text: chrome.i18n.getMessage("options_expiration_2") },
+            { value: "PT30M", text: chrome.i18n.getMessage("options_expiration_3") },
+            { value: "PT1H", text: chrome.i18n.getMessage("options_expiration_4") },
+            { value: "PT3H", text: chrome.i18n.getMessage("options_expiration_5") },
+            { value: "PT6H", text: chrome.i18n.getMessage("options_expiration_6") },
+            { value: "PT12H", text: chrome.i18n.getMessage("options_expiration_7") },
+            { value: "P1D", text: chrome.i18n.getMessage("options_expiration_8") },
+            { value: "P2D", text: chrome.i18n.getMessage("options_expiration_9") },
+            { value: "P3D", text: chrome.i18n.getMessage("options_expiration_10") },
+            { value: "P4D", text: chrome.i18n.getMessage("options_expiration_11") },
+            { value: "P5D", text: chrome.i18n.getMessage("options_expiration_12") },
+            { value: "P6D", text: chrome.i18n.getMessage("options_expiration_13") },
+            { value: "P1W", text: chrome.i18n.getMessage("options_expiration_14") },
+            { value: "P2W", text: chrome.i18n.getMessage("options_expiration_15") },
+            { value: "P3W", text: chrome.i18n.getMessage("options_expiration_16") },
+            { value: "P1M", text: chrome.i18n.getMessage("options_expiration_17") },
+            { value: "P2M", text: chrome.i18n.getMessage("options_expiration_18") },
+            { value: "P3M", text: chrome.i18n.getMessage("options_expiration_19") },
+            { value: "P4M", text: chrome.i18n.getMessage("options_expiration_20") },
+            { value: "P5M", text: chrome.i18n.getMessage("options_expiration_21") },
+            { value: "P6M", text: chrome.i18n.getMessage("options_expiration_22") },
+            { value: "P1Y", text: chrome.i18n.getMessage("options_expiration_23") },
+
+          ],
+        },
+      },
+    ];
+    const HellohaoCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_Hellohao"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_Hellohao"), required: true,
+        }
+      },
+      {
+        label: { class: "options_source", text: chrome.i18n.getMessage("options_source_Hellohao") },
+        input: {
+          type: "text", id: "options_source", inputPlaceholder: chrome.i18n.getMessage("options_source_placeholder_Hellohao"), required: true,
+        }
+      },
+    ];
+    const ImgurCustomFormGroup = [
+      {
+        label: { class: "options_host", text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_Imgur"), required: true,
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_Imgur"), required: true,
+        }
+      },
+      {
+        additionalElement: [
+          `<div class="ImgurPostModeDiv " style="text-align: center;">Image
+          <label class="switch">
+            <input id="options_imgur_post_mode" type="checkbox">
+            <div class="slider round"></div>
+          </label>video
+          </div>`
+        ],
+      },
+    ];
+    const UserCustomFormGroup = [
+      {
+        label: { class: "options_apihost", text: chrome.i18n.getMessage("options_apihost") },
+        input: {
+          type: "url", id: "options_apihost", inputPlaceholder: chrome.i18n.getMessage("options_apihost_placeholder"), required: true,
+        }
+      },
+      {
+        label: { class: "options_parameter", text: chrome.i18n.getMessage("options_parameter") },
+        input: {
+          type: "text", id: "options_parameter", inputPlaceholder: chrome.i18n.getMessage("options_parameter_placeholder"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Headers", text: chrome.i18n.getMessage("options_Headers") },
+        textarea: {
+          id: "options_Headers", labelText: chrome.i18n.getMessage("options_Headers_floatingTextarea")
+        }
+      },
+      {
+        label: { class: "options_Body", text: chrome.i18n.getMessage("options_Body") },
+        textarea: {
+          id: "options_Body", labelText: chrome.i18n.getMessage("options_Body_floatingTextarea")
+        }
+      },
+      {
+        label: { class: "options_return_success", text: chrome.i18n.getMessage("options_return_success") },
+        input: {
+          type: "text", id: "options_return_success", inputPlaceholder: chrome.i18n.getMessage("options_return_success_placeholder"), required: true,
+        },
+      },
+      {
+        additionalElement: [
+          `<div class="form-group">
+            <div class="form-check form-switch" style="margin-top: 1rem;">
+              <input class="form-check-input" type="checkbox" role="switch" id="open_json_button">
+              <label class="form-check-label" for="flexSwitchCheckDefault">` + chrome.i18n.getMessage("open_json_button") + `</label>
+            </div>
+          </div>`
+        ],
+      },
+    ];
+    const GitHubUPCustomFormGroup = [
+      {
+        label: { class: "options_owner", text: chrome.i18n.getMessage("options_owner") },
+        input: {
+          type: "text", id: "options_owner", inputPlaceholder: chrome.i18n.getMessage("options_owner_placeholder"), required: true,
+        }
+      },
+      {
+        label: { class: "options_repository", text: chrome.i18n.getMessage("options_repository") },
+        input: {
+          type: "text", id: "options_repository", inputPlaceholder: chrome.i18n.getMessage("options_repository_placeholder"), required: true,
+        }
+      },
+      {
+        label: { class: "options_UploadPath", text: chrome.i18n.getMessage("options_UploadPath") },
+        input: {
+          type: "text", id: "options_UploadPath", inputPlaceholder: chrome.i18n.getMessage("options_UploadPath_placeholder"),
+        }
+      },
+      {
+        label: { class: "options_token", text: chrome.i18n.getMessage("options_token_GitHub") },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: chrome.i18n.getMessage("options_token_placeholder_GitHub"), required: true,
+        },
+        additionalElement: [
+          `<div class="alert alert-warning" role="alert">
+          ${chrome.i18n.getMessage("options_GitHub_Warning")}
+          </div>`
+        ]
+      },
+    ];
+    const Tencent_COSCustomFormGroup = [
+      {
+        label: { class: "options_SecretId", text: chrome.i18n.getMessage("options_SecretId_COS") },
+        input: {
+          type: "text", id: "options_SecretId", inputPlaceholder: chrome.i18n.getMessage("options_SecretId_placeholder_COS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_SecretKey", text: chrome.i18n.getMessage("options_SecretKey_COS") },
+        input: {
+          type: "password", id: "options_SecretKey", inputPlaceholder: chrome.i18n.getMessage("options_SecretKey_placeholder_COS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Bucket", text: chrome.i18n.getMessage("options_Bucket_COS") },
+        input: {
+          type: "text", id: "options_Bucket", inputPlaceholder: chrome.i18n.getMessage("options_Bucket_placeholder_COS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_AppId", text: chrome.i18n.getMessage("options_AppId_COS") },
+        input: {
+          type: "text", id: "options_AppId", inputPlaceholder: chrome.i18n.getMessage("options_AppId_placeholder_COS"),
+        }
+      },
+      {
+        label: { class: "options_Region", text: chrome.i18n.getMessage("options_Region_COS") },
+        input: {
+          type: "text", id: "options_Region", inputPlaceholder: chrome.i18n.getMessage("options_Region_placeholder_COS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_UploadPath", text: chrome.i18n.getMessage("options_UploadPath") },
+        input: {
+          type: "text", id: "options_UploadPath", inputPlaceholder: chrome.i18n.getMessage("options_UploadPath_placeholder"),
+        }
+      },
+      {
+        label: { class: "options_Custom_domain_name", text: chrome.i18n.getMessage("options_Custom_domain_name_COS") },
+        input: {
+          type: "url", id: "options_Custom_domain_name", inputPlaceholder: chrome.i18n.getMessage("options_Custom_domain_name_placeholder"),
+        }
+      },
+
+    ];
+    const Aliyun_OSSCustomFormGroup = [
+      {
+        label: { class: "options_SecretId", text: chrome.i18n.getMessage("options_SecretId_OSS") },
+        input: {
+          type: "text", id: "options_SecretId", inputPlaceholder: chrome.i18n.getMessage("options_SecretId_placeholder_OSS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_SecretKey", text: chrome.i18n.getMessage("options_SecretKey_OSS") },
+        input: {
+          type: "password", id: "options_SecretKey", inputPlaceholder: chrome.i18n.getMessage("options_SecretKey_placeholder_OSS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Bucket", text: chrome.i18n.getMessage("options_Bucket_OSS") },
+        input: {
+          type: "text", id: "options_Bucket", inputPlaceholder: chrome.i18n.getMessage("options_Bucket_placeholder_OSS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Endpoint", text: chrome.i18n.getMessage("options_Endpoint_OSS") },
+        input: {
+          type: "text", id: "options_Endpoint", inputPlaceholder: chrome.i18n.getMessage("options_Endpoint_placeholder_OSS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Region", text: chrome.i18n.getMessage("options_Region_OSS") },
+        input: {
+          type: "text", id: "options_Region", inputPlaceholder: chrome.i18n.getMessage("options_Region_placeholder_OSS"), required: true,
+        }
+      },
+      {
+        label: { class: "options_UploadPath", text: chrome.i18n.getMessage("options_UploadPath") },
+        input: {
+          type: "text", id: "options_UploadPath", inputPlaceholder: chrome.i18n.getMessage("options_UploadPath_placeholder"),
+        }
+      },
+      {
+        label: { class: "options_Custom_domain_name", text: chrome.i18n.getMessage("options_Custom_domain_name_COS") },
+        input: {
+          type: "url", id: "options_Custom_domain_name", inputPlaceholder: chrome.i18n.getMessage("options_Custom_domain_name_placeholder"),
+        }
+      },
+
+    ];
+    const AWS_S3CustomFormGroup = [
+      {
+        label: { class: "options_SecretId", text: chrome.i18n.getMessage("options_SecretId_S3") },
+        input: {
+          type: "text", id: "options_SecretId", inputPlaceholder: chrome.i18n.getMessage("options_SecretId_placeholder_S3"), required: true,
+        }
+      },
+      {
+        label: { class: "options_SecretKey", text: chrome.i18n.getMessage("options_SecretKey_S3") },
+        input: {
+          type: "password", id: "options_SecretKey", inputPlaceholder: chrome.i18n.getMessage("options_SecretKey_placeholder_S3"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Bucket", text: chrome.i18n.getMessage("options_Bucket_S3") },
+        input: {
+          type: "text", id: "options_Bucket", inputPlaceholder: chrome.i18n.getMessage("options_Bucket_placeholder_S3"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Region", text: chrome.i18n.getMessage("options_Region_S3") },
+        input: {
+          type: "text", id: "options_Region", inputPlaceholder: chrome.i18n.getMessage("options_Region_placeholder_S3"), required: true,
+        }
+      },
+      {
+        label: { class: "options_Endpoint", text: chrome.i18n.getMessage("options_Endpoint_S3") },
+        input: {
+          type: "text", id: "options_Endpoint", inputPlaceholder: chrome.i18n.getMessage("options_Endpoint_placeholder_S3"),
+        }
+      },
+      {
+        label: { class: "options_UploadPath", text: chrome.i18n.getMessage("options_UploadPath") },
+        input: {
+          type: "text", id: "options_UploadPath", inputPlaceholder: chrome.i18n.getMessage("options_UploadPath_placeholder"),
+        }
+      },
+      {
+        label: { class: "options_Custom_domain_name", text: chrome.i18n.getMessage("options_Custom_domain_name_S3") },
+        input: {
+          type: "url", id: "options_Custom_domain_name", inputPlaceholder: chrome.i18n.getMessage("options_Custom_domain_name_placeholder"),
+        }
+      },
+
+    ];
+    const Telegra_phCustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">` + chrome.i18n.getMessage("Telegra_ph_1") + `</h4>
+            <p>` + chrome.i18n.getMessage("Telegra_ph_2") + `</p>
+            <hr>
+            <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+          </div>`
+        ]
+      },
+      {
+        label: { class: "options_Custom_domain_name", text: chrome.i18n.getMessage("options_Custom_domain_name_Telegra_ph") },
+        input: {
+          type: "url", id: "options_Custom_domain_name", inputPlaceholder: chrome.i18n.getMessage("options_Custom_domain_name_placeholder_Telegra_ph"),
+        }
+      },
+
+    ];
+    const imgddCustomFormGroup = [
+      {
+        label: { text: chrome.i18n.getMessage("options_host") },
+        input: {
+          type: "text", id: "options_host", inputPlaceholder: chrome.i18n.getMessage("options_host_placeholder_lsky"), required: true,
+        }
+      },
+    ];
+    const fiftyEightCustomFormGroup = [
+      {
+        additionalElement: [
+          ` <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">58同城接口</h4>
+            <p>无需配置,保存即可使用</p>
+            <hr>
+            <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+          </div>`
+        ]
+      },
+    ];
+    const BilibliBedCustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-danger" role="alert">哔哩哔哩上传完全依赖后端上传,请部署后端服务!</div>`
+        ]
+      },
+      {
+        label: { class: "options_apihost", text: "后端请求地址<p>(为空时使用默认后端)" },
+        input: {
+          type: "url", id: "options_apihost", inputPlaceholder: "无法携带cookie，填写完整url",
+        }
+      },
+      {
+        label: { class: "options_token", text: "SESSDATA<p>(为空时:登录哔哩哔哩自动获取)</p>" },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: "SESSDATA值",
+        }
+      },
+      {
+        label: { class: "options_CSRF", text: "CSRF<p>(为空时:登录哔哩哔哩自动获取)</p>" },
+        input: {
+          type: "text", id: "options_CSRF", inputPlaceholder: "CSRF值",
+        }
+      },
+      {
+        additionalElement: [
+          `<div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>`
+        ]
+      },
+    ];
+    const BaiJiaHaoBedCustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">百家号接口</h4>
+            <p>使用,请保持百度登录</p>
+            <hr>
+            <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+          </div>`
+        ]
+      },
+    ];
+    const freebufBedCustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">freebuf接口</h4>
+            <p>无需配置,保存即可使用</p>
+            <hr>
+            <p class="mb-0">`+ chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+          </div>`
+        ]
+      },
+    ];
+    const toutiaoBedCustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">今日头条接口</h4>
+            <p>无需配置,保存即可使用</p>
+            <hr>
+            <p class="mb-0">`+ chrome.i18n.getMessage("Telegra_ph_3") + `</p>
+          </div>`
+        ]
+      },
+    ];
+    const toutiaoBed2CustomFormGroup = [
+      {
+        additionalElement: [
+          `<div class="alert alert-danger" role="alert">今日头条2接口上传完全依赖后端上传,请部署后端服务!</div>`
+        ]
+      },
+      {
+        label: { class: "options_apihost", text: "后端请求地址<p>(为空时使用默认后端)" },
+        input: {
+          type: "url", id: "options_apihost", inputPlaceholder: "无法携带cookie，填写完整url",
+        }
+      },
+      {
+        label: { class: "options_token", text: "SESSDATA<p>(为空时:登录今日头条自动获取)</p>" },
+        input: {
+          type: "text", id: "options_token", inputPlaceholder: "SESSDATA值",
+        }
+      },
+      {
+        label: { class: "options_CSRF", text: "CSRF<p>(为空时:登录今日头条自动获取)</p>" },
+        input: {
+          type: "text", id: "options_CSRF", inputPlaceholder: "CSRF值",
+        }
+      },
+      {
+        additionalElement: [
+          `<div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>`
+        ]
+      },
+    ];
+
+
+    const html_exeCORSForm = `
+    <div class="form-group CorsForm">
+      <label for="options_proxy_server" class="options_proxy_server">` + chrome.i18n.getMessage("options_proxy_server") + `
+      </label>
+      <input type="url" class="form-control box-shadow" id="options_proxy_server" placeholder="` + chrome.i18n.getMessage("options_proxy_server_placeholder") + `" />
+    </div>`
+
     const cos_cors = `
-  <div class="CorsButton" id="Object_Storage_cors">
-  <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_COS") + `</button>
-  </div>
-  `
+    <div class="CorsButton" id="Object_Storage_cors">
+      <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_COS") + `</button>
+    </div>
+    `
     const cos_putBucketACL = `
-  <div class="CorsButton" id="putBucketACL">
-    <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
-    ` + chrome.i18n.getMessage("putBucketACL") + `
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>` + chrome.i18n.getMessage("putBucketACL_1") + `</a></li>
-      <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>` + chrome.i18n.getMessage("putBucketACL_2") + `</a></li>
-      <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>` + chrome.i18n.getMessage("putBucketACL_3") + `</a></li>
-    </ul>
-  </div>
+    <div class="CorsButton" id="putBucketACL">
+      <button type="button" class="css-button-arrow--sky putBucketACL" data-bs-toggle="dropdown" aria-expanded="false">
+      ` + chrome.i18n.getMessage("putBucketACL") + `
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" value="private"><i class="bi bi-incognito"></i>` + chrome.i18n.getMessage("putBucketACL_1") + `</a></li>
+        <li><a class="dropdown-item" href="#" value="public-read"><i class="bi bi-file-earmark-lock"></i>` + chrome.i18n.getMessage("putBucketACL_2") + `</a></li>
+        <li><a class="dropdown-item" href="#" value="public-read-write"><i class="bi bi-folder2-open"></i>` + chrome.i18n.getMessage("putBucketACL_3") + `</a></li>
+      </ul>
+    </div>
   `
 
-    const html_exeAliyun_OSS = `
-  <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_OSS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_OSS") + `
-    </label>
-    <input required type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_OSS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Endpoint" class="options_Endpoint">` + chrome.i18n.getMessage("options_Endpoint_OSS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="` + chrome.i18n.getMessage("options_Endpoint_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_OSS") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
-    </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder_OSS") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_OSS") + `
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder") + `" />
-  </div>
-  `
     const oss_cors = ` 
-  <div class="CorsButton" id="Object_Storage_cors">
-    <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_OSS") + `</button>
+    <div class="CorsButton" id="Object_Storage_cors">
+      <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_OSS") + `</button>
     </div>
     `
     const oss_putBucketACL = `
@@ -420,437 +761,171 @@ $(document).ready(function () {
       </ul>
     </div>
   `
-
-    const html_exeAWS_S3 = `
-  <div class="form-group">
-    <label for="options_SecretId" class="options_SecretId">` + chrome.i18n.getMessage("options_SecretId_S3") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_SecretId" placeholder="` + chrome.i18n.getMessage("options_SecretId_placeholder_S3") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_SecretKey" class="options_SecretKey">` + chrome.i18n.getMessage("options_SecretKey_S3") + `
-    </label>
-    <input required type="password" class="form-control box-shadow" id="options_SecretKey" placeholder="` + chrome.i18n.getMessage("options_SecretKey_placeholder_S3") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Bucket" class="options_Bucket">` + chrome.i18n.getMessage("options_Bucket_S3") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Bucket" placeholder="` + chrome.i18n.getMessage("options_Bucket_placeholder_S3") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Region" class="options_Region">` + chrome.i18n.getMessage("options_Region_S3") + `
-    </label>
-    <input required type="text" class="form-control box-shadow" id="options_Region" placeholder="` + chrome.i18n.getMessage("options_Region_placeholder_S3") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Endpoint" class="options_Endpoint">` + chrome.i18n.getMessage("options_Endpoint_S3") + `
-    </label>
-    <input type="text" class="form-control box-shadow" id="options_Endpoint" placeholder="` + chrome.i18n.getMessage("options_Endpoint_placeholder_S3") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_UploadPath" class="options_UploadPath">` + chrome.i18n.getMessage("options_UploadPath") + `
-    </label>
-    <input type="text" class="form-control box-shadow" id="options_UploadPath" placeholder="` + chrome.i18n.getMessage("options_UploadPath_placeholder") + `" />
-  </div>
-  <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_S3") + `
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder_S3") + `" />
-  </div>
-  `
     const s3_cors = ` 
-  <div class="CorsButton" id="Object_Storage_cors">
-    <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_S3") + `</button>
+    <div class="CorsButton" id="Object_Storage_cors">
+     <button type="button" class="css-button-rounded--sky">` + chrome.i18n.getMessage("Object_Storage_cors_S3") + `</button>
     </div>
     `
-
-    const html_exe_Telegra_ph = `
-    <div class="alert alert-success" role="alert">
-      <h4 class="alert-heading">` + chrome.i18n.getMessage("Telegra_ph_1") + `</h4>
-      <p>` + chrome.i18n.getMessage("Telegra_ph_2") + `</p>
-      <hr>
-      <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-    </div>
-    <div class="form-group">
-    <label for="options_Custom_domain_name" class="options_Custom_domain_name">` + chrome.i18n.getMessage("options_Custom_domain_name_Telegra_ph") + `
-    </label>
-    <input type="url" class="form-control box-shadow" id="options_Custom_domain_name" placeholder="` + chrome.i18n.getMessage("options_Custom_domain_name_placeholder_Telegra_ph") + `" />
-    </div>
-      `
-    const html_exe_Telegra_phBoxBottom_Tipsa = `生活原本苦闷,但跑起来就会生风。`
-
-    const html_exe_imgdd = `
-      <div class="form-group">
-        <label for="options_host" class="options_host">` + chrome.i18n.getMessage("options_host") + `
-        </label>
-        <input type="url" class="form-control box-shadow" id="options_host" placeholder="` + chrome.i18n.getMessage("options_host_placeholder_imgdd") + `" value="imgdd.com"/>
-      </div>
-    `
-    const html_exe_fiftyEight = `
-    <div class="alert alert-success" role="alert">
-      <h4 class="alert-heading">58同城接口</h4>
-      <p>无需配置,保存即可使用</p>
-      <hr>
-      <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-    </div>
-    `
-
-    const html_exe_BilibliBed = `
-    <div class="alert alert-danger" role="alert">哔哩哔哩上传完全依赖后端上传,请部署后端服务!</div>
-    <div class="form-group">
-      <label for="options_apihost" class="options_apihost">后端请求地址<p>(为空时使用默认后端)</p>
-      </label>
-      <input required type="url" class="form-control box-shadow" id="options_apihost" placeholder="无法携带cookie，填写完整url" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">SESSDATA<p>(为空时:登录哔哩哔哩自动获取)</p></label>
-        <input type="text" class="form-control box-shadow" id="options_token" placeholder="SESSDATA值" />
-    </div>
-    <div class="form-group">
-      <label for="options_CSRF" class="options_CSRF">CSRF<p>(为空时:登录哔哩哔哩自动获取)</p></label>
-      <input type="text" class="form-control box-shadow" id="options_CSRF" placeholder="CSRF值" />
-    </div>
-    <div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>
-    `
-
-    const html_exe_BaiJiaHaoBed = `
-    <div class="alert alert-warning" role="alert">
-      <h4 class="alert-heading">百家号接口</h4>
-      <p>使用,请保持百度登录</p>
-      <hr>
-      <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-    </div>
-    `
-    const html_exe_freebufBed = `
-    <div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">freebuf接口</h4>
-    <p>无需配置,保存即可使用</p>
-    <hr>
-    <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-  </div>
-    `
-    const html_exe_toutiaoBed = `
-    <div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">今日头条接口</h4>
-    <p>无需配置,保存即可使用</p>
-    <hr>
-    <p class="mb-0">` + html_exe_Telegra_phBoxBottom_Tipsa + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-  </div>
-    `
-    const html_exe_toutiaoBed2 = `
-    <div class="alert alert-danger" role="alert">今日头条2接口上传完全依赖后端上传,请部署后端服务!</div>
-    <div class="form-group">
-      <label for="options_apihost" class="options_apihost">后端请求地址<p>(为空时使用默认后端)</p></p>
-      </label>
-      <input required type="url" class="form-control box-shadow" id="options_apihost" placeholder="无法携带cookie，填写完整url" />
-    </div>
-    <div class="form-group">
-      <label for="options_token" class="options_token ">SESSDATA<p>(为空时:登录今日头条自动获取)</p></label>
-        <input type="text" class="form-control box-shadow" id="options_token" placeholder="SESSDATA值" />
-    </div>
-    <div class="form-group">
-      <label for="options_CSRF" class="options_CSRF">CSRF<p>(为空时:登今日头条自动获取)</p></label>
-      <input type="text" class="form-control box-shadow" id="options_CSRF" placeholder="CSRF值" />
-    </div>
-    <div class="alert alert-warning" role="alert">如果你不希望程序自动获取cookie,请随便填写内容或填写准备好的SESSDATA,CSRF。</div>
-    `
-
-    let optionsProg = {
-      '#exe_Lsky': {
-        'needUid': 1,
-        'html_exeBox': html_exeLskyBox,
+    const programConfig = {
+      Lsky: {
+        needUid: 1,
+        html: createFormGroups(lskyCustomFormGroup),
       },
-      '#exe_EasyImages': {
-        'needUid': 2,
-        'html_exeBox': html_exeEasyImagesBox,
+      EasyImages: {
+        needUid: 2,
+        html: createFormGroups(EasyImagesCustomFormGroup),
       },
-      '#exe_ImgURL': {
-        'needUid': 3,
-        'html_exeBox': html_exeImgURLBox,
+      ImgURL: {
+        needUid: 3,
+        html: createFormGroups(ImgURLCustomFormGroup),
       },
-      '#exe_SM_MS': {
-        'needUid': 4,
-        'html_exeBox': html_exeSM_MSBox,
+      SM_MS: {
+        needUid: 4,
+        html: createFormGroups(SM_MSCustomFormGroup),
       },
-      '#exe_Chevereto': {
-        'needUid': 5,
-        'html_exeBox': html_exeCheveretoBox,
+      Chevereto: {
+        needUid: 5,
+        html: createFormGroups(CheveretoCustomFormGroup),
       },
-      '#exe_Hellohao': {
-        'needUid': 6,
-        'html_exeBox': html_exe_HellohaoBox,
+      Hellohao: {
+        needUid: 6,
+        html: createFormGroups(HellohaoCustomFormGroup),
       },
-      '#exe_Imgur': {
-        'needUid': 7,
-        'html_exeBox': html_exe_ImgurBox,
+      Imgur: {
+        needUid: 7,
+        html: createFormGroups(ImgurCustomFormGroup),
       },
-      '#exe_UserDiy': {
-        'needUid': 8,
-        'html_exeBox': html_exe_UserDiyBox,
+      UserDiy: {
+        needUid: 8,
+        html: createFormGroups(UserCustomFormGroup),
       },
-      '#exe_Tencent_COS': {
-        'needUid': 9,
-        'html_exeBox': html_exeTencent_COS,
+      Tencent_COS: {
+        needUid: 9,
+        html: createFormGroups(Tencent_COSCustomFormGroup),
       },
-      '#exe_Aliyun_OSS': {
-        'needUid': 10,
-        'html_exeBox': html_exeAliyun_OSS,
+      Aliyun_OSS: {
+        needUid: 10,
+        html: createFormGroups(Aliyun_OSSCustomFormGroup),
       },
-      '#exe_AWS_S3': {
-        'needUid': 11,
-        'html_exeBox': html_exeAWS_S3,
+      AWS_S3: {
+        needUid: 11,
+        html: createFormGroups(AWS_S3CustomFormGroup),
       },
-      '#exe_GitHubUP': {
-        'needUid': 12,
-        'html_exeBox': html_exe_GitHubUP,
+      GitHubUP: {
+        needUid: 12,
+        html: createFormGroups(GitHubUPCustomFormGroup),
       },
-      '#exe_Telegra_ph': {
-        'needUid': 13,
-        'html_exeBox': html_exe_Telegra_ph,
+      Telegra_ph: {
+        needUid: 13,
+        html: createFormGroups(Telegra_phCustomFormGroup),
       },
-      "#exe_imgdd": {
-        'needUid': 14,
-        'html_exeBox': html_exe_imgdd,
+      imgdd: {
+        needUid: 14,
+        html: createFormGroups(imgddCustomFormGroup),
       },
-      "#exe_fiftyEight": {
-        'needUid': 15,
-        'html_exeBox': html_exe_fiftyEight,
+      fiftyEight: {
+        needUid: 15,
+        html: createFormGroups(fiftyEightCustomFormGroup),
       },
-      "#exe_BilibliBed": {
-        'needUid': 16,
-        'html_exeBox': html_exe_BilibliBed,
+      BilibliBed: {
+        needUid: 16,
+        html: createFormGroups(BilibliBedCustomFormGroup),
       },
-      "#exe_BaiJiaHaoBed": {
-        'needUid': 17,
-        'html_exeBox': html_exe_BaiJiaHaoBed,
+      BaiJiaHaoBed: {
+        needUid: 17,
+        html: createFormGroups(BaiJiaHaoBedCustomFormGroup),
       },
-      "#exe_freebufBed": {
-        'needUid': 18,
-        'html_exeBox': html_exe_freebufBed,
+      freebufBed: {
+        needUid: 18,
+        html: createFormGroups(freebufBedCustomFormGroup),
       },
-      "#exe_toutiaoBed": {
-        'needUid': 19,
-        'html_exeBox': html_exe_toutiaoBed,
+      toutiaoBed: {
+        needUid: 19,
+        html: createFormGroups(toutiaoBedCustomFormGroup),
       },
-      "#exe_toutiaoBed2": {
-        'needUid': 20,
-        'html_exeBox': html_exe_toutiaoBed2,
+      toutiaoBed2: {
+        needUid: 20,
+        html: createFormGroups(toutiaoBed2CustomFormGroup),
       },
-      'default': {
-        'body': `
-      <div class="alert alert-secondary" role="alert">
-        <h4 class="alert-heading">` + chrome.i18n.getMessage("Program_selection_instructions_1") + `</h4>
-        <p>` + chrome.i18n.getMessage("Program_selection_instructions_2") + `</p>
-        <hr>
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-      <!-- 按钮 -->
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-          aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-          aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-          aria-label="Slide 3"></button>
-      </div>
-
-      <!-- 内容 -->
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="https://cdn-us.imgs.moe/2023/07/04/64a414574dba6.gif">
-          <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
-            <p>` + chrome.i18n.getMessage("You_know_what_1") + `</p>
+      default: {
+        html: `
+          <div class="alert alert-secondary" role="alert">
+            <h4 class="alert-heading">` + chrome.i18n.getMessage("Program_selection_instructions_1") + `</h4>
+            <p>` + chrome.i18n.getMessage("Program_selection_instructions_2") + `</p>
+            <hr>
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+          <!-- 按钮 -->
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+              aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+              aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+              aria-label="Slide 3"></button>
           </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://cdn-us.imgs.moe/2023/07/04/64a4145276e67.gif" loading="lazy">
-          <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
-            <p>` + chrome.i18n.getMessage("You_know_what_2") + `</p>
+    
+          <!-- 内容 -->
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="https://cdn-us.imgs.moe/2023/07/04/64a414574dba6.gif">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+                <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+                <p>` + chrome.i18n.getMessage("You_know_what_1") + `</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="https://cdn-us.imgs.moe/2023/07/04/64a4145276e67.gif" loading="lazy">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+                <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+                <p>` + chrome.i18n.getMessage("You_know_what_2") + `</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="https://cdn-us.imgs.moe/2023/07/04/64a414475a4ec.gif" loading="lazy">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+                <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
+                <p>` + chrome.i18n.getMessage("You_know_what_3") + `</p>
+              </div>
+            </div>
           </div>
+          <!-- 左 -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <!-- 右 -->
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
-        <div class="carousel-item">
-          <img src="https://cdn-us.imgs.moe/2023/07/04/64a414475a4ec.gif" loading="lazy">
-          <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
-            <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
-            <p>` + chrome.i18n.getMessage("You_know_what_3") + `</p>
           </div>
-        </div>
-      </div>
-      <!-- 左 -->
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-        data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <!-- 右 -->
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-        data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-      </div>
-      `
-      }
+        `,
+      },
     };
-    function Input_box_loading() {
-      let prog = optionsProg['#exe_' + options_exe];
-      // 加载元素配置
+
+    function initializeProgramOptions(programId) {
+      const prog = programConfig[programId] || programConfig.default;
+      $('.options-form').empty().append(prog.html);
+      $("#Object_Storage_cors").remove()
+      $("#putBucketACL").remove()
+      $("#options_exe button").removeClass('active');
       if (!prog) {
-        prog = optionsProg["default"]
-        $(".options-form").append(prog.body)
-      } else {
-        $('.options-form').append(prog.html_exeBox);
-        Edit_Box_Animation()
-        // $('.text-bottom-Tips1').html(prog.bottomTips);
-        $("#options_host").val(options_host);
-        $("#options_token").val(options_token);
-      }
-      switch (options_exe) {
-        case 'Lsky':
-          $("#exe_Lsky").addClass('active');
-          $('#options_permission_select').val(options_permission_select);
-          GetSource()
-          Getalbums()
-          break;
-        case 'EasyImages':
-          $("#exe_EasyImages").addClass('active');
-          break;
-        case 'ImgURL':
-          $("#exe_ImgURL").addClass('active');
-          $("#options_uid").val(options_uid);
-          break;
-        case 'SM_MS':
-          $("#exe_SM_MS").addClass('active');
-          $('#options_host').attr("disabled", true);
-          break;
-        case 'Chevereto':
-          $("#exe_Chevereto").addClass('active');
-          $("#options_album_id").val(options_album_id);
-          $('#options_expiration_select').val(options_expiration_select);
-          $('#options_nsfw_select').val(options_nsfw_select);
-          break;
-        case 'Hellohao':
-          $("#exe_Hellohao").addClass('active');
-          $("#options_source").val(options_source);
-          break;
-        case 'Imgur':
-          $("#exe_Imgur").addClass('active');
-          $('#options_host').attr("disabled", true);
-          options_imgur_post_modeFn()
-          break;
-        case 'UserDiy':
-          $("#exe_UserDiy").addClass('active');
-          $("#options_apihost").val(options_apihost);
-          $("#options_parameter").val(options_parameter);
-          $("#options_Headers").val(options_Headers);
-          $("#options_Body").val(options_Body);
-          $("#options_return_success").val(options_return_success);
-          // 初始化JSON转换
-          open_json_buttonFn()
-          break;
-        case 'Tencent_COS':
-          $("#exe_Tencent_COS").addClass('active');
-          $("#options_SecretId").val(options_SecretId);
-          $("#options_SecretKey").val(options_SecretKey);
-          $("#options_Bucket").val(options_Bucket);
-          $("#options_AppId").val(options_AppId);
-          $("#options_Region").val(options_Region);
-          $("#options_UploadPath").val(options_UploadPath);
-          $("#options_Custom_domain_name").val(options_Custom_domain_name);
-          $("#CorsButton").parent().append(cos_cors)
-          $("#CorsButton").parent().append(cos_putBucketACL)
-          setBucketACL()
-          setBucketCors()
-          break;
-        case 'Aliyun_OSS':
-          $("#exe_Aliyun_OSS").addClass('active');
-          $("#options_SecretId").val(options_SecretId);
-          $("#options_SecretKey").val(options_SecretKey);
-          $("#options_Bucket").val(options_Bucket);
-          $("#options_Endpoint").val(options_Endpoint);
-          $("#options_Region").val(options_Region);
-          $("#options_UploadPath").val(options_UploadPath);
-          $("#options_Custom_domain_name").val(options_Custom_domain_name);
-          $("#CorsButton").parent().append(oss_cors)
-          $("#CorsButton").parent().append(oss_putBucketACL)
-          setBucketACL()
-          setBucketCors()
-          break;
-        case 'AWS_S3':
-          $("#exe_AWS_S3").addClass('active');
-          $("#options_SecretId").val(options_SecretId);
-          $("#options_SecretKey").val(options_SecretKey);
-          $("#options_Bucket").val(options_Bucket);
-          $("#options_Region").val(options_Region);
-          $("#options_Endpoint").val(options_Endpoint);
-          $("#options_UploadPath").val(options_UploadPath);
-          $("#CorsButton").parent().append(s3_cors)
-          $("#options_Custom_domain_name").val(options_Custom_domain_name);
-          setBucketCors()
-          break;
-        case 'GitHubUP':
-          $("#exe_GitHubUP").addClass('active');
-          $("#options_owner").val(options_owner);
-          $("#options_repository").val(options_repository);
-          $("#options_UploadPath").val(options_UploadPath);
-          $("#options_token").val(options_token);
-          break;
-        case 'Telegra_ph':
-          $("#exe_Telegra_ph").addClass('active');
-          $("#options_Custom_domain_name").val(options_Custom_domain_name);
-          break;
-        case 'imgdd':
-          $("#exe_imgdd").addClass('active');
-          $('#options_host').attr("disabled", true)
-          break;
-        case 'fiftyEight':
-          $("#exe_fiftyEight").addClass('active');
-          break;
-        case 'BilibliBed':
-          $("#exe_BilibliBed").addClass('active');
-          $("#options_CSRF").val(options_CSRF);
-          break;
-        case 'BaiJiaHaoBed':
-          $("#exe_BaiJiaHaoBed").addClass('active');
-          break;
-        case 'freebufBed':
-          $("#exe_freebufBed").addClass('active');
-          break;
-        case 'toutiaoBed':
-          $("#exe_toutiaoBed").addClass('active');
-          break;
-        case 'toutiaoBed2':
-          $("#exe_toutiaoBed2").addClass('active');
-          break;
-        default:
-          if (window.navigator.userAgent.indexOf('Firefox') > -1) {
-            $("#carouselExampleCaptions").prepend(`<button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>`)
-            $("#carouselExampleCaptions").prepend(`
+        if (window.navigator.userAgent.indexOf('Firefox') > -1) {
+          $("#carouselExampleCaptions").prepend(`<button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>`)
+          $("#carouselExampleCaptions").prepend(`
               <div class="alert alert-warning" role="alert">
               ` + chrome.i18n.getMessage("Firefox_browser_access_permissions_warning") + `
               </div>
               `)
-            $("#firefox-permission-toggle").click(() => {
-              browser.runtime.openOptionsPage();
-            })
-          }
-          break;
+          $("#firefox-permission-toggle").click(() => {
+            browser.runtime.openOptionsPage();
+          })
+        }
       }
-
-    }
-    Input_box_loading()
-
-    $('#options_exe button').on('click', function () {
-      // 实现点击图床程序
-      $('.options-form').empty()
-      let progId = $(this).attr("id");
-      let prog = optionsProg['#' + progId];
-      $("#Object_Storage_cors").remove()
-      $("#putBucketACL").remove()
       if (prog.needUid == 1) {
-        $('.options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
         $('#options_permission_select').val(options_permission_select);
@@ -858,25 +933,21 @@ $(document).ready(function () {
         Getalbums()
       }
       if (prog.needUid == 2) {//EasyImages
-        $('.options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
       }
       if (prog.needUid == 3) {//imgurl
-        $('.options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
         $("#options_uid").val(options_uid);
         $("#options_uid").attr("placeholder", prog.uidText);
       }
       if (prog.needUid == 4) {//sm.ms
-        $('.options-form').append(prog.html_exeBox);
         $('#options_host').val("sm.ms")
         $("#options_token").val(options_token);
         $('#options_host').attr("disabled", true)
       }
       if (prog.needUid == 5) {//chevereto
-        $('.options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
         $("#options_album_id").val(options_album_id);
@@ -884,7 +955,6 @@ $(document).ready(function () {
         $('#options_nsfw_select').val(options_nsfw_select);
       }
       if (prog.needUid == 6) {//hellohao
-        $('.options-form').append(prog.html_exeBox);
         $("#options_host").val(options_host);
         $("#options_token").val(options_token);
         $("#options_source").val(options_source);
@@ -892,14 +962,12 @@ $(document).ready(function () {
 
       }
       if (prog.needUid == 7) {//imgur
-        $('.options-form').append(prog.html_exeBox);
         $('#options_host').val("api.imgur.com")
         $("#options_token").val(options_token);
         $('#options_host').attr("disabled", true)
         options_imgur_post_modeFn()
       }
       if (prog.needUid == 8) {//diy
-        $('.options-form').append(prog.html_exeBox);
         $("#options_apihost").val(options_apihost);
         $("#options_parameter").val(options_parameter);
         $("#options_Headers").val(options_Headers);
@@ -909,7 +977,6 @@ $(document).ready(function () {
         open_json_buttonFn()
       }
       if (prog.needUid == 9) {//cos
-        $('.options-form').append(prog.html_exeBox);
         $("#options_SecretId").val(options_SecretId);
         $("#options_SecretKey").val(options_SecretKey);
         $("#options_Bucket").val(options_Bucket);
@@ -926,7 +993,6 @@ $(document).ready(function () {
         }
       }
       if (prog.needUid == 10) {//oss
-        $('.options-form').append(prog.html_exeBox);
         $("#options_SecretId").val(options_SecretId);
         $("#options_SecretKey").val(options_SecretKey);
         $("#options_Bucket").val(options_Bucket);
@@ -944,7 +1010,6 @@ $(document).ready(function () {
 
       }
       if (prog.needUid == 11) {//aws s3
-        $('.options-form').append(prog.html_exeBox);
         $("#options_SecretId").val(options_SecretId);
         $("#options_SecretKey").val(options_SecretKey);
         $("#options_Bucket").val(options_Bucket);
@@ -960,59 +1025,49 @@ $(document).ready(function () {
 
       }
       if (prog.needUid == 12) {//GitHub
-        $('.options-form').append(prog.html_exeBox);
         $("#options_owner").val(options_owner);
         $("#options_repository").val(options_repository);
         $("#options_UploadPath").val(options_UploadPath);
         $("#options_token").val(options_token);
       }
       if (prog.needUid == 13) {//Tg
-        $('.options-form').append(prog.html_exeBox);
         $("#options_Custom_domain_name").val(options_Custom_domain_name);
       }
       if (prog.needUid == 14) {//imgdd
-        $('.options-form').append(prog.html_exeBox);
         $('#options_host').val("imgdd.com")
         $('#options_host').attr("disabled", true)
       }
       if (prog.needUid == 15) {//58
-        $('.options-form').append(prog.html_exeBox);
       }
       if (prog.needUid == 16) {//哔哩哔哩
-        $('.options-form').append(prog.html_exeBox);
         $("#options_token").val(options_token);
         $("#options_CSRF").val(options_CSRF);
       }
       if (prog.needUid == 17) {//百家号
-        $('.options-form').append(prog.html_exeBox);
       }
       if (prog.needUid == 18) {//freebufBed
-        $('.options-form').append(prog.html_exeBox);
       }
       if (prog.needUid == 19) {//头条
-        $('.options-form').append(prog.html_exeBox);
       }
       if (prog.needUid == 20) {//头条
-        $('.options-form').append(prog.html_exeBox);
       }
-
-      //判断cors开关
+      $(`#options_exe button[value=${programId}]`).addClass("active");
+      $('#options-form').hide().slideDown('slow');
+      // 判断 CORS 开关
       chrome.storage.local.get(["options_proxy_server_state"], function (result) {
-        if (result.options_proxy_server_state == 1) {
-          Insert_CORS_Element()
+        if (result.options_proxy_server_state === 1) {
+          Insert_CORS_Element();
         }
       });
 
-      Edit_Box_Animation()
-      $('.text-bottom-Tips1').html(prog.bottomTips);
+    }
+    initializeProgramOptions(options_exe)
+    // 按钮点击事件委托
+    $('#options_exe button').on('click', function () {
+      const progId = $(this).attr("id").replace("exe_", "");
+      initializeProgramOptions(progId);
     });
 
-    /**
-     * 编辑框动画
-     */
-    async function Edit_Box_Animation() {
-      $('.form-group').hide().slideDown('slow');// 编辑框动画
-    }
 
     function setBucketCors() {
       $("#Object_Storage_cors").click(function () {
@@ -1564,39 +1619,19 @@ $(document).ready(function () {
     function storeBedConfig(data) {
       let num = 50;
       const sortedData = sortObjectProperties(data);
-
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
-        // Chrome
-        chrome.storage.sync.get(["BedConfig"], result => {
+      const BedSyncStorage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) ? chrome.storage.sync : (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) ? browser.storage.sync : null;
+      if (BedSyncStorage) {
+        BedSyncStorage.get("BedConfig").then(result => {
           let BedConfig = result.BedConfig || [];
 
           if (!BedConfig.some(existingData => isSameData(existingData, sortedData))) {
             data["ConfigName"] = '配置' + BedConfig.length;
             data["ConfigTime"] = new Date().getTime();
             BedConfig.push(data);
-
             if (BedConfig.length >= num) {
               BedConfig.shift();
             }
-
-            chrome.storage.sync.set({ "BedConfig": BedConfig });
-          }
-        });
-      } else if (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) {
-        // Firefox
-        browser.storage.sync.get("BedConfig").then(result => {
-          let BedConfig = result.BedConfig || [];
-
-          if (!BedConfig.some(existingData => isSameData(existingData, sortedData))) {
-            data["ConfigName"] = '配置' + BedConfig.length;
-            data["ConfigTime"] = new Date().getTime();
-            BedConfig.push(data);
-
-            if (BedConfig.length >= num) {
-              BedConfig.shift();
-            }
-
-            browser.storage.sync.set({ "BedConfig": BedConfig });
+            BedSyncStorage.set({ "BedConfig": BedConfig });
           }
         });
       } else {
@@ -1616,309 +1651,107 @@ $(document).ready(function () {
 
       return true;
     }
-    readBedConfig();
-    function readBedConfig(keys = null) {
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
-        // Chrome
-        chrome.storage.sync.get(keys, result => {
-          $(".Config-Box-Log-content").empty()
-          if (!result.BedConfig || result.BedConfig.length < 1) {
+    async function readBedConfig(keys = null) {
+      //BedSyncStorage 账号存储
+      //BedLocalStorage 本地存储
+      const BedSyncStorage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) ? chrome.storage.sync : (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) ? browser.storage.sync : null;
+      const BedLocalStorage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) ? chrome.storage.local : (typeof browser !== 'undefined' && browser.storage && browser.storage.local) ? browser.storage.local : null;
+
+      if (BedSyncStorage) {
+        try {
+          const result = await BedSyncStorage.get(keys);
+          const bedConfig = result.BedConfig || [];
+          $(".Config-Box-Log-content").empty();
+          attachImportButtonHandler(keys); //导入
+          if (bedConfig.length === 0) {
             $(".Config-Box-Log-content").html(`
-              <div class="Config-Box-Log-item">
-                <div class="BedConfigName"><span >获取不到数据</span></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span class="BedConfigAdd button"><i class="bi bi-plus-circle"></i></span>
-                  <span class="BedConfigDel button"><i class="bi bi-x-circle"></i></span>
-                </div>
-              </div>       
-            `)
-          } else {
-            result.BedConfig.forEach((e, index) => {
-              let item = $(`
-                <div class="Config-Box-Log-item" data-index="${index}">
-                  <div class="BedConfigName" title="${e.options_exe}"><span data-old-value="${e.ConfigName}" title="双击修改">${e.ConfigName}</span></div>
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="BedConfigAdd button" title="加载:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-plus-circle"></i></span>
-                    <span class="BedConfigShare button" title="分享:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-send"></i></span>
-                    <span class="BedConfigDel button" title="删除:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-x-circle"></i></span>
-                  </div>
-                </div>
-              `)
-              $(".Config-Box-Log-content").append(item)
-              item.find(".BedConfigAdd").click(function () {
-                chrome.storage.sync.get(keys, data => {
-                  const dataIndex = $(this).parent().parent().data("index");
-                  if (dataIndex !== undefined) {
-                    const selectedData = data.BedConfig[dataIndex];
-                    const dataWithoutConfig = { ...selectedData };
-                    delete dataWithoutConfig.ConfigName;
-                    delete dataWithoutConfig.ConfigTime;
-                    chrome.storage.local.set(dataWithoutConfig, () => {
-                      toastItem({
-                        toast_content: "加载成功"
-                      });
-                      setTimeout(function () {
-                        window.location.reload();
-                      }, 1000); // 延迟 1.5 秒（1500 毫秒）
-                    });
-                  }
-                });
-              });
-              item.find(".BedConfigShare").click(function () {
-                chrome.storage.sync.get(keys, data => {
-                  const dataIndex = $(this).parent().parent().data("index");
-                  if (dataIndex !== undefined) {
-                    const selectedData = data.BedConfig[dataIndex];
-                    const textarea = document.createElement("textarea");
-                    textarea.value = JSON.stringify(selectedData);
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(textarea);
-                    toastItem({
-                      toast_content: "数据已复制到剪切板"
-                    });
-                  }
-                });
-              });
-              item.find(".BedConfigDel").click(function () {
-                chrome.storage.sync.get(keys, data => {
-                  const dataIndex = $(this).parent().parent().index();
-                  if (dataIndex !== undefined) {
-                    // 使用 dataIndex 索引删除 BedConfig 数组中的元素
-
-                    if (data.BedConfig && data.BedConfig[dataIndex]) {
-                      data.BedConfig.splice(dataIndex, 1); // 删除指定索引的元素
-                    }
-
-                    // 更新数据
-                    chrome.storage.sync.set({ BedConfig: data.BedConfig }, () => {
-                      console.log(data.BedConfig);
-                      $(this).parent().parent().remove();
-                    });
-                  }
-                });
-              });
-
-              item.find(".BedConfigName span").dblclick(function () {
-                const oldValue = $(this).data("old-value");
-                const newValue = prompt("输入新的配置名:", oldValue);
-                if (newValue !== null && newValue !== "") {
-                  $(this).text(newValue);
-                  $(this).data("old-value", newValue);
-                  chrome.storage.sync.get(keys, data => {
-                    const updatedBedConfig = data.BedConfig.map(existingData => {
-                      if (existingData.ConfigName === oldValue) {
-                        existingData.ConfigName = newValue;
-                      }
-                      return existingData;
-                    });
-                    chrome.storage.sync.set({ "BedConfig": updatedBedConfig });
-                  });
-                }
-              });
-            });
-          }
-          $(".Config-Box-Log-footer .share-button").click(function () {
-            chrome.storage.sync.get(keys, data => {
-              const textarea = document.createElement("textarea");
-              textarea.value = JSON.stringify(data.BedConfig);
-              document.body.appendChild(textarea);
-              textarea.select();
-              document.execCommand("copy");
-              document.body.removeChild(textarea);
-              toastItem({
-                toast_content: "数据已复制到剪切板"
-              });
-            });
-          })
-          $(".Config-Box-Log-footer .import-button").hover(function () {
-            if (!$("#ImportConfigurationPopup").length) {
-              let item = $(`
-              <div class="modal fade" id="ImportConfigurationPopup" tabindex="-1" aria-labelledby="ImportConfigurationPopupLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="ImportConfigurationPopupLabel">导入配置</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating">
-                      <textarea class="form-control" placeholder="配置信息" id="floatingTextarea"></textarea>
-                      <label for="floatingTextarea">多段数据使用,分割!</label>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary replace">替换</button>
-                    <button type="button" class="btn btn-primary append">追加</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-              `)
-              $("body").append(item)
-
-              item.find(".append").click(function () {
-                let value = item.find("#floatingTextarea").val();
-                try {
-                  let jsonArray;
-                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
-                    jsonArray = JSON.parse("[" + value + "]");
-                  } else {
-                    jsonArray = JSON.parse(value);
-                  }
-                  if (!Array.isArray(jsonArray)) {
-                    toastItem({
-                      toast_content: "输入数据不是有效的 JSON 数组!"
-                    });
-                    return;
-                  }
-                  chrome.storage.sync.get(keys, data => {
-                    let BedConfig = data.BedConfig || [];
-                    if (jsonArray.length > 0) {
-                      for (let i = 0; i < jsonArray.length; i++) {
-                        BedConfig.push(jsonArray[i]);
-                      }
-                    }
-                    chrome.storage.sync.set({ "BedConfig": BedConfig }, () => {
-                      item.find("#floatingTextarea").val("");
-                      readBedConfig();
-                    });
-
-                  });
-                } catch (error) {
-                  console.error("无法处理数据" + error);
-                  toastItem({
-                    toast_content: "无法处理数据,请查看报错!"
-                  });
-                }
-              });
-              item.find(".replace").click(function () {
-                let value = item.find("#floatingTextarea").val();
-                try {
-                  let jsonArray;
-                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
-                    jsonArray = JSON.parse("[" + value + "]");
-                  } else {
-                    jsonArray = JSON.parse(value);
-                  }
-                  if (!Array.isArray(jsonArray)) {
-                    toastItem({
-                      toast_content: "输入数据不是有效的 JSON 数组!"
-                    });
-                    return;
-                  }
-                  chrome.storage.sync.set({ "BedConfig": jsonArray }, () => {
-                    item.find("#floatingTextarea").val("");
-                    readBedConfig();
-                  });
-                } catch (error) {
-                  console.error("无法处理数据" + error);
-                  toastItem({
-                    toast_content: "无法处理数据,请查看报错!"
-                  });
-                }
-              })
-            }
-          })
-
-        });
-      } else if (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) {
-        // Firefox
-        browser.storage.sync.get(keys).then(result => {
-          $(".Config-Box-Log-content").empty()
-          if (!result.BedConfig) {
-            $(".Config-Box-Log-content").html(`
-              <div class="Config-Box-Log-item">
-                <div class="BedConfigName"><span >获取不到数据</span></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span class="BedConfigAdd button"><i class="bi bi-plus-circle"></i></span>
-                  <span class="BedConfigDel button"><i class="bi bi-x-circle"></i></span>
-                </div>
-              </div>       
-            `)
+                       <div class="Config-Box-Log-item">
+                         <div class="BedConfigName"><span >获取不到数据</span></div>
+                         <div style="display: flex; justify-content: space-between; align-items: center;">
+                           <span class="BedConfigAdd button"><i class="bi bi-plus-circle"></i></span>
+                           <span class="BedConfigDel button"><i class="bi bi-x-circle"></i></span>
+                         </div>
+                       </div> 
+            `);
             return;
           }
-          result.BedConfig.forEach((e, index) => {
-            let item = $(`
-              <div class="Config-Box-Log-item" data-index="${index}">
-                <div class="BedConfigName" title="${e.options_exe}"><span data-old-value="${e.ConfigName}" title="双击修改">${e.ConfigName}</span></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span class="BedConfigAdd button" title="加载:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-plus-circle"></i></span>
-                  <span class="BedConfigShare button" title="分享:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-send"></i></span>
-                  <span class="BedConfigDel button" title="删除:[${e.ConfigName}|${e.options_exe}]"><i class="bi bi-x-circle"></i></span>
-                </div>
-              </div>
-            `)
-            $(".Config-Box-Log-content").append(item)
-            item.find(".BedConfigAdd").click(function () {
-              browser.storage.sync.get(keys).then(data => {
-                const dataIndex = $(this).parent().parent().data("index");
-                if (dataIndex !== undefined) {
-                  const selectedData = data.BedConfig[dataIndex];
-                  const dataWithoutConfig = { ...selectedData };
-                  delete dataWithoutConfig.ConfigName;
-                  delete dataWithoutConfig.ConfigTime;
-                  browser.storage.local.set(dataWithoutConfig).then(() => {
-                    toastItem({
-                      toast_content: "加载成功"
-                    });
-                    setTimeout(function () {
-                      window.location.reload();
-                    }, 1000); // 延迟 1.5 秒（1500 毫秒）
-                  });
-                }
-              });
-            });
-            item.find(".BedConfigShare").click(function () {
-              browser.storage.sync.get(keys).then(data => {
-                const dataIndex = $(this).parent().parent().data("index");
-                if (dataIndex !== undefined) {
-                  const selectedData = data.BedConfig[dataIndex];
-                  const textarea = document.createElement("textarea");
-                  textarea.value = JSON.stringify(selectedData);
-                  document.body.appendChild(textarea);
-                  textarea.select();
-                  document.execCommand("copy");
-                  document.body.removeChild(textarea);
-                  toastItem({
-                    toast_content: "数据已复制到剪切板"
-                  });
-                }
-              });
-            });
-            item.find(".BedConfigDel").click(function () {
-              browser.storage.sync.get(keys).then(data => {
-                const updatedBedConfig = data.BedConfig.filter(existingData => existingData.ConfigTime !== e.ConfigTime);
-                browser.storage.sync.set({ "BedConfig": updatedBedConfig }).then(() => {
-                  $(this).parent().parent().remove();
-                });
-              });
-            });
-            item.find(".BedConfigName span").dblclick(function () {
-              const oldValue = $(this).data("old-value");
-              const newValue = prompt("输入新的配置名:", oldValue);
-              if (newValue !== null && newValue !== "") {
-                $(this).text(newValue);
-                $(this).data("old-value", newValue);
-                browser.storage.sync.get(keys).then(data => {
-                  const updatedBedConfig = data.BedConfig.map(existingData => {
-                    if (existingData.ConfigName === oldValue) {
-                      existingData.ConfigName = newValue;
-                    }
-                    return existingData;
-                  });
-                  browser.storage.sync.set({ "BedConfig": updatedBedConfig });
-                });
-              }
-            });
+          bedConfig.forEach((e, index) => {
+            const item = createConfigItem(e, index);
+            $(".Config-Box-Log-content").append(item);
+            attachEventHandlers(item, e, keys, index);
           });
-          $(".Config-Box-Log-footer .share-button").click(function () {
-            browser.storage.sync.get(keys).then(data => {
+
+          attachShareButtonHandler(keys);
+          DragSort(bedConfig)
+        } catch (error) {
+          console.error("发生错误：", error);
+        }
+      } else {
+        $(".Config-Box-Log-content").html(`<p class="text-center">该浏览器不支持此功能</p>`);
+      }
+      function createConfigItem(data, index) {
+        // 创建表示配置项的容器元素
+        const item = $(`
+          <div class="Config-Box-Log-item" data-index="${index}"  draggable="true">
+            <div class="BedConfigName" title="${data.options_exe}">
+              <span data-old-value="${data.ConfigName}" title="双击修改">${data.ConfigName}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button type="button" class="BedConfigAdd button" title="加载:[${data.ConfigName}|${data.options_exe}]">
+                <i class="bi bi-plus-circle"></i>
+              </button>
+              <button type="button" class="BedConfigShare button" title="分享:[${data.ConfigName}|${data.options_exe}]">
+                <i class="bi bi-send"></i>
+              </button>
+              <button type="button" class="BedConfigDel button" title="删除:[${data.ConfigName}|${data.options_exe}]">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            </div>
+          </div>
+        `);
+
+        return item;
+      }
+
+      function attachEventHandlers(item, data, keys, index) {
+        // 获取配置项中的各个按钮元素
+        const addBtn = item.find(".BedConfigAdd");
+        const shareBtn = item.find(".BedConfigShare");
+        const delBtn = item.find(".BedConfigDel");
+        const nameSpan = item.find(".BedConfigName span");
+
+        // 为加载按钮添加点击事件处理程序
+        addBtn.click(function () {
+          $(this).prop('disabled', true);
+          BedSyncStorage.get(keys).then(data => {
+            const dataIndex = addBtn.parent().parent().data("index");
+            if (dataIndex !== undefined) {
+              const selectedData = data.BedConfig[dataIndex];
+              const dataWithoutConfig = { ...selectedData };
+              delete dataWithoutConfig.ConfigName;
+              delete dataWithoutConfig.ConfigTime;
+              BedLocalStorage.set(dataWithoutConfig, () => {
+                toastItem({
+                  toast_content: "加载成功"
+                });
+                localStorage.options_webtitle_status = 1
+                setTimeout(function () {
+                  window.location.reload();
+                }, 1000); // 延迟
+              })
+            }
+          });
+        });
+
+        // 为分享按钮添加点击事件处理程序
+        shareBtn.click(function () {
+          $(this).prop('disabled', true);
+          BedSyncStorage.get(keys).then(data => {
+            const dataIndex = shareBtn.parent().parent().data("index");
+            if (dataIndex !== undefined) {
+              const selectedData = data.BedConfig[dataIndex];
               const textarea = document.createElement("textarea");
-              textarea.value = JSON.stringify(data.BedConfig);
+              textarea.value = JSON.stringify(selectedData);
               document.body.appendChild(textarea);
               textarea.select();
               document.execCommand("copy");
@@ -1926,12 +1759,75 @@ $(document).ready(function () {
               toastItem({
                 toast_content: "数据已复制到剪切板"
               });
-            });
+              setTimeout(function () {
+                shareBtn.prop('disabled', false);
+              }, 1000); // 延迟
+            }
+          });
+        });
 
-          })
-          $(".Config-Box-Log-footer .import-button").hover(function () {
-            if (!$("#ImportConfigurationPopup").length) {
-              let item = $(`
+        // 为删除按钮添加点击事件处理程序
+        delBtn.click(function () {
+          $(this).prop('disabled', true);
+          BedSyncStorage.get(keys).then(data => {
+            const dataIndex = delBtn.parent().parent().index();
+            if (dataIndex !== undefined) {
+              if (data.BedConfig && data.BedConfig[dataIndex]) {
+                data.BedConfig.splice(dataIndex, 1); // 删除指定索引的元素
+              }
+              BedSyncStorage.set({ "BedConfig": data.BedConfig }).then(() => {
+                $(this).parent().parent().remove();
+                toastItem({
+                  toast_content: "删除成功"
+                });
+                if (data.BedConfig.length < 1) {
+                  return readBedConfig();
+                }
+              });
+            }
+          });
+        });
+
+        // 为配置项名称添加双击事件处理程序
+        nameSpan.dblclick(function () {
+          const oldValue = $(this).data("old-value");
+          const newValue = prompt("输入新的配置名:", oldValue);
+          if (newValue !== null && newValue !== "") {
+            $(this).text(newValue);
+            $(this).data("old-value", newValue);
+            BedSyncStorage.get(keys).then(data => {
+              const updatedBedConfig = data.BedConfig.map(existingData => {
+                if (existingData.ConfigName === oldValue) {
+                  existingData.ConfigName = newValue;
+                }
+                return existingData;
+              });
+              BedSyncStorage.set({ "BedConfig": updatedBedConfig });
+            });
+          }
+        });
+      }
+
+      function attachShareButtonHandler(keys) {
+        $(".Config-Box-Log-footer .share-button").click(function () {
+          BedSyncStorage.get(keys).then(data => {
+            const textarea = document.createElement("textarea");
+            textarea.value = JSON.stringify(data.BedConfig);
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            toastItem({
+              toast_content: "数据已复制到剪切板"
+            });
+          });
+        })
+      }
+
+      function attachImportButtonHandler(keys) {
+        $(".Config-Box-Log-footer .import-button").hover(function () {
+          if (!$("#ImportConfigurationPopup").length) {
+            let item = $(`
                         <div class="modal fade" id="ImportConfigurationPopup" tabindex="-1" aria-labelledby="ImportConfigurationPopupLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
@@ -1955,77 +1851,130 @@ $(document).ready(function () {
                         </div>
                       </div>
                         `)
-              $("body").append(item)
+            $("body").append(item)
 
-              item.find(".append").click(function () {
-                let value = item.find("#floatingTextarea").val();
-                try {
-                  let jsonArray;
-                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
-                    jsonArray = JSON.parse("[" + value + "]");
-                  } else {
-                    jsonArray = JSON.parse(value);
-                  }
-                  if (!Array.isArray(jsonArray)) {
-                    toastItem({
-                      toast_content: "输入数据不是有效的 JSON 数组!"
-                    });
-                    return;
-                  }
-                  browser.storage.sync.get(keys).then(data => {
-                    let BedConfig = data.BedConfig || [];
-                    if (jsonArray.length > 0) {
-                      for (let i = 0; i < jsonArray.length; i++) {
-                        BedConfig.push(jsonArray[i]);
-                      }
-                    }
-
-                    browser.storage.sync.set({ "BedConfig": BedConfig }).then(() => {
-                      item.find("#floatingTextarea").val("");
-                      readBedConfig();
-                    });
-                  });
-                } catch (error) {
-                  console.error("无法处理数据" + error);
-                  toastItem({
-                    toast_content: "无法处理数据,请查看报错!"
-                  });
+            item.find(".append").click(function () {
+              let value = item.find("#floatingTextarea").val();
+              try {
+                let jsonArray;
+                if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                  jsonArray = JSON.parse("[" + value + "]");
+                } else {
+                  jsonArray = JSON.parse(value);
                 }
-              });
-              item.find(".replace").click(function () {
-                let value = item.find("#floatingTextarea").val();
-                try {
-                  let jsonArray;
-                  if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
-                    jsonArray = JSON.parse("[" + value + "]");
-                  } else {
-                    jsonArray = JSON.parse(value);
+                if (!Array.isArray(jsonArray)) {
+                  toastItem({
+                    toast_content: "输入数据不是有效的 JSON 数组!"
+                  });
+                  return;
+                }
+                BedSyncStorage.get(keys).then(data => {
+                  let BedConfig = data.BedConfig || [];
+                  if (jsonArray.length > 0) {
+                    for (let i = 0; i < jsonArray.length; i++) {
+                      BedConfig.push(jsonArray[i]);
+                    }
                   }
-                  if (!Array.isArray(jsonArray)) {
-                    toastItem({
-                      toast_content: "输入数据不是有效的 JSON 数组!"
-                    });
-                    return;
-                  }
-                  browser.storage.sync.set({ "BedConfig": jsonArray }).then(() => {
+
+                  BedSyncStorage.set({ "BedConfig": BedConfig }).then(() => {
                     item.find("#floatingTextarea").val("");
                     readBedConfig();
                   });
-                } catch (error) {
-                  console.error("无法处理数据" + error);
-                  toastItem({
-                    toast_content: "无法处理数据,请查看报错!"
-                  });
+                });
+              } catch (error) {
+                console.error("无法处理数据" + error);
+                toastItem({
+                  toast_content: "无法处理数据,请查看报错!"
+                });
+              }
+            });
+            item.find(".replace").click(function () {
+              let value = item.find("#floatingTextarea").val();
+              try {
+                let jsonArray;
+                if (value.charAt(0) !== '[' && value.charAt(value.length - 1) !== ']') {
+                  jsonArray = JSON.parse("[" + value + "]");
+                } else {
+                  jsonArray = JSON.parse(value);
                 }
-              })
-            }
-          })
-        });
-      } else {
-        $(".Config-Box-Log-content").html(`<p class="text-center">该浏览器不支持此功能</p>`)
+                if (!Array.isArray(jsonArray)) {
+                  toastItem({
+                    toast_content: "输入数据不是有效的 JSON 数组!"
+                  });
+                  return;
+                }
+                BedSyncStorage.set({ "BedConfig": jsonArray }).then(() => {
+                  item.find("#floatingTextarea").val("");
+                  readBedConfig();
+                });
+              } catch (error) {
+                console.error("无法处理数据" + error);
+                toastItem({
+                  toast_content: "无法处理数据,请查看报错!"
+                });
+              }
+            })
+          }
+        })
       }
-    }
+      function DragSort(bedConfig) {
+        let list = $('.Config-Box-Log-content');
+        let currentLi;
 
+        // 当开始拖拽列表项时触发的事件处理函数
+        list.on('dragstart', '.Config-Box-Log-item', function (e) {
+          // 设置拖拽效果
+          e.originalEvent.dataTransfer.effectAllowed = 'move';
+          // 记录当前拖拽的列表项
+          currentLi = $(this);
+          setTimeout(() => {
+            currentLi.addClass('moving');
+          });
+        });
+
+        // 当鼠标进入其他列表项时触发的事件处理函数
+        list.on('dragenter', '.Config-Box-Log-item', function (e) {
+          e.preventDefault();
+          if ($(this).is(currentLi)) {
+            return;
+          }
+          let liArray = list.find('.Config-Box-Log-item');
+          // 获取当前拖拽项的索引和目标项的索引
+          let currentIndex = liArray.index(currentLi);
+          let targetIndex = liArray.index($(this));
+
+          if (currentIndex < targetIndex) {
+            // 如果目标在当前项的下方，将当前项插入目标项的后面
+            $(this).after(currentLi);
+          } else {
+            // 如果目标在当前项的上方，将当前项插入目标项的前面
+            $(this).before(currentLi);
+          }
+        });
+        list.on('dragover', '.Config-Box-Log-item', function (e) {
+          e.preventDefault();
+        });
+        list.on('dragend', '.Config-Box-Log-item', function (e) {
+          currentLi.removeClass('moving');
+
+          // 获取已排序的 Config-Box-Log-item 元素的顺序
+          let sortedItems = list.find('.Config-Box-Log-item');
+          let newOrder = [];
+          sortedItems.each(function () {
+            newOrder.push($(this).data('index'));
+          });
+
+          // 从 bedConfig 中重新排列数据
+          let rearrangedBedConfig = [];
+          newOrder.forEach(index => {
+            rearrangedBedConfig.push(bedConfig[index]);
+          });
+          BedSyncStorage.set({ "BedConfig": rearrangedBedConfig });
+        });
+      }
+
+    }
+    readBedConfig();
     /**
      * 统一插入CORS元素
      */
@@ -2033,7 +1982,7 @@ $(document).ready(function () {
       $("#CorsButton button").removeClass("css-button-rounded--black")
       $("#CorsButton button").addClass('css-button-rounded--red');
       $('.options-form').append(html_exeCORSForm)
-      Edit_Box_Animation()
+      $('.CorsForm').hide().slideDown('slow');
       $('#options_proxy_server').val(options_proxy_server);
       if ($('#options_proxy_server').val() == "undefined") {
         $('#options_proxy_server').val("")
@@ -2051,11 +2000,6 @@ $(document).ready(function () {
         $options_proxy_server.remove();
       });// CORS动画
       chrome.storage.local.set({ 'options_proxy_server_state': 0 })
-    }
-
-    if (options_proxy_server_state == 1) {
-      // 初始化跨域CORS
-      Insert_CORS_Element()
     }
 
     // 开启配置CORS 按钮
@@ -2399,10 +2343,8 @@ $(document).ready(function () {
     })
 
   })//chrome get
-  $("#options_exe button").click(function () {
-    $("#options_exe button").removeClass('active'); // 删除所有a标签的active类
-    $(this).addClass('active'); // 给当前点击的a标签添加active类
-  });
+
+
   // 修复初始化时输入框读取到undefined
   let optionsNull = ['#options_host', '#options_token', '#options_uid'];
   optionsNull.forEach(function (option) {

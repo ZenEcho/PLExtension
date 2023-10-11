@@ -95,8 +95,6 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
                     document.execCommand('insertText', false, UpUrl);
                     Find_Editor = true
                 }
-
-
             }
             return
         }
