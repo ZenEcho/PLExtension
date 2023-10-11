@@ -151,9 +151,13 @@ V1.1.4后增加了Chromium,Gecko内核识别
 
 考虑到js页面注入不同浏览器扩展会造成冲突,所以添加了识别功能
 当扩展开发者发现功能冲突与盘络上传冲突时,可以使用：
-`window.postMessage({ type: 'Extension', data: "" }, event.origin);`
+
+`window.postMessage({ type: 'Extension', data: "" }, "*");`
+
 喊话扩展,然后使用：
+
 `window.addEventListener('message', function (event) {if (event.data.type === 'ExtensionResponse') {console.log(event.data.data);}});`
+
 接收判断有没有安装盘络上传,并做出规避;
 
 
