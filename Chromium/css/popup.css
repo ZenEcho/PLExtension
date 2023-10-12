@@ -169,7 +169,7 @@
 }
 
 .LinksBox {
-    /* display: none */
+    display: none
 }
 
 textarea:focus {
