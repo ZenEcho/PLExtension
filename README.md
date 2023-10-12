@@ -1,10 +1,8 @@
 <p align="center">
   <img alt="logo" src="https://cdn-us.imgs.moe/2023/10/11/yyl_256_IOGn1IDwRN.png" height="200" />
-</p>
-<p align="center">
   <img alt="logo" src="https://cdn-us.imgs.moe/2023/10/11/hyl_256_W1cRB1Mmr5.png" height="200" />
 </p>
- 
+
  # 盘络上传扩展程序
 
 [官网地址](https://fileup.dev/) **·** [安装下载](https://github.com/ZenEcho/PLExtension#%E4%B8%8B%E8%BD%BD) **·** [功能演示](https://github.com/ZenEcho/PLExtension#%E5%8A%9F%E8%83%BD%E6%BC%94%E7%A4%BA) **·** [版本更新](https://github.com/ZenEcho/PLExtension/blob/master/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0.md) **·** [问题反馈](https://github.com/ZenEcho/PLExtension#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88) **·** [隐私政策](https://github.com/ZenEcho/PLExtension/blob/master/Privacy.md)
