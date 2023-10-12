@@ -479,129 +479,138 @@ var fileTypeMap = {
 
 let pluginURL = chrome.runtime.getURL("popup.html");
 let currentURL = window.location.href;
-if (currentURL === pluginURL) {
-  chrome.storage.local.get(storagelocal, function (result) {
-    let options_exe = result.options_exe
-    let options_proxy_server = result.options_proxy_server
-    let options_host = result.options_host
-    let options_token = result.options_token
-    let options_proxy_server_state = result.options_proxy_server_state
 
-    // 判断跨域开关
-    if (options_proxy_server_state == 0) {
-      options_proxy_server = ""
-    }
+chrome.storage.local.get(storagelocal, function (result) {
+  let options_exe = result.options_exe
+  let options_proxy_server = result.options_proxy_server
+  let options_host = result.options_host
+  let options_token = result.options_token
+  let options_proxy_server_state = result.options_proxy_server_state
 
-    if (!options_proxy_server) {
-      options_proxy_server = ""
-    }
+  // 判断跨域开关
+  if (options_proxy_server_state == 0) {
+    options_proxy_server = ""
+  }
+
+  if (!options_proxy_server) {
+    options_proxy_server = ""
+  }
 
 
-    if (options_exe == "UserDiy") {
-      localStorage.options_webtitle = chrome.i18n.getMessage("Custom_Upload")
-      localStorage.options_webtitle_status = 0
-      return;
-    }
-    if (options_exe == "GitHubUP") {
-      localStorage.options_webtitle = chrome.i18n.getMessage("GitHub")
-      localStorage.options_webtitle_status = 0
-      return;
-    }
-    if (options_exe == "Tencent_COS") {
-      localStorage.options_webtitle = chrome.i18n.getMessage("Tencent_COS")
-      localStorage.options_webtitle_status = 0
-      return;
-    }
-    if (options_exe == "Aliyun_OSS") {
-      localStorage.options_webtitle = chrome.i18n.getMessage("Alibaba_OSS")
-      localStorage.options_webtitle_status = 0
-      return;
-    }
-    if (options_exe == "AWS_S3") {
-      localStorage.options_webtitle = chrome.i18n.getMessage("AWS_S3")
-      localStorage.options_webtitle_status = 0
-      return;
-    }
+  if (options_exe == "UserDiy") {
+    localStorage.options_webtitle = chrome.i18n.getMessage("Custom_Upload")
+    localStorage.options_webtitle_status = 0
+    return;
+  }
+  if (options_exe == "GitHubUP") {
+    localStorage.options_webtitle = chrome.i18n.getMessage("GitHub")
+    localStorage.options_webtitle_status = 0
+    return;
+  }
+  if (options_exe == "Tencent_COS") {
+    localStorage.options_webtitle = chrome.i18n.getMessage("Tencent_COS")
+    localStorage.options_webtitle_status = 0
+    return;
+  }
+  if (options_exe == "Aliyun_OSS") {
+    localStorage.options_webtitle = chrome.i18n.getMessage("Alibaba_OSS")
+    localStorage.options_webtitle_status = 0
+    return;
+  }
+  if (options_exe == "AWS_S3") {
+    localStorage.options_webtitle = chrome.i18n.getMessage("AWS_S3")
+    localStorage.options_webtitle_status = 0
+    return;
+  }
 
-    if (options_host) {
-      // 自定义ajax函数属性
-      if (options_exe == "Lsky") {
-        fetch(options_proxy_server + "https://" + options_host + "/api/v1/profile", {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': options_token
+  if (options_host) {
+    // 自定义ajax函数属性
+    if (options_exe == "Lsky") {
+      fetch(options_proxy_server + "https://" + options_host + "/api/v1/profile", {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': options_token
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok.');
           }
         })
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error('Network response was not ok.');
-            }
-          })
-          .then(res => {
-            $('.userBox').hide().fadeIn('slow'); // 动画
-            let getUser_name = res.data.name;
-            let getUser_capacity = (res.data.capacity / 1024 / 1024).toFixed(2);
-            let getUser_size = (res.data.size / 1024 / 1024).toFixed(3);
-            let getUser_image_num = res.data.image_num;
-            $(".userName").text(getUser_name);
-            $(".userCapacity").text(getUser_capacity + "GB");
-            $(".userSize").text(getUser_size + "GB");
-            $(".userImage_num").text(getUser_image_num);
-          })
-          .catch(error => {
-            if (error.message.includes('401')) {
-              console.error('未登录或授权失败');
-            } else if (error.message.includes('403')) {
-              console.error('管理员关闭了接口功能或没有该接口权限');
-            } else if (error.message.includes('429')) {
-              console.error('超出请求配额，请求受限');
-            } else if (error.message.includes('500')) {
-              console.error('服务端出现异常');
-            } else {
-              console.error('请求失败:', error.message);
-            }
-          });
-      }
-      if (options_exe == "SM_MS") {
-        fetch(options_proxy_server + "https://" + options_host + "/api/v2/profile", {
-          method: 'POST',
-          headers: {
-            'Authorization': options_token
+        .then(res => {
+          $('.userBox').hide().fadeIn('slow'); // 动画
+          let getUser_name = res.data.name;
+          let getUser_capacity = (res.data.capacity / 1024 / 1024).toFixed(2);
+          let getUser_size = (res.data.size / 1024 / 1024).toFixed(3);
+          let getUser_image_num = res.data.image_num;
+          $(".userName").text(getUser_name);
+          $(".userCapacity").text(getUser_capacity + "GB");
+          $(".userSize").text(getUser_size + "GB");
+          $(".userImage_num").text(getUser_image_num);
+        })
+        .catch(error => {
+          if (error.message.includes('401')) {
+            console.error('未登录或授权失败');
+          } else if (error.message.includes('403')) {
+            console.error('管理员关闭了接口功能或没有该接口权限');
+          } else if (error.message.includes('429')) {
+            console.error('超出请求配额，请求受限');
+          } else if (error.message.includes('500')) {
+            console.error('服务端出现异常');
+          } else {
+            console.error('请求失败:', error.message);
+          }
+        });
+    }
+    if (options_exe == "SM_MS") {
+      fetch(options_proxy_server + "https://" + options_host + "/api/v2/profile", {
+        method: 'POST',
+        headers: {
+          'Authorization': options_token
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok.');
           }
         })
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error('Network response was not ok.');
-            }
-          })
-          .then(res => {
-            $('.userBox').hide().fadeIn('slow'); // 动画
-            let getUser_name = res.data.username;
-            let getUser_capacity = (res.data.disk_limit_raw / 1024 / 1024 / 1024).toFixed(2);
-            let getUser_size = (res.data.disk_usage_raw / 1024 / 1024 / 1024).toFixed(3);
-            let getUser_image_num = "SM.MS不支持";
-            $(".userName").text(getUser_name);
-            $(".userCapacity").text(getUser_capacity + "GB");
-            $(".userSize").text(getUser_size + "GB");
-            $(".userImage_num").text(getUser_image_num);
-          })
-          .catch(error => {
-            console.error('未知原因请求失败了:', error);
-          });
-      }
-
-      if (localStorage.options_webtitle_status == 1) {
-        // 获取web标题
-        if (options_host == "pnglog.com") {
-          localStorage.options_webtitle = "盘络图床"
-          localStorage.options_webtitle_status = 0 // 不获取
-        } else {
-          fetch(options_proxy_server + 'https://' + options_host)
+        .then(res => {
+          $('.userBox').hide().fadeIn('slow'); // 动画
+          let getUser_name = res.data.username;
+          let getUser_capacity = (res.data.disk_limit_raw / 1024 / 1024 / 1024).toFixed(2);
+          let getUser_size = (res.data.disk_usage_raw / 1024 / 1024 / 1024).toFixed(3);
+          let getUser_image_num = "SM.MS不支持";
+          $(".userName").text(getUser_name);
+          $(".userCapacity").text(getUser_capacity + "GB");
+          $(".userSize").text(getUser_size + "GB");
+          $(".userImage_num").text(getUser_image_num);
+        })
+        .catch(error => {
+          console.error('未知原因请求失败了:', error);
+        });
+    }
+  }
+  if (localStorage.options_webtitle_status == 1) {
+    // 获取web标题
+    if (options_host == "pnglog.com") {
+      localStorage.options_webtitle = "盘络图床"
+      localStorage.options_webtitle_status = 0 // 不获取
+    } else {
+      fetch(options_proxy_server + 'https://' + options_host)
+        .then(response => response.text())
+        .then(html => {
+          let webtitle = $(html).filter('title').text();
+          localStorage.options_webtitle = webtitle
+          localStorage.options_webtitle_status = 0
+        })
+        .catch(error => {
+          console.log("标题获取失败,再次尝试获取...");
+          fetch('https://cors-anywhere.pnglog.com/https://' + options_host)
             .then(response => response.text())
             .then(html => {
               let webtitle = $(html).filter('title').text();
@@ -609,21 +618,12 @@ if (currentURL === pluginURL) {
               localStorage.options_webtitle_status = 0
             })
             .catch(error => {
-              console.log("标题获取失败,再次尝试获取...");
-              fetch('https://cors-anywhere.pnglog.com/https://' + options_host)
-                .then(response => response.text())
-                .then(html => {
-                  let webtitle = $(html).filter('title').text();
-                  localStorage.options_webtitle = webtitle
-                  localStorage.options_webtitle_status = 0
-                })
-                .catch(error => {
-                  localStorage.options_webtitle = chrome.i18n.getMessage("app_name")
-                });
+              localStorage.options_webtitle = chrome.i18n.getMessage("app_name")
             });
-        }
-      }
+        });
     }
+  }
+  if (currentURL === pluginURL) {
     if (options_exe != "Lsky" && options_exe != "SM_MS") {
       chrome.storage.local.get("UploadLog", function (result) {
         setTimeout(() => {
@@ -647,9 +647,9 @@ if (currentURL === pluginURL) {
 
       })
     }
-  })
-}
+  }
 
+})
 
 function measurePingDelay(callback, getUrl) {
   let startTime = new Date().getTime();

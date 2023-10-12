@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="options_title">盘络上传程序配置——盘络上传程序</title>
-  <link rel="shortcut icon" href="icons/logo.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="icons/logo256.png" type="image/x-icon">
   <link rel="stylesheet" href="css/public.css">
   <link rel="stylesheet" href="css/options.css">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
@@ -62,7 +62,7 @@
       <div class="border-bottom Config-Box">
         <div class="Config-Box-Left">
           <div id="options_exe" style="padding: 0 5px;">
-            <button type="button" class=" active Animation_button2" id="exe_Lsky" value="Lsky"><span
+            <button type="button" class="Animation_button2" id="exe_Lsky" value="Lsky"><span
                 class="Animation_button_span" data-i18n="lsky">兰空图床程序</span></button>
             <button type="button" class="Animation_button2" id="exe_EasyImages" value="EasyImages"><span
                 class="Animation_button_span" data-i18n="EasyImages">简单图床程序</span></button>
@@ -93,16 +93,14 @@
                   class="Animation_button_span">今日头条2[后端]</span></button> -->
               <button type="button" class="Animation_button2" id="exe_imgdd" value="imgdd"><span
                   class="Animation_button_span" data-i18n="IMGDD">IMGDD图床</span></button>
-              <button type="button" class=" active Animation_button2 " id="exe_fiftyEight" value="fiftyEight"><span
+              <button type="button" class="Animation_button2 " id="exe_fiftyEight" value="fiftyEight"><span
                   class="Animation_button_span">58同城(免登)</span></button>
-              <button type="button" class=" active Animation_button2" id="exe_freebufBed" value="freebufBed"><span
+              <button type="button" class="Animation_button2" id="exe_freebufBed" value="freebufBed"><span
                   class="Animation_button_span" title="由hostloc.com的jqbaobao提供">freebuf[免登]</span></button>
-              <button type="button" class=" active Animation_button2" id="exe_toutiaoBed" value="toutiaoBed"><span
+              <button type="button" class="Animation_button2" id="exe_toutiaoBed" value="toutiaoBed"><span
                   class="Animation_button_span">今日头条[免登]</span></button>
-              <button type="button" class=" active Animation_button2 " id="exe_BaiJiaHaoBed" value="BaiJiaHaoBed"><span
+              <button type="button" class="Animation_button2 " id="exe_BaiJiaHaoBed" value="BaiJiaHaoBed"><span
                   class="Animation_button_span">百度[登录]</span></button>
-
-
             </div>
 
             <button type="button" class="Animation_button2" id="exe_UserDiy" value="UserDiy"><span
@@ -139,16 +137,18 @@
     <div class="main-right" style="min-width: 380px;">
       <div class="Config-Bottom-Boxs shadow-lg">
         <div id="options_Open_withDiv" class="Config-Bottom-Box">
-          <button type="button" class="css-button-arrow--sky" data-bs-toggle="dropdown" aria-expanded="false">
-          </button>
-          <ul class="dropdown-menu">
-            <li id="options_Open_with_Tab"><a class="dropdown-item" href="#" data-i18n="Open_Method1"><i
-                  class="bi bi-window"></i>在标签页打开</a></li>
-            <li id="options_Open_with_Window"><a class="dropdown-item" href="#" data-i18n="Open_Method2"><i
-                  class="bi bi-window-stack"></i>在新窗口打开</a></li>
-            <li id="options_Open_with_Inside"><a class="dropdown-item" href="#" data-i18n="Open_Method3"><i
-                  class="bi bi-window-sidebar"></i>在内置页打开</a></li>
-          </ul>
+          <div class="btn-group">
+            <button type="button" class="css-button-arrow--sky" data-bs-toggle="dropdown" aria-expanded="false">
+            </button>
+            <ul class="dropdown-menu">
+              <li id="options_Open_with_Tab"><a class="dropdown-item" href="#" data-i18n="Open_Method1"><i
+                    class="bi bi-window"></i>在标签页打开</a></li>
+              <li id="options_Open_with_Window"><a class="dropdown-item" href="#" data-i18n="Open_Method2"><i
+                    class="bi bi-window-stack"></i>在新窗口打开</a></li>
+              <li id="options_Open_with_Inside"><a class="dropdown-item" href="#" data-i18n="Open_Method3"><i
+                    class="bi bi-window-sidebar"></i>在内置页打开</a></li>
+            </ul>
+          </div>
         </div>
         <div id="GlobalUpload" class="Config-Bottom-Box">
           <div class="btn-group">
@@ -187,7 +187,7 @@
             </button>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#" value="AutoCopy_on"><i class="bi bi-battery-half"></i>
-                  开启(作用于对侧边栏上传)</a>
+                  开启(仅对侧边栏上传有效)</a>
               </li>
               <li><a class="dropdown-item" href="#" value="AutoCopy_off"><i class="bi bi-battery"></i>关闭</a></li>
             </ul>
@@ -238,10 +238,15 @@
         <div class="Config-Box-Log-haed">
           <span style="color: white;"><i class="bi bi-clipboard-data"></i> 配置记录</span>
         </div>
-        <div class="Config-Box-Log-content">
+        <div class="Config-Box-Log-content border-bottom">
           <div class="Config-Box-Log-item">
 
           </div>
+        </div>
+        <div class="Config-Box-Log-footer text-center user-select-none mt-1">
+          <span class="px-1 btn btn-light btn-sm share-button"><i class="bi bi-send"></i> 分享</span>
+          <span class="px-1 btn btn-light btn-sm import-button" data-bs-toggle="modal"
+            data-bs-target="#ImportConfigurationPopup"><i class="bi bi-plus-circle"></i> 导入</span>
         </div>
       </div>
       <div class="Config-Bottom-Boxs shadow-lg">
@@ -424,5 +429,6 @@
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
   </div>
 </body>
+
 
 </html>
