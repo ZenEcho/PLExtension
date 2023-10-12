@@ -1,6 +1,9 @@
 <p align="center">
   <img alt="logo" src="https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png" height="200" />
 </p>
+<p align="center">
+  <img alt="logo" src="https://cdn-us.imgs.moe/2023/05/31/64770cc077bfc.png" height="200" />
+</p>
  
  # 盘络上传扩展程序
 
