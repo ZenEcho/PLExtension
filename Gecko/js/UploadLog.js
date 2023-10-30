@@ -1,27 +1,17 @@
 $(document).ready(function () {
     chrome.storage.local.get(storagelocal, function (result) {
-        // 获取程序以及状态
-        options_exe = result.options_exe;
-        options_proxy_server = result.options_proxy_server;
-        options_host = result.options_host;
-        options_token = result.options_token
-        options_proxy_server_state = result.options_proxy_server_state
+        if (result.ProgramConfiguration) {
+            const programConfig = result.ProgramConfiguration || {};
+            for (const key in ProgramConfigurations) {
+                if (programConfig.hasOwnProperty(key)) {
+                    ProgramConfigurations[key] = programConfig[key];
+                }
+            }
+        }
+
         Browse_mode_switching_status = result.Browse_mode_switching_status
         Copy_Selected_Mode = result.Copy_Selected_Mode
-        ImageProxy = result.ImageProxy || 0
-        //对象存储
-        options_SecretId = result.options_SecretId
-        options_SecretKey = result.options_SecretKey
-        options_Bucket = result.options_Bucket
-        options_AppId = result.options_AppId
-        options_Endpoint = result.options_Endpoint
-        options_Region = result.options_Region
-        options_UploadPath = result.options_UploadPath
-        options_Custom_domain_name = result.options_Custom_domain_name
-
-        //GitHub
-        options_owner = result.options_owner
-        options_repository = result.options_repository
+        let ImageProxy = result.FuncDomain.ImageProxy || 0
 
         let images
         let imageUrlkey = [] //必须在这里初始化
@@ -31,26 +21,26 @@ $(document).ready(function () {
         let itemsPerPage
         let totalPages;
 
-        if (options_exe == 'Tencent_COS') {
+        if (ProgramConfigurations.options_exe == 'Tencent_COS') {
             //腾讯云cos拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+                ProgramConfigurations.options_Custom_domain_name = "https://" + ProgramConfigurations.options_Bucket + ".cos." + ProgramConfigurations.options_Region + ".myqcloud.com/"
             }
         }
-        if (options_exe == 'Aliyun_OSS') {
+        if (ProgramConfigurations.options_exe == 'Aliyun_OSS') {
             //阿里云oss拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+                ProgramConfigurations.options_Custom_domain_name = "https://" + ProgramConfigurations.options_Bucket + "." + ProgramConfigurations.options_Endpoint + "/"
             }
         }
-        if (options_exe == 'AWS_S3') {
+        if (ProgramConfigurations.options_exe == 'AWS_S3') {
             //AWS S3区域拼接
-            if (!options_Endpoint) {
-                options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
+            if (!ProgramConfigurations.options_Endpoint) {
+                ProgramConfigurations.options_Endpoint = "https://s3." + ProgramConfigurations.options_Region + ".amazonaws.com/"
             }
             //AWS S3拼接
-            if (!options_Custom_domain_name) {
-                options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+                ProgramConfigurations.options_Custom_domain_name = "https://s3." + ProgramConfigurations.options_Region + ".amazonaws.com/" + ProgramConfigurations.options_Bucket + "/"
             }
         }
         const Image_acquisition_failed = `
@@ -88,12 +78,12 @@ $(document).ready(function () {
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
         // 判断跨域开关
-        if (options_proxy_server_state == 0) {
-            options_proxy_server = ""
+        if (ProgramConfigurations.options_proxy_server_state == 0) {
+            ProgramConfigurations.options_proxy_server = ""
         }
 
-        if (!options_proxy_server) {
-            options_proxy_server = ""
+        if (!ProgramConfigurations.options_proxy_server) {
+            ProgramConfigurations.options_proxy_server = ""
         }
         // 判断复制模式
         if (!Copy_Selected_Mode) {
@@ -190,9 +180,7 @@ $(document).ready(function () {
                             }
                         }
                     });
-                    // if (options_exe == 'Tencent_COS' || options_exe == 'Aliyun_OSS' || options_exe == 'AWS_S3') {
-                    //     $(".PLdanger").html(`<div class="alert alert-danger" role="alert">已知问题：多文件上传时对象存储日志不记录问题——等待解决中...</div>`)
-                    // }
+
                     if (typeof images !== 'object') {
                         images = JSON.parse(images);
                     }
@@ -521,16 +509,16 @@ $(document).ready(function () {
                 $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
                 $container = $('#container');
-                switch (options_exe) {
+                switch (ProgramConfigurations.options_exe) {
                     case 'Lsky':
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
                             注意：现在删除图片,服务器图片也会跟随删除
                           </div>`)
-                        fetch(options_proxy_server + "https://" + options_host + "/api/v1/images", {
+                        fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/images", {
                             method: 'GET',
                             headers: {
                                 "Accept": "application/json",
-                                "Authorization": options_token
+                                "Authorization": ProgramConfigurations.options_token
                             }
                         })
                             .then(response => {
@@ -554,11 +542,11 @@ $(document).ready(function () {
                                         onPageClick: function (event, page) {
                                             ContainerLoading()
                                             currentPage = page;
-                                            fetch(options_proxy_server + "https://" + options_host + "/api/v1/images?page=" + page, {
+                                            fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/images?page=" + page, {
                                                 method: 'GET',
                                                 headers: {
                                                     "Accept": "application/json",
-                                                    "Authorization": options_token
+                                                    "Authorization": ProgramConfigurations.options_token
                                                 }
                                             })
                                                 .then(response => {
@@ -602,10 +590,10 @@ $(document).ready(function () {
                       </div><div class="alert alert-primary" role="alert">
                       注意：仅加载最新100张图片且查询和删除有延迟(因为sm.ms服务端设置的单页100张图,单页这么多图对配置要求过高,还会被误判为ddos攻击。)
                     </div>`)
-                        fetch(options_proxy_server + "https://" + options_host + "/api/v2/upload_history?page=1", {
+                        fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v2/upload_history?page=1", {
                             method: 'GET',
                             headers: {
-                                "Authorization": options_token,
+                                "Authorization": ProgramConfigurations.options_token,
                                 "Content-Type": "multipart/form-data"
                             }
                         })
@@ -652,13 +640,13 @@ $(document).ready(function () {
                         $(".PLdanger").html(`<div class="alert alert-danger" role="alert">
                         注意：现在删除图片,服务器图片也会跟随删除
                       </div>`)
-                        fetch(options_proxy_server + "https://" + options_host + "/api/getimglist/", {
+                        fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/getimglist/", {
                             method: 'POST',
                             headers: {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                "token": options_token
+                                "token": ProgramConfigurations.options_token
                             })
                         })
                             .then(response => {
@@ -682,13 +670,13 @@ $(document).ready(function () {
                                         onPageClick: function (event, page) {
                                             ContainerLoading()
                                             currentPage = page;
-                                            fetch(options_proxy_server + "https://" + options_host + "/api/getimglist/?pageNum=" + page, {
+                                            fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/getimglist/?pageNum=" + page, {
                                                 method: 'POST',
                                                 headers: {
                                                     "Content-Type": "application/json"
                                                 },
                                                 body: JSON.stringify({
-                                                    "token": options_token
+                                                    "token": ProgramConfigurations.options_token
                                                 })
                                             })
                                                 .then(response => {
@@ -730,12 +718,12 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                                 <div class="alert alert-primary" role="alert">注意：腾讯云COS限制仅能加载最新1000张图片</div>`)
-                        $(".options_UploadPath").val(options_UploadPath)
+                        $(".options_UploadPath").val(ProgramConfigurations.options_UploadPath)
                         function getBucket(marker) {
                             cos.getBucket({
-                                Bucket: options_Bucket,
-                                Region: options_Region,
-                                Prefix: options_UploadPath, // 列出某某开头文件
+                                Bucket: ProgramConfigurations.options_Bucket,
+                                Region: ProgramConfigurations.options_Region,
+                                Prefix: ProgramConfigurations.options_UploadPath, // 列出某某开头文件
                                 Marker: marker,
                                 MaxKeys: 1000,
                             }, function (err, data) {
@@ -779,12 +767,12 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                                 <div class="alert alert-primary" role="alert">注意：阿里云OSS限制仅能加载最新1000张图片</div>`)
-                        $(".options_UploadPath").val(options_UploadPath)
+                        $(".options_UploadPath").val(ProgramConfigurations.options_UploadPath)
                         async function list() {
                             try {
                                 const result = await oss.listV2({
                                     "max-keys": 1000,
-                                    prefix: options_UploadPath
+                                    prefix: ProgramConfigurations.options_UploadPath
                                 });
                                 images = result.objects
                                 if (!images.length) {
@@ -822,10 +810,10 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                                 <div class="alert alert-primary" role="alert">注意：AWS S3限制仅能加载最新1000张图片</div>`)
-                        $(".options_UploadPath").val(options_UploadPath)
+                        $(".options_UploadPath").val(ProgramConfigurations.options_UploadPath)
                         const params = {
-                            Bucket: options_Bucket,
-                            Prefix: options_UploadPath,
+                            Bucket: ProgramConfigurations.options_Bucket,
+                            Prefix: ProgramConfigurations.options_UploadPath,
                             MaxKeys: "1000",//最大1000个
                         };
 
@@ -865,11 +853,11 @@ $(document).ready(function () {
                         $(".PLdanger").html(
                             `<div class="alert alert-danger" role="alert">注意：现在删除图片,服务器图片也会跟随删除</div>
                                 <div class="alert alert-primary" role="alert">注意：GitHub限制仅能加载最新1000张图片,删除可能会有缓存</div>`)
-                        $(".options_UploadPath").val(options_UploadPath)
-                        fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath, {
+                        $(".options_UploadPath").val(ProgramConfigurations.options_UploadPath)
+                        fetch(ProgramConfigurations.options_proxy_server + `https://api.github.com/repos/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/contents/` + ProgramConfigurations.options_UploadPath, {
                             method: 'GET',
                             headers: {
-                                'Authorization': 'Bearer ' + options_token,
+                                'Authorization': 'Bearer ' + ProgramConfigurations.options_token,
                                 'Content-Type': 'application/json'
                             }
                         })
@@ -917,14 +905,21 @@ $(document).ready(function () {
 
                         break;
                     default:
-                        $("#container").html('<div class="alert alert-danger" role="alert"><h4 class="alert-heading">亲亲</h4><p>真的很抱歉捏,这个图床不能获取图片噢!</p><hr><p class="mb-0"><a class="nav-link"href="options.html">换一个图床试一试吧</a></p></div>');
+                        $("#container").html(`
+                        <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">`+ chrome.i18n.getMessage("Kissing_alert") + `</h4>
+                        <p>`+ chrome.i18n.getMessage("Kissing_alert_p_3_1") + `</p>
+                        <hr>
+                        <p class="mb-0"><a class="nav-link"href="options.html">换一个图床试一试吧</a>
+                        </p>
+                        </div>`);
                         break;
                 }
                 /**
                  * 网络图片渲染
                  */
                 function networkRenderImages() {
-                    switch (options_exe) {
+                    switch (ProgramConfigurations.options_exe) {
                         case 'Lsky':
                             images.sort(function (a, b) {
                                 try {
@@ -1148,7 +1143,7 @@ $(document).ready(function () {
 
                     }
                     $container.empty();
-                    switch (options_exe) {
+                    switch (ProgramConfigurations.options_exe) {
                         case 'SM_MS':
                         case 'Tencent_COS':
                         case 'Aliyun_OSS':
@@ -1171,7 +1166,7 @@ $(document).ready(function () {
                         let item_liImgName;
                         let item_liImgSize;
                         let item_liImgDate;
-                        switch (options_exe) {
+                        switch (ProgramConfigurations.options_exe) {
                             case 'Lsky':
                                 imageUrlkey.push(imageUrl.key);
                                 item_divKey = imageUrl.key
@@ -1202,7 +1197,7 @@ $(document).ready(function () {
                             case 'Tencent_COS':
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
-                                item_imgUrl = options_Custom_domain_name + imageUrl.Key
+                                item_imgUrl = ProgramConfigurations.options_Custom_domain_name + imageUrl.Key
                                 item_liImgName = imageUrl.Key
                                 // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
@@ -1212,10 +1207,10 @@ $(document).ready(function () {
                             case 'Aliyun_OSS':
                                 imageUrlkey.push(imageUrl.name); // 删除图片的服务器key值
                                 item_divKey = imageUrl.name
-                                item_imgUrl = options_Custom_domain_name + imageUrl.name
+                                item_imgUrl = ProgramConfigurations.options_Custom_domain_name + imageUrl.name
                                 item_liImgName = imageUrl.name
                                 // item_liImgName = imageUrl.name.split('/').pop()
-                                if (imageUrl.name == options_UploadPath) {
+                                if (imageUrl.name == ProgramConfigurations.options_UploadPath) {
                                 }
                                 item_liImgSize = (imageUrl.size / 1024).toFixed(2)
                                 item_liImgDate = imageUrl.lastModified
@@ -1224,7 +1219,7 @@ $(document).ready(function () {
                             case 'AWS_S3':
                                 imageUrlkey.push(imageUrl.Key); // 删除图片的服务器key值
                                 item_divKey = imageUrl.Key
-                                item_imgUrl = options_Custom_domain_name + imageUrl.Key
+                                item_imgUrl = ProgramConfigurations.options_Custom_domain_name + imageUrl.Key
                                 item_liImgName = imageUrl.Key
                                 // item_liImgName = imageUrl.Key.split('/').pop()
                                 item_liImgSize = (imageUrl.Size / 1024).toFixed(2)
@@ -1241,7 +1236,7 @@ $(document).ready(function () {
                                 GitHubUP_file.push(fileinfo);
                                 item_divKey = imageUrl.sha
                                 item_divType = imageUrl.type
-                                item_imgUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + imageUrl.name
+                                item_imgUrl = `https://raw.githubusercontent.com/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/main/` + ProgramConfigurations.options_UploadPath + imageUrl.name
                                 item_liImgName = imageUrl.name
                                 item_liImgSize = (imageUrl.size / 1024).toFixed(2)
                                 item_liImgDate = "GitHub不支持"
@@ -1285,13 +1280,13 @@ $(document).ready(function () {
                                         `);
                             item.append(deleteLoading);
                             // 从瀑布流容器中删除图片元素
-                            switch (options_exe) {
+                            switch (ProgramConfigurations.options_exe) {
                                 case 'Lsky':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + imageUrl.key, {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/images/" + imageUrl.key, {
                                         method: 'DELETE',
                                         headers: {
                                             "Accept": "application/json",
-                                            "Authorization": options_token
+                                            "Authorization": ProgramConfigurations.options_token
                                         }
                                     })
                                         .then(response => {
@@ -1316,10 +1311,10 @@ $(document).ready(function () {
 
                                     break;
                                 case 'SM_MS':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + imageUrl.hash, {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v2/delete/" + imageUrl.hash, {
                                         method: 'GET',
                                         headers: {
-                                            "Authorization": options_token,
+                                            "Authorization": ProgramConfigurations.options_token,
                                             "Content-Type": "multipart/form-data"
                                         }
                                     })
@@ -1345,13 +1340,13 @@ $(document).ready(function () {
 
                                     break;
                                 case 'Hellohao':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/deleteimg/", {
                                         method: 'POST',
                                         headers: {
                                             "Content-Type": "application/json"
                                         },
                                         body: JSON.stringify({
-                                            "token": options_token,
+                                            "token": ProgramConfigurations.options_token,
                                             "delkey": imageUrl.delkey
                                         })
                                     })
@@ -1378,8 +1373,8 @@ $(document).ready(function () {
                                     break;
                                 case 'Tencent_COS':
                                     cos.deleteObject({
-                                        Bucket: options_Bucket, /* 填入您自己的存储桶,必须字段 */
-                                        Region: options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
+                                        Bucket: ProgramConfigurations.options_Bucket, /* 填入您自己的存储桶,必须字段 */
+                                        Region: ProgramConfigurations.options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
                                         Key: imageUrl.Key,  /* 存储在桶里的对象键（例如1.jpg,a/b/test.txt）,必须字段 */
                                     }, function (err, data) {
                                         if (data) {
@@ -1420,7 +1415,7 @@ $(document).ready(function () {
                                     oss_deleteObject();
                                     break;
                                 case 'AWS_S3':
-                                    s3.deleteObject({ Bucket: options_Bucket, Key: imageUrl.Key }, function (err) {
+                                    s3.deleteObject({ Bucket: ProgramConfigurations.options_Bucket, Key: imageUrl.Key }, function (err) {
                                         if (err) {
                                             console.log(err);
                                             toastItem({
@@ -1443,10 +1438,10 @@ $(document).ready(function () {
                                             toast_content: imageUrl.path + '是一个文件夹无法删除'
                                         });
                                     } else {
-                                        fetch(options_proxy_server + `https://api.github.com/repos/` + options_owner + `/` + options_repository + `/contents/` + options_UploadPath + imageUrl.name, {
+                                        fetch(ProgramConfigurations.options_proxy_server + `https://api.github.com/repos/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/contents/` + ProgramConfigurations.options_UploadPath + imageUrl.name, {
                                             method: 'DELETE',
                                             headers: {
-                                                'Authorization': 'Bearer ' + options_token,
+                                                'Authorization': 'Bearer ' + ProgramConfigurations.options_token,
                                                 'Content-Type': 'application/json'
                                             },
                                             body: JSON.stringify({
@@ -1502,9 +1497,9 @@ $(document).ready(function () {
                                     if (!item_liImgName.endsWith('/')) {
                                         val = item_liImgName + '/'
                                     }
+
                                     chrome.storage.local.get("options_UploadPath", function (res) {
-                                        val = res.options_UploadPath + val
-                                        chrome.storage.local.set({ 'options_UploadPath': val }, function () {
+                                        storProgramConfiguration({ options_UploadPath: val }).then(() => {
                                             window.location.reload();
                                         })
                                     })
@@ -1564,7 +1559,7 @@ $(document).ready(function () {
                             $(this).find('.Image_Width_And_Height').hide();
                             $container.masonry('layout');
                         });
-                        switch (options_exe) {
+                        switch (ProgramConfigurations.options_exe) {
                             case 'Tencent_COS':
                             case 'Aliyun_OSS':
                             case 'AWS_S3':
@@ -1636,13 +1631,13 @@ $(document).ready(function () {
                     });
                     $('body').css('overflow', 'hidden');
                     imageUrlkey.forEach(function (element, index) {
-                        switch (options_exe) {
+                        switch (ProgramConfigurations.options_exe) {
                             case 'Lsky':
-                                fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + element, {
+                                fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/images/" + element, {
                                     method: 'DELETE',
                                     headers: {
                                         "Accept": "application/json",
-                                        "Authorization": options_token
+                                        "Authorization": ProgramConfigurations.options_token
                                     }
                                 })
                                     .then(response => {
@@ -1659,10 +1654,10 @@ $(document).ready(function () {
 
                                 break;
                             case 'SM_MS':
-                                fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element, {
+                                fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v2/delete/" + element, {
                                     method: 'GET',
                                     headers: {
-                                        "Authorization": options_token,
+                                        "Authorization": ProgramConfigurations.options_token,
                                         "Content-Type": "multipart/form-data"
                                     }
                                 })
@@ -1680,13 +1675,13 @@ $(document).ready(function () {
 
                                 break;
                             case 'Hellohao':
-                                fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/deleteimg/", {
                                     method: 'POST',
                                     headers: {
                                         "Content-Type": "application/json"
                                     },
                                     body: JSON.stringify({
-                                        "token": options_token,
+                                        "token": ProgramConfigurations.options_token,
                                         "delkey": element
                                     })
                                 })
@@ -1705,8 +1700,8 @@ $(document).ready(function () {
                                 break;
                             case 'Tencent_COS':
                                 cos.deleteObject({
-                                    Bucket: options_Bucket, /* 填入您自己的存储桶,必须字段 */
-                                    Region: options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
+                                    Bucket: ProgramConfigurations.options_Bucket, /* 填入您自己的存储桶,必须字段 */
+                                    Region: ProgramConfigurations.options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
                                     Key: imageUrlkey[index],  /* 存储在桶里的对象键（例如1.jpg,a/b/test.txt）,必须字段 */
                                 }, function (err, data) {
                                     if (data) {
@@ -1737,7 +1732,7 @@ $(document).ready(function () {
                                 deleteObject();
                                 break;
                             case 'AWS_S3':
-                                s3.deleteObject({ Bucket: options_Bucket, Key: imageUrlkey[index] }, function (err, data) {
+                                s3.deleteObject({ Bucket: ProgramConfigurations.options_Bucket, Key: imageUrlkey[index] }, function (err, data) {
                                     if (err) {
                                         console.log(err);
                                         toastItem({
@@ -1752,77 +1747,60 @@ $(document).ready(function () {
                         }
 
                     });
-                    switch (options_exe) {
+                    switch (ProgramConfigurations.options_exe) {
                         case 'GitHubUP':
-                            measurePingDelay(function (error, ping) {
-                                if (error) {
-                                    toastItem({
-                                        toast_content: error
-                                    });
-                                    return;
-                                } else {
-                                    if (!GitHubUP_file.length) return;
-                                    let delay
-                                    if (ping > 300) { //大于
-                                        delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-                                    } else if (ping < 150) { //小于
-                                        delay = 150
+                            let delay = measurePingDelay("https://github.com/");
+                            function deleteFileWithDelay() {
+                                if (completed < GitHubUP_file.length) {
+                                    let element = GitHubUP_file[completed];
+                                    if (element.type == "dir") {
+                                        toastItem({
+                                            toast_content: element.path + '是一个文件夹无法删除'
+                                        });
+                                        completed++; // 延迟后处理下一个文件
+                                        setTimeout(deleteFileWithDelay, delay);
                                     } else {
-                                        delay = ping
-                                    }
-                                    function deleteFileWithDelay() {
-                                        if (completed < GitHubUP_file.length) {
-                                            let element = GitHubUP_file[completed];
-                                            if (element.type == "dir") {
-                                                toastItem({
-                                                    toast_content: element.path + '是一个文件夹无法删除'
-                                                });
-                                                completed++; // 延迟后处理下一个文件
-                                                setTimeout(deleteFileWithDelay, delay);
-                                            } else {
-                                                fetch(options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path, {
-                                                    method: 'DELETE',
-                                                    headers: {
-                                                        'Authorization': 'Bearer ' + options_token,
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({
-                                                        message: 'Delete file:' + element.path,
-                                                        sha: element.sha
-                                                    })
-                                                })
-                                                    .then(response => {
-                                                        if (response.ok) {
-                                                            toastItem({
-                                                                toast_content: chrome.i18n.getMessage("Delete_successful")
-                                                            });
-                                                            completed++; // 延迟后处理下一个文件
-                                                            deleteUrl(completed, GitHubUP_file);
-                                                            // 使用 setTimeout 来添加延迟
-                                                            setTimeout(deleteFileWithDelay, delay);
-                                                        } else {
-                                                            throw new Error('Network response was not ok.');
-                                                        }
-                                                    })
-                                                    .catch(error => {
-                                                        toastItem({
-                                                            toast_content: chrome.i18n.getMessage("Delete_failed")
-                                                        });
-                                                        console.log(error);
-                                                        $('.overlay').remove();
-                                                        $('body').css('overflow', 'auto');
+                                        fetch(ProgramConfigurations.options_proxy_server + 'https://api.github.com/repos/' + ProgramConfigurations.options_owner + '/' + ProgramConfigurations.options_repository + '/contents/' + element.path, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Authorization': 'Bearer ' + ProgramConfigurations.options_token,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                message: 'Delete file:' + element.path,
+                                                sha: element.sha
+                                            })
+                                        })
+                                            .then(response => {
+                                                if (response.ok) {
+                                                    toastItem({
+                                                        toast_content: chrome.i18n.getMessage("Delete_successful")
                                                     });
+                                                    completed++; // 延迟后处理下一个文件
+                                                    deleteUrl(completed, GitHubUP_file);
+                                                    // 使用 setTimeout 来添加延迟
+                                                    setTimeout(deleteFileWithDelay, delay);
+                                                } else {
+                                                    throw new Error('Network response was not ok.');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                toastItem({
+                                                    toast_content: chrome.i18n.getMessage("Delete_failed")
+                                                });
+                                                console.log(error);
+                                                $('.overlay').remove();
+                                                $('body').css('overflow', 'auto');
+                                            });
 
-                                            }
-
-                                        } else {
-                                            $('.overlay').remove();
-                                            $('body').css('overflow', 'auto');
-                                        }
                                     }
-                                    deleteFileWithDelay();
+
+                                } else {
+                                    $('.overlay').remove();
+                                    $('body').css('overflow', 'auto');
                                 }
-                            }, 'https://github.com');
+                            }
+                            deleteFileWithDelay();
                             break;
                     }
                     async function deleteUrl(completed, imageUrlkey) {
@@ -1888,10 +1866,10 @@ $(document).ready(function () {
                     let selectedImgs = $(".gigante");
                     let imgKey = []
                     selectedImgs.each(function (i) {
-                        if (options_exe == "GitHubUP") {
+                        if (ProgramConfigurations.options_exe == "GitHubUP") {
                             let json = {
                                 sha: $(this).attr("key"),
-                                path: options_UploadPath + $(this).find('li').eq(0).text(),
+                                path: ProgramConfigurations.options_UploadPath + $(this).find('li').eq(0).text(),
                                 type: $(this).attr("type")
                             }
                             imgKey.push(json);
@@ -1906,13 +1884,13 @@ $(document).ready(function () {
                     if (imgKey.length) {
                         let numDeleted = 0;  // 记录已经删除的图片数量
                         imgKey.forEach(function (element, index) {
-                            switch (options_exe) {
+                            switch (ProgramConfigurations.options_exe) {
                                 case 'Lsky':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/v1/images/" + element, {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/images/" + element, {
                                         method: 'DELETE',
                                         headers: {
                                             "Accept": "application/json",
-                                            "Authorization": options_token
+                                            "Authorization": ProgramConfigurations.options_token
                                         }
                                     })
                                         .then(response => {
@@ -1928,10 +1906,10 @@ $(document).ready(function () {
                                         });
                                     break;
                                 case 'SM_MS':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/v2/delete/" + element, {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v2/delete/" + element, {
                                         method: 'GET',
                                         headers: {
-                                            "Authorization": options_token,
+                                            "Authorization": ProgramConfigurations.options_token,
                                             "Content-Type": "multipart/form-data"
                                         }
                                     })
@@ -1948,13 +1926,13 @@ $(document).ready(function () {
                                         });
                                     break;
                                 case 'Hellohao':
-                                    fetch(options_proxy_server + "https://" + options_host + "/api/deleteimg/", {
+                                    fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/deleteimg/", {
                                         method: 'POST',
                                         headers: {
                                             "Content-Type": "application/json"
                                         },
                                         body: JSON.stringify({
-                                            "token": options_token,
+                                            "token": ProgramConfigurations.options_token,
                                             "delkey": element
                                         })
                                     })
@@ -1972,8 +1950,8 @@ $(document).ready(function () {
                                     break;
                                 case 'Tencent_COS':
                                     cos.deleteObject({
-                                        Bucket: options_Bucket, /* 填入您自己的存储桶,必须字段 */
-                                        Region: options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
+                                        Bucket: ProgramConfigurations.options_Bucket, /* 填入您自己的存储桶,必须字段 */
+                                        Region: ProgramConfigurations.options_Region,  /* 存储桶所在地域,例如ap-beijing,必须字段 */
                                         Key: element,  /* 存储在桶里的对象键（例如1.jpg,a/b/test.txt）,必须字段 */
                                     }, function (err, data) {
                                         if (data) {
@@ -2004,7 +1982,7 @@ $(document).ready(function () {
                                     OSS_deleteObject()
                                     break;
                                 case 'AWS_S3':
-                                    s3.deleteObject({ Bucket: options_Bucket, Key: element }, function (err, data) {
+                                    s3.deleteObject({ Bucket: ProgramConfigurations.options_Bucket, Key: element }, function (err, data) {
                                         if (err) {
                                             console.log(err);
                                             toastItem({
@@ -2018,68 +1996,51 @@ $(document).ready(function () {
                                     break;
                             }
                         });
-                        switch (options_exe) {
+                        switch (ProgramConfigurations.options_exe) {
                             case 'GitHubUP':
-                                measurePingDelay(function (error, ping) {
-                                    if (error) {
-                                        toastItem({
-                                            toast_content: error
-                                        });
-                                        return;
-                                    } else {
-                                        if (!imgKey.length) return;
-                                        let delay
-                                        if (ping > 300) { //大于
-                                            delay = Math.floor(ping / 2); // 设置延迟时间，单位为毫秒
-                                        } else if (ping < 150) { //小于
-                                            delay = 150
+                                let delay = measurePingDelay("https://github.com/");
+                                function deleteFileWithDelay() {
+                                    if (numDeleted < imgKey.length) {
+                                        let element = imgKey[numDeleted];
+                                        if (element.type == "dir") {
+                                            toastItem({
+                                                toast_content: element.path + '是一个文件夹无法删除'
+                                            });
+                                            numDeleted++; // 延迟后处理下一个文件
+                                            setTimeout(deleteFileWithDelay, delay);
                                         } else {
-                                            delay = ping
-                                        }
-                                        function deleteFileWithDelay() {
-                                            if (numDeleted < imgKey.length) {
-                                                let element = imgKey[numDeleted];
-                                                if (element.type == "dir") {
+                                            fetch(ProgramConfigurations.options_proxy_server + 'https://api.github.com/repos/' + ProgramConfigurations.options_owner + '/' + ProgramConfigurations.options_repository + '/contents/' + element.path, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Authorization': 'Bearer ' + ProgramConfigurations.options_token,
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                    message: 'Delete file:' + element.path,
+                                                    sha: element.sha
+                                                })
+                                            })
+                                                .then(response => {
+                                                    if (response.ok) {
+                                                        numDeleted++; // 延迟后处理下一个文件
+                                                        Delete_Selected(selectedImgs, numDeleted, imgKey);
+                                                        // 使用 setTimeout 来添加延迟
+                                                        setTimeout(deleteFileWithDelay, delay);
+                                                    } else {
+                                                        throw new Error('Network response was not ok.');
+                                                    }
+                                                })
+                                                .catch(error => {
                                                     toastItem({
-                                                        toast_content: element.path + '是一个文件夹无法删除'
+                                                        toast_content: chrome.i18n.getMessage("Delete_failed")
                                                     });
-                                                    numDeleted++; // 延迟后处理下一个文件
-                                                    setTimeout(deleteFileWithDelay, delay);
-                                                } else {
-                                                    fetch(options_proxy_server + 'https://api.github.com/repos/' + options_owner + '/' + options_repository + '/contents/' + element.path, {
-                                                        method: 'DELETE',
-                                                        headers: {
-                                                            'Authorization': 'Bearer ' + options_token,
-                                                            'Content-Type': 'application/json'
-                                                        },
-                                                        body: JSON.stringify({
-                                                            message: 'Delete file:' + element.path,
-                                                            sha: element.sha
-                                                        })
-                                                    })
-                                                        .then(response => {
-                                                            if (response.ok) {
-                                                                numDeleted++; // 延迟后处理下一个文件
-                                                                Delete_Selected(selectedImgs, numDeleted, imgKey);
-                                                                // 使用 setTimeout 来添加延迟
-                                                                setTimeout(deleteFileWithDelay, delay);
-                                                            } else {
-                                                                throw new Error('Network response was not ok.');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            toastItem({
-                                                                toast_content: chrome.i18n.getMessage("Delete_failed")
-                                                            });
-                                                            console.log(error);
-                                                        });
+                                                    console.log(error);
+                                                });
 
-                                                }
-                                            }
                                         }
-                                        deleteFileWithDelay();
                                     }
-                                }, 'https://github.com');
+                                }
+                                deleteFileWithDelay();
 
                                 break;
                         }
@@ -2102,7 +2063,7 @@ $(document).ready(function () {
                     }
                 }
                 $("#options_UploadPath").click(() => {
-                    chrome.storage.local.set({ 'options_UploadPath': $(".options_UploadPath").val() }, function () {
+                    storProgramConfiguration({ options_UploadPath: $(".options_UploadPath").val() }).then(() => {
                         window.location.reload();
                     })
                 })

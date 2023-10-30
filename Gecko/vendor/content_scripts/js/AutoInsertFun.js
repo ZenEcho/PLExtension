@@ -24,8 +24,8 @@ function insertContentIntoEditorState() {
 window.addEventListener('message', function (event) {
     if (event.data.type === 'insertContentIntoEditorState') {
         mainLogic(document.querySelector(".insertContentIntoEditorPrompt"));
-        chrome.storage.local.get(["EditPasteUpload"], function (result) {
-            if (result.EditPasteUpload == "on") {
+        chrome.storage.local.get(["FuncDomain"], function (result) {
+            if (result.FuncDomain.EditPasteUpload == "on") {
                 handlePasteEventOnFocus()
             }
         })
@@ -35,9 +35,9 @@ window.addEventListener('message', function (event) {
      * @param {url} UpUrl 上传成功后返回的url
      */
 function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
-    chrome.storage.local.get(["AutoInsert", "ImageProxy"], function (result) {
-        if (result.AutoInsert != "AutoInsert_on") { return; }
-        ImageProxy = result.ImageProxy || 0
+    chrome.storage.local.get(["FuncDomain"], function (result) {
+        if (result.FuncDomain.AutoInsert != "on") { return; }
+        let ImageProxy = result.FuncDomain.ImageProxy || 0
         let UpUrl = AutoInsert_message_content
         switch (ImageProxy) {
             case "1":

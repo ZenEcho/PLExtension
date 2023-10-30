@@ -33,6 +33,8 @@ chrome.runtime.onInstalled.addListener(function (details) {
 					console.log(chrome.i18n.getMessage("Installing_initialization"));
 				});
 			}
+			const currentVersion = chrome.runtime.getManifest().version;
+			chrome.storage.local.set({ extensionVersion: currentVersion });
 		} catch (error) {
 			chrome.storage.local.set({ 'browser_Open_with': 1 }, function () {
 				chrome.tabs.create({
@@ -42,18 +44,22 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			});
 		}
 		chrome.storage.local.set({
-			"GlobalUpload": "GlobalUpload_Default", //全局上传
-			"Right_click_menu_upload": "Right_click_menu_upload_on",//右键上传
-			"AutoInsert": "AutoInsert_on",//自动插入
-			"AutoCopy": "AutoCopy_off",//自动复制 默认关闭
-			"ImageProxy": "0",//图片代理 默认关闭
-			"EditPasteUpload": "off",//编辑框粘贴 默认关闭
-			"edit_uploadArea_width": 32,//宽度
-			"edit_uploadArea_height": 30,//高度
-			"edit_uploadArea_Location": 34,//位置
-			"edit_uploadArea_opacity": 0.3,//透明度
-			"edit_uploadArea_auto_close_time": 2,//关闭时间
-			"edit_uploadArea_Left_or_Right": "Right",
+			"uploadArea": {
+				"uploadArea_width": 32,
+				"uploadArea_height": 30,
+				"uploadArea_Location": 34,
+				"uploadArea_opacity": 0.3,
+				"uploadArea_auto_close_time": 2,
+				"uploadArea_Left_or_Right": "Right"
+			},
+			"FuncDomain": {
+				"GlobalUpload": "on",
+				"AutoInsert": "on",
+				"AutoCopy": "off",
+				"Right_click_menu_upload": "on",
+				"ImageProxy": "off",
+				"EditPasteUpload": "off"
+			},
 			"StickerOptional": 0, //自选贴纸格式开关
 			"StickerCodeSelect": "URL", //贴纸格式
 			"StickerURL": "https://plextension-sticker.pnglog.com/sticker.json" //贴纸链接
@@ -74,6 +80,19 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		});
 
 
+	}
+	if (details.reason === 'update') {
+		chrome.storage.local.get(['extensionVersion'], function (result) {
+			const previousVersion = result.extensionVersion;
+			const currentVersion = chrome.runtime.getManifest().version;
+			if (previousVersion !== currentVersion) {
+				// 执行你的版本更新时的命令
+				console.log('扩展已更新，执行命令...');
+				// chrome.runtime.openOptionsPage();
+
+				chrome.storage.local.set({ extensionVersion: currentVersion });
+			}
+		});
 	}
 });
 
@@ -101,8 +120,8 @@ const getSave = [
 	"open_json_button",
 ]
 
-chrome.storage.local.get(["Right_click_menu_upload"], function (result) {
-	if (result.Right_click_menu_upload == "Right_click_menu_upload_on") {
+chrome.storage.local.get(["FuncDomain"], function (result) {
+	if (result.FuncDomain.Right_click_menu_upload == "on") {
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
@@ -147,26 +166,26 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 	if (typeof callback !== 'function') {
 		callback = function () { };
 	}
-	chrome.storage.local.get(getSave, function (result) {
-		let options_exe = result.options_exe
-		let options_proxy_server_state = result.options_proxy_server_state
-		let options_proxy_server = result.options_proxy_server
-		let options_host = result.options_host
-		let options_token = result.options_token
-		let options_uid = result.options_uid
-		let options_source = result.options_source
-		let options_source_select = result.options_source_select
-		let options_expiration_select = result.options_expiration_select || "NODEL"
-		let options_album_id = result.options_album_id
-		let options_nsfw_select = result.options_nsfw_select || 0
-		let options_permission_select = result.options_permission_select || 0
-		let AutoCopy = result.AutoCopy
+	chrome.storage.local.get(["ProgramConfiguration", "FuncDomain"], function (result) {
+		let options_exe = result.ProgramConfiguration.options_exe
+		let options_proxy_server_state = result.ProgramConfiguration.options_proxy_server_state
+		let options_proxy_server = result.ProgramConfiguration.options_proxy_server
+		let options_host = result.ProgramConfiguration.options_host
+		let options_token = result.ProgramConfiguration.options_token
+		let options_uid = result.ProgramConfiguration.options_uid
+		let options_source = result.ProgramConfiguration.options_source
+		let options_source_select = result.ProgramConfiguration.options_source_select
+		let options_expiration_select = result.ProgramConfiguration.options_expiration_select || "NODEL"
+		let options_album_id = result.ProgramConfiguration.options_album_id
+		let options_nsfw_select = result.ProgramConfiguration.options_nsfw_select || 0
+		let options_permission_select = result.ProgramConfiguration.options_permission_select || 0
+		let AutoCopy = result.FuncDomain.AutoCopy
 		//自定义请求
-		let options_apihost = result.options_apihost
-		let options_parameter = result.options_parameter
-		let options_Headers = result.options_Headers
-		let options_Body = result.options_Body
-		let options_return_success = result.options_return_success
+		let options_apihost = result.ProgramConfiguration.options_apihost
+		let options_parameter = result.ProgramConfiguration.options_parameter
+		let options_Headers = result.ProgramConfiguration.options_Headers
+		let options_Body = result.ProgramConfiguration.options_Body
+		let options_return_success = result.ProgramConfiguration.options_return_success
 		// var open_json_button = result.open_json_button
 
 		let d = new Date();
@@ -284,14 +303,6 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 					optionHeaders = { "Authorization": 'Client-ID ' + options_token };
 					formData.append("image", file);
 					break;
-				case 'UserDiy':
-					optionsUrl = options_proxy_server + options_apihost;
-					formData.append(options_parameter, file);
-					optionHeaders = options_Headers;
-					for (let key in options_Body) {
-						formData.append(key, options_Body[key]);
-					}
-					break;
 				case 'Telegra_ph':
 					optionsUrl = options_proxy_server + "https://" + options_host + "/upload";
 					optionHeaders = { "Accept": "application/json" };
@@ -393,7 +404,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							break;
 					}
 
-					if (AutoCopy == "AutoCopy_on") {
+					if (AutoCopy == "on") {
 						//复制
 						try {
 							chrome.tabs.query({ active: true }, function (tabs) {
@@ -523,7 +534,8 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			return;
 		}
 
-		if (options_exe === "Tencent_COS" ||
+		if (options_exe === "UserDiy" ||
+			options_exe === "Tencent_COS" ||
 			options_exe === "Aliyun_OSS" ||
 			options_exe === "AWS_S3" ||
 			options_exe === "GitHubUP" ||
@@ -537,7 +549,6 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				const message = {};
 				message[options_exe + '_contextMenus'] = menuData;
 				chrome.tabs.sendMessage(currentTabId, message);
-
 			});
 			return;
 		}
@@ -731,12 +742,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		}
 
 	}
+	if (request.PLNotification) {
+		chrome.tabs.query({ active: true }, function (tabs) {
+			TabId = tabs[0].id;
+			chrome.tabs.sendMessage(TabId, { PLNotificationJS: request.Progress_bar })
+		});
+	}
 	if (request.exe_BilibliBed) {
 		getOptionsFromStorage()
 	}
+	if (request.openOptionsPage) {
+		chrome.tabs.create({
+			'url': ('options.html')
+		});
+	}
 });
 let Simulated_upload = false//模拟上传
-
 chrome.action.onClicked.addListener(function (tab) {
 	chrome.storage.local.get(["browser_Open_with"], function (result) {
 		browser_Open_with = result.browser_Open_with
@@ -762,7 +783,7 @@ chrome.action.onClicked.addListener(function (tab) {
 				height: 750
 			});
 		}
-		if (browser_Open_with === 3) {
+		if (browser_Open_with == 3) {
 			// 在内置页打开
 			chrome.action.setPopup({
 				popup: "popup.html"
@@ -775,40 +796,40 @@ chrome.action.onClicked.addListener(function (tab) {
 
 // 获取cookie #已弃用
 // 需manifest.json调用  "webRequest", "cookies"权限
-function onRequestCompleted(details) {
-	if (!cookieFound && details.type === "xmlhttprequest") {
-		chrome.cookies.getAll({ url: details.initiator }, function (cookies) {
-			cookies.forEach(function (cookie) {
-				if (cookie.name === "SESSDATA" || cookie.name === "bili_jct") {
-					// 存储找到的Cookie
-					foundCookies[cookie.name] = decodeURIComponent(cookie.value);
-				}
-			});
-			// 检查是否找到了SESSDATA和bili_jct
-			if (foundCookies["SESSDATA"] && foundCookies["bili_jct"]) {
-				// 找到所需的Cookie，设置标志为true，并停止监听XHR请求
-				console.log(foundCookies);
-				chrome.storage.local.set({ 'options_token': foundCookies["SESSDATA"] })
-				chrome.storage.local.set({ 'options_CSRF': foundCookies["bili_jct"] })
-				cookieFound = true;
-				chrome.webRequest.onCompleted.removeListener(onRequestCompleted);
-			}
-		});
-	}
-}
-let cookieFound = false; // 标志用于表示是否已获取所需的Cookie
-let foundCookies = {}; // 用于存储找到的Cookie
+// function onRequestCompleted(details) {
+// 	if (!cookieFound && details.type === "xmlhttprequest") {
+// 		chrome.cookies.getAll({ url: details.initiator }, function (cookies) {
+// 			cookies.forEach(function (cookie) {
+// 				if (cookie.name === "SESSDATA" || cookie.name === "bili_jct") {
+// 					// 存储找到的Cookie
+// 					foundCookies[cookie.name] = decodeURIComponent(cookie.value);
+// 				}
+// 			});
+// 			// 检查是否找到了SESSDATA和bili_jct
+// 			if (foundCookies["SESSDATA"] && foundCookies["bili_jct"]) {
+// 				// 找到所需的Cookie，设置标志为true，并停止监听XHR请求
+// 				console.log(foundCookies);
+// 				chrome.storage.local.set({ 'options_token': foundCookies["SESSDATA"] })
+// 				chrome.storage.local.set({ 'options_CSRF': foundCookies["bili_jct"] })
+// 				cookieFound = true;
+// 				chrome.webRequest.onCompleted.removeListener(onRequestCompleted);
+// 			}
+// 		});
+// 	}
+// }
+// let cookieFound = false; // 标志用于表示是否已获取所需的Cookie
+// let foundCookies = {}; // 用于存储找到的Cookie
 
-function getOptionsFromStorage() {
-	console.log("自动获取cookie中...");
-	chrome.storage.local.get(["options_exe", "options_token", "options_CSRF"], function (result) {
-		let { options_exe, options_token, options_CSRF } = result;
-		if (options_exe == "BilibliBed" && !options_token && !options_CSRF) {
-			// 添加监听器
-			cookieFound = false
-			foundCookies = {}
-			chrome.webRequest.onCompleted.addListener(onRequestCompleted, { urls: ["*://*.bilibili.com/*"] });
-		}
+// function getOptionsFromStorage() {
+// 	console.log("自动获取cookie中...");
+// 	chrome.storage.local.get(["options_exe", "options_token", "options_CSRF"], function (result) {
+// 		let { options_exe, options_token, options_CSRF } = result;
+// 		if (options_exe == "BilibliBed" && !options_token && !options_CSRF) {
+// 			// 添加监听器
+// 			cookieFound = false
+// 			foundCookies = {}
+// 			chrome.webRequest.onCompleted.addListener(onRequestCompleted, { urls: ["*://*.bilibili.com/*"] });
+// 		}
 
-	})
-}
+// 	})
+// }

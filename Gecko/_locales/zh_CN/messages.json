@@ -140,14 +140,77 @@
   "AutoCopy": {
     "message": "<i class='bi bi-clipboard-plus-fill'></i> 自动复制"
   },
+  "ImageProxy": {
+    "message": "<i class='bi bi-flower2'></i> 图片代理"
+  },
+  "InputPaste": {
+    "message": "<i class='bi bi-clipboard2-pulse'></i> 编辑框粘贴"
+  },
   "on": {
     "message": "开启"
   },
   "off": {
     "message": "关闭"
   },
+  "bi_battery_half": {
+    "message": "<i class='bi bi-battery-half'></i>"
+  },
+  "bi_battery": {
+    "message": "<i class='bi bi-battery'></i>"
+  },
+  "SidebarButtonPrompt": {
+    "message": "(仅对侧边栏上传有效)"
+  },
   "Right_click_menu_upload": {
     "message": "<i class='bi bi-hand-index'></i> 右键上传"
+  },
+  "bi_clipboard_data": {
+    "message": "<i class='bi bi-clipboard-data'></i>"
+  },
+  "SettingsRecord": {
+    "message": "配置记录"
+  },
+  "bi_send": {
+    "message": "<i class='bi bi-send'></i>"
+  },
+  "bi_plus_circle": {
+    "message": "<i class='bi bi-plus-circle'></i>"
+  },
+  "DoubleClickToEdit": {
+    "message": "双击修改"
+  },
+  "share": {
+    "message": " 分享"
+  },
+  "SharePrompt1": {
+    "message": "数据已复制到剪切板"
+  },
+  "import": {
+    "message": " 导入"
+  },
+  "Load": {
+    "message": "加载"
+  },
+  "successful": {
+    "message": "成功"
+  },
+  "Delete": {
+    "message": "删除"
+  },
+  "EnterConfigurationName": {
+    "message": "输入新的配置名"
+  },
+  "Config": {
+    "message": "配置"
+  },
+  "replace": {
+    "message": "替换"
+  },
+  "append": {
+    "message": "追加"
+  },
+  "ImportConfiguration": {
+    "message": "导入配置"
   },
   "options_host": {
     "message": "网站域名<p>(不需要携带任何前后缀,输入域名即可)</p>"
@@ -156,7 +219,7 @@
     "message": "例如:pnglog.com"
   },
   "options_token": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(必须填写Token)</p>"
+    "message": "Token<p class='options_token_tips'>(必须填写Token)</p>"
   },
   "options_token_placeholder_lsky": {
     "message": "例如:Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5"
@@ -189,7 +252,7 @@
     "message": "例如:ddd35111f39990b2f104a138181d31bc"
   },
   "options_uid": {
-    "message": "UID<p class='options_uid_tips'><span style='color: red;'>*</span>(ImgURL程序必须填写UID)</p>"
+    "message": "UID<p class='options_uid_tips'>(ImgURL程序必须填写UID)</p>"
   },
   "options_uid_placeholder": {
     "message": "例如:391e3afaf70fgcf4355f95a2g0876b87"
@@ -309,7 +372,7 @@
     "message": "例如:02468631e6c13413bddefc0722e2389b"
   },
   "options_source_Hellohao": {
-    "message": "存储源选择<p class='options_uid_tips'><span style='color: red;'>*</span>(Hellohao图床程序必须填写存储源)</p>"
+    "message": "存储源选择<p class='options_uid_tips'>(Hellohao图床程序必须填写存储源)</p>"
   },
   "options_source_placeholder_Hellohao": {
     "message": "例如:12"
@@ -318,7 +381,7 @@
     "message": "例如:api.imgur.com"
   },
   "options_token_Imgur": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>注册Client-ID</a>(imgur程序必须填写Token)</p>"
+    "message": "Token<p class='options_token_tips'><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>注册Client-ID</a>(imgur程序必须填写Token)</p>"
   },
   "options_token_placeholder_Imgur": {
     "message": "例如:3596a2113fdg16f"
@@ -329,41 +392,62 @@
   "options_apihost_placeholder": {
     "message": "例如:https://pnglog.com/api/v1/upload"
   },
+  "Request_method": {
+    "message": "请求方法"
+  },
   "options_parameter": {
-    "message": "POST参数</span><p class='options_parameter_tips'><span style='color: red;'>*</span>(上传图片参数)</p>"
+    "message": "请求参数</span><p class='options_parameter_tips'>(上传图片参数)</p>"
   },
   "options_parameter_placeholder": {
     "message": "如:image 或 file"
   },
   "options_Headers": {
-    "message": "Headers请求头</span><p class='options_Headers_tips'><span style='color: red;'>*</span>(自定义请求头,不需要可以留空)</p>"
+    "message": "Headers</span><p class='options_Headers_tips'>(自定义请求头,不需要可以留空)</p>"
   },
   "options_Headers_floatingTextarea": {
     "message": "使用JSON格式 如：{'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
   },
   "options_Body": {
-    "message": "Body</span><p class='options_Body_tips'><span style='color: red;'>*</span>(自定义Body,不需要可以留空)</p>"
+    "message": "Body</span><p class='options_Body_tips'>(自定义Body,不需要可以留空)</p>"
   },
   "options_Body_floatingTextarea": {
     "message": "使用JSON格式 如：{'mail':'123@qq.com','password':'123456'}"
   },
   "options_return_success": {
-    "message": "JSON路径<p class='options_return_success_tips'><span style='color: red;'>*</span>(请求成功后的图片URL路径)</p>"
+    "message": "返回路径<p class='options_return_success_tips'>(请求成功后的图片URL路径)</p>"
   },
   "options_return_success_placeholder": {
     "message": "如:data.links.url"
+  },
+  "custom_ReturnPrefix": {
+    "message": "前缀拼接</span><p class='options_return_success_tips'>(为返回的URL添加前缀)</p>"
+  },
+  "custom_ReturnAppend": {
+    "message": "后缀拼接</span><p class='options_return_success_tips'>(为返回的URL添加后缀)</p>"
+  },
+  "custom_Base64Upload": {
+    "message": "Base64上传<p>(将文件转为Base64上传)</p>"
+  },
+  "custom_Base64UploadRemovePrefix": {
+    "message": "Base64抬头<p>(移除Base64的抬头信息)</p>"
+  },
+  "custom_BodyUpload": {
+    "message": "Body上传<p>(封装Body信息上传,否则FormData封装上传)</p>"
+  },
+  "custom_BodyStringify": {
+    "message": "Body字符串<p>(将Body转为字符串)</p>"
   },
   "open_json_button": {
     "message": "返回JSON结果<p>(将上传完毕的信息,化为JSON)</p>"
   },
   "options_owner": {
-    "message": "用户名<p class='options_owner_tips'><span style='color: red;'>*</span>(GitHub用户名)</p>"
+    "message": "用户名<p class='options_owner_tips'>(GitHub用户名)</p>"
   },
   "options_owner_placeholder": {
     "message": "例如:abcd"
   },
   "options_repository": {
-    "message": "仓库名<p class='options_repository_tips'><span style='color: red;'>*</span>(仓库名字)</p>"
+    "message": "仓库名<p class='options_repository_tips'>(仓库名字)</p>"
   },
   "options_repository_placeholder": {
     "message": "例如:3596a2113fdg16f"
@@ -375,7 +459,7 @@
     "message": "例如:images"
   },
   "options_token_GitHub": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(GitHub必须填写Token,获取<a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'> Token </a>)</p>"
+    "message": "Token<p class='options_token_tips'>(GitHub必须填写Token,获取<a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'> Token </a>)</p>"
   },
   "options_token_placeholder_GitHub": {
     "message": "例如:2389b"
@@ -384,19 +468,19 @@
     "message": "GitHub 是一个代码托管平台,在 GitHub 存储图片不符合它的设计初衷,建议及时删除不必要的图片文件."
   },
   "options_SecretId_COS": {
-    "message": "SecretId<p class=''><span style='color: red;'>*</span>(访问ID,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretId </a>)</p>"
+    "message": "SecretId<p class=''>(访问ID,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretId </a>)</p>"
   },
   "options_SecretId_placeholder_COS": {
     "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_COS": {
-    "message": "SecretKey<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretKey </a>)</p>"
+    "message": "SecretKey<p class='options_SecretKey_tips'>(访问密钥,获取<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'> SecretKey </a>)</p>"
   },
   "options_SecretKey_placeholder_COS": {
     "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_COS": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称,查看<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'> 存储桶列表 </a>)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(储存桶名称,查看<a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'> 存储桶列表 </a>)</p>"
   },
   "options_Bucket_placeholder_COS": {
     "message": "例如:abcd-112233445566"
@@ -408,7 +492,7 @@
     "message": "例如:112233445566(储存桶名后面的数字)"
   },
   "options_Region_COS": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+    "message": "Region<p class='options_Region_tips'>(区域)</p>"
   },
   "options_Region_placeholder_COS": {
     "message": "例如:ap-hongkong"
@@ -435,31 +519,31 @@
     "message": "公共读/公共写"
   },
   "options_SecretId_OSS": {
-    "message": "AccessKeyId<p class=''><span style='color: red;'>*</span>(访问ID,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeyId </a>)</p>"
+    "message": "AccessKeyId<p class=''>(访问ID,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeyId </a>)</p>"
   },
   "options_SecretId_placeholder_OSS": {
     "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_OSS": {
-    "message": "AccessKeySecret<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeySecret </a>)</p>"
+    "message": "AccessKeySecret<p class='options_SecretKey_tips'>(访问密钥,获取<a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'> AccessKeySecret </a>)</p>"
   },
   "options_SecretKey_placeholder_OSS": {
     "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_OSS": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称,查看<a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'> 存储桶列表 </a>)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(储存桶名称,查看<a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'> 存储桶列表 </a>)</p>"
   },
   "options_Bucket_placeholder_OSS": {
     "message": "例如:abcde-images"
   },
   "options_Endpoint_OSS": {
-    "message": "Endpoint<p class='options_Endpoint_tips'><span style='color: red;'>*</span>(区域节点,查看<a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'> 访问域名和数据中心 </a>)</p>"
+    "message": "Endpoint<p class='options_Endpoint_tips'>(区域节点,查看<a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'> 访问域名和数据中心 </a>)</p>"
   },
   "options_Endpoint_placeholder_OSS": {
     "message": "例如:oss-cn-beijing.aliyuncs.com"
   },
   "options_Region_OSS": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+    "message": "Region<p class='options_Region_tips'>(区域)</p>"
   },
   "options_Region_placeholder_OSS": {
     "message": "例如:oss-cn-beijing"
@@ -471,25 +555,25 @@
     "message": "设置OSS的CORS"
   },
   "options_SecretId_S3": {
-    "message": "访问ID<p class=''><span style='color: red;'>*</span>(访问ID)</p>"
+    "message": "访问ID<p class=''>(访问ID)</p>"
   },
   "options_SecretId_placeholder_S3": {
     "message": "例如:asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_S3": {
-    "message": "访问密钥<p class='options_SecretKey_tips'><span style='color: red;'>*</span>(访问密钥)</p>"
+    "message": "访问密钥<p class='options_SecretKey_tips'>(访问密钥)</p>"
   },
   "options_SecretKey_placeholder_S3": {
     "message": "例如:hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_S3": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'>*</span>(储存桶名称)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(储存桶名称)</p>"
   },
   "options_Bucket_placeholder_S3": {
     "message": "注意:如果要使用自定义域名请将桶名称设置为域名,例如:images.google.com"
   },
   "options_Region_S3": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(区域)</p>"
+    "message": "Region<p class='options_Region_tips'>(区域)</p>"
   },
   "options_Region_placeholder_S3": {
     "message": "例如:ap-east-1,或不知道填什么就写auto"
@@ -630,7 +714,7 @@
     "message": "区域设置"
   },
   "Region_settings_tips": {
-    "message": "关闭全局上传,侧边栏也会关闭"
+    "message": "关闭拖拽上传,侧边栏也会关闭"
   },
   "width": {
     "message": "宽"
@@ -647,7 +731,7 @@
   "auto_close_time": {
     "message": "关闭时间"
   },
-  "edit_uploadArea_Left_or_Right": {
+  "uploadArea_Left_or_Right": {
     "message": "侧边栏在"
   },
   "Left": {
@@ -925,6 +1009,9 @@
   },
   "Kissing_alert_p_3": {
     "message": "已经被榨干了!!!我获取不到数据了啦!"
+  },
+  "Kissing_alert_p_3_1": {
+    "message": "真的很抱歉捏,这个图床不能获取图片噢!"
   },
   "Kissing_alert_p2_4": {
     "message": "再努努力吧!"

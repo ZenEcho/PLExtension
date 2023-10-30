@@ -1,0 +1,202 @@
+.notification-container {
+    padding: 14px 18px;
+    max-width: 80%;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .notification {
+        min-width: 200px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 10px 0;
+        max-width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: transform 0.5s;
+
+        & button {
+            padding: 0;
+            margin: 0;
+            user-select: none;
+        }
+
+        .progress-bar {
+            color: white;
+            font-size: 8px;
+            line-height: 8px;
+            text-align: end;
+            height: 8px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            animation: PLprogress 5s linear;
+            border-radius: 2px;
+        }
+    }
+}
+
+.notification-title {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    user-select: none;
+
+    .icon {
+        margin: 0px 4px 0px 0px !important;
+        width: 32px !important;
+        height: 32px !important;
+
+        & svg {
+            background: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+
+    .title {
+        margin: 0 !important;
+        font-size: 18px !important;
+    }
+}
+
+.notification-content {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.notification button {
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+    border: none !important;
+    position: absolute !important;
+    right: -8px !important;
+    top: -8px !important;
+    font-size: 16px !important;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+.notification button:hover {
+    transform: scale3d(1.1, 1.1, 1.1) !important;
+}
+
+.notification hr {
+    border: none;
+    padding: 0;
+    margin: 5px 0;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+}
+
+.notification.info {
+    background-color: #eee;
+    border-color: #dddddd;
+    color: #444;
+
+    & hr {
+        border-bottom-color: #aaa;
+    }
+
+    & button {
+        background: #444;
+        color: white;
+    }
+
+    & button:hover {
+        background: #333;
+    }
+
+    .progress-bar {
+        background-color: #aaa;
+    }
+}
+
+.notification.success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+
+    & hr {
+        border-bottom-color: #4CAF50;
+
+    }
+
+    & button {
+        background: #33CC00;
+        color: white;
+    }
+
+    & button:hover {
+        background: #009900;
+    }
+
+    .progress-bar {
+        background-color: #33cc00;
+    }
+
+}
+
+.notification.warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+
+    & hr {
+        border-bottom-color: #FFC107;
+    }
+
+    & button {
+        background: #ff9900;
+        color: white;
+    }
+
+    & button:hover {
+        background: #ff6600;
+    }
+
+    .progress-bar {
+        background-color: #ff9900;
+    }
+}
+
+.notification.error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+
+    & hr {
+        border-bottom-color: #FF5722;
+    }
+
+    & button {
+        background: #FF3333;
+        color: white;
+    }
+
+    & button:hover {
+        background: #dc3545;
+    }
+
+    .progress-bar {
+        background-color: #f44336;
+    }
+}
+
+@keyframes PLprogress {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+    }
+}

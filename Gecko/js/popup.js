@@ -1,69 +1,42 @@
 $(document).ready(function () {
   Dropzone.autoDiscover = false;
   chrome.storage.local.get(storagelocal, function (result) {
-    // 初始化读取数据
-    options_exe = result.options_exe
-    options_proxy_server_state = result.options_proxy_server_state
-    options_proxy_server = result.options_proxy_server
-    options_host = result.options_host
-    options_token = result.options_token
-    options_CSRF = result.options_CSRF
-    options_uid = result.options_uid
-    options_source = result.options_source
-    options_imgur_post_mode = result.options_imgur_post_mode
-    options_source_select = result.options_source_select
-    options_expiration_select = result.options_expiration_select || "NODEL"
-    options_album_id = result.options_album_id
-    options_nsfw_select = result.options_nsfw_select || 0
-    options_permission_select = result.options_permission_select || 0
-    ImageProxy = result.ImageProxy || 0
-    //自定义请求
-    options_apihost = result.options_apihost
-    options_parameter = result.options_parameter
-    options_Headers = result.options_Headers
-    options_Body = result.options_Body
-    options_return_success = result.options_return_success
-    open_json_button = result.open_json_button
-    Copy_Selected_Mode = result.Copy_Selected_Mode
-
-    //GitHub
-    options_owner = result.options_owner
-    options_repository = result.options_repository
-
-    //对象存储
-    options_SecretId = result.options_SecretId
-    options_SecretKey = result.options_SecretKey
-    options_Bucket = result.options_Bucket
-    options_AppId = result.options_AppId
-    options_Endpoint = result.options_Endpoint
-    options_Region = result.options_Region
-    options_UploadPath = result.options_UploadPath
-    options_Custom_domain_name = result.options_Custom_domain_name
+    if (result.ProgramConfiguration) {
+      const programConfig = result.ProgramConfiguration || {};
+      for (const key in ProgramConfigurations) {
+        if (programConfig.hasOwnProperty(key)) {
+          ProgramConfigurations[key] = programConfig[key];
+        }
+      }
+    }
+    let Copy_Selected_Mode = result.Copy_Selected_Mode
+    let ImageProxy = result.FuncDomain.ImageProxy
 
     // 初始化JSON转换的模式
-    if (!open_json_button) {
-      chrome.storage.local.set({ 'open_json_button': 0 })
-      open_json_button = 0
+    if (!ProgramConfigurations.open_json_button) {
+      ProgramConfigurations.open_json_button = 0
+      addToQueue(() => storProgramConfiguration({ open_json_button: 0 }));
     }
 
-    if (options_exe == "UserDiy") {
-      if (!options_Headers) {
-        options_Headers = {}
+    if (ProgramConfigurations.options_exe == "UserDiy") {
+      if (!ProgramConfigurations.options_Headers) {
+        ProgramConfigurations.options_Headers = {}
       } else {
         try {
-          options_Headers = JSON.parse(options_Headers);
+          ProgramConfigurations.options_Headers = JSON.parse(ProgramConfigurations.options_Headers);
         } catch (error) {
           alert(chrome.i18n.getMessage("Headers_error"));
           window.location.href = "options.html"
           return;
         }
       }
-      if (!options_Body) {
-        options_Body = {}
+      if (!ProgramConfigurations.options_Body) {
+        ProgramConfigurations.options_Body = {}
       } else {
         try {
-          options_Body = JSON.parse(options_Body);
+          ProgramConfigurations.options_Body = JSON.parse(ProgramConfigurations.options_Body);
         } catch (error) {
+          console.log(error);
           alert(chrome.i18n.getMessage("Body_error"));
           window.location.href = "options.html"
           return;
@@ -72,16 +45,16 @@ $(document).ready(function () {
     }
 
     // 修复出现undefined的情况
-    if (!options_proxy_server) {
-      options_proxy_server = ""
+    if (!ProgramConfigurations.options_proxy_server) {
+      ProgramConfigurations.options_proxy_server = ""
     }
     // 如果source 等于空
-    if (!options_source) {
-      options_source = ""
+    if (!ProgramConfigurations.options_source) {
+      ProgramConfigurations.options_source = ""
     }
     // 判断跨域开关
-    if (options_proxy_server_state == 0) {
-      options_proxy_server = ""
+    if (ProgramConfigurations.options_proxy_server_state == 0) {
+      ProgramConfigurations.options_proxy_server = ""
     }
     // 判断复制模式
     if (!Copy_Selected_Mode) {
@@ -108,8 +81,8 @@ $(document).ready(function () {
     <i class="bi bi-bar-chart-line"></i>`+ chrome.i18n.getMessage("Used") + `:(<span class="userSize" style="color: #03a9f4;">0Gb</span>),
     <i class="bi bi-image"></i>`+ chrome.i18n.getMessage("Number_images") + `:(<span class="userImage_num" style="color: #03a9f4;">0</span>)
     </div>`
-    let LinksUrl = []
-    let imageUrl
+    let LinksUrl = [];
+    let imageUrl;
     let filePreviewElements = [];
     let fileDeletePreview = [];
     // 实现上传功能
@@ -137,7 +110,7 @@ $(document).ready(function () {
       </div>
     `,
         // autoProcessQueue: false, //自动上传
-        parallelUploads: 1, // 每次上传1个
+        // parallelUploads: 1, // 每次上传1个
         dictDefaultMessage: SvgData + `<p>` + chrome.i18n.getMessage("Upload_box_prompt") + `</p>` + UserBox,
         dictFallbackMessage: chrome.i18n.getMessage("dictFallbackMessage"),
         dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
@@ -186,7 +159,7 @@ $(document).ready(function () {
             })
           }
         }
-        fetch(options_proxy_server + Copy_Url)
+        fetch(ProgramConfigurations.options_proxy_server + Copy_Url)
           .then(res => {
             toastItem({
               toast_content: chrome.i18n.getMessage("Clipboard_upload_5")
@@ -299,9 +272,9 @@ $(document).ready(function () {
       }
       let date = new Date();
       let getMonth = date.getMonth() + 1
-      let filename = options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + file.name;
+      let filename = ProgramConfigurations.options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + file.name;
       try {
-        switch (options_exe) {
+        switch (ProgramConfigurations.options_exe) {
           case 'Lsky':
             toastItem({
               toast_content: res.message
@@ -344,7 +317,7 @@ $(document).ready(function () {
               toast_content: chrome.i18n.getMessage("Server_response_successful")
             })
             //奖字符串转为JSON
-            if (open_json_button == 1) {
+            if (ProgramConfigurations.open_json_button == 1) {
               if (typeof res !== 'object') {
                 try {
                   var res = JSON.parse(res)
@@ -355,44 +328,62 @@ $(document).ready(function () {
               }
             }
             let options_return_success_value = res;
-            for (let property of options_return_success.split('.')) {
+            for (let property of ProgramConfigurations.options_return_success.split('.')) {
               options_return_success_value = options_return_success_value[property];
             }
+            if (ProgramConfigurations.custom_ReturnPrefix) {
+              options_return_success_value = ProgramConfigurations.custom_ReturnPrefix + options_return_success_value
+            }
+            if (ProgramConfigurations.custom_ReturnAppend) {
+              options_return_success_value += ProgramConfigurationscustom_ReturnAppend
+            }
             imageUrl = options_return_success_value
-            options_host = options_apihost
+            ProgramConfigurations.options_host = ProgramConfigurations.options_apihost
             break;
           case 'Tencent_COS':
-            imageUrl = options_Custom_domain_name + filename
+            //腾讯云cos拼接
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+              ProgramConfigurations.options_Custom_domain_name = "https://" + ProgramConfigurations.options_Bucket + ".cos." + ProgramConfigurations.options_Region + ".myqcloud.com/"
+            }
+            imageUrl = ProgramConfigurations.options_Custom_domain_name + filename
             toastItem({
               toast_content: chrome.i18n.getMessage("Upload_prompt7")
             })
-            options_host = options_Bucket
+            ProgramConfigurations.options_host = ProgramConfigurations.options_Bucket
             break;
           case 'Aliyun_OSS':
-            imageUrl = options_Custom_domain_name + filename
+            //阿里云oss拼接
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+              ProgramConfigurations.options_Custom_domain_name = "https://" + ProgramConfigurations.options_Bucket + "." + ProgramConfigurations.options_Endpoint + "/"
+            }
+            imageUrl = ProgramConfigurations.options_Custom_domain_name + filename
             toastItem({
               toast_content: chrome.i18n.getMessage("Upload_prompt7")
             })
-            options_host = options_Endpoint
+            ProgramConfigurations.options_host = ProgramConfigurations.options_Endpoint
             break;
           case 'AWS_S3':
-            imageUrl = options_Custom_domain_name + filename
+            //AWS S3拼接
+            if (!ProgramConfigurations.options_Custom_domain_name) {
+              ProgramConfigurations.options_Custom_domain_name = "https://s3." + ProgramConfigurations.options_Region + ".amazonaws.com/" + ProgramConfigurations.options_Bucket + "/"
+            }
+            imageUrl = ProgramConfigurations.options_Custom_domain_name + filename
             toastItem({
               toast_content: chrome.i18n.getMessage("Upload_prompt7")
             })
-            options_host = options_Endpoint
+            ProgramConfigurations.options_host = ProgramConfigurations.options_Endpoint
             break;
           case 'GitHubUP':
-            imageUrl = `https://raw.githubusercontent.com/` + options_owner + `/` + options_repository + `/main/` + options_UploadPath + file.name
+            imageUrl = `https://raw.githubusercontent.com/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/main/` + ProgramConfigurations.options_UploadPath + file.name
             toastItem({
               toast_content: chrome.i18n.getMessage("Upload_prompt7")
             })
-            options_host = "GitHub.com"
+            ProgramConfigurations.options_host = "GitHub.com"
             break;
           case 'Telegra_ph':
-            if (options_Custom_domain_name) {
-              imageUrl = options_Custom_domain_name + res[0].src;
-              options_host = options_Custom_domain_name
+            if (ProgramConfigurations.options_Custom_domain_name) {
+              imageUrl = ProgramConfigurations.options_Custom_domain_name + res[0].src;
+              ProgramConfigurations.options_host = ProgramConfigurations.options_Custom_domain_name
             } else {
               imageUrl = `https://telegra.ph` + res[0].src;
             }
@@ -440,12 +431,22 @@ $(document).ready(function () {
         url: imageUrl,
         name: file.name
       }
-
+      const imageUrlCopy = imageUrl
+      const storData = {
+        "file": {
+          "name": null,
+          "file": file,
+        },
+        "url": imageUrlCopy,
+        "MethodName": "normal",
+        "uploadDomainName": ProgramConfigurations.options_host
+      }
+      addToQueue(() => LocalStorage(storData));
+      chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrlCopy });
       LinksUrl.push(info)
-      chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrl });
-      await LocalStorage(null, imageUrl, file)
-
     })
+
+
     uploader.on("error", function (file, err) {
       console.log(err)
       let info = {
@@ -453,7 +454,7 @@ $(document).ready(function () {
         name: file.name
       }
       LinksUrl.push(info)
-      switch (options_exe) {
+      switch (ProgramConfigurations.options_exe) {
         case 'Lsky':
           toastItem({
             toast_content: err.message
@@ -640,8 +641,8 @@ $(document).ready(function () {
     })
 
 
-    if (!options_host) {
-      if (options_exe != "UserDiy" && options_exe != "Tencent_COS" && options_exe != "Aliyun_OSS" && options_exe != "AWS_S3" && options_exe != "GitHubUP" && options_exe != "imgdd") {
+    if (!ProgramConfigurations.options_host) {
+      if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {
         alert(chrome.i18n.getMessage("Website_domain_is_blank"));
         window.location.href = "options.html";
         return;
@@ -649,98 +650,98 @@ $(document).ready(function () {
     }
 
     let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
-    if (tokenRequired.includes(options_exe)) {
-      if (!options_token) {
-        alert(`${options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
+    if (tokenRequired.includes(ProgramConfigurations.options_exe)) {
+      if (!ProgramConfigurations.options_token) {
+        alert(`${ProgramConfigurations.options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
         window.location.href = "options.html";
         return;
       }
-      if (options_exe === "ImgURL" && !options_uid) {
+      if (ProgramConfigurations.options_exe === "ImgURL" && !ProgramConfigurations.options_uid) {
         alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
         window.location.href = "options.html";
         return;
       }
-      if (options_exe == "Hellohao" && !options_source) {
+      if (ProgramConfigurations.options_exe == "Hellohao" && !ProgramConfigurations.options_source) {
         alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
         window.location.href = "options.html";
         return;
       }
 
     }
-    switch (options_exe) {
+    switch (ProgramConfigurations.options_exe) {
       case 'UserDiy':
-        if (!options_apihost) {
+        if (!ProgramConfigurations.options_apihost) {
           alert(chrome.i18n.getMessage("Website_domain_is_blank"));
           window.location.href = "options.html";
           return;
         }
         break;
       case 'Tencent_COS':
-        if (!options_SecretId) {
+        if (!ProgramConfigurations.options_SecretId) {
           alert(chrome.i18n.getMessage("Tencent_cos_1"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_SecretKey) {
+        if (!ProgramConfigurations.options_SecretKey) {
           alert(chrome.i18n.getMessage("Tencent_cos_2"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Region) {
+        if (!ProgramConfigurations.options_Region) {
           alert(chrome.i18n.getMessage("Tencent_cos_3"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Bucket) {
+        if (!ProgramConfigurations.options_Bucket) {
           alert(chrome.i18n.getMessage("Tencent_cos_4"))
           window.location.href = "options.html";
           return;
         }
         break;
       case 'Aliyun_OSS':
-        if (!options_SecretId) {
+        if (!ProgramConfigurations.options_SecretId) {
           alert(chrome.i18n.getMessage("Alibaba_oss_1"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_SecretKey) {
+        if (!ProgramConfigurations.options_SecretKey) {
           alert(chrome.i18n.getMessage("Alibaba_oss_2"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Bucket) {
+        if (!ProgramConfigurations.options_Bucket) {
           alert(chrome.i18n.getMessage("Alibaba_oss_3"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Endpoint) {
+        if (!ProgramConfigurations.options_Endpoint) {
           alert(chrome.i18n.getMessage("Alibaba_oss_4"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Region) {
+        if (!ProgramConfigurations.options_Region) {
           alert(chrome.i18n.getMessage("Alibaba_oss_5"))
           window.location.href = "options.html";
           return;
         }
         break;
       case 'AWS_S3':
-        if (!options_SecretId) {
+        if (!ProgramConfigurations.options_SecretId) {
           alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_SecretKey) {
+        if (!ProgramConfigurations.options_SecretKey) {
           alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Region) {
+        if (!ProgramConfigurations.options_Region) {
           alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
         }
-        if (!options_Bucket) {
+        if (!ProgramConfigurations.options_Bucket) {
           alert(chrome.i18n.getMessage("s3_oss_1"))
           window.location.href = "options.html";
           return;
@@ -752,16 +753,25 @@ $(document).ready(function () {
     // 写入标题
     let options_webtitle = localStorage.options_webtitle
     $(".title-a").text(options_webtitle)
-    $(".exeinfo_p").text(options_exe)
+    $(".exeinfo_p").text(ProgramConfigurations.options_exe)
 
+
+    animation_button('.Animation_button')// 设置按钮动画
+    $('.container-md').hide().fadeIn('slow'); //全局动画
+    $(".dropzone ").hover(function () {
+      if ($(".dz-button img")) {
+        $(".dz-button img")[0].src = "/icons/hyl_512.png"
+      }
+
+    }, function () {
+      if ($(".dz-button img")) {
+        $(".dz-button img")[0].src = "/icons/yyl_512.png"
+      }
+
+    })
   }) // chrome.storage.local.get
-  animation_button('.Animation_button')// 设置按钮动画
-  $('.container-md').hide().fadeIn('slow'); //全局动画
-  $(".dropzone ").hover(function(){
-    $(".dz-button img")[0].src="/icons/hyl_512.png"
-  },function(){
-    $(".dz-button img")[0].src="/icons/yyl_512.png"
-  })
+
+
   let Simulated_upload = false//模拟上传
   function showIntro() {
     if ($("#overlay").length == 0) {

@@ -141,121 +141,77 @@ function animation_button2(Animation_class) {
 
 //读取本地数组
 var storagelocal = [
-  "options_exe",
-  "options_proxy_server_state",
-  "options_proxy_server",
-  "options_host",
-  "options_token",
-  "options_CSRF",
-  "options_uid",
-  "options_source",
-  "options_imgur_post_mode",
-  "options_source_select",
-  "options_expiration_select", //删除时间
-  "options_album_id", //相册
-  "options_nsfw_select",//是否健康
-  "options_permission_select",//是否公开
-  "ImageProxy",//图片代理
-  //自定义请求
-  "options_apihost",
-  "options_parameter",
-  "options_Headers",
-  "options_Body",
-  "options_return_success",
-  //GitHub
-  "options_owner",
-  "options_repository",
-
-  //对象存储
-  "options_SecretId",
-  "options_SecretKey",
-  "options_Bucket",
-  "options_AppId",
-  "options_Endpoint",
-  "options_Region",
-  "options_UploadPath",
-  "options_Custom_domain_name",
-
-  "open_json_button",
+  "ProgramConfiguration",
   "UploadLog",
   "Browse_mode_switching_status",
   "Copy_Selected_Mode",
-  "GlobalUpload",
-  "edit_uploadArea_width",
-  "edit_uploadArea_height",
-  "edit_uploadArea_Location",
-  "edit_uploadArea_opacity",
-  "edit_uploadArea_auto_close_time",
-  "edit_uploadArea_Left_or_Right"
+  "uploadArea",
+  "FuncDomain",
 ]
+var ProgramConfigurations = {
+  options_exe: null,
+  options_proxy_server_state: null,
+  options_proxy_server: null,
+  options_host: null,
+  options_token: null,
+  options_CSRF: null,
+  options_uid: null,
+  options_source: null,
+  options_imgur_post_mode: null,
+  options_source_select: null, //存储源
+  options_expiration_select: null, //删除时间
+  options_album_id: null, //相册
+  options_nsfw_select: null,//是否健康
+  options_permission_select: null,//是否公开
+  options_apihost: null, //自定义
+  requestMethod: null, //请求方法
+  options_parameter: null,
+  options_Headers: null,
+  options_Body: null,
+  options_return_success: null,
+  custom_ReturnPrefix: null, //前缀
+  custom_ReturnAppend: null,//后缀
+  open_json_button: null,
+  custom_Base64Upload: null,
+  custom_Base64UploadRemovePrefix: null,
+  custom_BodyUpload: null,
+  custom_BodyStringify: null,
+  options_owner: null,//GitHub
+  options_repository: null,
+  options_SecretId: null, //对象存储
+  options_SecretKey: null,
+  options_Bucket: null,
+  options_AppId: null,
+  options_Endpoint: null,
+  options_Region: null,
+  options_UploadPath: null,
+  options_Custom_domain_name: null
+}
+
+storagelocal.forEach(function (key) {
+  window[key] = null;
+});
+
 var uploader;
-var options_exe,
-  options_proxy_server_state,
-  options_proxy_server,
-  options_host,
-  options_token,
-  options_CSRF,
-  options_uid,
-  options_source,
-  options_imgur_post_mode,
-  options_source_select,
-  options_expiration_select, //删除时间
-  options_album_id,//相册
-  options_nsfw_select,//是否健康
-  options_permission_select,//是否公开
-  ImageProxy,//图片代理
-  //自定义请求
-  options_apihost,
-  options_parameter,
-  options_Headers,
-  options_Body,
-  options_return_success,
-  //GitHub
-  options_owner,
-  options_repository,
-  //对象存储
-  options_SecretId,
-  options_SecretKey,
-  options_Bucket,
-  options_AppId,
-  options_Endpoint,
-  options_Region,
-  options_UploadPath,
-  options_Custom_domain_name,
-
-  open_json_button,
-  UploadLog,
-  Browse_mode_switching_status,
-  Copy_Selected_Mode,
-  GlobalUpload,
-  edit_uploadArea_width,
-  edit_uploadArea_height,
-  edit_uploadArea_Location,
-  edit_uploadArea_opacity,
-  edit_uploadArea_auto_close_time,
-  edit_uploadArea_Left_or_Right;
-
 var cos
 var oss
 var s3
-chrome.storage.local.get(storagelocal, function (result) {
-  options_exe = result.options_exe
-  //对象存储
-  options_SecretId = result.options_SecretId
-  options_SecretKey = result.options_SecretKey
-  options_Bucket = result.options_Bucket
-  options_AppId = result.options_AppId
-  options_Endpoint = result.options_Endpoint
-  options_Region = result.options_Region
-  options_UploadPath = result.options_UploadPath
-  options_Custom_domain_name = result.options_Custom_domain_name
+chrome.storage.local.get(["ProgramConfiguration"], function (result) {
+  if (result.ProgramConfiguration) {
+    const programConfig = result.ProgramConfiguration || {};
+    for (const key in ProgramConfigurations) {
+      if (programConfig.hasOwnProperty(key)) {
+        ProgramConfigurations[key] = programConfig[key];
+      }
+    }
+  }
 
-  if (options_exe == 'Tencent_COS') {
+  if (ProgramConfigurations.options_exe == 'Tencent_COS') {
     try {
       let getAuthorization = function (options, callback) {
         let authorization = COS.getAuthorization({
-          SecretId: options_SecretId,
-          SecretKey: options_SecretKey,
+          SecretId: ProgramConfigurations.options_SecretId,
+          SecretKey: ProgramConfigurations.options_SecretKey,
           Method: options.Method,
           Pathname: options.Pathname,
           Query: options.Query,
@@ -279,20 +235,15 @@ chrome.storage.local.get(storagelocal, function (result) {
         chrome.runtime.sendMessage({ Loudspeaker: error.toString() });
       }
     }
-
-    //腾讯云cos拼接
-    if (!options_Custom_domain_name) {
-      options_Custom_domain_name = "https://" + options_Bucket + ".cos." + options_Region + ".myqcloud.com/"
-    }
   }
-  if (options_exe == 'Aliyun_OSS') {
+  if (ProgramConfigurations.options_exe == 'Aliyun_OSS') {
     try {
       oss = new OSS({
-        accessKeyId: options_SecretId,
-        accessKeySecret: options_SecretKey,
-        bucket: options_Bucket,
-        endpoint: options_Endpoint,
-        region: options_Region,
+        accessKeyId: ProgramConfigurations.options_SecretId,
+        accessKeySecret: ProgramConfigurations.options_SecretKey,
+        bucket: ProgramConfigurations.options_Bucket,
+        endpoint: ProgramConfigurations.options_Endpoint,
+        region: ProgramConfigurations.options_Region,
         secure: true //强制https
       });
     } catch (error) {
@@ -305,27 +256,21 @@ chrome.storage.local.get(storagelocal, function (result) {
         chrome.runtime.sendMessage({ Loudspeaker: error.toString() });
       }
     }
-    //阿里云oss拼接
-    if (!options_Custom_domain_name) {
-      options_Custom_domain_name = "https://" + options_Bucket + "." + options_Endpoint + "/"
-    }
+
 
   }
-  if (options_exe == 'AWS_S3') {
+  if (ProgramConfigurations.options_exe == 'AWS_S3') {
     //AWS S3区域拼接
-    if (!options_Endpoint) {
-      options_Endpoint = "https://s3." + options_Region + ".amazonaws.com/"
+    if (!ProgramConfigurations.options_Endpoint) {
+      ProgramConfigurations.options_Endpoint = "https://s3." + ProgramConfigurations.options_Region + ".amazonaws.com/"
     }
-    //AWS S3拼接
-    if (!options_Custom_domain_name) {
-      options_Custom_domain_name = "https://s3." + options_Region + ".amazonaws.com/" + options_Bucket + "/"
-    }
+
     try {
       AWS.config.update({
-        accessKeyId: options_SecretId,
-        secretAccessKey: options_SecretKey,
-        region: options_Region,
-        endpoint: options_Endpoint,
+        accessKeyId: ProgramConfigurations.options_SecretId,
+        secretAccessKey: ProgramConfigurations.options_SecretKey,
+        region: ProgramConfigurations.options_Region,
+        endpoint: ProgramConfigurations.options_Endpoint,
         signatureVersion: 'v4'
       });
       s3 = new AWS.S3();
@@ -478,59 +423,62 @@ var fileTypeMap = {
 };
 
 let pluginURL = chrome.runtime.getURL("popup.html");
+let pluginOptions = chrome.runtime.getURL("options.html");
 let currentURL = window.location.href;
 
-chrome.storage.local.get(storagelocal, function (result) {
-  let options_exe = result.options_exe
-  let options_proxy_server = result.options_proxy_server
-  let options_host = result.options_host
-  let options_token = result.options_token
-  let options_proxy_server_state = result.options_proxy_server_state
-
+chrome.storage.local.get(["ProgramConfiguration"], function (result) {
+  if (result.ProgramConfiguration) {
+    const programConfig = result.ProgramConfiguration || {};
+    for (const key in ProgramConfigurations) {
+      if (programConfig.hasOwnProperty(key)) {
+        ProgramConfigurations[key] = programConfig[key];
+      }
+    }
+  }
   // 判断跨域开关
-  if (options_proxy_server_state == 0) {
-    options_proxy_server = ""
+  if (ProgramConfigurations.options_proxy_server_state == 0) {
+    ProgramConfigurations.options_proxy_server = ""
   }
-
-  if (!options_proxy_server) {
-    options_proxy_server = ""
+  if (!ProgramConfigurations.options_proxy_server) {
+    ProgramConfigurations.options_proxy_server = ""
   }
-
-
-  if (options_exe == "UserDiy") {
+  if (ProgramConfigurations.options_exe == "UserDiy") {
     localStorage.options_webtitle = chrome.i18n.getMessage("Custom_Upload")
     localStorage.options_webtitle_status = 0
     return;
   }
-  if (options_exe == "GitHubUP") {
+  if (ProgramConfigurations.options_exe == "GitHubUP") {
     localStorage.options_webtitle = chrome.i18n.getMessage("GitHub")
     localStorage.options_webtitle_status = 0
     return;
   }
-  if (options_exe == "Tencent_COS") {
+  if (ProgramConfigurations.options_exe == "Tencent_COS") {
     localStorage.options_webtitle = chrome.i18n.getMessage("Tencent_COS")
     localStorage.options_webtitle_status = 0
     return;
   }
-  if (options_exe == "Aliyun_OSS") {
+  if (ProgramConfigurations.options_exe == "Aliyun_OSS") {
     localStorage.options_webtitle = chrome.i18n.getMessage("Alibaba_OSS")
     localStorage.options_webtitle_status = 0
     return;
   }
-  if (options_exe == "AWS_S3") {
+  if (ProgramConfigurations.options_exe == "AWS_S3") {
     localStorage.options_webtitle = chrome.i18n.getMessage("AWS_S3")
     localStorage.options_webtitle_status = 0
     return;
   }
 
-  if (options_host) {
+  if (ProgramConfigurations.options_host) {
+    if (pluginURL != currentURL) {
+      return;
+    }
     // 自定义ajax函数属性
-    if (options_exe == "Lsky") {
-      fetch(options_proxy_server + "https://" + options_host + "/api/v1/profile", {
+    if (ProgramConfigurations.options_exe == "Lsky") {
+      fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v1/profile", {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Authorization': options_token
+          'Authorization': ProgramConfigurations.options_token
         }
       })
         .then(response => {
@@ -565,11 +513,11 @@ chrome.storage.local.get(storagelocal, function (result) {
           }
         });
     }
-    if (options_exe == "SM_MS") {
-      fetch(options_proxy_server + "https://" + options_host + "/api/v2/profile", {
+    if (ProgramConfigurations.options_exe == "SM_MS") {
+      fetch(ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/v2/profile", {
         method: 'POST',
         headers: {
-          'Authorization': options_token
+          'Authorization': ProgramConfigurations.options_token
         }
       })
         .then(response => {
@@ -597,11 +545,11 @@ chrome.storage.local.get(storagelocal, function (result) {
   }
   if (localStorage.options_webtitle_status == 1) {
     // 获取web标题
-    if (options_host == "pnglog.com") {
+    if (ProgramConfigurations.options_host == "pnglog.com") {
       localStorage.options_webtitle = "盘络图床"
       localStorage.options_webtitle_status = 0 // 不获取
     } else {
-      fetch(options_proxy_server + 'https://' + options_host)
+      fetch(ProgramConfigurations.options_proxy_server + 'https://' + ProgramConfigurations.options_host)
         .then(response => response.text())
         .then(html => {
           let webtitle = $(html).filter('title').text();
@@ -610,7 +558,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         })
         .catch(error => {
           console.log("标题获取失败,再次尝试获取...");
-          fetch('https://cors-anywhere.pnglog.com/https://' + options_host)
+          fetch('https://cors-anywhere.pnglog.com/https://' + ProgramConfigurations.options_host)
             .then(response => response.text())
             .then(html => {
               let webtitle = $(html).filter('title').text();
@@ -624,7 +572,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     }
   }
   if (currentURL === pluginURL) {
-    if (options_exe != "Lsky" && options_exe != "SM_MS") {
+    if (ProgramConfigurations.options_exe != "Lsky" && ProgramConfigurations.options_exe != "SM_MS") {
       chrome.storage.local.get("UploadLog", function (result) {
         setTimeout(() => {
           let Log = result.UploadLog || [];
@@ -651,25 +599,167 @@ chrome.storage.local.get(storagelocal, function (result) {
 
 })
 
-function measurePingDelay(callback, getUrl) {
+function measurePingDelay(getUrl) {
   let startTime = new Date().getTime();
   let xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
       let endTime = new Date().getTime();
       let delay = endTime - startTime;
-      callback(null, delay);
+      if (delay > 300) {
+        delay = Math.floor(delay / 3);
+      } else if (delay < 100) { //小于
+        delay = 100
+      }
+      return delay;
     }
   };
   xhr.onerror = () => {
-    let corsUrl = 'https://cors-anywhere.pnglog.com/' + getUrl;
-    xhr.onerror = () => {
-      callback(new Error('无法连接到') + getUrl, null);
-    };
-    xhr.open('GET', corsUrl, true);
-    xhr.send();
+    return 100;
   };
-
   xhr.open('GET', getUrl, true);
   xhr.send();
+}
+
+function extensionVersion() {
+  const options = [
+    "extensionVersion",
+    "uploadArea",
+    "FuncDomain",
+    "GlobalUpload",
+    "AutoInsert",
+    "AutoCopy",
+    "Right_click_menu_upload",
+    "ImageProxy",
+    "EditPasteUpload",
+  ];
+  chrome.storage.local.get(options, function (result) {
+    uploadArea = result.uploadArea || {};
+    FuncDomain = result.FuncDomain || {};
+    const previousVersion = result.extensionVersion;
+    const currentVersion = chrome.runtime.getManifest().version;
+    if (previousVersion !== currentVersion) {
+      chrome.storage.local.set({ extensionVersion: currentVersion });
+      PLNotification({
+        title: "盘络上传：",
+        type: "warning",
+        content: currentVersion + `版本出现了破坏性修改，请重新配置图床!`,
+        duration: 0,
+        saved: true,
+      });
+    }
+
+    const Defaults = {
+      "uploadArea": {
+        "uploadArea_width": 32,
+        "uploadArea_height": 30,
+        "uploadArea_Location": 34,
+        "uploadArea_opacity": 0.3,
+        "uploadArea_auto_close_time": 2,
+        "uploadArea_Left_or_Right": "Right"
+      },
+      "FuncDomain": {
+        "GlobalUpload": "on",
+        "AutoInsert": "on",
+        "AutoCopy": "off",
+        "Right_click_menu_upload": "off",
+        "ImageProxy": "off",
+        "EditPasteUpload": "off"
+      },
+    };
+
+    updateMissingProperties(Defaults);
+
+    function updateMissingProperties(defaults) {
+      const missingProps = {};
+      const newUploadArea = {};
+      const newFuncDomain = {};
+      for (let key in defaults.uploadArea) {
+        if (uploadArea[key] === undefined || uploadArea[key] === null) {
+          uploadArea[key] = defaults.uploadArea[key];
+          newUploadArea[key] = defaults.uploadArea[key];
+          missingProps[key] = defaults.uploadArea[key];
+        }
+      }
+      for (let key in defaults.FuncDomain) {
+        if (FuncDomain[key] === undefined || FuncDomain[key] === null) {
+          FuncDomain[key] = defaults.FuncDomain[key];
+          newFuncDomain[key] = defaults.uploadArea[key];
+          missingProps[key] = defaults.FuncDomain[key];
+        }
+      }
+      if (Object.keys(newUploadArea).length > 0) {
+        chrome.storage.local.set({ "uploadArea": uploadArea });
+      }
+      if (Object.keys(newFuncDomain).length > 0) {
+        chrome.storage.local.set({ "FuncDomain": FuncDomain });
+      }
+      if (Object.keys(missingProps).length > 0) {
+        setTimeout(function () {
+          alert(`盘络上传:属性缺失：\n${Object.keys(missingProps).join('\n')}\n刷新页面将自动恢复默认值`);
+          window.location.reload();
+        }, 1500);
+      }
+    }
+
+  });
+
+}
+extensionVersion()
+
+// 创建任务队列和处理标志
+const taskQueue = [];
+let isProcessing = false;
+
+// 处理任务队列中的任务
+async function processQueue() {
+  if (isProcessing || taskQueue.length === 0) {
+    return;
+  }
+
+  isProcessing = true;
+  const task = taskQueue.shift();
+  try {
+    await task(); // 执行自定义函数
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isProcessing = false;
+    processQueue(); // 处理下一个任务
+  }
+}
+
+// 将任务函数添加到队列
+function addToQueue(taskFunction) {
+  taskQueue.push(taskFunction);
+  processQueue();
+}
+
+
+async function storProgramConfiguration(data) {
+  return new Promise((resolve, reject) => {
+    const PCLocalStorage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) ? chrome.storage.local : (typeof browser !== 'undefined' && browser.storage && browser.storage.local) ? browser.storage.local : null;
+    if (PCLocalStorage) {
+      PCLocalStorage.get("ProgramConfiguration", function (result) {
+        if (chrome.runtime.lastError) {
+          alert("获取存储数据失败: " + chrome.runtime.lastError);
+          reject(false);
+        } else {
+          const existingData = result.ProgramConfiguration || {};
+          const updatedData = { ...existingData, ...data };
+          PCLocalStorage.set({ "ProgramConfiguration": updatedData }, function () {
+            if (chrome.runtime.lastError) {
+              alert("保存数据失败: " + chrome.runtime.lastError);
+              reject(false);
+            } else {
+              resolve(true);
+            }
+          });
+        }
+      });
+    } else {
+      alert("该浏览器不支持存储API, 保存失败!");
+      reject(false);
+    }
+  });
 }

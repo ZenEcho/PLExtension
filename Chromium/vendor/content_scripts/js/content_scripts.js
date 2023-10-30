@@ -4,26 +4,27 @@
 var uploadArea_status = 1;
 
 chrome.storage.local.get(storagelocal, function (result) {
-    options_exe = result.options_exe
-    options_proxy_server_state = result.options_proxy_server_state
-    options_proxy_server = result.options_proxy_server
+    result.ProgramConfiguration = result.ProgramConfiguration || {}
+    let options_exe = result.ProgramConfiguration.options_exe
+    let options_proxy_server_state = result.ProgramConfiguration.options_proxy_server_state
+    let options_proxy_server = result.ProgramConfiguration.options_proxy_server
     //GitHub
-    options_token = result.options_token
-    options_owner = result.options_owner
-    options_repository = result.options_repository
+    let options_token = result.ProgramConfiguration.options_token
+    let options_owner = result.ProgramConfiguration.options_owner
+    let options_repository = result.ProgramConfiguration.options_repository
     //对象存储
-    options_SecretId = result.options_SecretId
-    options_SecretKey = result.options_SecretKey
-    options_Bucket = result.options_Bucket
-    options_AppId = result.options_AppId
-    options_Endpoint = result.options_Endpoint
-    options_Region = result.options_Region
-    options_UploadPath = result.options_UploadPath
-    options_Custom_domain_name = result.options_Custom_domain_name
+    let options_SecretId = result.ProgramConfiguration.options_SecretId
+    let options_SecretKey = result.ProgramConfiguration.options_SecretKey
+    let options_Bucket = result.ProgramConfiguration.options_Bucket
+    let options_AppId = result.ProgramConfiguration.options_AppId
+    let options_Endpoint = result.ProgramConfiguration.options_Endpoint
+    let options_Region = result.ProgramConfiguration.options_Region
+    let options_UploadPath = result.ProgramConfiguration.options_UploadPath
+    let options_Custom_domain_name = result.ProgramConfiguration.options_Custom_domain_name
 
     let Animation_time; // 定义多少秒关闭iframe
     let iframe_mouseover = false // 定义iframe状态
-    GlobalUpload = result.GlobalUpload //获取本地GlobalUpload值
+    let GlobalUpload = result.FuncDomain.GlobalUpload //获取本地GlobalUpload值
 
     let uploadArea = document.createElement('PL-Extension'); //定义上传区域/侧边栏
     uploadArea.id = 'uploadArea'; //给上传区域定义id
@@ -44,15 +45,15 @@ chrome.storage.local.get(storagelocal, function (result) {
     document.body.appendChild(iframeBox);
 
     //自定义图标区域
-    edit_uploadArea_width = result.edit_uploadArea_width
-    edit_uploadArea_height = result.edit_uploadArea_height
-    edit_uploadArea_Location = result.edit_uploadArea_Location
-    edit_uploadArea_opacity = result.edit_uploadArea_opacity
-    edit_uploadArea_auto_close_time = result.edit_uploadArea_auto_close_time
-    edit_uploadArea_Left_or_Right = result.edit_uploadArea_Left_or_Right
-    uploadArea.style.width = edit_uploadArea_width + "px"
-    uploadArea.style.height = edit_uploadArea_height + "%"
-    uploadArea.style.top = edit_uploadArea_Location + "%"
+    let uploadArea_width = result.uploadArea.uploadArea_width
+    let uploadArea_height = result.uploadArea.uploadArea_height
+    let uploadArea_Location = result.uploadArea.uploadArea_Location
+    let uploadArea_opacity = result.uploadArea.uploadArea_opacity
+    let uploadArea_auto_close_time = result.uploadArea.uploadArea_auto_close_time
+    let uploadArea_Left_or_Right = result.uploadArea.uploadArea_Left_or_Right
+    uploadArea.style.width = uploadArea_width + "px"
+    uploadArea.style.height = uploadArea_height + "%"
+    uploadArea.style.top = uploadArea_Location + "%"
 
     const maxZIndex = Math.pow(2, 31) - 1; //设置index
     uploadArea.style.zIndex = maxZIndex.toString();
@@ -104,17 +105,17 @@ chrome.storage.local.get(storagelocal, function (result) {
     let startY, startTop;
     let isPreventingClick = false;
     let isMouseOverSidebar = false;
-    switch (edit_uploadArea_Left_or_Right) {
+    switch (uploadArea_Left_or_Right) {
         case "Left":
             uploadArea.style.borderRadius = "0px 10px 10px 0px"
-            uploadArea.style.left = "-" + (edit_uploadArea_width + 10) + "px"
+            uploadArea.style.left = "-" + (uploadArea_width + 10) + "px"
             uploadArea.style.transition = "left 0.3s ease-in-out"
             iframe.style.left = "-900px"
             iframe.style.transition = "left 0.3s ease-in-out"
             break;
         case "Right":
             uploadArea.style.borderRadius = "10px 0px 0px 10px"
-            uploadArea.style.right = "-" + (edit_uploadArea_width + 10) + "px"
+            uploadArea.style.right = "-" + (uploadArea_width + 10) + "px"
             uploadArea.style.transition = "right 0.3s ease-in-out"
             iframe.style.right = "-900px"
             iframe.style.transition = "right 0.3s ease-in-out"
@@ -124,7 +125,6 @@ chrome.storage.local.get(storagelocal, function (result) {
     // 鼠标按下事件监听
     uploadArea.addEventListener('mousedown', (e) => {
         delayTimeout = setTimeout(() => {
-            console.log("999");
             isDragging = true;
             isPreventingClick = false;
             startY = e.clientY;
@@ -158,7 +158,7 @@ chrome.storage.local.get(storagelocal, function (result) {
             // 限制上传区域不超出父元素的边界
             if (newTop >= 0 && newTop + uploadArea.clientHeight <= uploadArea.parentElement.clientHeight) {
                 uploadArea.style.top = newTop + 'px';
-                if (edit_uploadArea_Left_or_Right === 'Left') {
+                if (uploadArea_Left_or_Right === 'Left') {
                     uploadArea.style.left = '0';
                 } else {
                     uploadArea.style.right = '0';
@@ -169,8 +169,8 @@ chrome.storage.local.get(storagelocal, function (result) {
             return;
         }
 
-        const isLeft = edit_uploadArea_Left_or_Right === 'Left';
-        const isRight = edit_uploadArea_Left_or_Right === 'Right';
+        const isLeft = uploadArea_Left_or_Right === 'Left';
+        const isRight = uploadArea_Left_or_Right === 'Right';
 
         if (isRight && document.body.scrollHeight > window.innerHeight) {
             w -= window.innerWidth - document.body.clientWidth;
@@ -189,15 +189,15 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
 
         if (!isMouseOverSidebar) {
-            uploadArea.style[isLeft ? 'left' : 'right'] = `-` + (edit_uploadArea_width + 10) + `px`;
+            uploadArea.style[isLeft ? 'left' : 'right'] = `-` + (uploadArea_width + 10) + `px`;
         }
     });
 
     /**
      * 实现根据侧边栏宽度切换logo
      */
-    uploadArea.style.background = "url(" + PNGlogo + ")no-repeat center rgba(60,64,67," + edit_uploadArea_opacity + ")";
-    uploadArea.style.backgroundSize="contain"
+    uploadArea.style.background = "url(" + PNGlogo + ")no-repeat center rgba(60,64,67," + uploadArea_opacity + ")";
+    uploadArea.style.backgroundSize = "contain"
 
     // ####################################################
     // #拖拽上传
@@ -212,12 +212,12 @@ chrome.storage.local.get(storagelocal, function (result) {
             event.stopPropagation();
         }
         if (event.target.tagName === "IMG" || event.dataTransfer.types.includes("Files")) {
-            if (GlobalUpload == "GlobalUpload_Default") {
+            if (GlobalUpload == "on") {
                 event.target.setAttribute("data-PLExtension", "true");
                 uploadArea.classList.remove('box-shadow-Blink');
                 uploadArea.classList.add('box-shadow-Blink');
                 // 判断拖拽点是否在上传区域内
-                if (edit_uploadArea_Left_or_Right == "Left") {
+                if (uploadArea_Left_or_Right == "Left") {
                     uploadArea.style.left = "0";
                 } else {
                     uploadArea.style.right = "0";
@@ -243,7 +243,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
     });
     switch (GlobalUpload) {
-        case 'GlobalUpload_Default':
+        case 'on':
             uploadArea.addEventListener("drop", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -251,7 +251,7 @@ chrome.storage.local.get(storagelocal, function (result) {
                 uploadArea.classList.remove('box-shadow-Blink');
             });// 拖拽到元素
             break;
-        case 'GlobalUpload_off':
+        case 'off':
             uploadArea_status = uploadArea_status - 1
             break;
     }
@@ -263,25 +263,28 @@ chrome.storage.local.get(storagelocal, function (result) {
         iframeHide()
     });
     function iframeShow() {
-        iframeBox.classList.add('PL-IframeBox');
-        let iframesrc = iframe.src
-        if (!iframesrc) {
-            iframe.src = popupUrl
-            iframe.onload = function () {
-                iframe.contentWindow.focus();
-            };
+        if (GlobalUpload == "on") {
+            iframeBox.classList.add('PL-IframeBox');
+            let iframesrc = iframe.src
+            if (!iframesrc) {
+                iframe.src = popupUrl
+                iframe.onload = function () {
+                    iframe.contentWindow.focus();
+                };
+            }
+            switch (uploadArea_Left_or_Right) {
+                case "Left":
+                    iframe.style.left = "1px"
+                    break;
+                case "Right":
+                    iframe.style.right = "1px"
+                    break;
+            }
+            iframe.contentWindow.focus();
+            iframe_mouseover = true
+            uploadArea.style.display = "none"
         }
-        switch (edit_uploadArea_Left_or_Right) {
-            case "Left":
-                iframe.style.left = "1px"
-                break;
-            case "Right":
-                iframe.style.right = "1px"
-                break;
-        }
-        iframe.contentWindow.focus();
-        iframe_mouseover = true
-        uploadArea.style.display = "none"
+
     }
     function iframeHide() {
         iframeBox.classList.remove('PL-IframeBox');
@@ -289,7 +292,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         //如果iframe_mouseover是打开状态
         if (iframe_mouseover == true) {
             iframe_mouseover = false
-            switch (edit_uploadArea_Left_or_Right) {
+            switch (uploadArea_Left_or_Right) {
                 case "Left":
                     iframe.style.left = "-900px"
                     break;
@@ -305,7 +308,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         iframe_mouseover = true //只要移出iframe就改为打开状态
         Animation_time = setTimeout(function () {
             iframeHide()
-        }, edit_uploadArea_auto_close_time * 1000);
+        }, uploadArea_auto_close_time * 1000);
     });
     // 添加鼠标移入iframe的事件监听器
     iframe.addEventListener('mouseover', function () {
@@ -321,17 +324,17 @@ chrome.storage.local.get(storagelocal, function (result) {
             element.remove();
         }
     }
-    chrome.storage.local.get(["AutoInsert"], function (result) {
-        if (result.AutoInsert == "AutoInsert_on") {
+    chrome.storage.local.get(["FuncDomain"], function (result) {
+        if (result.FuncDomain.AutoInsert == "on") {
             insertContentIntoEditorState()
         }
     })
-
     /**
      * 收到消息的动作
      */
     chrome.runtime.onMessage.addListener(function (request) {
         const contextMenus = [
+            request.UserDiy_contextMenus,
             request.Tencent_COS_contextMenus,
             request.Aliyun_OSS_contextMenus,
             request.AWS_S3_contextMenus,
@@ -340,8 +343,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         ];
         for (const menu of contextMenus) {
             if (menu) {
-                const imgUrl = menu;
-                content_scripts_HandleUploadWithMode(imgUrl.url, imgUrl.Metho, Simulated_upload);
+                content_scripts_HandleUploadWithMode(menu.url, menu.Metho, Simulated_upload);
             }
         }
         if (request.AutoInsert_message) {
@@ -393,7 +395,14 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         //进度条
         if (request.Progress_bar) {
-            StatusProgressBar(request.Progress_bar.filename, request.Progress_bar.status, request.Progress_bar.IsCurrentTabId)
+            let status = request.Progress_bar.status
+            const type = status == "2" ? "success" : status == "1" ? "warning" : status == "0" ? "error" : "info";
+            let duration = status == "2" ? 10 : 0;
+            PLNotification({
+                type: type,
+                content: request.Progress_bar.filename,
+                duration: duration,
+            });
         }
         //自动复制消息中转
         if (request.AutoCopy) {

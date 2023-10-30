@@ -135,10 +135,16 @@
     "message": "<i class='bi bi-layout-sidebar-inset-reverse'></i> Side Area"
   },
   "AutoInsert": {
-    "message": "<i class='bi bi-textarea-t'></i> Auto Insertion"
+    "message": "<i class='bi bi-textarea-t'></i> Auto-fill"
   },
   "AutoCopy": {
-    "message": "<i class='bi bi-clipboard-plus-fill'></i> Auto Copying"
+    "message": "<i class='bi bi-clipboard-plus-fill'></i> Auto-copy"
+  },
+  "ImageProxy": {
+    "message": "<i class='bi bi-flower2'></i> Image proxy"
+  },
+  "InputPaste": {
+    "message": "<i class='bi bi-clipboard2-pulse'></i> Input paste"
   },
   "on": {
     "message": "Enable"
@@ -146,8 +152,65 @@
   "off": {
     "message": "Disable"
   },
+  "bi_battery_half": {
+    "message": "<i class='bi bi-battery-half'></i>"
+  },
+  "bi_battery": {
+    "message": "<i class='bi bi-battery'></i>"
+  },
+  "SidebarButtonPrompt": {
+    "message": "(Valid for sidebar uploads only)"
+  },
   "Right_click_menu_upload": {
     "message": "<i class='bi bi-hand-index'></i> RightClick Upload"
+  },
+  "bi_clipboard_data": {
+    "message": "<i class='bi bi-clipboard-data'></i>"
+  },
+  "SettingsRecord": {
+    "message": " Configuration record"
+  },
+  "bi_send": {
+    "message": "<i class='bi bi-send'></i>"
+  },
+  "bi_plus_circle": {
+    "message": "<i class='bi bi-plus-circle'></i>"
+  },
+  "DoubleClickToEdit": {
+    "message": "Double-click to edit"
+  },
+  "share": {
+    "message": " Share"
+  },
+  "SharePrompt1": {
+    "message": "Data has been copied to the clipboard."
+  },
+  "import": {
+    "message": " Import"
+  },
+  "Load": {
+    "message": "Load"
+  },
+  "successful": {
+    "message": "successful"
+  },
+  "Delete": {
+    "message": "Delete"
+  },
+  "EnterConfigurationName": {
+    "message": "Enter a new configuration name."
+  },
+  "Config": {
+    "message": "Config"
+  },
+  "replace": {
+    "message": "Replace"
+  },
+  "append": {
+    "message": "Append"
+  },
+  "ImportConfiguration": {
+    "message": "Import configuration"
   },
   "options_host": {
     "message": "Website domain name<p>(Do not include any prefixes or suffixes, enter the domain name only)</p>"
@@ -156,7 +219,7 @@
     "message": "For example: pnglog.com"
   },
   "options_token": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'>*</span>(Token is required)</p>"
+    "message": "Token<p class='options_token_tips'>(Token is required)</p>"
   },
   "options_token_placeholder_lsky": {
     "message": "For example: Bearer 1|1bJbwlqBfnggmOMEZqXT5XusaIwqiZjCDs7r1Ob5"
@@ -189,7 +252,7 @@
     "message": "For example: ddd35111f39990b2f104a138181d31bc"
   },
   "options_uid": {
-    "message": "UID<p class='options_uid_tips'><span style='color: red;'>*</span>(UID is required for ImgURL program)</p>"
+    "message": "UID<p class='options_uid_tips'>(UID is required for ImgURL program)</p>"
   },
   "options_uid_placeholder": {
     "message": "For example: 391e3afaf70fgcf4355f95a2g0876b87"
@@ -309,7 +372,7 @@
     "message": "For example: 02468631e6c13413bddefc0722e2389b"
   },
   "options_source_Hellohao": {
-    "message": "Storage Source<p class='options_uid_tips'><span style='color: red;'>*</span>(requires storage source)</p>"
+    "message": "Storage Source<p class='options_uid_tips'>(requires storage source)</p>"
   },
   "options_source_placeholder_Hellohao": {
     "message": "For example: 12"
@@ -318,7 +381,7 @@
     "message": "For example: api.imgur.com"
   },
   "options_token_Imgur": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'></span><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>Register Client-ID</a> (imgur requires Token)</p>"
+    "message": "Token<p class='options_token_tips'><a style='color: #03a9f4;' href='https://api.imgur.com/oauth2/addclient' target='_blank'>Register Client-ID</a> (imgur requires Token)</p>"
   },
   "options_token_placeholder_Imgur": {
     "message": "For example: 3596a2113fdg16f"
@@ -329,41 +392,62 @@
   "options_apihost_placeholder": {
     "message": "For example: https://pnglog.com/api/v1/upload"
   },
+  "Request_method": {
+    "message": "Request method"
+  },
   "options_parameter": {
-    "message": "POST Parameters</span><p class='options_parameter_tips'><span style='color: red;'></span>(Parameters for uploading images)</p>"
+    "message": "Request Parameters</span><p class='options_parameter_tips'>(Parameters for uploading images)</p>"
   },
   "options_parameter_placeholder": {
     "message": "For example: image or file"
   },
   "options_Headers": {
-    "message": "Headers Request Headers</span><p class='options_Headers_tips'><span style='color: red;'></span>(Custom request headers, leave empty if not needed)</p>"
+    "message": "Headers</span><p class='options_Headers_tips'>(Custom request headers, leave empty if not needed)</p>"
   },
   "options_Headers_floatingTextarea": {
     "message": "Use JSON format such as: {'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
   },
   "options_Body": {
-    "message": "Body</span><p class='options_Body_tips'><span style='color: red;'></span>(Custom Body, leave empty if not needed)</p>"
+    "message": "Body</span><p class='options_Body_tips'>(Custom Body, leave empty if not needed)</p>"
   },
   "options_Body_floatingTextarea": {
     "message": "Use JSON format such as: {'mail':'123@qq.com','password':'123456'}"
   },
   "options_return_success": {
-    "message": "JSON Path<p class='options_return_success_tips'><span style='color: red;'></span>(Path of the image URL after a successful request)</p>"
+    "message": "Return Path<p class='options_return_success_tips'>(Path of the image URL after a successful request)</p>"
   },
   "options_return_success_placeholder": {
     "message": "For example: data.links.url"
   },
+  "custom_ReturnPrefix": {
+    "message": "Prefix Concatenation</span><p class='options_return_success_tips'>(Add a prefix to the returned URL)</p>"
+  },
+  "custom_ReturnAppend": {
+    "message": "Suffix Concatenation</span><p class='options_return_success_tips'>(Add a suffix to the returned URL)</p>"
+  },
+  "custom_Base64Upload": {
+    "message": "Base64 Upload<p>(Convert and upload files as Base64)</p>"
+  },
+  "custom_Base64UploadRemovePrefix": {
+    "message": "Base64 Header Removal<p>(Remove Base64 header information)</p>"
+  },
+  "custom_BodyUpload": {
+    "message": "Body Upload<p>(Encapsulate Body information for upload, otherwise use FormData for encapsulation)</p>"
+  },
+  "custom_BodyStringify": {
+    "message": "Body Stringify<p>(Convert Body to a string)</p>"
+  },
   "open_json_button": {
-    "message": "Go to JSON<p>(Convert string to JSON)"
+    "message": "Return JSON<p>(Convert string to JSON)"
   },
   "options_owner": {
-    "message": "Username<p class='options_owner_tips'><span style='color: red;'></span>(GitHub username)</p>"
+    "message": "Username<p class='options_owner_tips'>(GitHub username)</p>"
   },
   "options_owner_placeholder": {
     "message": "For example: abcd"
   },
   "options_repository": {
-    "message": "Repository Name<p class='options_repository_tips'><span style='color: red;'></span>(Repository name)</p>"
+    "message": "Repository Name<p class='options_repository_tips'>(Repository name)</p>"
   },
   "options_repository_placeholder": {
     "message": "For example: 3596a2113fdg16f"
@@ -375,7 +459,7 @@
     "message": "For example: images"
   },
   "options_token_GitHub": {
-    "message": "Token<p class='options_token_tips'><span style='color: red;'></span>(GitHub requires Token, obtain <a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'>Token</a>)</p>"
+    "message": "Token<p class='options_token_tips'>(GitHub requires Token, obtain <a style='color: #03a9f4;' href='https://github.com/settings/tokens' target='_blank'>Token</a>)</p>"
   },
   "options_token_placeholder_GitHub": {
     "message": "For example: 2389b"
@@ -384,19 +468,19 @@
     "message": "GitHub is a code hosting platform, storing images on GitHub is not in line with its original purpose. It is recommended to delete unnecessary image files promptly."
   },
   "options_SecretId_COS": {
-    "message": "SecretId<p class=''><span style='color: red;'></span>(Access ID, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretId</a>)</p>"
+    "message": "SecretId<p class=''>(Access ID, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretId</a>)</p>"
   },
   "options_SecretId_placeholder_COS": {
     "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_COS": {
-    "message": "SecretKey<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretKey</a>)</p>"
+    "message": "SecretKey<p class='options_SecretKey_tips'>(Access key, obtain <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cam/capi' target='_blank'>SecretKey</a>)</p>"
   },
   "options_SecretKey_placeholder_COS": {
     "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_COS": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name, view <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'>Bucket List</a>)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(Bucket name, view <a style='color: #03a9f4;' href='https://console.cloud.tencent.com/cos/bucket' target='_blank'>Bucket List</a>)</p>"
   },
   "options_Bucket_placeholder_COS": {
     "message": "For example: abcd-112233445566"
@@ -408,7 +492,7 @@
     "message": "For example: 112233445566 (the number after the bucket name)"
   },
   "options_Region_COS": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
+    "message": "Region<p class='options_Region_tips'>(Region)</p>"
   },
   "options_Region_placeholder_COS": {
     "message": "For example: ap-hongkong"
@@ -435,31 +519,31 @@
     "message": "Public Read/Public Write"
   },
   "options_SecretId_OSS": {
-    "message": "AccessKeyId<p class=''><span style='color: red;'></span>(Access ID, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeyId</a>)</p>"
+    "message": "AccessKeyId<p class=''>(Access ID, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeyId</a>)</p>"
   },
   "options_SecretId_placeholder_OSS": {
     "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_OSS": {
-    "message": "AccessKeySecret<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeySecret</a>)</p>"
+    "message": "AccessKeySecret<p class='options_SecretKey_tips'>(Access key, obtain <a style='color: #03a9f4;' href='https://ram.console.aliyun.com/manage/ak' target='_blank'>AccessKeySecret</a>)</p>"
   },
   "options_SecretKey_placeholder_OSS": {
     "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_OSS": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name, view <a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'>Bucket List</a>)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(Bucket name, view <a style='color: #03a9f4;' href='https://oss.console.aliyun.com/bucket' target='_blank'>Bucket List</a>)</p>"
   },
   "options_Bucket_placeholder_OSS": {
     "message": "For example: abcde-images"
   },
   "options_Endpoint_OSS": {
-    "message": "Endpoint<p class='options_Endpoint_tips'><span style='color: red;'></span>(Region node, view <a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'>Access Domain Names and Data Centers</a>)</p>"
+    "message": "Endpoint<p class='options_Endpoint_tips'>(Region node, view <a style='color: #03a9f4;' href='https://help.aliyun.com/document_detail/31837.html' target='_blank'>Access Domain Names and Data Centers</a>)</p>"
   },
   "options_Endpoint_placeholder_OSS": {
     "message": "For example: oss-cn-beijing.aliyuncs.com"
   },
   "options_Region_OSS": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'></span>(Region)</p>"
+    "message": "Region<p class='options_Region_tips'>(Region)</p>"
   },
   "options_Region_placeholder_OSS": {
     "message": "For example: oss-cn-beijing"
@@ -471,25 +555,25 @@
     "message": "Set CORS"
   },
   "options_SecretId_S3": {
-    "message": "Access ID<p class=''><span style='color: red;'></span>(Access ID)</p>"
+    "message": "Access ID<p class=''>(Access ID)</p>"
   },
   "options_SecretId_placeholder_S3": {
     "message": "For example: asdasfsdgfdhytiuyrtwerrfcv1243rsdasd"
   },
   "options_SecretKey_S3": {
-    "message": "Access Key<p class='options_SecretKey_tips'><span style='color: red;'></span>(Access key)</p>"
+    "message": "Access Key<p class='options_SecretKey_tips'>(Access key)</p>"
   },
   "options_SecretKey_placeholder_S3": {
     "message": "For example: hgcscdsfwer1rdff346v54yvwdfsdx13"
   },
   "options_Bucket_S3": {
-    "message": "Bucket<p class='options_Bucket_tips'><span style='color: red;'></span>(Bucket name)</p>"
+    "message": "Bucket<p class='options_Bucket_tips'>(Bucket name)</p>"
   },
   "options_Bucket_placeholder_S3": {
     "message": "Note: If you want to use a custom domain name, set the bucket name as the domain name. For example: images.google.com"
   },
   "options_Region_S3": {
-    "message": "Region<p class='options_Region_tips'><span style='color: red;'>*</span>(Region)</p>"
+    "message": "Region<p class='options_Region_tips'>(Region)</p>"
   },
   "options_Region_placeholder_S3": {
     "message": "For example: ap-east-1 or auto"
@@ -630,7 +714,7 @@
     "message": "Region settings"
   },
   "Region_settings_tips": {
-    "message": "Disabling global upload will also close the sidebar"
+    "message": "Disabling drag and drop upload will also disable the sidebar."
   },
   "width": {
     "message": "Width"
@@ -647,7 +731,7 @@
   "auto_close_time": {
     "message": "Close Time"
   },
-  "edit_uploadArea_Left_or_Right": {
+  "uploadArea_Left_or_Right": {
     "message": "Sidebar on"
   },
   "Left": {
@@ -915,7 +999,7 @@
     "message": "Clear All Records"
   },
   "Kissing_alert": {
-    "message": "Kiss"
+    "message": "Hello"
   },
   "Kissing_alert_p_1": {
     "message": "Failed to retrieve image hosting information. Please open DevTools (F12) for detailed information."
@@ -925,6 +1009,9 @@
   },
   "Kissing_alert_p_3": {
     "message": "I've been drained! I can't fetch data anymore!"
+  },
+  "Kissing_alert_p_3_1": {
+    "message": "I'm truly sorry, but this image hosting service is currently unavailable for image retrieval."
   },
   "Kissing_alert_p2_4": {
     "message": "Try a little harder!"
