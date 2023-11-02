@@ -19,6 +19,15 @@ $(document).ready(function () {
     }
 
     if (ProgramConfigurations.options_exe == "UserDiy") {
+      if (ProgramConfigurations.custom_KeywordReplacement) {
+        ProgramConfigurations.Keyword_replacement1 = ProgramConfigurations.Keyword_replacement1.split(',')
+        ProgramConfigurations.Keyword_replacement2 = ProgramConfigurations.Keyword_replacement2.split(',')
+        if (ProgramConfigurations.Keyword_replacement1.length != ProgramConfigurations.Keyword_replacement2.length) {
+          alert("关键词和替换词的数量不一致");
+          window.location.href = "options.html"
+          return;
+        }
+      }
       if (!ProgramConfigurations.options_Headers) {
         ProgramConfigurations.options_Headers = {}
       } else {
@@ -193,13 +202,14 @@ $(document).ready(function () {
 
         return;
       } else {
-        const Copy_File_Items = e.clipboardData.items;
-        for (let i = 0; i < Copy_File_Items.length; i++) {
-          const Copy_File_Item = Copy_File_Items[i];
-          if (Copy_File_Item.kind == "file") {//判断是不是文件
-            if (Copy_File_Item.type.indexOf("image") != -1) {//判断文件类型
-              const file = Copy_File_Item.getAsFile();
-              const Copy_Img = new File([file], `pasted_image_` + new Date().getTime() + `.png`, { type: 'image/png' });
+        const File_Items = e.clipboardData.items;
+        let files = [];
+        for (let i = 0; i < File_Items.length; i++) {
+          const File_Item = File_Items[i];
+          if (File_Item.kind == "file") {//判断是不是文件
+            if (File_Item.type.indexOf("image") != -1) {//判断文件类型
+              const file = File_Item.getAsFile();
+              files.push(file)
               uploader.addFile(file);
             }
           } else {
@@ -208,9 +218,11 @@ $(document).ready(function () {
             })
           }
         }
+        if (ProgramConfigurations.options_exe == "GitHubUP") {
+          // GitHubUP同时请求会报错，使用addedfiles又无法触发,所以此处手动触发。
+          uploader.emit("addedfiles", files);
+        }
       }
-
-
     });
 
     function textFrame() {
@@ -332,12 +344,19 @@ $(document).ready(function () {
               options_return_success_value = options_return_success_value[property];
             }
             if (ProgramConfigurations.custom_ReturnPrefix) {
+              //前缀
               options_return_success_value = ProgramConfigurations.custom_ReturnPrefix + options_return_success_value
             }
             if (ProgramConfigurations.custom_ReturnAppend) {
+              //后缀
               options_return_success_value += ProgramConfigurationscustom_ReturnAppend
             }
+            if (ProgramConfigurations.custom_KeywordReplacement) {
+              //关键词替换
+              options_return_success_value = replaceKeywordsInText(options_return_success_value, ProgramConfigurations.Keyword_replacement1, ProgramConfigurations.Keyword_replacement2)
+            }
             imageUrl = options_return_success_value
+            console.log(imageUrl);
             ProgramConfigurations.options_host = ProgramConfigurations.options_apihost
             break;
           case 'Tencent_COS':
@@ -445,7 +464,6 @@ $(document).ready(function () {
       chrome.runtime.sendMessage({ Middleware_AutoInsert_message: imageUrlCopy });
       LinksUrl.push(info)
     })
-
 
     uploader.on("error", function (file, err) {
       console.log(err)
@@ -639,7 +657,6 @@ $(document).ready(function () {
         })
       }
     })
-
 
     if (!ProgramConfigurations.options_host) {
       if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {

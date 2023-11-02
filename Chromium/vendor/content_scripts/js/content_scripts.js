@@ -397,11 +397,16 @@ chrome.storage.local.get(storagelocal, function (result) {
         if (request.Progress_bar) {
             let status = request.Progress_bar.status
             const type = status == "2" ? "success" : status == "1" ? "warning" : status == "0" ? "error" : "info";
-            let duration = status == "2" ? 10 : 0;
+            const title = status == "2" ? "上传成功" : status == "1" ? "上传中..." : status == "0" ? "上传失败" : "上传失败";
+            const duration = status == "2" ? 15 : 0;
+            const saved = status == "2" ? false : status == "1" ? true : false;
+
             PLNotification({
+                title: title,
                 type: type,
                 content: request.Progress_bar.filename,
                 duration: duration,
+                saved: saved,
             });
         }
         //自动复制消息中转

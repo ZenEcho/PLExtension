@@ -27,6 +27,7 @@
         "<all_urls>"
       ],
       "js": [
+        "vendor/content_scripts/js/notification.js",
         "vendor/cos/cos-js-sdk-v5.js",
         "vendor/oss/aliyun-oss-sdk.min.js",
         "vendor/s3/aws-sdk.min.js",
@@ -35,11 +36,11 @@
         "vendor/content_scripts/js/content_scripts.js",
         "js/uploader.js",
         "vendor/content_scripts/js/AutoInsertFun.js",
-        "vendor/content_scripts/js/ProgressBar.js",
         "vendor/content_scripts/js/Sticker.js"
       ],
       "css": [
-        "vendor/content_scripts/css/content_scripts.css"
+        "vendor/content_scripts/css/content_scripts.css",
+        "vendor/content_scripts/css/notification.css"
       ]
     }
   ],

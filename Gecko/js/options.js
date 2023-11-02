@@ -395,13 +395,27 @@ $(document).ready(function () {
       {
         additionalElement: [
           `<div class="form-group" style=" display: flex; ">
-            <div class="form-group">
+            <div style=" width: 100%; ">
               <label for="custom_ReturnPrefix">`+ chrome.i18n.getMessage("custom_ReturnPrefix") + `</label>
               <input type="text" class="form-control box-shadow " id="custom_ReturnPrefix" placeholder="如:https://www.google.com/">
             </div>
-            <div class="form-group">
+            <div style=" width: 100%; ">
               <label for="custom_ReturnAppend" >`+ chrome.i18n.getMessage("custom_ReturnAppend") + `</label>
               <input type="text" class="form-control box-shadow " id="custom_ReturnAppend" placeholder="如:.png">
+            </div>
+          </div>`
+        ],
+      },
+      {
+        additionalElement: [
+          `<div class="form-group" style=" display: flex;">
+            <div style=" width: 100%; ">
+              <label for="Keyword_replacement1">关键词<p>(开启“关键词替换”后生效)</p></label>
+              <input type="text" class="form-control box-shadow " id="Keyword_replacement1" placeholder="多个关键词使用,分割">
+            </div>
+            <div style=" width: 100%; ">
+              <label for="Keyword_replacement2">替换为<p>(否则输入无效)</p></label>
+              <input type="text" class="form-control box-shadow " id="Keyword_replacement2" placeholder="必须与关键词数量一致">
             </div>
           </div>`
         ],
@@ -473,7 +487,7 @@ $(document).ready(function () {
                       </div>
                       <div class="form-group">
                           <div class="form-check form-switch" style="margin-top: 1rem;">
-                              <input class="form-check-input" type="checkbox" role="switch" id="Keyword_replacement">
+                              <input class="form-check-input" type="checkbox" role="switch" id="custom_KeywordReplacement">
                               <label class="form-check-label" for="flexSwitchCheckDefault">关键词替换<p>(替换返回信息里的某一段内容)</p></label>
                           </div>
                       </div>
@@ -965,7 +979,7 @@ $(document).ready(function () {
       UserDiy: {
         needUid: 8,
         html: createFormGroups(UserCustomFormGroup),
-        config: ["options_apihost", "options_parameter", "options_Headers", "options_Body", "options_return_success", "custom_ReturnPrefix", "custom_ReturnAppend"],
+        config: ["options_apihost", "options_parameter", "options_Headers", "options_Body", "options_return_success", "custom_ReturnPrefix", "custom_ReturnAppend", "Keyword_replacement1", "Keyword_replacement2"],
         init: function () {
           // JSON转换
           UserDiy_customSwitch()
@@ -1618,6 +1632,9 @@ $(document).ready(function () {
     // 保存配置
     $("#options-form").submit(function (event) {
       event.preventDefault(); // 阻止表单的默认提交行为
+      SaveFunction()
+    });
+    function SaveFunction() {
       let optionsExe = $("#options_exe button.active");
       if (optionsExe.length) {
         let proxyServer = $('#options_proxy_server');
@@ -1654,23 +1671,24 @@ $(document).ready(function () {
           FormData[this.id] = $(this).val()
         });
 
-        let PathString = $("#options_UploadPath").val()
-        if (!PathString) {
-          FormData['options_UploadPath'] = ""
-        } else {
-          if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
-            toastItem({
-              toast_content: chrome.i18n.getMessage("Save_failed_1")
-            });
-            return;
+        if ($("#options_UploadPath")) {
+          let PathString = $("#options_UploadPath").val()
+          if (!PathString) {
+            FormData['options_UploadPath'] = ""
+          } else {
+            if (/^[a-zA-Z0-9_\/]*$/.test(PathString) === false) {
+              toastItem({
+                toast_content: chrome.i18n.getMessage("Save_failed_1")
+              });
+              return;
+            }
+            // 检查输入字符串是否以 '/' 结尾
+            if (!PathString.endsWith('/')) {
+              PathString = PathString + '/';
+            }
+            FormData['options_UploadPath'] = PathString
           }
-          // 检查输入字符串是否以 '/' 结尾
-          if (!PathString.endsWith('/')) {
-            PathString = PathString + '/';
-          }
-          FormData['options_UploadPath'] = PathString
         }
-
         if ($('#exe_Lsky').hasClass('active')) {
           let string = $("#options_token").val()
           let pattern = /^Bearer\s/;
@@ -1716,9 +1734,7 @@ $(document).ready(function () {
           toast_content: chrome.i18n.getMessage("select_upload_program")
         })
       }
-
-    });
-
+    }
     function sortObjectProperties(obj) {
       // 数据排序
       const sortedObj = {};
@@ -2143,7 +2159,7 @@ $(document).ready(function () {
     function UserDiy_customSwitch() {
       const stor = [
         "open_json_button",
-        "Keyword_replacement",
+        "custom_KeywordReplacement",
         "custom_Base64Upload",
         "custom_Base64UploadRemovePrefix",
         "custom_BodyUpload",
@@ -2445,7 +2461,13 @@ $(document).ready(function () {
       }
       $("#Sidebar_area").attr("disabled", false)
     })
-
+    document.addEventListener("keydown", function (event) {
+      // 检查是否按下了Ctrl键和S键
+      if (event.ctrlKey && event.key === "s") {
+        event.preventDefault(); // 阻止浏览器默认的保存页面行为
+        SaveFunction()
+      }
+    });
   })//chrome get
 
 

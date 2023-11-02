@@ -1,9 +1,3 @@
-window.addEventListener('message', function (event) {
-    // 编辑框粘贴上传
-    if (event.data.type === 'EditPasteUpload') {
-        content_scripts_CheckUploadModel(event.data.data, false, true)
-    }
-})
 function custom_replaceDate(inputString, file) {
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
@@ -46,7 +40,6 @@ function custom_replaceDate(inputString, file) {
     }
     return replacedString;
 }
-
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -64,7 +57,9 @@ function custom_replaceDateInObject(obj, file) {
     return content;
 }
 
-
+/**
+ * 扩展popup页上传函数
+ */
 function popup_Uploader() {
     let delay;
     let delayUpload; // 声明 delayUpload 变量
@@ -488,7 +483,6 @@ function popup_Uploader() {
                             Upload_method()
                         })
                 } catch (error) {
-                    console.log("第二次尝试...")
                     try {
                         fetch("https://cors-anywhere.pnglog.com/" + `https://api.github.com/repos/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/contents/` + ProgramConfigurations.options_UploadPath + currentFile.name, {
                             method: 'GET',
@@ -708,8 +702,14 @@ function popup_Uploader() {
     }
 }
 
-// content_scripts
-// 拖拽上传
+/**
+ * 
+ * @param {*} event 
+ * @param {*} Simulated_upload 
+ * @param {*} EditPasteUpload 
+ * @returns 
+ * 页面注入js 上传函数
+ */
 function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUpload) {
     if (Simulated_upload == true) {
         let confirm_input = confirm(chrome.i18n.getMessage("Function_demonstration_12"))
@@ -770,7 +770,7 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
                 function processFile(fileIndex) {
                     if (fileIndex < files.length) {
                         let file = files[fileIndex];
-                        if (ProgramConfigurations.ProgramConfigurations.options_exe == 'GitHubUP' || ProgramConfigurations.options_exe === 'fiftyEight') {
+                        if (ProgramConfigurations.options_exe == 'GitHubUP' || ProgramConfigurations.options_exe === 'fiftyEight') {
                             // 需要转码的
                             let reader = new FileReader();
                             reader.onload = function () {
@@ -789,7 +789,7 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
                                 }, 150);
                             }, Simulated_upload);
                         }
-                        console.log("全局上传执行成功");
+                        console.log("文件推送成功");
                     }
                 }
                 processFile(0)
@@ -804,7 +804,7 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
                             if (base64Strings.length == files.length) {
                                 chrome.runtime.sendMessage({ GlobalUpload: base64Strings });
                             }
-                            console.log("全局上传执行成功")
+                            console.log("base64转码推送成功")
                         }
                         // 读取当前文件的内容
                         reader.readAsBinaryString(file);
@@ -816,11 +816,13 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
     }
 }
 /**
- * @param {url} imgUrl 获取到的图片信息
- * @param {*} MethodName 上传模式名称
+ * 
+ * @param {string} imgUrl 
+ * @param {string} MethodName 模式
+ * @param {function} callback 回调
+ * @param {Boole} Simulated_upload 模拟上传 
+ * @ 函数用作处理特殊的上传方式
  */
-
-// 特殊的上传处理
 function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simulated_upload) {
     chrome.storage.local.get(null, function (result) {
         if (result.ProgramConfiguration) {
@@ -864,13 +866,13 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 try {
                     const res = await fetch(ProgramConfigurations.options_proxy_server + imgUrl);
                     const blob = await res.blob();
-                    blobUP(blob)
+                    blobUP(blob, imgUrl)
                 } catch (error) {
                     console.log("获取失败，再次尝试...");
                     try {
                         const res = await fetch("https://cors-anywhere.pnglog.com/" + imgUrl);
                         const blob = await res.blob();
-                        blobUP(blob)
+                        blobUP(blob, imgUrl)
                     } catch (error) {
                         chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
                         console.log(error);
@@ -878,47 +880,65 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     }
                 }
             })()
-            function blobUP(blob) {
+            function blobUP(blob, imgUrl) {
                 if (ProgramConfigurations.options_exe == "UserDiy") {
-                    custom_uploadFile(blob)
+                    custom_uploadFile(blob, imgUrl)
                 }
                 if (ProgramConfigurations.options_exe == "Tencent_COS") {
-                    Cos_uploadFile(blob)
+                    Cos_uploadFile(blob, imgUrl)
                 }
                 if (ProgramConfigurations.options_exe == "Aliyun_OSS") {
-                    Oos_uploadFile(blob)
+                    Oos_uploadFile(blob, imgUrl)
                 }
                 if (ProgramConfigurations.options_exe == "AWS_S3") {
-                    S3_uploadFile(blob)
+                    S3_uploadFile(blob, imgUrl)
                 }
                 if (ProgramConfigurations.options_exe == "GitHubUP") {
                     let reader = new FileReader();
                     reader.onload = function () {
-                        GitHub_uploadFile(btoa(reader.result), blob);
+                        GitHub_uploadFile(btoa(reader.result), blob, imgUrl);
                     };
-                    reader.readAsBinaryString(blob);
+                    reader.readAsBinaryString(blob, null, imgUrl);
                 }
                 if (ProgramConfigurations.options_exe == "fiftyEight") {
                     let reader = new FileReader();
                     reader.onload = function () {
-                        fiftyEight_uploadFile(btoa(reader.result), blob);
+                        fiftyEight_uploadFile(btoa(reader.result), blob, imgUrl);
                     };
-                    reader.readAsBinaryString(blob);
+                    reader.readAsBinaryString(blob, null, imgUrl);
                 }
             }
         }
 
-        function custom_uploadFile(blob) {
+        function custom_uploadFile(blob, imgUrl) {
+            if (ProgramConfigurations.custom_KeywordReplacement) {
+                ProgramConfigurations.Keyword_replacement1 = ProgramConfigurations.Keyword_replacement1.split(',')
+                ProgramConfigurations.Keyword_replacement2 = ProgramConfigurations.Keyword_replacement2.split(',')
+                if (ProgramConfigurations.Keyword_replacement1.length != ProgramConfigurations.Keyword_replacement2.length) {
+                    alert("关键词和替换词的数量不一致");
+                    PLNotification({
+                        title: "盘络上传：",
+                        type: "error",
+                        content: `关键词和替换词的数量不一致!`,
+                        duration: 0,
+                        saved: true,
+                    });
+                    return;
+                }
+            }
             if (!ProgramConfigurations.options_Headers) {
                 ProgramConfigurations.options_Headers = {}
             } else {
                 try {
                     ProgramConfigurations.options_Headers = JSON.parse(ProgramConfigurations.options_Headers);
                 } catch (error) {
-                    console.log(error);
+                    alert(chrome.i18n.getMessage("Headers_error"));
                     PLNotification({
+                        title: "盘络上传：",
                         type: "error",
                         content: chrome.i18n.getMessage("Headers_error"),
+                        duration: 0,
+                        saved: true,
                     });
                     return;
                 }
@@ -930,19 +950,23 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     ProgramConfigurations.options_Body = JSON.parse(ProgramConfigurations.options_Body);
                 } catch (error) {
                     console.log(error);
+                    alert(chrome.i18n.getMessage("Body_error"));
                     PLNotification({
+                        title: "盘络上传：",
                         type: "error",
                         content: chrome.i18n.getMessage("Body_error"),
+                        duration: 0,
+                        saved: true,
                     });
                     return;
                 }
             }
-
             let date = new Date();
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, blob)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             let filename = UrlImgNema;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
-            let file = new File([blob], UrlImgNema, { type: 'image/png' });
+            let file = new File([blob], UrlImgNema, { type: 'image/' + imageExtension });
             if (ProgramConfigurations.custom_Base64Upload) {
                 const reader = new FileReader();
                 reader.onload = function () {
@@ -1003,7 +1027,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                         if (ProgramConfigurations.custom_ReturnAppend) {
                             options_return_success_value += ProgramConfigurations.custom_ReturnAppend
                         }
+                        if (ProgramConfigurations.custom_KeywordReplacement) {
+                            options_return_success_value = replaceKeywordsInText(options_return_success_value, ProgramConfigurations.Keyword_replacement1, ProgramConfigurations.Keyword_replacement2)
+                        }
                         imageUrl = options_return_success_value
+
                         chrome.storage.local.get(["FuncDomain"], function (result) {
                             if (result.FuncDomain.AutoCopy == "on") {
                                 window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
@@ -1028,7 +1056,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     })
             }
         }
-        function Cos_uploadFile(blob) {
+        function Cos_uploadFile(blob, imgUrl) {
             // 初始化 COS 对象
             try {
                 let getAuthorization = function (options, callback) {
@@ -1059,10 +1087,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             }
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, blob)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             let filename = ProgramConfigurations.options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
-            const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
+            const file = new File([blob], UrlImgNema, { type: 'image/' + imageExtension });//将获取到的图片数据(blob)导入到file中
             cos.uploadFile({
                 Bucket: ProgramConfigurations.options_Bucket,
                 Region: ProgramConfigurations.options_Region,
@@ -1095,7 +1124,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 }
             });
         }
-        function Oos_uploadFile(blob) {
+        function Oos_uploadFile(blob, imgUrl) {
             try {
                 var oss = new OSS({
                     accessKeyId: ProgramConfigurations.options_SecretId,
@@ -1117,10 +1146,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
 
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, blob)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             let filename = ProgramConfigurations.options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
-            const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
+            const file = new File([blob], UrlImgNema, { type: 'image/' + imageExtension });//将获取到的图片数据(blob)导入到file中
             oss.put(filename, file, {
                 headers: {
                     'Content-Type': 'image/png'
@@ -1149,7 +1179,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 0 } });
             });
         }
-        function S3_uploadFile(blob) {
+        function S3_uploadFile(blob, imgUrl) {
             //AWS S3区域拼接
             if (!ProgramConfigurations.options_Endpoint) {
                 ProgramConfigurations.options_Endpoint = "https://s3." + ProgramConfigurations.options_Region + ".amazonaws.com/"
@@ -1174,10 +1204,11 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             }
             let date = new Date();
             let getMonth = date.getMonth() + 1 //月
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, blob)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             let filename = ProgramConfigurations.options_UploadPath + date.getFullYear() + "/" + getMonth + "/" + date.getDate() + "/" + UrlImgNema;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": filename, "status": 1 } });
-            const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
+            const file = new File([blob], UrlImgNema, { type: 'image/' + imageExtension });//将获取到的图片数据(blob)导入到file中
             let params;
             if (ProgramConfigurations.options_Endpoint.includes('amazonaws.com')) {
                 params = {
@@ -1223,12 +1254,13 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             })
 
         }
-        function GitHub_uploadFile(btoa, files) {
+        function GitHub_uploadFile(btoa, files, imgUrl) {
             const file = files || btoa.file
-            const blob = btoa
 
+            const blob = btoa.btoa
             let date = new Date();
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, file)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
             // 查询是否冲突
             let data = { message: 'UploadDate:' + date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + "时" + date.getMinutes() + "分" + date.getSeconds() + "秒" }
@@ -1297,12 +1329,13 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
             }
 
         }
-        function fiftyEight_uploadFile(btoa, files) {
+        function fiftyEight_uploadFile(btoa, files, imgUrl) {
             const file = files || btoa.file
             const blob = btoa.btoa
 
             let date = new Date();
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + '.png'
+            const imageExtension = getImageFileExtension(imgUrl, file)
+            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
             chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
             let dataToSend = {
                 "Pic-Size": "0*0",
@@ -1349,6 +1382,41 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
     })
 }
 /**
+ * 
+ * @param {string} imgUrl 
+ * @param {file} file 文件
+ * @returns 返回处理后的后缀
+ * @ 用作识别url后缀或file.type的后缀并返回他们
+ */
+function getImageFileExtension(imgUrl, file) {
+    let extension;
+    const validExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'apng', 'jng'];
+    if (imgUrl) {
+        const urlParts = imgUrl.split(".");
+        if (urlParts.length > 1) {
+            const fileType = urlParts.pop().toLowerCase();
+            const extensions = fileType.split(";");
+            const candidateExtension = extensions[0].split("/").pop();
+            if (validExtensions.includes(candidateExtension)) {
+                extension = candidateExtension;
+                console.log("url:", extension);
+            }
+        }
+    }
+    if (!validExtensions.includes(extension) && file.type) {
+        const fileTypeParts = file.type.split("/");
+        if (fileTypeParts.length > 1) {
+            extension = fileTypeParts.pop().toLowerCase();
+            console.log("file:", extension);
+        }
+    } else {
+        return "png"
+    }
+
+    return extension;
+}
+
+/**
  * @param {string} filename 文件名字 
  * @param {url} imageUrl 上传成功后的url
  * {
@@ -1362,6 +1430,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
       }
  */
 function LocalStorage(data) {
+
     let pluginPopup = chrome.runtime.getURL("popup.html");
     let currentURL = window.location.href;
     return new Promise((resolveC, rejectC) => {

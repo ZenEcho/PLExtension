@@ -78,50 +78,20 @@ chrome.runtime.onInstalled.addListener(function (details) {
 				});
 			})
 		});
-
-
 	}
 	if (details.reason === 'update') {
 		chrome.storage.local.get(['extensionVersion'], function (result) {
 			const previousVersion = result.extensionVersion;
 			const currentVersion = chrome.runtime.getManifest().version;
 			if (previousVersion !== currentVersion) {
-				// 执行你的版本更新时的命令
 				console.log('扩展已更新，执行命令...');
-				// chrome.runtime.openOptionsPage();
-
-				chrome.storage.local.set({ extensionVersion: currentVersion });
 			}
 		});
 	}
 });
 
-const getSave = [
-	"options_exe",
-	"options_proxy_server_state",
-	"options_proxy_server",
-	"options_host",
-	"options_token",
-	"options_uid",
-	"options_source",
-	"options_imgur_post_mode",
-	"options_source_select",
-	"options_expiration_select", //删除时间
-	"options_album_id", //相册
-	"options_nsfw_select",//是否健康
-	"options_permission_select",//是否公开
-	"AutoCopy",
-	//自定义请求
-	"options_apihost",
-	"options_parameter",
-	"options_Headers",
-	"options_Body",
-	"options_return_success",
-	"open_json_button",
-]
-
 chrome.storage.local.get(["FuncDomain"], function (result) {
-	if (result.FuncDomain.Right_click_menu_upload == "on") {
+	if (result.FuncDomain && result.FuncDomain.Right_click_menu_upload == "on") {
 		chrome.contextMenus.create({
 			title: chrome.i18n.getMessage("Right_click_menu_upload_prompt"),
 			contexts: ["image"],
@@ -237,14 +207,15 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 
 		async function Img_Request_Success(blob) {
 			showNotification(null, chrome.i18n.getMessage("Upload_prompt1"))
-			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.png'
-			const file = new File([blob], UrlImgNema, { type: 'image/png' });//将获取到的图片数据(blob)导入到file中
+			const imageExtension = getImageFileExtension(imgUrl, blob)
+			let UrlImgNema = options_exe + '_' + MethodName + '_' + d.getTime() + '.' + imageExtension
+			const file = new File([blob], UrlImgNema, { type: 'image/' + imageExtension });//将获取到的图片数据(blob)导入到file中
 			const formData = new FormData();
 			UploadStatus(1)
 			// 自定义上传属性
 			let optionsUrl
 			let optionHeaders
-
+			console.log(file);
 			/**
 			 * 上传到图床
 			 */
@@ -525,7 +496,33 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 				}
 			}
 		}
+		function getImageFileExtension(imgUrl, file) {
+			let extension;
+			const validExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'apng', 'jng'];
+			if (imgUrl) {
+				const urlParts = imgUrl.split(".");
+				if (urlParts.length > 1) {
+					const fileType = urlParts.pop().toLowerCase();
+					const extensions = fileType.split(";");
+					const candidateExtension = extensions[0].split("/").pop();
+					if (validExtensions.includes(candidateExtension)) {
+						extension = candidateExtension;
+						console.log("url:", extension);
+					}
+				}
+			}
+			if (!validExtensions.includes(extension) && file.type) {
+				const fileTypeParts = file.type.split("/");
+				if (fileTypeParts.length > 1) {
+					extension = fileTypeParts.pop().toLowerCase();
+					console.log("file:", extension);
+				}
+			} else {
+				return "png"
+			}
 
+			return extension;
+		}
 		/**
 		 * 在线图片请求
 		 */

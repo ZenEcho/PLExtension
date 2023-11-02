@@ -1,6 +1,6 @@
 /**
-    * 编辑器的初始识别和状态
-    */
+* 编辑器的初始识别和状态
+*/
 function insertContentIntoEditorState() {
 
     function FullDomPermissionsCSS(file) {
@@ -31,9 +31,7 @@ window.addEventListener('message', function (event) {
         })
     }
 })
-/**
-     * @param {url} UpUrl 上传成功后返回的url
-     */
+
 function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
     chrome.storage.local.get(["FuncDomain"], function (result) {
         if (result.FuncDomain.AutoInsert != "on") { return; }
@@ -324,7 +322,6 @@ function AutoInsertFun(AutoInsert_message_content, FocusInsert) {
 function handlePasteEventOnFocus() {
     function pasteHandler(e) {
         const focusedElement = document.activeElement;
-
         if (!focusedElement) {
             return;
         }
@@ -353,7 +350,7 @@ function handlePasteEventOnFocus() {
             }
         }
         if (filesToSend.length > 0) {
-            window.postMessage({ type: 'EditPasteUpload', data: filesToSend }, '*');
+            content_scripts_CheckUploadModel(filesToSend, false, true)
         }
     }
     document.addEventListener("paste", pasteHandler);
