@@ -171,11 +171,14 @@ var ProgramConfigurations = {
   options_return_success: null,
   custom_ReturnPrefix: null, //前缀
   custom_ReturnAppend: null,//后缀
+  Keyword_replacement1: null,//关键词1
+  Keyword_replacement2: null,//替换为
   open_json_button: null,
   custom_Base64Upload: null,
   custom_Base64UploadRemovePrefix: null,
   custom_BodyUpload: null,
   custom_BodyStringify: null,
+  custom_KeywordReplacement: null, //关键词替换
   options_owner: null,//GitHub
   options_repository: null,
   options_SecretId: null, //对象存储
@@ -640,13 +643,39 @@ function extensionVersion() {
     const currentVersion = chrome.runtime.getManifest().version;
     if (previousVersion !== currentVersion) {
       chrome.storage.local.set({ extensionVersion: currentVersion });
-      PLNotification({
-        title: "盘络上传：",
-        type: "warning",
-        content: currentVersion + `版本出现了破坏性修改，请重新配置图床!`,
-        duration: 0,
-        saved: true,
+      chrome.storage.local.get(null, function (result) {
+        const programConfig = result || {};
+        if (!result.ProgramConfiguration) {
+          PLNotification({
+            title: "盘络上传：",
+            type: "warning",
+            content: currentVersion + `版本出现了破坏性修改,正在尝试自动恢复(依然可能会丢失)。`,
+            duration: 0,
+            saved: true,
+          });
+          for (const key in ProgramConfigurations) {
+            if (programConfig.hasOwnProperty(key)) {
+              ProgramConfigurations[key] = programConfig[key];
+            }
+          }
+
+          chrome.storage.local.set({ ProgramConfiguration: ProgramConfigurations }, () => {
+            setTimeout(function () {
+              PLNotification({
+                title: "盘络上传：",
+                type: "success",
+                content: `图床配置恢复完成,请查看是否可以正常上传。`,
+                duration: 0,
+                saved: true,
+              });
+            }, 1000);
+          });
+
+        }
+
       });
+      chrome.storage.local.set({ extensionVersion: currentVersion });
+
     }
 
     const Defaults = {
@@ -696,8 +725,7 @@ function extensionVersion() {
       }
       if (Object.keys(missingProps).length > 0) {
         setTimeout(function () {
-          alert(`盘络上传:属性缺失：\n${Object.keys(missingProps).join('\n')}\n刷新页面将自动恢复默认值`);
-          window.location.reload();
+          alert(`盘络上传:属性缺失：\n${Object.keys(missingProps).join('\n')}\n请刷新页面将自动恢复默认值`);
         }, 1500);
       }
     }
@@ -762,4 +790,19 @@ async function storProgramConfiguration(data) {
       reject(false);
     }
   });
+}
+
+function replaceKeywordsInText(text, keywords, replacements) {
+  console.log(text);
+  console.log(keywords);
+  console.log(replacements);
+  if (keywords.length != replacements.length) {
+    return text;
+  }
+  for (let i = 0; i < keywords.length; i++) {
+    let keyword = keywords[i];
+    let replacement = replacements[i];
+    text = text.replace(new RegExp(keyword, 'g'), replacement);
+  }
+  return text;
 }
