@@ -362,7 +362,11 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								UploadStatus(0)
 								return;
 							}
-							imageUrl = `https://telegra.ph/` + res[0].src
+							if (result.ProgramConfiguration.options_Custom_domain_name) {
+								imageUrl = result.ProgramConfiguration.options_Custom_domain_name + res[0].src;
+							  } else {
+								imageUrl = `https://telegra.ph` + res[0].src;
+							  }
 							break;
 						case 'imgdd':
 							imageUrl = res.url
