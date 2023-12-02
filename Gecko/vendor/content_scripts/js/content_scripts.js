@@ -421,15 +421,22 @@ chrome.storage.local.get(storagelocal, function (result) {
     let Simulated_upload = false//模拟上传
     window.addEventListener('message', function (event) {
         if (event.data.type === 'Detect_installation_status') {
-            // 收到盘络扩展网站传来的信息
-            let Function_Start_button = document.getElementById("Function_Start_button")
-            Function_Start_button.innerText = "Let's go"
-            Function_Start_button.classList.add("Function_Start_button");
-            Function_Start_button.addEventListener('click', (e) => {
-                setTimeout(() => {
-                    chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
-                }, 800); // 延迟1秒执行
-            })
+            uploadArea.classList.remove('box-shadow-Blink');
+            uploadArea.classList.add('box-shadow-Blink');
+            if (uploadArea_Left_or_Right == "Left") {
+                uploadArea.style.left = "0";
+            } else {
+                uploadArea.style.right = "0";
+            }
+            // // 收到盘络扩展网站传来的信息
+            // let Function_Start_button = document.getElementById("Function_Start_button")
+            // Function_Start_button.innerText = "Let's go"
+            // Function_Start_button.classList.add("Function_Start_button");
+            // Function_Start_button.addEventListener('click', (e) => {
+            //     setTimeout(() => {
+            //         chrome.runtime.sendMessage({ Functional_Demonstration: "点击上传演示" });
+            //     }, 800); // 延迟1秒执行
+            // })
         }
         if (event.data.type === 'Extension') {
             let extensionInfo = {
@@ -439,10 +446,48 @@ chrome.storage.local.get(storagelocal, function (result) {
             };
             window.postMessage({ type: 'ExtensionResponse', data: extensionInfo }, event.origin);
         }
+        if (event.data.type === 'loadExternalConfig' && event.data.data !== null) {
+            let data = event.data.data
+            storProgramConfiguration(data.data)
+                .then(() => {
+                    PLNotification({
+                        title: "导入成功",
+                        type: "success",
+                        content: "外部数据导入成功,使用时请刷新一次页面以便扩展完成初始化",
+                        duration: 10,
+                    });
+                    chrome.storage.sync.get("BedConfig").then(result => {
+                        let BedConfig = result.BedConfig || [];
+                        if (!BedConfig.some(existingData => isSameData(existingData.data, data.data))) {
+                            data.index = 1000 + BedConfig.length + 1
+                            BedConfig.push(data);
+                            chrome.storage.sync.set({ "BedConfig": BedConfig });
+                        }
+                    });
+                })
+                .catch((error) => {
+                    PLNotification({
+                        title: "导入失败",
+                        type: "error",
+                        content: "外部数据导入失败,详细报错请打开,开发者控制台(F12)查看",
+                        duration: 15,
+                    });
+                    console.log(error);
+                });
+        }
         if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
             iframeShow()
         }
     });
+    function isSameData(data1, data2) {
+        const excludedProps = ['ConfigName'];
+        for (const key of Object.keys(data2)) {
+            if (!excludedProps.includes(key) && data1[key] !== data2[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     function Drag_upload_animations() {
         iframeHide()
@@ -536,3 +581,232 @@ chrome.storage.local.get(storagelocal, function (result) {
     }
 
 })
+
+
+const dataWithFunctions = {
+    "lsky": {
+        "url": "/user/tokens",
+        "element": "#token-create",
+        "function": function () {
+            let pathname = localStorage.getItem(getCurrentDomain())
+            if (pathname !== "true") {
+                PLNotification({
+                    title: "发现：兰空图床",
+                    type: "警告",
+                    content: `点击【创建 Token】按钮，在【创建成功】页点击【添加到盘络】按钮，可加载到盘络扩展。`,
+                    duration: 0,
+                    button: [
+                        {
+                            text: "添加到盘络",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                            init: function () {
+                                this.addEventListener("click", function () {
+                                    try {
+                                        let token = document.querySelector("#token-create-success p:nth-child(2)").textContent;
+                                        let data = {
+                                            "data": {
+                                                "options_album_id": "",
+                                                "options_exe": "Lsky",
+                                                "options_host": getCurrentDomain(),
+                                                "options_permission_select": "0",
+                                                "options_source_select": "2",
+                                                "options_token": "Bearer " + token
+                                            },
+                                            "ConfigName": "兰空图床"
+                                        }
+                                        window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
+                                        this.disabled = true
+                                    } catch (error) {
+                                        alert("获取 Token 失败，请点击【创建 Token】按钮创建Token")
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: "本站不再提示",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                            init: function (close) {
+                                this.addEventListener("click", function () {
+                                    localStorage.setItem(getCurrentDomain(), "true");
+                                    close();
+                                });
+                            }
+                        }
+                    ]
+                });
+            }
+
+        }
+    },
+    "EasyImage": {
+        "url": "/admin/admin.inc.php",
+        "element": "#myDataGrid", // 假设这是一个类选择器
+        "function": function () {
+            let pathname = localStorage.getItem(getCurrentDomain())
+            if (pathname !== "true") {
+                PLNotification({
+                    title: "发现：简单图床",
+                    type: "success",
+                    content: `在【API 设置】页刷新,可加载【添加到盘络】按钮。`,
+                    duration: 0,
+                    button: [
+                        {
+                            text: "本站不再提示",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                            init: function (close) {
+                                this.addEventListener("click", function () {
+                                    localStorage.setItem(getCurrentDomain(), "true");
+                                    close();
+                                });
+                            }
+                        }
+                    ]
+                });
+            }
+
+            if (document.querySelector('#myDataGrid')) {
+                // 在 #myDataGrid 中查找所有符合条件的 <a> 标签
+                const links = myDataGrid.querySelectorAll('a[href*="admin.inc.php?delDir"]');
+                // 为每个找到的 <a> 标签添加一个新元素
+                links.forEach(link => {
+                    const newElement = document.createElement('div');
+                    newElement.textContent = '添加到盘络';
+                    newElement.classList = "btn btn-mini btn-primary"
+                    link.parentNode.insertBefore(newElement, link.nextSibling);
+
+                    newElement.addEventListener('click', function () {
+                        let token = this.parentNode.parentNode.querySelector('div input').value
+                        let data = {
+                            "data": {
+                                "options_exe": "EasyImages",
+                                "options_host": getCurrentDomain(),
+                                "options_token": token
+                            },
+                            "ConfigName": "简单图床"
+                        }
+                        window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
+                    });
+                });
+            }
+        }
+    },
+    "Chevereto": {
+        "url": "/settings/api",
+        "element": `meta[name="generator"][content^="Chevereto"]`, // 假设这是一个类选择器
+        "function": function () {
+            let pathname = localStorage.getItem(getCurrentDomain())
+            if (pathname !== "true") {
+                PLNotification({
+                    title: "发现：Chevereto图床",
+                    type: "警告",
+                    content: `点击【重新生成密钥】按钮，创建成功后点击【添加到盘络】按钮，可加载到盘络扩展。`,
+                    duration: 0,
+                    button: [
+                        {
+                            text: "添加到盘络",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                            init: function () {
+                                this.addEventListener("click", function () {
+                                    try {
+                                        let token = document.querySelector("#api_v1_key").value;
+                                        let data = {
+                                            "data": {
+                                                "options_UploadPath": "",
+                                                "options_album_id": "",
+                                                "options_exe": "Chevereto",
+                                                "options_expiration_select": "NODEL",
+                                                "options_host": getCurrentDomain(),
+                                                "options_nsfw_select": "0",
+                                                "options_token": token
+                                            },
+                                            "ConfigName": "Chevereto图床"
+                                        }
+                                        window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
+                                        this.disabled = true
+                                    } catch (error) {
+                                        alert("获取 Token 失败，请点击【重新生成密钥】按钮")
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: "本站不再提示",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                            init: function (close) {
+                                this.addEventListener("click", function () {
+                                    localStorage.setItem(getCurrentDomain(), "true");
+                                    close();
+                                });
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+    }
+};
+
+// 检查当前页面的函数
+function checkAndExecute() {
+    const currentPath = window.location.pathname;
+
+    for (const key in dataWithFunctions) {
+        if (dataWithFunctions.hasOwnProperty(key)) {
+            const info = dataWithFunctions[key];
+            if (currentPath === info.url && document.querySelector(info.element) !== null) {
+                info.function();
+                return;
+            }
+        }
+    }
+}
+function getCurrentDomain() {
+    return window.location.hostname;
+}
+setTimeout(checkAndExecute, 500);
+
+
+
+const runtimeSendMessage = (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage)
+    ? chrome.runtime.sendMessage.bind(chrome.runtime) // 绑定 chrome.runtime
+    : (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage)
+        ? browser.runtime.sendMessage.bind(browser.runtime) // 绑定 browser.runtime
+        : null;
+let isError = 0
+// 扩展刷新页面错误的检测
+function checkForInvalidatedContext() {
+    if (!runtimeSendMessage) {
+        console.warn('消息发送API不可用');
+        return;
+    }
+    try {
+        runtimeSendMessage({});
+    } catch (error) {
+        if (error.message.includes("Extension context invalidated.")) {
+            if (isError === 0) {
+                if (confirm(`检测到盘络上传扩展被重启，是否重新加载当前页？`)) {
+                    window.location.reload();
+                }
+            }
+            if (isError === 20) { // 一分钟后
+                if (confirm(`1分钟已过去,页面仍未重启,是否重新加载当前页？`)) {
+                    window.location.reload();
+                }
+            }
+            if (isError === 60) { // 三分钟后
+                if (confirm(`3分钟已过去,为了更好的体验,请刷新一下吧。`)) {
+                    window.location.reload();
+                }
+            }
+            if (isError === 200) { // 十分钟后
+                if (confirm(`10分钟已过去,最后一次提示了,不刷新扩展功能会受到限制的！`)) {
+                    window.location.reload();
+                }
+            }
+            isError++
+        }
+    }
+}
+
+// 定期执行检查
+setInterval(checkForInvalidatedContext, 3000);

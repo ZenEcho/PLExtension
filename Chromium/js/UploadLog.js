@@ -13,13 +13,14 @@ $(document).ready(function () {
         Copy_Selected_Mode = result.Copy_Selected_Mode
         let ImageProxy = result.FuncDomain.ImageProxy || 0
 
-        let images
-        let imageUrlkey = [] //必须在这里初始化
+        let images;
+        let imageUrlkey = []; //必须在这里初始化
         let GitHubUP_file = []; //必须在这里初始化
-        let $container
-        let currentPage
-        let itemsPerPage
+        let $container;
+        let currentPage;
+        let itemsPerPage;
         let totalPages;
+        let deleteImageItem;
 
         if (ProgramConfigurations.options_exe == 'Tencent_COS') {
             //腾讯云cos拼接
@@ -89,8 +90,8 @@ $(document).ready(function () {
         if (!Copy_Selected_Mode) {
             Copy_Selected_Mode = "URL"
         }
-        let Sorting_Plan;
-        let Sorting_Methods;
+        let Sorting_Plan = "Time_sorting" //默认 时间排序;
+        let Sorting_Methods = "First"; //默认 最先排前
         function ContainerLoading() {
             if ($("#container").find(".loading").length === 0) {
                 $("#container").empty();
@@ -127,137 +128,146 @@ $(document).ready(function () {
             }
             return src;
         }
+        // 解析日期的函数，独立于排序逻辑
+        function parseDate(dateString) {
+            let parts = dateString.match(/(\d+)/g);
+            return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+        }
+
+        // 根据文件大小排序的函数
+        function sortBySize(images, method) {
+            return images.sort((a, b) => {
+                return method === "First" ? b.file_size - a.file_size : a.file_size - b.file_size;
+            });
+        }
+
+        // 根据上传时间排序的函数
+        function sortByTime(images, method) {
+            return images.sort((a, b) => {
+                let dateA = parseDate(a.uploadTime);
+                let dateB = parseDate(b.uploadTime);
+                return method === "First" ? dateB - dateA : dateA - dateB;
+            });
+        }
         function Program_Start_Execution() {
             $('.pagination').twbsPagination('destroy')
             ContainerLoading()
             if (Browse_mode_switching_status == 0) {
-                chrome.storage.local.get(["UploadLog"], function (resultData) {
-                    //本地信息获取
-                    images = resultData.UploadLog || [];
-                    $("#DeleteALL").show()
-                    var keyCount = 0;
-                    $(document).keyup(function (event) {
-                        if (event.ctrlKey) {
-                            if (event.key === "c") {
-                                keyCount = 1;
-                            } else if (event.key === "v" && keyCount === 1) {
-                                keyCount = 2;
-                            } else if (event.key === "z" && keyCount === 2) {
-                                keyCount = 0;
-                                // 数据测试用
-                                $("#Bottom_button").append(`<button type="button" class="btn btn-primary" id="logaaaaa">备份记录</button>
+                dbHelper("Uploads").then(result => {
+                    // 处理获取到的配置数据
+                    const { db } = result;
+                    chrome.storage.local.get(["UploadLog"], function (resultData) {
+                        //老数据迁移
+
+                        let imagesDATA = resultData.UploadLog;
+
+                        if (typeof imagesDATA === "object" && imagesDATA.length > 0) {
+                            db.put(imagesDATA).then(() => {
+                                chrome.storage.local.set({ 'UploadLog': [] }, () => {
+                                    window.location.reload();
+                                })
+                            })
+                        }
+                    });
+                    db.getAll().then((UploadLog) => {
+                        //本地信息获取
+                        images = UploadLog || [];
+                        $("#DeleteALL").show()
+                        let keyCount = 0;
+                        $(document).off('keyup');
+                        $(document).keyup(function (event) {
+                            if (event.ctrlKey) {
+                                if (event.key === "c") {
+                                    keyCount = 1;
+                                } else if (event.key === "v" && keyCount === 1) {
+                                    keyCount = 2;
+                                } else if (event.key === "z" && keyCount === 2) {
+                                    keyCount = 0;
+                                    // 数据测试用
+                                    $("#Bottom_button").append(`<button type="button" class="btn btn-primary" id="logaaaaa">备份记录</button>
                     <button type="button" class="btn btn-primary" id="logbbbbb">切换到备份记录</button>`)
-                                var Back_up_pictures
-                                $("#logaaaaa").click(function () {
-                                    Back_up_pictures = images
-                                    chrome.storage.local.set({ 'Back_up_pictures': JSON.stringify(Back_up_pictures) });
-                                    toastItem({
-                                        toast_content: '备份成功!'
+                                    let Back_up_pictures
+                                    $("#logaaaaa").click(function () {
+                                        Back_up_pictures = images
+                                        chrome.storage.local.set({ 'Back_up_pictures': Back_up_pictures });
+                                        toastItem({
+                                            toast_content: '备份成功!'
+                                        })
                                     })
-                                })
-                                $("#logbbbbb").click(function () {
-                                    chrome.storage.local.get("Back_up_pictures", function (result) {
-                                        images = result.Back_up_pictures
-                                        if (typeof images !== 'object') {
-                                            images = JSON.parse(images);
-                                        }
-
-                                        chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
-                                            toastItem({
-                                                toast_content: '还原成功!即将刷新'
-                                            })
-                                            setTimeout(function () {
-                                                Program_Start_Execution()
-                                            }, 2000)
-
+                                    $("#logbbbbb").click(function () {
+                                        chrome.storage.local.get("Back_up_pictures", function (result) {
+                                            images = result.Back_up_pictures || []
+                                            if (images.length > 0) {
+                                                db.put(images).then(() => {
+                                                    toastItem({
+                                                        toast_content: '还原成功!即将刷新'
+                                                    })
+                                                    setTimeout(function () {
+                                                        Program_Start_Execution()
+                                                    }, 2000)
+                                                })
+                                            }
                                         });
-
-                                    });
-                                })
-                                // 数据测试用
-                            } else {
-                                keyCount = 0
+                                    })
+                                    // 数据测试用
+                                } else {
+                                    keyCount = 0
+                                }
                             }
-                        }
-                    });
-
-                    if (typeof images !== 'object') {
-                        images = JSON.parse(images);
-                    }
-                    images.sort(function (a, b) {
-                        if (Sorting_Plan == "Size_sorting") {
-                            if (Sorting_Methods == "First") {
-                                return b.file_size - a.file_size;
-                            }
-                            if (Sorting_Methods == "Last") {
-                                return a.file_size - b.file_size;
-                            }
-                        }
-                        if (Sorting_Plan == "Time_sorting") {
-                            function parseDate(dateString) {
-                                let parts = dateString.match(/(\d+)/g);
-                                return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
-                            }
-                            let dateA = parseDate(a.uploadTime);
-                            let dateB = parseDate(b.uploadTime);
-                            if (Sorting_Methods == "First") {
-                                return dateB - dateA; // 降序排序
-                            }
-                            if (Sorting_Methods == "Last") {
-                                return dateA - dateB; // 升序排序
-                            }
-                        }
-                    });
-                    if (!images.length) {
-                        $("#container").html(No_picture_data);
-                        return;
-                    } else {
-                        $container = $('#container');
-                        currentPage = 1;
-                        itemsPerPage = 10;
-                        // 计算总页数
-                        totalPages = Math.ceil(images.length / itemsPerPage);
-                        $('.pagination').twbsPagination({
-                            totalPages: totalPages,
-                            visiblePages: 5,
-                            onPageClick: function (event, page) {
-                                ContainerLoading()
-                                currentPage = page;
-                                localRenderImages();
-                            },
-                            first: chrome.i18n.getMessage("first"),
-                            prev: null,
-                            next: null,
-                            last: chrome.i18n.getMessage("last"),
-
                         });
-                        /**
-                         * 渲染本地图片
-                         */
-                        function localRenderImages() {
-                            $container.empty();
-                            let startIndex = (currentPage - 1) * itemsPerPage;
-                            let endIndex = startIndex + itemsPerPage;
-                            let currentImages = images.slice(startIndex, endIndex);
-                            currentImages.forEach(function (imageUrl, index) {
-                                // if (!imageUrl.url) {
-                                //     // 如果发现没有url就删除这项数据，并刷新
-                                //     images.splice(imageUrl, 1)
-                                //     chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) })// 因为异步可能会失败!
-                                //     return;
-                                // }
-                                if (/^https?:\/\/.+\..+$/.test(imageUrl.url)) {  // regex test to check if url is valid
-                                    imageUrl.url;
-                                } else {
-                                    imageUrl.url = 'icons/err512.png';
-                                }
-                                const fileExtension = imageUrl.url.toLowerCase().match(/\.[0-9a-z]+$/);
-                                if (fileExtension && fileTypeMap.hasOwnProperty(fileExtension[0])) {
-                                    imageUrl.PLFileType = fileTypeMap[fileExtension[0]];
-                                } else {
-                                    imageUrl.PLFileType = null;
-                                }
-                                let item = $(`
+                        switch (Sorting_Plan) {
+                            case "Size_sorting":
+                                images = sortBySize(images, Sorting_Methods);
+                                break;
+                            case "Time_sorting":
+                                images = sortByTime(images, Sorting_Methods);
+                                break;
+                            default:
+                                // 可以添加默认的排序逻辑或者错误处理
+                                console.log("Invalid Sorting Plan");
+                        }
+                        if (!images.length) {
+                            $("#container").html(No_picture_data);
+                            return;
+                        } else {
+                            $container = $('#container');
+                            currentPage = 1;
+                            itemsPerPage = 10;
+                            $('.pagination').twbsPagination({
+                                totalPages: Math.ceil(images.length / itemsPerPage),
+                                visiblePages: 5,
+                                onPageClick: function (event, page) {
+                                    ContainerLoading()
+                                    currentPage = page;
+                                    localRenderImages();
+                                },
+                                first: chrome.i18n.getMessage("first"),
+                                prev: null,
+                                next: null,
+                                last: chrome.i18n.getMessage("last"),
+
+                            });
+                            /**
+                             * 渲染本地图片
+                             */
+                            function localRenderImages() {
+                                $container.empty();
+                                let startIndex = (currentPage - 1) * itemsPerPage;
+                                let endIndex = startIndex + itemsPerPage;
+                                let currentImages = images.slice(startIndex, endIndex);
+                                currentImages.forEach(function (imageUrl, index) {
+                                    if (/^https?:\/\/.+\..+$/.test(imageUrl.url)) {
+                                        imageUrl.url;
+                                    } else {
+                                        imageUrl.url = 'icons/err512.png';
+                                    }
+                                    const fileExtension = imageUrl.url.toLowerCase().match(/\.[0-9a-z]+$/);
+                                    if (fileExtension && fileTypeMap.hasOwnProperty(fileExtension[0])) {
+                                        imageUrl.PLFileType = fileTypeMap[fileExtension[0]];
+                                    } else {
+                                        imageUrl.PLFileType = null;
+                                    }
+                                    let item = $(`
                                     <div class="item shadow-lg bg-body-tertiary" key=`+ imageUrl.key + ` type=` + imageUrl.PLFileType + `>
                                     
                                         <ul class="logurl" style="display: none">
@@ -265,231 +275,223 @@ $(document).ready(function () {
                                             <li>`+ imageUrl.upload_domain_name + `</li>
                                             <li>`+ imageUrl.uploadTime + `</li>
                                         </ul>
-                                        <div class="delete" style="display: none">
+                                        <div class="delete" style="display: none" title="删除">
                                         <i class="bi bi-x-lg"></i>
                                         </div>
-                                        <div class="copy" style="display: none">
+                                        <div class="copy" style="display: none" title="复制">
                                         <i class="bi bi-clipboard-check"></i>
+                                        </div>
+                                        <div class="plus" style="display: none" title="到编辑器">
+                                        <i class="bi bi-node-plus"></i>
                                         </div>
                                         <div class="Image_Width_And_Height" style="display: none;">
                                             <span>`+ imageUrl.img_file_size + `</span>
                                         </div>
                                     </div>`);
 
-                                set_PLFileType(item, imageUrl, imageUrl.url, "512")
-                                $container.append(item);
-                                // 给删除按钮添加点击事件
-                                item.find('.delete').one('click', function () {
-                                    chrome.storage.local.get("UploadLog", function (res) {
-                                        images = res.UploadLog || [];
-                                        if (typeof images !== 'object') {
-                                            images = JSON.parse(images);
-                                        }
-                                        const index = images.findIndex(key => key.key === imageUrl.key);
+                                    set_PLFileType(item, imageUrl, imageUrl.url, "512")
+                                    $container.append(item);
+                                    // 给删除按钮添加点击事件
+                                    item.find('.delete').one('click', function () {
+                                        const index = images.findIndex(data => data.key === imageUrl.key);
                                         if (index !== -1) {
                                             images.splice(index, 1);
-                                            item.remove()
-                                            $container.masonry('reloadItems')
-                                            $container.masonry('layout')
-                                            chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
-                                                // 从localStorage中删除图片URL
-                                                toastItem({ toast_content: chrome.i18n.getMessage("Delete_successful") })
-                                                if ($("#container .item").length < 1) {
-                                                    toastItem({
-                                                        toast_content: chrome.i18n.getMessage("Refresh")
-                                                    })
-                                                    setTimeout(function () {
-                                                        Program_Start_Execution()
-                                                    }, 3000);
-                                                }
-                                            })
+                                            deleteImageItem(item, imageUrl.key)
+                                        }
+
+                                    });
+
+                                    // 点击选中
+                                    item.find('.FileMedia').click(function () {
+                                        if (Select_mode === 1 || isShiftKeyPressed === true) {
+                                            $(this).parent().toggleClass('gigante');
+                                        } else {
+                                            OverlayProject(item, imageUrl.url)
                                         }
                                     });
-                                });
 
-                                // 点击选中
-                                item.find('.FileMedia').click(function () {
-                                    if (Select_mode === 1 || isShiftKeyPressed === true) {
-                                        $(this).parent().toggleClass('gigante');
-                                    } else {
-                                        OverlayProject(item, imageUrl.url)
-                                    }
-                                });
-
-                                // 点击复制
-                                item.find('.copy').click(function () {
-                                    let name = $('.logurl').find('li').eq(0).text();
-                                    let src = item.find(".FileMedia").attr("PLlink");
-                                    const transformedSrc = Image_Proxy(src) //图片代理
-                                    let url;
-                                    switch (Copy_Selected_Mode) {
-                                        case 'URL':
-                                            url = transformedSrc
-                                            break;
-                                        case 'HTML':
-                                            url = '<img src="' + transformedSrc + '" alt="' + name + '" title="' + name + '" >'
-                                            break;
-                                        case 'BBCode':
-                                            url = '[img]' + transformedSrc + '[/img]'
-                                            break;
-                                        case 'Markdown':
-                                            url = '![' + name + '](' + transformedSrc + ')'
-                                            break;
-                                        case 'MD with link':
-                                            url = '[![' + name + '](' + transformedSrc + ')](' + transformedSrc + ')'
-                                            break;
-                                    }
-                                    let $temp = $("<input>");
-                                    $("body").append($temp);
-                                    $temp.val(url).select();
-                                    document.execCommand("copy");
-                                    $temp.remove();
-                                    toastItem({
-                                        toast_content: chrome.i18n.getMessage("Copy_successful")
-                                    })
-
-                                });
-
-                                // 鼠标移入移出删除按钮的显示与隐藏
-                                item.hover(function () {
-                                    $(this).find('.logurl').show();
-                                    $(this).find('.delete').show();
-                                    $(this).find('.copy').show();
-                                    $(this).find('.Image_Width_And_Height').show();
-                                    $container.masonry('layout');
-                                }, function () {
-                                    $(this).find('.logurl').hide();
-                                    $(this).find('.delete').hide();
-                                    $(this).find('.copy').hide();
-                                    $(this).find('.Image_Width_And_Height').hide();
-                                    $container.masonry('layout');
-                                });
-                                item.imagesLoaded().progress(function () {
-                                    item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Image_Width_And_Height"))
-                                    // 获取宽高
-                                    item.find('.Image_Width_And_Height').one('click', function () {
-                                        item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Loading"))
-                                        const img = item.find('.imgs');
-                                        // 获取img元素的src属性
-                                        const src = img.attr('src');
-                                        let Width_And_Height = new Image();
-                                        Width_And_Height.src = src
-                                        Width_And_Height.onload = function () {
-                                            let width = Width_And_Height.width;
-                                            let height = Width_And_Height.height
-                                            item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
+                                    // 点击复制
+                                    item.find('.copy').click(function () {
+                                        let name = $('.logurl').find('li').eq(0).text();
+                                        let src = item.find(".FileMedia").attr("PLlink");
+                                        const transformedSrc = Image_Proxy(src) //图片代理
+                                        let url;
+                                        switch (Copy_Selected_Mode) {
+                                            case 'URL':
+                                                url = transformedSrc
+                                                break;
+                                            case 'HTML':
+                                                url = '<img src="' + transformedSrc + '" alt="' + name + '" title="' + name + '" >'
+                                                break;
+                                            case 'BBCode':
+                                                url = '[img]' + transformedSrc + '[/img]'
+                                                break;
+                                            case 'Markdown':
+                                                url = '![' + name + '](' + transformedSrc + ')'
+                                                break;
+                                            case 'MD with link':
+                                                url = '[![' + name + '](' + transformedSrc + ')](' + transformedSrc + ')'
+                                                break;
                                         }
+                                        let $temp = $("<input>");
+                                        $("body").append($temp);
+                                        $temp.val(url).select();
+                                        document.execCommand("copy");
+                                        $temp.remove();
+                                        toastItem({
+                                            toast_content: chrome.i18n.getMessage("Copy_successful")
+                                        })
+
                                     });
+                                    // 插入到页面
+                                    item.find('.plus').click(function () {
+                                        let src = item.find(".FileMedia").attr("PLlink");
+                                        chrome.runtime.sendMessage({ AutoInsert: src });
+                                        toastItem({
+                                            toast_content: "插入信息已发送,请检查页面是否正确被插入"
+                                        })
+                                    });
+
+                                    // 鼠标移入移出删除按钮的显示与隐藏
+                                    item.hover(function () {
+                                        $(this).find('.logurl').show();
+                                        $(this).find('.delete').show();
+                                        $(this).find('.copy').show();
+                                        $(this).find('.plus').show();
+                                        $(this).find('.Image_Width_And_Height').show();
+                                        $container.masonry('layout');
+                                    }, function () {
+                                        $(this).find('.logurl').hide();
+                                        $(this).find('.delete').hide();
+                                        $(this).find('.copy').hide();
+                                        $(this).find('.plus').hide();
+                                        $(this).find('.Image_Width_And_Height').hide();
+                                        $container.masonry('layout');
+                                    });
+                                    item.imagesLoaded().progress(function () {
+                                        item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Image_Width_And_Height"))
+                                        // 获取宽高
+                                        item.find('.Image_Width_And_Height').one('click', function () {
+                                            item.find('.Image_Width_And_Height').html(chrome.i18n.getMessage("Loading"))
+                                            const img = item.find('.imgs');
+                                            // 获取img元素的src属性
+                                            const src = img.attr('src');
+                                            let Width_And_Height = new Image();
+                                            Width_And_Height.src = src
+                                            Width_And_Height.onload = function () {
+                                                let width = Width_And_Height.width;
+                                                let height = Width_And_Height.height
+                                                item.find('.Image_Width_And_Height').html("宽:" + width + ",高:" + height)
+                                            }
+                                        });
+                                    });
+
                                 });
-
-
-
-                            });// currentImages.forEach
-                            $container.imagesLoaded().progress(function () {
+                                $container.masonry('reloadItems')
                                 $container.masonry({
                                     itemSelector: '.item',
                                     fitWidth: true,
                                     // horizontalOrder: true
                                 });
-                            });
-                            $container.masonry('reloadItems')
-                        }
-                        //选择
-                        let Select_mode = 0
-                        $("#Select_mode").click(function () {
-                            if (Select_mode === 0) {
-                                Select_mode = 1;
-                                $("#Select_mode").toggleClass("btn-primary")
-                                $("#Select_mode").css({ "color": "white" })
-                                toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_0") })
-                            } else {
-                                Select_mode = 0;
-                                $("#Select_mode").toggleClass("btn-primary")
-                                $("#Select_mode").css({ "color": "" })
-                                toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_1") })
-                            }
-                        })
-                        // 清除本页记录
-                        $("#deleteUrl").click(function () {
-                            let delete_startIndex = (currentPage - 1) * itemsPerPage; // 开始下引=（当前页数-1） * 图片展示数量(10)
-                            let Number_of_page_pictures = $("#container .item").length //获取当前页的图片数量
-                            let delete_endIndex = delete_startIndex + Number_of_page_pictures; // 结束下引= 开始下引+当前页的图片数量
+                                $container.imagesLoaded().progress(function () { $container.masonry('layout') });
 
-                            images.splice(delete_startIndex, delete_endIndex); //开始下引,删除数量
-                            chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
-                                Program_Start_Execution()
+                            }
+                            //选择
+                            let Select_mode = 0
+                            $("#Select_mode").click(function () {
+                                if (Select_mode === 0) {
+                                    Select_mode = 1;
+                                    $("#Select_mode").toggleClass("btn-primary")
+                                    $("#Select_mode").css({ "color": "white" })
+                                    toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_0") })
+                                } else {
+                                    Select_mode = 0;
+                                    $("#Select_mode").toggleClass("btn-primary")
+                                    $("#Select_mode").css({ "color": "" })
+                                    toastItem({ toast_content: chrome.i18n.getMessage("Select_mode_1") })
+                                }
                             })
-                        })
-                        //全选
-                        $("#Select_All").click(function () {
-                            $("#container .item").toggleClass('gigante');
-                        })
-                        //取消选择
-                        $("#Select_cancel").click(function () {
-                            $("#container .item").removeClass("gigante")
-                        })
-                        //复制选中
-                        $("#Copy_Selected").click(function () {
-                            let selectedImgs = $(".gigante .FileMedia");
-                            let selectedsrcName = $('.gigante .logurl').find('li').eq(0).text();
-                            let imgSrcs = [];
-                            selectedImgs.each(function () {
-                                let link = $(this).attr("PLlink")
-                                let links
-                                const transformedSrc = Image_Proxy(link) //图片代理
-                                switch (Copy_Selected_Mode) {
-                                    case 'URL':
-                                        links = transformedSrc
-                                        break;
-                                    case 'HTML':
-                                        links = '<img src="' + transformedSrc + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
-                                        break;
-                                    case 'BBCode':
-                                        links = '[img]' + transformedSrc + '[/img]'
-                                        break;
-                                    case 'Markdown':
-                                        links = '![' + selectedsrcName + '](' + transformedSrc + ')'
-                                        break;
-                                    case 'MD with link':
-                                        links = '[![' + selectedsrcName + '](' + transformedSrc + ')](' + transformedSrc + ')'
-                                        break;
-                                }
-                                imgSrcs.push(links);
-                            });
-                            if (imgSrcs.length) {
-                                let tempInput = $(`<textarea>`);
-                                $("body").append(tempInput);
-                                tempInput.val(imgSrcs.join("\n")).select();
-                                document.execCommand("copy");
-                                tempInput.remove();
-                                toastItem({
-                                    toast_content: chrome.i18n.getMessage("Copy_successful")
+                            // 清除本页记录
+                            $("#deleteUrl").click(function () {
+                                let imgKey = []
+                                $("#container .item").each(function () {
+                                    let key = $(this).attr("key")
+                                    imgKey.push(key);
                                 })
-                            }
+                                db.delete(imgKey).then(() => {
+                                    Program_Start_Execution()
+                                })
 
-                        })
-                        //删除选中
-                        $("#Delete_Selected").click(function () {
-                            let selectedImgs = $(".gigante");
-                            let imgKey = []
-                            chrome.storage.local.get("UploadLog", function (res) {
-                                images = res.UploadLog || [];
-                                if (typeof images !== 'object') {
-                                    images = JSON.parse(images);
-                                }
-                                selectedImgs.each(function (i) {
-                                    let imgurl = $(this).find("img").attr("PLlink")
-                                    const index = images.findIndex(img => img.url === imgurl);
-                                    imgKey.push(index);
-                                    images.splice(imgKey[i], 1)
-                                    toastItem({
-                                        toast_content: chrome.i18n.getMessage("Delete_successful")
-                                    })
+                            })
+                            //全选
+                            $("#Select_All").click(function () {
+                                $("#container .item").toggleClass('gigante');
+                            })
+                            //取消选择
+                            $("#Select_cancel").click(function () {
+                                $("#container .item").removeClass("gigante")
+                            })
+                            //复制选中
+                            $("#Copy_Selected").click(function () {
+                                let selectedImgs = $(".gigante .FileMedia");
+                                let selectedsrcName = $('.gigante .logurl').find('li').eq(0).text();
+                                let imgSrcs = [];
+                                selectedImgs.each(function () {
+                                    let link = $(this).attr("PLlink")
+                                    let links
+                                    const transformedSrc = Image_Proxy(link) //图片代理
+                                    switch (Copy_Selected_Mode) {
+                                        case 'URL':
+                                            links = transformedSrc
+                                            break;
+                                        case 'HTML':
+                                            links = '<img src="' + transformedSrc + '" alt="' + selectedsrcName + '" title="' + selectedsrcName + '" >'
+                                            break;
+                                        case 'BBCode':
+                                            links = '[img]' + transformedSrc + '[/img]'
+                                            break;
+                                        case 'Markdown':
+                                            links = '![' + selectedsrcName + '](' + transformedSrc + ')'
+                                            break;
+                                        case 'MD with link':
+                                            links = '[![' + selectedsrcName + '](' + transformedSrc + ')](' + transformedSrc + ')'
+                                            break;
+                                    }
+                                    imgSrcs.push(links);
                                 });
-                                chrome.storage.local.set({ 'UploadLog': JSON.stringify(images) }, function () {
-                                    selectedImgs.remove()
+                                if (imgSrcs.length) {
+                                    let tempInput = $(`<textarea>`);
+                                    $("body").append(tempInput);
+                                    tempInput.val(imgSrcs.join("\n")).select();
+                                    document.execCommand("copy");
+                                    tempInput.remove();
+                                    toastItem({
+                                        toast_content: chrome.i18n.getMessage("Copy_successful")
+                                    })
+                                }
+
+                            })
+                            //删除选中
+                            $("#Delete_Selected").click(function () {
+                                let selectedImgs = $(".gigante");
+                                let imgKey = []
+
+                                selectedImgs.each(function (i) {
+                                    let key = $(this).attr("key")
+                                    imgKey.push(key);
+                                    const index = images.findIndex(img => img.key === key);
+                                    images.splice(index, 1)
+                                });
+                                deleteImageItem(selectedImgs, imgKey)
+
+                            })
+
+                            deleteImageItem = function (item, key) {
+                                db.delete(key).then(() => {
+                                    item.remove()
                                     $container.masonry('reloadItems')
                                     $container.masonry('layout')
+                                    toastItem({ toast_content: chrome.i18n.getMessage("Delete_successful") })
                                     if ($("#container .item").length < 1) {
                                         toastItem({
                                             toast_content: chrome.i18n.getMessage("Refresh")
@@ -497,14 +499,30 @@ $(document).ready(function () {
                                         setTimeout(function () {
                                             Program_Start_Execution()
                                         }, 3000);
+                                    } else {
+                                        $('.pagination').twbsPagination('destroy')
+                                        $('.pagination').twbsPagination({
+                                            totalPages: Math.ceil(images.length / itemsPerPage),
+                                            visiblePages: 5,
+                                            startPage: currentPage,
+                                            onPageClick: function () {
+                                                ContainerLoading()
+                                                localRenderImages();
+                                            },
+                                            first: chrome.i18n.getMessage("first"),
+                                            prev: null,
+                                            next: null,
+                                            last: chrome.i18n.getMessage("last"),
+
+                                        });
                                     }
                                 })
+                            }
 
+                        }
+                    })
+                });
 
-                            });
-                        })
-                    }
-                })
             } else {
                 $(".options_UploadPath").parent().show()
                 $("#DeleteALL").hide()
@@ -1261,11 +1279,14 @@ $(document).ready(function () {
                                     <li>`+ item_liImgSize + `</li>
                                     <li>`+ item_liImgDate + `</li>
                                 </ul>
-                                <div class="delete" style="display: none">
-                                <i class="bi bi-x-lg"></i>
+                                <div class="delete" style="display: none" title="删除">
+                                    <i class="bi bi-x-lg"></i>
                                 </div>
-                                <div class="copy" style="display: none">
-                                <i class="bi bi-clipboard-check"></i>
+                                <div class="copy" style="display: none" title="复制">
+                                    <i class="bi bi-clipboard-check"></i>
+                                </div>
+                                <div class="plus" style="display: none" title="到编辑器">
+                                    <i class="bi bi-node-plus"></i>
                                 </div>
                                 <div class="Image_Width_And_Height" style="display: none;">
                                     <span>`+ Image_Width_And_Height + `</span>
@@ -1544,11 +1565,19 @@ $(document).ready(function () {
                             })
 
                         });
+                        item.find('.plus').click(function () {
+                            let src = item.find(".FileMedia").attr("PLlink");
+                            chrome.runtime.sendMessage({ AutoInsert: src });
+                            toastItem({
+                                toast_content: "插入信息已发送,请检查页面是否正确被插入"
+                            })
+                        });
                         //鼠标移入移出删除按钮的显示与隐藏
                         item.hover(function () {
                             $(this).find('.logurl').show();
                             $(this).find('.delete').show();
                             $(this).find('.copy').show();
+                            $(this).find('.plus').show();
                             $(this).find('.Image_Width_And_Height').show();
                             $container.masonry('layout');
 
@@ -1556,6 +1585,7 @@ $(document).ready(function () {
                             $(this).find('.logurl').hide();
                             $(this).find('.delete').hide();
                             $(this).find('.copy').hide();
+                            $(this).find('.plus').hide();
                             $(this).find('.Image_Width_And_Height').hide();
                             $container.masonry('layout');
                         });
@@ -1584,14 +1614,14 @@ $(document).ready(function () {
                                 break;
                         }
                     });
-                    $container.imagesLoaded().progress(function () {
-                        $container.masonry({
-                            itemSelector: '.item',
-                            fitWidth: true,
-                            // horizontalOrder: true
-                        });
-                    });
                     $container.masonry('reloadItems')
+                    $container.masonry({
+                        itemSelector: '.item',
+                        fitWidth: true,
+                        // horizontalOrder: true
+                    });
+                    $container.imagesLoaded().progress(function () { $container.masonry('layout') });
+
                 }
                 //选择
                 let Select_mode = 0
@@ -2074,66 +2104,37 @@ $(document).ready(function () {
                     }
                 });
             }
-
             function set_PLFileType(item, imageUrl, item_imgUrl, item_liImgSize) {
-                item.append(`
-                        <img class="FileMedia imgs" src="" PLlink=` + item_imgUrl + `>
-                        `)
-                if (imageUrl.PLFileType == "image") {
-                    item.find(".imgs").attr("src", item_imgUrl)
-                    const loadingIndicator = $(`
-                            <div class="UploadLog-loading">
-                            <div class="loading-shape loading-shape-1"></div>
-                            <div class="loading-shape loading-shape-2"></div>
-                            <div class="loading-shape loading-shape-3"></div>
-                            <div class="loading-shape loading-shape-4"></div>
-                            </div>
-                                `);
-                    item.append(loadingIndicator);
-                    item.imagesLoaded().done(() => {
-                        loadingIndicator.remove();
-                    }).catch(() => {
-                        loadingIndicator.remove();
-                    });
-                } else if (imageUrl.PLFileType == "ae") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/ae.png")
-                } else if (imageUrl.PLFileType == "ai") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/ap.png")
-                } else if (imageUrl.PLFileType == "ps") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/ps.png")
-                } else if (imageUrl.PLFileType == "compressedfile") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/compressedfile.png")
-                } else if (imageUrl.PLFileType == "dll") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/dll.png")
-                } else if (imageUrl.PLFileType == "Excel") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/excel.png")
-                } else if (imageUrl.PLFileType == "exe") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/exe.png")
-                } else if (imageUrl.PLFileType == "music") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/music.png")
-                } else if (imageUrl.PLFileType == "PowerPoint") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/ppt.png")
-                } else if (imageUrl.PLFileType == "pr") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/pr.png")
-                } else if (imageUrl.PLFileType == "sys") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/sys.png")
-                } else if (imageUrl.PLFileType == "Word") {
-                    item.find(".imgs").attr("src", "./icons/fileicon/WORD.png")
+                const fileTypeIcons = {
+                    "ae": "./icons/fileicon/ae.png",
+                    "ai": "./icons/fileicon/ap.png",
+                    "ps": "./icons/fileicon/ps.png",
+                    "compressedfile": "./icons/fileicon/zip.png",
+                    "dll": "./icons/fileicon/dll.png",
+                    "excel": "./icons/fileicon/excel.png",
+                    "exe": "./icons/fileicon/exe.png",
+                    "music": "./icons/fileicon/music.png",
+                    "video": "./icons/fileicon/video.png",
+                    "powerPoint": "./icons/fileicon/ppt.png",
+                    "pr": "./icons/fileicon/pr.png",
+                    "sys": "./icons/fileicon/sys.png",
+                    "word": "./icons/fileicon/word.png",
+                    "default": "./icons/fileicon/unknown.png"
+                };
+
+                const fileType = imageUrl.PLFileType || "default";
+                const iconUrl = fileTypeIcons[fileType] || fileTypeIcons["default"];
+                item.append(`<img class="FileMedia imgs" src="" PLlink="${item_imgUrl}">`);
+                if (fileType === "image") {
+                    item.find(".imgs").attr("src", item_imgUrl);
+                    handleLoadingIndicator(item);
                 } else {
-                    item.find(".imgs").attr("src", "./icons/fileicon/file.png")
+                    item.find(".imgs").attr("src", iconUrl).css({ height: "200px" });
                 }
-                if (imageUrl.PLFileType != "image") {
-                    item.find(".imgs").css("width", "250px")
-                    item.find(".imgs").css("height", "250px")
+                if (fileType === "video" || fileType === "music") {
+                    handleVideoAndMusic(item, item_imgUrl);
                 }
-                if (imageUrl.PLFileType == "video" || imageUrl.PLFileType == "music") {
-                    item.find(".imgs").remove()
-                    item.find(".Image_Width_And_Height").remove()
-                    item.append(`
-                        <video  class="video FileMedia" src="`+ item_imgUrl + `" PLlink=` + item_imgUrl + ` ></video>
-                        `)
-                    item.find(".logurl").css("position", "relative")
-                }
+
                 if (imageUrl.PLFileType == "editable") {
                     item.find(".imgs").remove()
                     item.find(".Image_Width_And_Height").remove()
@@ -2162,33 +2163,46 @@ $(document).ready(function () {
                         item.find("#textarea").val("点击标题栏或编辑框加载文本")
                     }
                     item.find(".logurl").one('click', function () {
-                        get_item_imgUrl_text()
+                        loadFileTextWithWorker(item.find("#textarea"), item_imgUrl);
                     })
-                    function get_item_imgUrl_text() {
-                        item.find("#textarea").val("文件加载中:0%")
-                        let xhr = new XMLHttpRequest();
-                        xhr.open('GET', item_imgUrl, true);
-                        xhr.responseType = 'text';
-                        xhr.onprogress = function (event) {
-                            if (event.lengthComputable) {
-                                var percentComplete = Math.floor((event.loaded / event.total) * 100);
-                                item.find("#textarea").val('文件加载中:' + percentComplete + '%');
-                            } else {
-                                item.find("#textarea").val('已加载:' + (event.loaded / 1024).toFixed(2) + "KB");
-                            }
-                        };
-                        xhr.onload = function () {
-                            if (xhr.status === 200) {
-                                let responseText = xhr.response;
-                                item.find("#textarea").val(responseText)
-                            } else {
-                                item.find("#textarea").val(chrome.i18n.getMessage("Upload_prompt8"))
-                            }
-                        };
 
-                        xhr.send();
-                    }
                 }
+            }
+            function loadFileTextWithWorker(item, item_imgUrl) {
+                let worker = new Worker('js/worker.js');
+                worker.postMessage(item_imgUrl);
+                worker.addEventListener('message', function (e) {
+                    let data = e.data;
+                    if (data.status === 'loading') {
+                        item.val(data.progress ? '文件加载中:' + data.progress + '%' : '已加载:' + (data.loaded / 1024).toFixed(2) + "KB");
+                    } else if (data.status === 'loaded') {
+                        item.val(data.responseText);
+                    } else if (data.status === 'error') {
+                        item.val(chrome.i18n.getMessage("Upload_prompt8"))
+                    }
+                });
+
+            }
+            function handleLoadingIndicator(item) {
+                const loadingIndicator = $(`
+                <div class="UploadLog-loading">
+                <div class="loading-shape loading-shape-1"></div>
+                <div class="loading-shape loading-shape-2"></div>
+                <div class="loading-shape loading-shape-3"></div>
+                <div class="loading-shape loading-shape-4"></div>
+                </div>
+                    `);
+                item.append(loadingIndicator);
+                item.imagesLoaded().done(() => {
+                    loadingIndicator.remove();
+                }).catch(() => {
+                    loadingIndicator.remove();
+                });
+            }
+            function handleVideoAndMusic(item, item_imgUrl) {
+                // item.find(".imgs, .Image_Width_And_Height").remove();
+                // item.append(`<video class="video FileMedia" src="${item_imgUrl}" PLlink="${item_imgUrl}"></video>`);
+                // item.find(".logurl").css("position", "relative");
             }
             function OverlayProject(item, item_imgUrl) {
                 // 创建弹出窗口的容器元素
@@ -2213,7 +2227,7 @@ $(document).ready(function () {
                         <div class="loading-shape loading-shape-4"></div>
                     </div>
                     `);
-                if (item.attr("type") == "video") {
+                if (item.attr("type") == "video" || item.attr("type") == "music") {
                     overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
                 } else if (item.attr("type") == "image") {
                     const imageElement = $('<img>');
@@ -2227,8 +2241,9 @@ $(document).ready(function () {
                     });
 
                 } else if (item.attr("type") == "editable") {
-                    overlayElement.append(`<textarea  PLlink="${item_imgUrl}"></textarea>`);
-                    get_item_imgUrl_text();
+                    let textarea = $(`<textarea PLlink="${item_imgUrl}"></textarea>`)
+                    overlayElement.append(textarea);
+                    loadFileTextWithWorker(textarea, item_imgUrl)
                 } else {
                     toastItem({
                         toast_content: '不支持预览!'
@@ -2389,35 +2404,14 @@ $(document).ready(function () {
                         $(document).off('mouseup');
                     });
                 });
-                // 获取文本
-                function get_item_imgUrl_text() {
-                    overlayElement.find("textarea").val("文件加载中:0%")
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', item_imgUrl, true);
-                    xhr.responseType = 'text';
-                    xhr.onprogress = function (event) {
-                        if (event.lengthComputable) {
-                            var percentComplete = Math.floor((event.loaded / event.total) * 100);
-                            overlayElement.find("textarea").val('文件加载中:' + percentComplete + '%');
-                        } else {
-                            overlayElement.find("textarea").val('已加载:' + (event.loaded / 1024).toFixed(2) + "KB");
-                        }
-                    };
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            let responseText = xhr.response;
-                            overlayElement.find("textarea").val(responseText)
-                        } else {
-                            overlayElement.find("textarea").val(chrome.i18n.getMessage("Upload_prompt8"))
-                        }
-                    };
-                    xhr.onerror = function (e) {
-                        overlayElement.find("textarea").val(chrome.i18n.getMessage("Upload_prompt8"));
-                    };
-                    xhr.send();
-                }
             }
+            (function () {
+                $(`.Selected_But`).removeClass("selected")
+                $(`.Selected_But a`).removeClass("selectedA")
 
+                $(`#${Sorting_Plan}`).addClass("selected")
+                $(`#${Sorting_Plan} a[value=${Sorting_Methods}] `).addClass("selectedA")
+            }());
         }
         Program_Start_Execution()
 
@@ -2444,22 +2438,27 @@ $(document).ready(function () {
             targetElement.addClass("active")
         });
         $("#DeleteALL").click(function () {
-            localStorage.UploadLog = "[]"
-            chrome.storage.local.set({ 'UploadLog': [] }, function () {
-                window.location.reload();
-            })
+            localStorage.UploadLog = ""
+            chrome.storage.local.set({ 'UploadLog': "" })
+            dbHelper("Uploads").then(result => {
+                const { db } = result;
+                db.clear().then(() => {
+                    window.location.reload();
+                })
+            });
+
         })
         $("#Browse_mode_switch_button").click(function () {
             if ($(this).hasClass("css-button-rounded--black")) {
                 // 开启
-                $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是图床服务器的图片噢!点一下就换成加载本地图片啦!')
-                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到本地")
+                $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是在线数据')
+                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到本地数据")
                 chrome.storage.local.set({ 'Browse_mode_switching_status': 1 })
                 $(this).removeClass("css-button-rounded--black");
                 $(this).addClass('css-button-rounded--red');
             } else {
-                $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是本地图片噢!点一下就可以加载图床服务器上的图片了')
-                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到图床")
+                $("#Browse_mode_switch_button").attr('data-bs-content', '现在加载的是本地数据')
+                $("#Browse_mode_switch_button").html(`<i class="bi bi-circle-half"></i>` + " 切换到在线数据")
                 chrome.storage.local.set({ 'Browse_mode_switching_status': 0 })
                 $(this).removeClass("css-button-rounded--red")
                 $(this).addClass('css-button-rounded--black');
@@ -2481,5 +2480,4 @@ $(document).ready(function () {
             Program_Start_Execution()
         });
     })
-
 });

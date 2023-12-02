@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-icons.css">
   <link rel="stylesheet" href="css/public.css">
   <link rel="stylesheet" href="css/UploadLog.css">
+  <script defer src="vendor/IndexedDB/db.js"></script>
   <script src="vendor/jquery/jquery-3.6.3.min.js"></script>
   <script src="vendor/cos/cos-js-sdk-v5.js"></script>
   <script src="vendor/oss/aliyun-oss-sdk.min.js"></script>
@@ -128,7 +129,7 @@
   </div>
 
   <div class="shadow-lg foot">
-    <nav aria-label="Page navigation">
+    <nav aria-label="Page navigation" id="pageBox">
       <ul class="pagination justify-content-center">
         <li class="page-item"><a class="page-link" href="#">最前</a></li>
         <li class="page-item"><a class="page-link" href="#">L</a></li>

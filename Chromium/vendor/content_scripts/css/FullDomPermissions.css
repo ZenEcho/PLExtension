@@ -1,21 +1,19 @@
  .insertContentIntoEditorPrompt {
-   text-align: center;
-   font-size: 14px;
-   /* width: 52px;
-   height: 14px;
-   line-height: 14px; */
-   color: #fff;
+   text-align: center !important;
+   font-size: 14px !important;
+   max-width: 100px !important;
+   color: #fff !important;
    padding: 5px 10px !important;
-   font-weight: bold;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   position: relative;
-   display: inline-block;
-   outline: none;
-   overflow: hidden;
-   border-radius: 5px;
-   border: none;
-   background-color: #3a86ff;
+   font-weight: bold !important;
+   cursor: pointer !important;
+   transition: all 0.3s ease !important;
+   position: relative !important;
+   display: inline-block !important;
+   outline: none !important;
+   overflow: hidden !important;
+   border-radius: 5px !important;
+   border: none !important;
+   background-color: #3a86ff !important;
  }
 
  .insertContentIntoEditorPrompt:hover {

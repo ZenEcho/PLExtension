@@ -356,7 +356,6 @@ $(document).ready(function () {
               options_return_success_value = replaceKeywordsInText(options_return_success_value, ProgramConfigurations.Keyword_replacement1, ProgramConfigurations.Keyword_replacement2)
             }
             imageUrl = options_return_success_value
-            console.log(imageUrl);
             ProgramConfigurations.options_host = ProgramConfigurations.options_apihost
             break;
           case 'Tencent_COS':

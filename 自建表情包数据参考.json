@@ -21,7 +21,8 @@
                     "StickerName": "吐舌头",
                     "StickerURL": "https://cdn-us.imgs.moe/2023/08/21/64e2d2c43705d.webp"
                 }
-            ]
+            ],
+            "id": 1
         },
         {
             "StickerTitle": "bili小黄豆",
@@ -40,7 +41,8 @@
                     "StickerName": "2",
                     "StickerURL": "https://cdn-us.imgs.moe/Sticker/bili/2.webp"
                 }
-            ]
+            ],
+            "id": 2
         }
     ]
 }

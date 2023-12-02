@@ -97,8 +97,10 @@ window.addEventListener('message', function (event) {
             if (phpbbForum) {
                 let phpbbEditor = document.getElementById("message")
                 phpbbEditor.value += event.data.data;
+                event.source.postMessage({ type: 'phpbbForumResponse', data: true }, event.origin);
             }
         } catch (error) {
+            event.source.postMessage({ type: 'phpbbForumResponse', data: false }, event.origin);
         }
 
     }
@@ -113,6 +115,10 @@ window.addEventListener('message', function (event) {
             .catch(error => {
                 console.error("复制到剪贴板失败：" + error);
             });
+    }
+    //刷新
+    if (event.data.type === 'pageRefresh') {
+        window.location.reload();
     }
 });
 function detectEncoding() {

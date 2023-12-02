@@ -161,6 +161,9 @@
   "SidebarButtonPrompt": {
     "message": "(仅对侧边栏上传有效)"
   },
+  "Right_click_menu_uploadText": {
+    "message": "右键上传"
+  },
   "Right_click_menu_upload": {
     "message": "<i class='bi bi-hand-index'></i> 右键上传"
   },
@@ -1017,16 +1020,16 @@
     "message": "再努努力吧!"
   },
   "Browse_mode_switch_button_1_attr": {
-    "message": "现在加载的是图床服务器的图片"
+    "message": "现在加载的是在线数据"
   },
   "Browse_mode_switch_button_0_attr": {
-    "message": "现在加载的是本地图片"
+    "message": "现在加载的是本地数据"
   },
   "Browse_mode_switch_button_1": {
-    "message": " 切换到本地"
+    "message": " 切换到本地数据"
   },
   "Browse_mode_switch_button_0": {
-    "message": " 切换到图床"
+    "message": " 切换到在线数据"
   },
   "first": {
     "message": "首页"

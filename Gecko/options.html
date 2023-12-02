@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/options.css">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-icons.css">
+  <script defer src="vendor/IndexedDB/db.js"></script>
   <script defer src="vendor/jquery/jquery-3.6.3.min.js"></script>
   <script defer src="vendor/cos/cos-js-sdk-v5.js"></script>
   <script defer src="vendor/oss/aliyun-oss-sdk.min.js"></script>
@@ -20,7 +21,6 @@
   <script defer src="js/options.js"></script>
   <script defer src="_locales/language.js"></script>
 </head>
-
 <body>
   <div class="overlay">
     <div class="loading">
@@ -179,6 +179,11 @@
               </li>
               <li><a class="dropdown-item" href="#" value="off" data-i18n="bi_battery+off"><i class="bi bi-battery"></i>
                   关闭</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><button type="button" id="manageInsert"
+                  style="padding: 0; margin: 0; border: none; background: none;">插入管理</button></li>
             </ul>
           </div>
         </div>
@@ -437,6 +442,7 @@
 
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
   </div>
+
 </body>
 
 

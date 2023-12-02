@@ -161,6 +161,9 @@
   "SidebarButtonPrompt": {
     "message": "(Valid for sidebar uploads only)"
   },
+  "Right_click_menu_uploadText": {
+    "message": "RightClick Upload"
+  },
   "Right_click_menu_upload": {
     "message": "<i class='bi bi-hand-index'></i> RightClick Upload"
   },
@@ -1017,16 +1020,16 @@
     "message": "Try a little harder!"
   },
   "Browse_mode_switch_button_1_attr": {
-    "message": "Currently loading images from the image hosting server."
+    "message": "The data being loaded is now online"
   },
   "Browse_mode_switch_button_0_attr": {
-    "message": "Currently loading local images."
+    "message": "The data being loaded is now local"
   },
   "Browse_mode_switch_button_1": {
-    "message": " Switch to Local"
+    "message": " To local data"
   },
   "Browse_mode_switch_button_0": {
-    "message": " Switch to Image Hosting"
+    "message": " To online data"
   },
   "first": {
     "message": "First"

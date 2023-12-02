@@ -1,3 +1,4 @@
+const storageAPI = typeof browser !== 'undefined' && browser.storage ? browser.storage : typeof chrome !== 'undefined' && chrome.storage ? chrome.storage : null;
 const maxNotifications = 8; // 最大允许的通知数量
 const notifications = [];
 /**
@@ -12,12 +13,14 @@ function PLNotification(config) {
         title: '盘络上传:', // 默认标题为通知
         content: 'No Data',   // 默认内容为空
         duration: 10,   // 默认持续时间为10秒
-        css: "",// content的行内样式
+        style: "",// content的行内样式
         overwrite: true, // 默认重复内容覆盖
         saved: false, //存储通知,刷新页面也会通知
+        button: [], //按钮组
     };
     // 合并配置项
     config = { ...defaultConfig, ...config };
+    config.type = config.type === "信息" ? "info" : config.type === "成功" ? "success" : config.type === "失败" ? "error" : config.type === "警告" ? "warning" : config.type;
     if (notifications.length >= maxNotifications) {
         // 如果通知数量达到最大值，删除最早的通知
         const oldestNotification = notifications.shift();
@@ -47,8 +50,9 @@ function PLNotification(config) {
         });
         return;
     }
+    // 如果没有重复的就执行以下
 
-    //如果没有重复的就执行以下
+    // 构建通知
     const notification = document.createElement('div');
     const maxZIndex = Math.pow(2, 31) - 1; // 设置 z-index
     container.style.zIndex = maxZIndex.toString();
@@ -59,13 +63,57 @@ function PLNotification(config) {
         <span class="title">${config.title}</span>  
     </div>
     <hr>
-    <div class="notification-content" style="${config.css}" >${config.content}</div>`;
+    <div class="notification-content" style="${config.style}" >${config.content}</div>`;
+
+    // 通知的各种方法按钮 例如关闭 缩小
     const closeButton = document.createElement('button');
     closeButton.innerHTML = 'X';
+    closeButton.className = "close"
+
+    const reduceButton = document.createElement('button');
+    reduceButton.innerHTML = '>';
+    reduceButton.className = "reduce"
+
+
     notification.appendChild(closeButton);
+    notification.appendChild(reduceButton)
+
     closeButton.addEventListener('click', () => {
         closeNotification(notification, config);
     });
+    reduceButton.addEventListener('click', () => {
+        reduceNotification(notification);
+    });
+    // 创建按钮容器
+    let buttonsContainer;
+    if (config.button) {
+        buttonsContainer = document.createElement(config.button.label || 'div');
+        if (config.button.class) buttonsContainer.className = config.button.class;
+        if (config.button.style) buttonsContainer.style = config.button.style;
+
+        // 创建并添加按钮
+        let buttons = config.button.but || config.button;
+        if (Array.isArray(buttons)) {
+            buttons.forEach(btnConfig => {
+                const button = document.createElement('button');
+                button.textContent = btnConfig.text || "我是一个按钮";
+                if (btnConfig.class) button.className = btnConfig.class;
+                if (btnConfig.style) button.style = btnConfig.style;
+
+                const close = () => closeNotification(notification, config);
+                if (typeof btnConfig.init === 'function') {
+                    btnConfig.init.call(button, close);
+                } 
+                buttonsContainer.appendChild(button);
+            });
+        }
+    }
+
+    if (buttonsContainer) {
+        notification.appendChild(buttonsContainer);
+    }
+
+
     updateCountdown(config, notification)
     notifications.push({
         type: config.type,
@@ -162,13 +210,22 @@ function closeNotification(notification, config) {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, 300);
 }
+function reduceNotification(notification) {
+    notification.style.minWidth === '100px' ? notification.style.minWidth = '200px' : notification.style.minWidth = '100px';
+    notification.querySelector('.reduce').textContent === ">" ? notification.querySelector('.reduce').textContent = "<" : notification.querySelector('.reduce').textContent = ">";
+    let children = notification.querySelectorAll('*');
+    // 遍历每个子元素并添加类
+    children.forEach(child => {
+        child.classList.toggle('reduceActive');
+    });
+
+}
 
 /**
  * @param {*} callback 
  * 从浏览器的 storage 获取保存的通知
  */
 function getSavedNotifications(callback) {
-    const storageAPI = typeof browser !== 'undefined' && browser.storage ? browser.storage : typeof chrome !== 'undefined' && chrome.storage ? chrome.storage : null;
     if (!storageAPI) { return console.error('存储API不受支持'); }
     storageAPI.local.get({ 'PLSavedNotifications': [] }, (data) => {
         const savedNotifications = data.PLSavedNotifications || [];
@@ -180,7 +237,6 @@ function getSavedNotifications(callback) {
  * 保存通知到浏览器的 storage
  */
 function saveNotificationToStorage(config) {
-    const storageAPI = typeof browser !== 'undefined' && browser.storage ? browser.storage : typeof chrome !== 'undefined' && chrome.storage ? chrome.storage : null;
     if (!storageAPI) { return console.error('存储API不受支持'); }
     delete config.saved
     getSavedNotifications((savedNotifications) => {
@@ -197,7 +253,6 @@ function saveNotificationToStorage(config) {
  * 从浏览器的 storage 移除通知 
  */
 function removeNotificationFromStorage(config) {
-    const storageAPI = typeof browser !== 'undefined' && browser.storage ? browser.storage : typeof chrome !== 'undefined' && chrome.storage ? chrome.storage : null;
     if (!storageAPI) { return console.error('存储API不受支持'); }
     getSavedNotifications((savedNotifications) => {
         const updatedNotifications = savedNotifications.filter(
@@ -213,7 +268,6 @@ function removeNotificationFromStorage(config) {
  * 更新浏览器的 storage 中的通知
  */
 function updateNotificationInStorage(updatedNotification, callback) {
-    const storageAPI = typeof browser !== 'undefined' && browser.storage ? browser.storage : typeof chrome !== 'undefined' && chrome.storage ? chrome.storage : null;
     if (!storageAPI) { return console.error('存储API不受支持'); }
     getSavedNotifications((savedNotifications) => {
         const updatedNotifications = savedNotifications.map((notification) => {
@@ -240,9 +294,24 @@ function updateNotificationInStorage(updatedNotification, callback) {
 })();
 
 chrome.runtime.onMessage.addListener(function (request) {
-    if (request.PLNotificationJS) { PLNotification(request.PLNotificationJS) }
+    // chrome.runtime.sendMessage({
+    //     PLNotification: {
+    //         type: 'info',  // 默认类型为信息通知
+    //         title: '盘络上传:', // 默认标题为通知
+    //         content: 'No Data',   // 默认内容为空
+    //         duration: 10,   // 默认持续时间为10秒
+    //         saved: false, //存储通知,刷新页面也会通知
+    //     }
+    // });
+    if (request.PLNotificationJS) {
+        PLNotification(request.PLNotificationJS)
+    }
 });
 
 window.addEventListener('message', function (event) {
-    if (event.data.type === 'PLNotification') { PLNotification(event.data.data) }
+    // window.postMessage({ type: 'PLNotification', data: {} }, "*");
+    if (event.data.type === 'PLNotification') {
+        const data = typeof event.data.data === "object" ? event.data.data : JSON.parse(event.data.data);
+        PLNotification(data)
+    }
 });

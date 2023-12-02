@@ -1,6 +1,8 @@
 let StickerOptional;
 function EmoticonBox() {
     let EmoticonBox = document.createElement('div');
+    const maxZIndex = Math.pow(2, 31) - 1; //设置index
+    EmoticonBox.style.zIndex = maxZIndex.toString() - 1;
     EmoticonBox.className = 'PL-EmoticonBox';
     EmoticonBox.style.display = "none"
     if (!document.getElementsByClassName("PL-EmoticonBox").length) {
@@ -139,9 +141,10 @@ function mainLogic(insertContentPrompt) {
     let timerShow;
     let timerHide;
     let getStickerStatus = false;
-
+    let isShow = false;
     insertContentPrompt.addEventListener('mouseenter', () => {
         clearTimeout(timerHide); // 鼠标进入时清除隐藏的定时器
+        if (isShow) return; //防止重复触发
         timerShow = setTimeout(() => {
             showEmoticonBox();
         }, 800);
@@ -164,6 +167,7 @@ function mainLogic(insertContentPrompt) {
     });
 
     function showEmoticonBox() {
+        isShow = true;
         clearTimeout(timerHide);
         const promptRect = insertContentPrompt.getBoundingClientRect();
         const scrollY = window.scrollY || window.pageYOffset; //滚动条位置
@@ -192,27 +196,34 @@ function mainLogic(insertContentPrompt) {
             emoticonBox.style.top = `${promptRect.top + scrollY - emoticonBoxHeight - 10}px`;
         }
         emoticonBox.style.display = 'block';
-        chrome.storage.local.get(["StickerDATA", "StickerHeadSelected"], function (result) {
-            emoticonBox.style.width = "420px";
-            let StickerDATA = result.StickerDATA || []
-            let StickerHeadSelected = result.StickerHeadSelected || 0
-            if (getStickerStatus == true) {
-                getSticker(1)
-                return;
-            }
-            if (StickerDATA.length == 0) {
-                //首次加载贴纸
-                getSticker(0)
-            } else {
-                //存储里的贴纸
-                DataRendering(StickerDATA, StickerHeadSelected)
-            }
-        })
 
+        dbHelper("Sticker").then(function (result) {
+            const { db } = result;
+            db.getAll().then(Sticker => {
+                chrome.storage.local.get(["StickerHeadSelected"], function (result) {
+                    emoticonBox.style.width = "420px";
+                    let StickerDATA = Sticker || []
+                    let StickerHeadSelected = result.StickerHeadSelected || 0
+                    if (getStickerStatus == true) {
+                        getSticker(1, db)
+                        return;
+                    }
+                    if (StickerDATA.length == 0) {
+                        //首次加载贴纸
+                        getSticker(0, db)
+                    } else {
+                        //存储里的贴纸
+                        DataRendering(StickerDATA, StickerHeadSelected, db)
+                    }
+                })
+            })
+
+        });
     }
 
     // 隐藏贴纸框
     function hideEmoticonBox() {
+        isShow = false;
         emoticonBox.style.width = "0px";
         setTimeout(() => {
             emoticonBox.style.display = 'none';
@@ -223,7 +234,7 @@ function mainLogic(insertContentPrompt) {
     })
 
     // 获取网络贴纸
-    function getSticker(IsGet) {
+    function getSticker(IsGet, db) {
         chrome.storage.local.get(["StickerURL"], function (result) {
             fetch('https://cors-anywhere.pnglog.com/' + result.StickerURL)
                 .then(response => {
@@ -231,7 +242,17 @@ function mainLogic(insertContentPrompt) {
                 })
                 .then(data => {
                     if (data.sticker) {
-                        chrome.storage.local.set({ 'StickerDATA': data.sticker })
+                        data.sticker.forEach((item, index) => {
+                            if (item.id === undefined) {
+                                item.id = index;
+                            }
+                            if (item.index === undefined) {
+                                item.index = item.id || index;
+                            }
+                        });
+                        db.put(data.sticker).catch(error => {
+                            console.log(error);
+                        });
                         if (IsGet == 1) {
                             return;
                         }
@@ -316,9 +337,9 @@ function mainLogic(insertContentPrompt) {
                                     url = '[![' + sticker.StickerName + '](' + sticker.StickerURL + ')](' + sticker.StickerURL + ')'
                                     break;
                             }
-                            AutoInsertFun(url, true)
+                            AutoInsertFun(url, true);
+                            return;
                         });
-                        return
                     }
                     AutoInsertFun(sticker.StickerURL, false)
                 })

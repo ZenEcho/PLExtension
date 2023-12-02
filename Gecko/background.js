@@ -84,7 +84,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
 			const previousVersion = result.extensionVersion;
 			const currentVersion = chrome.runtime.getManifest().version;
 			if (previousVersion !== currentVersion) {
-				console.log('扩展已更新，执行命令...');
+				console.log("升级..");
 			}
 		});
 	}
@@ -215,7 +215,6 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			// 自定义上传属性
 			let optionsUrl
 			let optionHeaders
-			console.log(file);
 			/**
 			 * 上传到图床
 			 */
@@ -362,7 +361,11 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 								UploadStatus(0)
 								return;
 							}
-							imageUrl = `https://telegra.ph/` + res[0].src
+							if (result.ProgramConfiguration.options_Custom_domain_name) {
+								imageUrl = result.ProgramConfiguration.options_Custom_domain_name + res[0].src;
+							} else {
+								imageUrl = `https://telegra.ph` + res[0].src;
+							}
 							break;
 						case 'imgdd':
 							imageUrl = res.url
@@ -392,55 +395,36 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 						if (!Array.isArray(UploadLog)) {
 							UploadLog = [];
 						}
-						function generateRandomKey() {
-							return new Promise(resolve => {
-								const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-								let key = '';
-								for (let i = 0; i < 6; i++) {
-									key += characters.charAt(Math.floor(Math.random() * characters.length));
-								}
-								// 确保不会重复
-								while (UploadLog.some(log => log.id === key)) {
-									key = '';
-									for (let i = 0; i < 6; i++) {
-										key += characters.charAt(Math.floor(Math.random() * characters.length));
-									}
-								}
-								resolve(key);
-							});
+						const UploadLogData = {
+							key: crypto.randomUUID(),
+							url: imageUrl,
+							uploadExe: options_exe + "-" + MethodName,
+							upload_domain_name: options_host,
+							original_file_name: UrlImgNema,
+							file_size: file.size,
+							img_file_size: chrome.i18n.getMessage("img_file_size"),
+							uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
 						}
-						generateRandomKey().then(key => {
-							const UploadLogData = {
-								key: key,
-								url: imageUrl,
-								uploadExe: options_exe + "-" + MethodName,
-								upload_domain_name: options_host,
-								original_file_name: UrlImgNema,
-								file_size: file.size,
-								img_file_size: chrome.i18n.getMessage("img_file_size"),
-								uploadTime: getFullYear + "年" + getMonth + "月" + getDate + "日" + getHours + "时" + getMinutes + "分" + getSeconds + "秒"
+						if (typeof UploadLog !== 'object') {
+							UploadLog = JSON.parse(UploadLog);
+						}
+						UploadLog.push(UploadLogData);
+						chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
+							showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
+						})
+						callback(res, null);
+						chrome.tabs.query({ active: true }, function (tabs) {
+							let currentTabId
+							try {
+								currentTabId = tabs[0].id;
+								chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
+									if (chrome.runtime.lastError) {
+										//发送失败
+										return;
+									}
+								});
+							} catch (error) {
 							}
-							if (typeof UploadLog !== 'object') {
-								UploadLog = JSON.parse(UploadLog);
-							}
-							UploadLog.push(UploadLogData);
-							chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
-								showNotification(null, chrome.i18n.getMessage("Upload_prompt2"))
-							})
-							callback(res, null);
-							chrome.tabs.query({ active: true }, function (tabs) {
-								let currentTabId
-								try {
-									currentTabId = tabs[0].id;
-									chrome.tabs.sendMessage(currentTabId, { AutoInsert_message: imageUrl }, function (response) {
-										if (chrome.runtime.lastError) {
-											//发送失败
-											return;
-										}
-									});
-								} catch (error) {
-								}
-							});
 						});
 					});
 				})
@@ -742,7 +726,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	if (request.PLNotification) {
 		chrome.tabs.query({ active: true }, function (tabs) {
 			TabId = tabs[0].id;
-			chrome.tabs.sendMessage(TabId, { PLNotificationJS: request.Progress_bar })
+			chrome.tabs.sendMessage(TabId, { PLNotificationJS: request.PLNotification })
+		});
+	}
+	if (request.AutoInsert) {
+		chrome.tabs.query({ active: true }, function (tabs) {
+			TabId = tabs[0].id;
+			chrome.tabs.sendMessage(TabId, { AutoInsertFun: request.AutoInsert }, function (response) {
+				if (chrome.runtime.lastError) {
+					return;
+				}
+			});
 		});
 	}
 	if (request.exe_BilibliBed) {

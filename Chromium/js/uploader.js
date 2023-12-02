@@ -116,7 +116,7 @@ function popup_Uploader() {
                 Temporary_URL += "&album_id=" + ProgramConfigurations.options_album_id
             }
             if (ProgramConfigurations.options_nsfw_select) {
-                Temporary_URL += "&nsfw=" + options_nsfw_select
+                Temporary_URL += "&nsfw=" + ProgramConfigurations.options_nsfw_select
             }
             uploader.options.url = ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/api/1/upload/?key=" + ProgramConfigurations.options_token + Temporary_URL;
             uploader.options.headers = { "Authorization": ProgramConfigurations.options_token };
@@ -1433,6 +1433,7 @@ function LocalStorage(data) {
 
     let pluginPopup = chrome.runtime.getURL("popup.html");
     let currentURL = window.location.href;
+
     return new Promise((resolveC, rejectC) => {
         let filename = data.file.name || data.file.file.name;
         let imageUrl = data.url
@@ -1446,48 +1447,28 @@ function LocalStorage(data) {
             if (!Array.isArray(UploadLog)) {
                 UploadLog = [];
             }
-            function generateRandomKey() {
-                return new Promise(resolve => {
-                    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-                    let key = '';
-                    for (let i = 0; i < 6; i++) {
-                        key += characters.charAt(Math.floor(Math.random() * characters.length));
-                    }
-                    // 确保不会重复
-                    while (UploadLog.some(log => log.id === key)) {
-                        key = '';
-                        for (let i = 0; i < 6; i++) {
-                            key += characters.charAt(Math.floor(Math.random() * characters.length));
-                        }
-                    }
-                    resolve(key);
-                });
+            let d = new Date();
+            let UploadLogData = {
+                key: crypto.randomUUID(),
+                url: imageUrl,
+                uploadExe: ProgramConfigurations.options_exe + "-" + MethodName,
+                upload_domain_name: uploadDomainName,
+                original_file_name: filename,
+                file_size: data.file.file.size,
+                img_file_size: "宽:不支持,高:不支持",
+                uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
             }
-            generateRandomKey().then(key => {
-                let d = new Date();
-                let UploadLogData = {
-                    key: key,
-                    url: imageUrl,
-                    uploadExe: ProgramConfigurations.options_exe + "-" + MethodName,
-                    upload_domain_name: uploadDomainName,
-                    original_file_name: filename,
-                    file_size: data.file.file.size,
-                    img_file_size: "宽:不支持,高:不支持",
-                    uploadTime: d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日" + d.getHours() + "时" + d.getMinutes() + "分" + d.getSeconds() + "秒"
+            if (typeof UploadLog !== 'object') {
+                UploadLog = JSON.parse(UploadLog);
+            }
+            UploadLog.push(UploadLogData);
+            chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
+                if (window.location.href.startsWith('http')) {
+                    chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt2") });
+                    AutoInsertFun(imageUrl, false)
                 }
-                if (typeof UploadLog !== 'object') {
-                    UploadLog = JSON.parse(UploadLog);
-                }
-                UploadLog.push(UploadLogData);
-                chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
-                    if (window.location.href.startsWith('http')) {
-                        chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt2") });
-                        AutoInsertFun(imageUrl, false)
-                    }
-                    resolveC(true);
-                })
-            });
+                resolveC(true);
+            })
         });
     });
-
 }

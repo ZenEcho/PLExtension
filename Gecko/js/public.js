@@ -356,26 +356,26 @@ var fileTypeMap = {
   '.nef': 'nef',
   '.dng': 'dng',
   //office后缀
-  '.doc': 'Word',
-  '.docx': 'Word',
-  '.docm': 'Word',
-  '.dotx': 'Word',
-  '.dotm': 'Word',
-  '.xls': 'Excel',
-  '.xlsx': 'Excel',
-  '.xlsm': 'Excel',
-  '.xltx': 'Excel',
-  '.xltm': 'Excel',
-  '.xlsb': 'Excel',
-  '.xlam': 'Excel',
-  '.ppt': 'PowerPoint',
-  '.pptx': 'PowerPoint',
-  '.pptm': 'PowerPoint',
-  '.ppsx': 'PowerPoint',
-  '.ppsm': 'PowerPoint',
-  '.potx': 'PowerPoint',
-  '.potm': 'PowerPoint',
-  '.ppam': 'PowerPoint',
+  '.doc': 'word',
+  '.docx': 'word',
+  '.docm': 'word',
+  '.dotx': 'word',
+  '.dotm': 'word',
+  '.xls': 'excel',
+  '.xlsx': 'excel',
+  '.xlsm': 'excel',
+  '.xltx': 'excel',
+  '.xltm': 'excel',
+  '.xlsb': 'excel',
+  '.xlam': 'excel',
+  '.ppt': 'powerPoint',
+  '.pptx': 'powerPoint',
+  '.pptm': 'powerPoint',
+  '.ppsx': 'powerPoint',
+  '.ppsm': 'powerPoint',
+  '.potx': 'powerPoint',
+  '.potm': 'powerPoint',
+  '.ppam': 'powerPoint',
   //adobe
   '.ai': 'ai',
   '.pdf': 'Acrobat',
@@ -641,42 +641,81 @@ function extensionVersion() {
     FuncDomain = result.FuncDomain || {};
     const previousVersion = result.extensionVersion;
     const currentVersion = chrome.runtime.getManifest().version;
-    if (previousVersion !== currentVersion) {
-      chrome.storage.local.set({ extensionVersion: currentVersion });
-      chrome.storage.local.get(null, function (result) {
-        const programConfig = result || {};
-        if (!result.ProgramConfiguration) {
-          PLNotification({
-            title: "盘络上传：",
-            type: "warning",
-            content: currentVersion + `版本出现了破坏性修改,正在尝试自动恢复(依然可能会丢失)。`,
-            duration: 0,
-            saved: true,
-          });
-          for (const key in ProgramConfigurations) {
-            if (programConfig.hasOwnProperty(key)) {
-              ProgramConfigurations[key] = programConfig[key];
-            }
-          }
 
-          chrome.storage.local.set({ ProgramConfiguration: ProgramConfigurations }, () => {
-            setTimeout(function () {
+    async function updateConfiguration(previousVersion, currentVersion) {
+      if (previousVersion !== currentVersion) {
+        // 获取并更新程序配置
+        await new Promise((resolve, reject) => {
+          chrome.storage.local.get(null, function (result) {
+            const programConfig = result || {};
+            if (!result.ProgramConfiguration) {
               PLNotification({
                 title: "盘络上传：",
-                type: "success",
-                content: `图床配置恢复完成,请查看是否可以正常上传。`,
+                type: "warning",
+                content: currentVersion + `版本出现了破坏性修改,正在尝试自动恢复(依然可能会丢失)。`,
                 duration: 0,
                 saved: true,
               });
-            }, 1000);
+              for (const key in ProgramConfigurations) {
+                if (programConfig.hasOwnProperty(key)) {
+                  ProgramConfigurations[key] = programConfig[key];
+                }
+              }
+
+              chrome.storage.local.set({ ProgramConfiguration: ProgramConfigurations }, () => {
+                setTimeout(function () {
+                  PLNotification({
+                    title: "盘络上传：",
+                    type: "success",
+                    content: `图床配置恢复完成,请查看是否可以正常上传。`,
+                    duration: 0,
+                    saved: true,
+                  });
+                }, 1000);
+                resolve();
+              });
+
+            } else {
+              resolve(); // 如果不需要设置也要继续
+            }
           });
+        });
 
-        }
+        // 获取并更新 BedConfig
+        await new Promise((resolve, reject) => {
+          chrome.storage.sync.get(["BedConfig"], function (result) {
+            if (!result.BedConfig) resolve();
+            const newArray = result.BedConfig.map(item => {
+              if (!item.data) {
+                return {
+                  id: crypto.randomUUID(),
+                  data: item,
+                  ConfigName: item.ConfigName || chrome.i18n.getMessage("Config"),
+                };
+              } else {
+                return { ...item, id: crypto.randomUUID() };
+              }
+            });
+            dbHelper("BedConfigStore").then(result => {
+              const { db } = result;
+              db.put(newArray).then(() => {
+                chrome.storage.sync.remove("BedConfig");
+                resolve();
+              });
+            });
+          })
+        });
 
-      });
-      chrome.storage.local.set({ extensionVersion: currentVersion });
-
+        // 最后设置版本号
+        await new Promise((resolve, reject) => {
+          chrome.storage.local.set({ extensionVersion: currentVersion }, () => {
+            resolve()
+            window.location.reload();
+          });
+        });
+      }
     }
+    updateConfiguration(previousVersion, currentVersion);
 
     const Defaults = {
       "uploadArea": {
@@ -696,9 +735,7 @@ function extensionVersion() {
         "EditPasteUpload": "off"
       },
     };
-
     updateMissingProperties(Defaults);
-
     function updateMissingProperties(defaults) {
       const missingProps = {};
       const newUploadArea = {};
@@ -776,12 +813,8 @@ async function storProgramConfiguration(data) {
           const existingData = result.ProgramConfiguration || {};
           const updatedData = { ...existingData, ...data };
           PCLocalStorage.set({ "ProgramConfiguration": updatedData }, function () {
-            if (chrome.runtime.lastError) {
-              alert("保存数据失败: " + chrome.runtime.lastError);
-              reject(false);
-            } else {
-              resolve(true);
-            }
+            resolve(true);
+            localStorage.options_webtitle_status = 1
           });
         }
       });
@@ -793,9 +826,6 @@ async function storProgramConfiguration(data) {
 }
 
 function replaceKeywordsInText(text, keywords, replacements) {
-  console.log(text);
-  console.log(keywords);
-  console.log(replacements);
   if (keywords.length != replacements.length) {
     return text;
   }
