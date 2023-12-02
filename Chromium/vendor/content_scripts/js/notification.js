@@ -10,7 +10,7 @@ const notifications = [];
 function PLNotification(config) {
     const defaultConfig = {
         type: 'info',  // 默认类型为信息通知
-        title: '盘络上传:', // 默认标题为通知
+        title: chrome.i18n.getMessage("app_name") + ':', // 默认标题为通知
         content: 'No Data',   // 默认内容为空
         duration: 10,   // 默认持续时间为10秒
         style: "",// content的行内样式
@@ -103,7 +103,7 @@ function PLNotification(config) {
                 const close = () => closeNotification(notification, config);
                 if (typeof btnConfig.init === 'function') {
                     btnConfig.init.call(button, close);
-                } 
+                }
                 buttonsContainer.appendChild(button);
             });
         }
@@ -211,7 +211,7 @@ function closeNotification(notification, config) {
     }, 300);
 }
 function reduceNotification(notification) {
-    notification.style.minWidth === '100px' ? notification.style.minWidth = '200px' : notification.style.minWidth = '100px';
+    notification.style.minWidth === '0px' ? notification.style.minWidth = '200px' : notification.style.minWidth = '0px';
     notification.querySelector('.reduce').textContent === ">" ? notification.querySelector('.reduce').textContent = "<" : notification.querySelector('.reduce').textContent = ">";
     let children = notification.querySelectorAll('*');
     // 遍历每个子元素并添加类

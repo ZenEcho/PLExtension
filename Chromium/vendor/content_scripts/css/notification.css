@@ -102,7 +102,8 @@
 }
 
 .notification .reduceActive {
-    width: 100px;
+    width: 0px;
+    height: 0px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

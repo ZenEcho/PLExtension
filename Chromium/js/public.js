@@ -69,7 +69,7 @@ function createAlertBox(options) {
  */
 function toastItem(options) {
   options = Object.assign({
-    toast_title: "盘络程序",
+    toast_title: chrome.i18n.getMessage("app_name"),
     toast_content: "你好世界",
     toast_DestroyTime: '8000'
   }, options);
@@ -650,7 +650,7 @@ function extensionVersion() {
             const programConfig = result || {};
             if (!result.ProgramConfiguration) {
               PLNotification({
-                title: "盘络上传：",
+                title: chrome.i18n.getMessage("app_name") + "：",
                 type: "warning",
                 content: currentVersion + `版本出现了破坏性修改,正在尝试自动恢复(依然可能会丢失)。`,
                 duration: 0,
@@ -665,7 +665,7 @@ function extensionVersion() {
               chrome.storage.local.set({ ProgramConfiguration: ProgramConfigurations }, () => {
                 setTimeout(function () {
                   PLNotification({
-                    title: "盘络上传：",
+                    title: chrome.i18n.getMessage("app_name") + "：",
                     type: "success",
                     content: `图床配置恢复完成,请查看是否可以正常上传。`,
                     duration: 0,
@@ -762,7 +762,7 @@ function extensionVersion() {
       }
       if (Object.keys(missingProps).length > 0) {
         setTimeout(function () {
-          alert(`盘络上传:属性缺失：\n${Object.keys(missingProps).join('\n')}\n请刷新页面将自动恢复默认值`);
+          alert(`${chrome.i18n.getMessage("app_name")}:属性缺失：\n${Object.keys(missingProps).join('\n')}\n请刷新页面将自动恢复默认值`);
         }, 1500);
       }
     }
