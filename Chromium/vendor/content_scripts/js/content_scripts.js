@@ -782,12 +782,11 @@ const dataWithFunctions = {
                 // 在 #myDataGrid 中查找所有符合条件的 <a> 标签
                 const links = myDataGrid.querySelectorAll('a[href*="admin.inc.php?delDir"]');
                 // 为每个找到的 <a> 标签添加一个新元素
-                links.forEach(link => {
+                links.forEach((link, index) => {
                     const newElement = document.createElement('div');
                     newElement.textContent = '添加到' + chrome.i18n.getMessage("app_name");
                     newElement.classList = "btn btn-mini btn-primary"
                     link.parentNode.insertBefore(newElement, link.nextSibling);
-
                     newElement.addEventListener('click', function () {
                         let token = this.parentNode.parentNode.querySelector('div input').value
                         let data = {
@@ -800,6 +799,7 @@ const dataWithFunctions = {
                         }
                         window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
                     });
+                    link.remove()
                 });
             }
         }
