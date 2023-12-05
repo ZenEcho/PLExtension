@@ -1,6 +1,6 @@
 // 拥有完整dom权限
 window.addEventListener('message', function (event) {
-    console.log("盘络上传postMessage监听: ", event.data);
+    console.log("postMessage监听: ", event.data);
     if (event.data.type === 'CodeMirror5') {
         let editorElement = document.querySelector(".CodeMirror");
         if (editorElement) {
@@ -142,7 +142,7 @@ function insertImageDiv(element, link, CssName) {
     element.appendChild(imgDiv);
     imgElement.onload = function () {
         imgDiv.className = `position-relative PL-ImgMark`;
-        imgElement.alt = "盘络转换";
+        imgElement.alt = "转换";
         imgElement.title = link;
 
         if (!CssName) {
@@ -161,7 +161,7 @@ function insertImageDiv(element, link, CssName) {
 function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
-    item.innerText = "😍盘络"
+    item.innerText = "😍上传扩展"
     item.addEventListener('click', function () {
         window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
     });
@@ -169,7 +169,7 @@ function FullDomAutoInsert() {
     const detectedEncoding = detectEncoding();
     if (detectedEncoding !== 'utf-8') {
         // 不是utf-8
-        item.innerText = "PL-Upload"
+        item.innerText = "Upload"
     }
 
     let success = false;
@@ -305,7 +305,7 @@ function FullDomAutoInsert() {
             }
         }
         if (pageText.toLowerCase().includes("回复") || pageText.toLowerCase().includes("楼主")) {
-            item.innerText = "😭盘络"
+            item.innerText = "😭上传扩展"
         }
     }
     //hostevaluate

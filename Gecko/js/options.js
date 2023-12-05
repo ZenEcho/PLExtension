@@ -1522,22 +1522,28 @@ $(document).ready(function () {
           })
           .then(res => {
             let strategies = res.data.strategies;
-            $("#options_source_select").empty();
-            strategies.forEach(function (e, index) {
-              $("#options_source_select").append(
-                `<option value="` + e.id + `">` + e.name + `</option>`
-              );
-            });
-            chrome.storage.local.get('options_source_select', function (data) {
-              let selectedValue = data.options_source_select;
-              let option = $('#options_source_select option[value=' + selectedValue + ']');
-              if (option.length) {
-                $('#options_source_select').val(selectedValue);
+            if (strategies.length > 0) {
+              $("#options_source_select").empty();
+              strategies.forEach(function (e, index) {
+                $("#options_source_select").append(
+                  `<option value="` + e.id + `">` + e.name + `</option>`
+                );
+              });
+              if (ProgramConfigurations.options_source_select) {
+                $('#options_source_select').val(ProgramConfigurations.options_source_select);
               } else {
                 $('#options_source_select option:first').prop('selected', true);
                 storProgramConfiguration({ 'options_source_select': $("#options_source_select").val() })
               }
-            });
+            } else {
+              let source = $("#options_source_select").parent()
+              $("#options_source_select").remove()
+              source.append(
+                `<input type="text" class="form-control box-shadow " id="options_source_select" placeholder="输入源ID">`
+              );
+              $("#options_source_select").val(ProgramConfigurations.options_source_select);
+            }
+
           })
           .catch(error => {
             $("#options_source_select").append(

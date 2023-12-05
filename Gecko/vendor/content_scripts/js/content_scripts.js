@@ -440,7 +440,7 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         if (event.data.type === 'Extension') {
             let extensionInfo = {
-                name: "盘络上传",
+                name: chrome.i18n.getMessage("app_name"),
                 projectName: chrome.runtime.getManifest().name,
                 version: chrome.runtime.getManifest().version
             };
@@ -593,11 +593,11 @@ const dataWithFunctions = {
                 PLNotification({
                     title: "发现：兰空图床",
                     type: "警告",
-                    content: `点击【创建 Token】按钮，在【创建成功】页点击【添加到盘络】按钮，可加载到盘络扩展。`,
+                    content: `点击【创建 Token】按钮，在【创建成功】页点击【添加到` + chrome.i18n.getMessage("app_name") + `】按钮，可加载到` + chrome.i18n.getMessage("app_name") + `扩展。`,
                     duration: 0,
                     button: [
                         {
-                            text: "添加到盘络",
+                            text: "添加到" + chrome.i18n.getMessage("app_name"),
                             style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
                             init: function () {
                                 this.addEventListener("click", function () {
@@ -638,6 +638,120 @@ const dataWithFunctions = {
 
         }
     },
+    "lskyOpen": {
+        "url": "/dashboard",
+        "element": "#capacity-progress",
+        "function": function () {
+            function checkContentInFirstDiv(element) {
+                // 获取当前元素的父元素
+                let parent = element.parentElement;
+
+                // 在父元素中查找第一个 div
+                let firstDiv = parent.querySelector('div');
+                if (firstDiv) {
+                    return firstDiv.textContent.includes('仪表盘') && firstDiv.textContent.includes('上传图片') && firstDiv.textContent.includes('画廊') && firstDiv.textContent.includes('接口');
+                }
+
+                return false;
+            }
+            let isLsky = checkContentInFirstDiv(document.querySelector("#capacity-progress"))
+            if (isLsky) {
+                let pathname = localStorage.getItem(getCurrentDomain())
+                if (pathname !== "true") {
+                    PLNotification({
+                        title: `发现：` + chrome.i18n.getMessage("app_name") + `可配置图床`,
+                        type: "警告",
+                        content: `
+                        <div style=" margin: 0 0 10px 0; ">
+                            <label for="email">邮箱:</label>
+                            <input type="text" id="email" name="email" style=" height: 30px; ">
+                        </div>
+                        <div style=" margin: 0 0 10px 0; ">
+                            <label for="password">密码:</label>
+                            <input type="password" id="password" name="password" style=" height: 30px; ">
+                        </div>
+                        填入邮箱和密码后，点击【添加到` + chrome.i18n.getMessage("app_name") + `】按钮，可一键配置扩展`,
+                        duration: 0,
+                        button: [
+                            {
+                                text: "添加到" + chrome.i18n.getMessage("app_name"),
+                                style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                                init: function () {
+                                    let button = this
+                                    this.addEventListener("click", function () {
+                                        let email = document.querySelector(".notification-content #email").value
+                                        let password = document.querySelector(".notification-content #password").value
+                                        let Body = new FormData();
+                                        Body.append("email", email);
+                                        Body.append("password", password);
+                                        fetch(window.location.origin + "/api/v1/tokens", {
+                                            "headers": {
+                                                "Accept": "application/json",
+                                            },
+                                            "body": Body,
+                                            "method": "POST",
+                                        }).then(response => response.json())
+                                            .then((data) => {
+                                                console.log(data);
+                                                if (data.data) {
+                                                    let config = {
+                                                        "data": {
+                                                            "options_album_id": "",
+                                                            "options_exe": "Lsky",
+                                                            "options_host": getCurrentDomain(),
+                                                            "options_permission_select": "0",
+                                                            "options_source_select": "1",
+                                                            "options_token": "Bearer " + data.data.token
+                                                        },
+                                                        "ConfigName": window.location.hostname + chrome.i18n.getMessage("Config")
+                                                    }
+                                                    window.postMessage({ type: 'loadExternalConfig', data: config }, "*");
+                                                    button.disabled = true
+                                                } else {
+                                                    console.log(data);
+                                                    PLNotification({
+                                                        title: "添加失败",
+                                                        type: "error",
+                                                        content: "详细报错请打开,开发者控制台(F12)查看",
+                                                        duration: 15,
+                                                    });
+                                                }
+
+                                            })
+                                            .catch((error) => {
+                                                console.error('Error:', error)
+                                                PLNotification({
+                                                    title: "添加失败",
+                                                    type: "error",
+                                                    content: "详细报错请打开,开发者控制台(F12)查看",
+                                                    duration: 15,
+                                                });
+                                            });
+
+
+
+
+                                    });
+                                }
+                            },
+                            {
+                                text: "本站不再提示",
+                                style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                                init: function (close) {
+                                    this.addEventListener("click", function () {
+                                        localStorage.setItem(getCurrentDomain(), "true");
+                                        close();
+                                    });
+                                }
+                            }
+                        ]
+                    });
+                }
+            }
+
+
+        }
+    },
     "EasyImage": {
         "url": "/admin/admin.inc.php",
         "element": "#myDataGrid", // 假设这是一个类选择器
@@ -647,7 +761,7 @@ const dataWithFunctions = {
                 PLNotification({
                     title: "发现：简单图床",
                     type: "success",
-                    content: `在【API 设置】页刷新,可加载【添加到盘络】按钮。`,
+                    content: `在【API 设置】页刷新,可加载【添加到` + chrome.i18n.getMessage("app_name") + `】按钮。`,
                     duration: 0,
                     button: [
                         {
@@ -668,12 +782,11 @@ const dataWithFunctions = {
                 // 在 #myDataGrid 中查找所有符合条件的 <a> 标签
                 const links = myDataGrid.querySelectorAll('a[href*="admin.inc.php?delDir"]');
                 // 为每个找到的 <a> 标签添加一个新元素
-                links.forEach(link => {
+                links.forEach((link, index) => {
                     const newElement = document.createElement('div');
-                    newElement.textContent = '添加到盘络';
+                    newElement.textContent = '添加到' + chrome.i18n.getMessage("app_name");
                     newElement.classList = "btn btn-mini btn-primary"
                     link.parentNode.insertBefore(newElement, link.nextSibling);
-
                     newElement.addEventListener('click', function () {
                         let token = this.parentNode.parentNode.querySelector('div input').value
                         let data = {
@@ -686,6 +799,7 @@ const dataWithFunctions = {
                         }
                         window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
                     });
+                    link.remove()
                 });
             }
         }
@@ -699,11 +813,11 @@ const dataWithFunctions = {
                 PLNotification({
                     title: "发现：Chevereto图床",
                     type: "警告",
-                    content: `点击【重新生成密钥】按钮，创建成功后点击【添加到盘络】按钮，可加载到盘络扩展。`,
+                    content: `点击【重新生成密钥】按钮，创建成功后点击【添加到` + chrome.i18n.getMessage("app_name") + `】按钮，可加载【添加到` + chrome.i18n.getMessage("app_name") + `】按钮。`,
                     duration: 0,
                     button: [
                         {
-                            text: "添加到盘络",
+                            text: "添加到" + chrome.i18n.getMessage("app_name"),
                             style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
                             init: function () {
                                 this.addEventListener("click", function () {
@@ -784,7 +898,7 @@ function checkForInvalidatedContext() {
     } catch (error) {
         if (error.message.includes("Extension context invalidated.")) {
             if (isError === 0) {
-                if (confirm(`检测到盘络上传扩展被重启，是否重新加载当前页？`)) {
+                if (confirm(`检测到扩展被重启，是否重新加载当前页？`)) {
                     window.location.reload();
                 }
             }

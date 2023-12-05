@@ -917,7 +917,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 if (ProgramConfigurations.Keyword_replacement1.length != ProgramConfigurations.Keyword_replacement2.length) {
                     alert("关键词和替换词的数量不一致");
                     PLNotification({
-                        title: "盘络上传：",
+                        title: chrome.i18n.getMessage("app_name") + "：",
                         type: "error",
                         content: `关键词和替换词的数量不一致!`,
                         duration: 0,
@@ -934,7 +934,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 } catch (error) {
                     alert(chrome.i18n.getMessage("Headers_error"));
                     PLNotification({
-                        title: "盘络上传：",
+                        title: chrome.i18n.getMessage("app_name") + "：",
                         type: "error",
                         content: chrome.i18n.getMessage("Headers_error"),
                         duration: 0,
@@ -952,7 +952,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     console.log(error);
                     alert(chrome.i18n.getMessage("Body_error"));
                     PLNotification({
-                        title: "盘络上传：",
+                        title: chrome.i18n.getMessage("app_name")+"：",
                         type: "error",
                         content: chrome.i18n.getMessage("Body_error"),
                         duration: 0,
