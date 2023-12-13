@@ -69,7 +69,7 @@ $(document).ready(function () {
       let labelElement = `<label for="${inputId || selectId || textareaId}" class="${labelClass}">${labelValue}</label>`;
 
       // 构建 input 元素
-      let inputElement = `<input type="${inputType}" class="form-control box-shadow ${inputClass}" id="${inputId}" placeholder="${placeholderKey}"`;
+      let inputElement = `<input type="${inputType}" class="box-shadow ${inputClass}" id="${inputId}" placeholder="${placeholderKey}"`;
       // 添加 required 属性
       if (required) {
         inputElement += " required";
@@ -97,7 +97,7 @@ $(document).ready(function () {
       let textareaElement = `
       <div class="form-floating">
         <textarea  class="form-control box-shadow ${textareaClass}" id="${textareaId}"></textarea>
-        <label for="floatingTextarea">${textareaLabelText}</label>
+        <label  class="textarea-label">${textareaLabelText}</label>
       </div>
       `
 
@@ -354,8 +354,8 @@ $(document).ready(function () {
         },
         additionalElement: [
           `
-          <div>
-          <label for="requestMethod" style=" font-size: 18px; font-weight: bold; margin-bottom: 20px;"><span class="required-marker"> *</span>`+ chrome.i18n.getMessage("Request_method") + `：</label>
+          <div class="form-group" style=" display: flex; align-items: center; ">
+          <label for="requestMethod"><span class="required-marker"> *</span>`+ chrome.i18n.getMessage("Request_method") + `：</label>
           <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="requestMethod" id="requestMethod_POST" value="POST" checked>
               <label class="form-check-label" for="requestMethod_POST">POST</label>
@@ -397,11 +397,11 @@ $(document).ready(function () {
           `<div class="form-group" style=" display: flex; ">
             <div style=" width: 100%; ">
               <label for="custom_ReturnPrefix">`+ chrome.i18n.getMessage("custom_ReturnPrefix") + `</label>
-              <input type="text" class="form-control box-shadow " id="custom_ReturnPrefix" placeholder="如:https://www.google.com/">
+              <input type="text" class=" box-shadow " id="custom_ReturnPrefix" placeholder="如:https://www.google.com/">
             </div>
             <div style=" width: 100%; ">
               <label for="custom_ReturnAppend" >`+ chrome.i18n.getMessage("custom_ReturnAppend") + `</label>
-              <input type="text" class="form-control box-shadow " id="custom_ReturnAppend" placeholder="如:.png">
+              <input type="text" class=" box-shadow " id="custom_ReturnAppend" placeholder="如:.png">
             </div>
           </div>`
         ],
@@ -411,11 +411,11 @@ $(document).ready(function () {
           `<div class="form-group" style=" display: flex;">
             <div style=" width: 100%; ">
               <label for="Keyword_replacement1">关键词<p>(开启“关键词替换”后生效)</p></label>
-              <input type="text" class="form-control box-shadow " id="Keyword_replacement1" placeholder="多个关键词使用,分割">
+              <input type="text" class=" box-shadow " id="Keyword_replacement1" placeholder="多个关键词使用,分割">
             </div>
             <div style=" width: 100%; ">
               <label for="Keyword_replacement2">替换为<p>(否则输入无效)</p></label>
-              <input type="text" class="form-control box-shadow " id="Keyword_replacement2" placeholder="必须与关键词数量一致">
+              <input type="text" class=" box-shadow " id="Keyword_replacement2" placeholder="必须与关键词数量一致">
             </div>
           </div>`
         ],
@@ -805,7 +805,8 @@ $(document).ready(function () {
         additionalElement: [
           `<div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">百家号接口</h4>
-            <p>使用,请保持百度登录</p>
+            <p>使用接口,请维持<a href="https://baijiahao.baidu.com/">百家号</a>登录状态</p>
+            <p>注意：当你使用百家号接口时,程序会基于浏览器的API调用你的百家号cookie,但不会保存cookie(<a href="https://github.com/ZenEcho/PLExtension/blob/cc90896276ddd43eef089a9ec091f52a771b4c68/Chromium/js/uploader.js#L661">证明代码</a>)，介意者勿用。</p>
             <hr>
             <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
           </div>`
@@ -872,7 +873,7 @@ $(document).ready(function () {
     <div class="form-group CorsForm">
       <label for="options_proxy_server" class="options_proxy_server">` + chrome.i18n.getMessage("options_proxy_server") + `
       </label>
-      <input type="url" class="form-control box-shadow" id="options_proxy_server" placeholder="` + chrome.i18n.getMessage("options_proxy_server_placeholder") + `" />
+      <input type="url" class=" box-shadow" id="options_proxy_server" placeholder="` + chrome.i18n.getMessage("options_proxy_server_placeholder") + `" />
     </div>`
 
     const cos_cors = `
@@ -1160,6 +1161,29 @@ $(document).ready(function () {
               browser.runtime.openOptionsPage();
             })
           }
+          setTimeout(() => {
+            introJs().setOptions({
+              steps: [
+                {
+                  element: document.querySelector('#options_exe .option-Buttons'),
+                  intro: "你需要配置【图床】,才能使用哦!",
+                },
+                {
+                  element: document.querySelector('#options_exe .add-button'),
+                  intro: "点击这里可以添加更多【图床】",
+                },
+                {
+                  element: document.querySelector('.Config-Box-Log.Config-Bottom-Boxs .Config-Box-Log-footer'),
+                  intro: "如果你有配置信息,可以在此处导入",
+                },
+              ],
+              nextLabel: ' >',
+              prevLabel: '< ',
+              doneLabel: '好的',
+              showBullets: false,
+            }).start();
+          }, 1000);
+
         },
       },
     };
@@ -1169,25 +1193,18 @@ $(document).ready(function () {
       $('.options-form').empty().append(prog.html);
       $("#Object_Storage_cors").remove()
       $("#putBucketACL").remove()
-      $("#options_exe button").removeClass('active');
+      $("#options_exe .option-Buttons button").removeClass('active');
       prog.init();
-      $(`#options_exe button[value=${programId}]`).addClass("active");
+      $(`#options_exe .option-Buttons button[value=${programId}]`).addClass("active");
       $('#options-form').hide().slideDown('slow');
       $(".options-form input[name='requestMethod'][value='" + ProgramConfigurations.requestMethod + "']").prop('checked', true);
       $('textarea').on('input', function () {
         this.style.height = (this.scrollHeight) + 'px'; // 根据内容的滚动高度来设置文本域的高度
       });
-      $('textarea').each(function () {
-        this.style.height = (this.scrollHeight) + 'px';
+      
+      $("#options_Headers, #options_Body").change(function () {
+        validateAndSetBoxShadow(this); 
       });
-
-      $("input[required]").each(function () {
-        // 获取对应的 label 元素
-        let label = $("label[for='" + $(this).attr("id") + "']");
-        // 在 label 元素的文本之前添加星号
-        label.prepend("<span class='required-marker'> *</span>");
-      });
-
       if (prog.config) {
         chrome.storage.local.get(['ProgramConfiguration'], function (result) {
           const programConfiguration = result.ProgramConfiguration || {};
@@ -1196,10 +1213,11 @@ $(document).ready(function () {
               $(`#${key}`).val(programConfiguration[key]);
             }
           }
-
+          $('textarea').each(function () {
+            this.style.height = (this.scrollHeight) + 'px';
+          });
         });
       }
-
       // 判断 CORS 开关
       chrome.storage.local.get(["ProgramConfiguration"], function (result) {
         if (ProgramConfigurations.options_proxy_server_state === 1) {
@@ -1208,12 +1226,75 @@ $(document).ready(function () {
       });
 
     }
-    initializeProgramOptions(ProgramConfigurations.options_exe)
-    $(`#options_exe button[value=${ProgramConfigurations.options_exe}] span`).addClass("selected");
-    // 按钮点击事件委托
-    $('#options_exe button').on('click', function () {
-      const progId = $(this).attr("id").replace("exe_", "");
-      initializeProgramOptions(progId);
+    function validateAndSetBoxShadow(selector) {
+      let content = $(selector).val();
+
+      try {
+        JSON.parse(content);
+        $(selector).css('box-shadow', 'none');
+      } catch (error) {
+        $(selector).css('box-shadow', '#dc3545a3 0 0 0 0.25em');
+      }
+    }
+
+    dbHelper("exeButtons").then(result => {
+      // 处理获取到的配置数据
+      const { db } = result;
+      db.getSortedByIndex().then(exeButtons => {
+        if (exeButtons.length > 0) {
+          $.each(exeButtons, function (index, buttonInfo) {
+            $('#options_exe .option-Buttons').append(createImageHostingButton(buttonInfo));
+          });
+          animation_button2('.Animation_button2').then(function () {
+            overlayElement.remove()
+          });
+          i18n();
+          initializeProgramOptions(ProgramConfigurations.options_exe)
+          $(`#options_exe .option-Buttons button[value=${ProgramConfigurations.options_exe}] span`).addClass("selected");
+          // 按钮点击事件委托
+          $('#options_exe .option-Buttons button').on('click', function () {
+            const progId = $(this).attr("id").replace("exe_", "");
+            initializeProgramOptions(progId);
+          });
+        } else {
+          loadButtonModule()
+          // 延迟1秒钟
+          setTimeout(() => {
+            introJs().setOptions({
+              steps: [
+                {
+                  element: document.querySelector('.overlay .content'),
+                  intro: "欢迎使用：" + chrome.i18n.getMessage("app_name"),
+
+                },
+                {
+                  element: document.querySelector('.content .cards'),
+                  intro: "1.这里选择你要配置的【图床】<br>2.滚轮向下滚动可以显示更多",
+                },
+                {
+                  element: document.querySelector('.welcomeContentButton .button-borders'),
+                  intro: "选好【图床】后,点击此处完成",
+                },
+                {
+                  element: document.querySelector('.welcomeContentButton .buttonModuleSelect'),
+                  intro: "点击这里全选【图床】,再次点击取消",
+                }
+              ],
+              // showButtons: false,
+              showBullets: false,
+              nextLabel: ' >',
+              prevLabel: '< ',
+              doneLabel: '好的'
+            }).start();
+          }, 100);
+        }
+      })
+
+    }).catch(error => {
+      console.error("Error opening database:", error);
+    });
+    $(".add-button").click(function () {
+      loadButtonModule()
     });
     function setBucketCors() {
       $("#Object_Storage_cors").click(function () {
@@ -1539,7 +1620,7 @@ $(document).ready(function () {
               let source = $("#options_source_select").parent()
               $("#options_source_select").remove()
               source.append(
-                `<input type="text" class="form-control box-shadow " id="options_source_select" placeholder="输入源ID">`
+                `<input type="text" class=" box-shadow " id="options_source_select" placeholder="输入源ID">`
               );
               $("#options_source_select").val(ProgramConfigurations.options_source_select);
             }
@@ -1641,7 +1722,7 @@ $(document).ready(function () {
       SaveFunction()
     });
     function SaveFunction() {
-      let optionsExe = $("#options_exe button.active");
+      let optionsExe = $("#options_exe .option-Buttons button.active");
       if (optionsExe.length) {
         let proxyServer = $('#options_proxy_server');
         let FormData = new Object;
@@ -1791,11 +1872,9 @@ $(document).ready(function () {
 
     //延迟1秒
 
-
     function generateUniqueId() {
       return crypto.randomUUID();
     }
-
     function isSameData(data1, data2) {
       //非常重要，判断是否相同
       const excludedProps = ['ConfigName'];
@@ -1890,18 +1969,14 @@ $(document).ready(function () {
       // 为加载按钮添加点击事件处理程序
       addBtn.click(function () {
         $(this).prop('disabled', true);
-        storProgramConfiguration(data.data)
-          .then(() => {
-            toastItem({
-              toast_content: chrome.i18n.getMessage("Load") + chrome.i18n.getMessage("successful")
-            });
-            setTimeout(function () {
-              window.location.reload();
-            }, 1000); // 延迟
-          })
-          .catch((error) => {
-            console.log(error);
+        storExeButtons(data).then(result => {
+          toastItem({
+            toast_content: chrome.i18n.getMessage("Load") + chrome.i18n.getMessage("successful")
           });
+          setTimeout(function () {
+            window.location.reload();
+          }, 1000); // 延迟
+        })
       });
 
       // 为分享按钮添加点击事件处理程序
@@ -1946,20 +2021,38 @@ $(document).ready(function () {
 
       // 为配置项名称添加双击事件处理程序
       nameSpan.dblclick(function () {
-        const oldValue = $(this).data("old-value");
-        const newValue = prompt(chrome.i18n.getMessage("EnterConfigurationName") + ":", oldValue);
-        if (newValue !== null && newValue !== "") {
-          $(this).text(newValue);
-          $(this).data("old-value", newValue);
-          data.ConfigName = newValue;
-          db.put(data).then(() => {
-            toastItem({
-              toast_content: chrome.i18n.getMessage("Save") + chrome.i18n.getMessage("successful")
-            });
-          });
-        }
+        const span = $(this);
+        const oldValue = span.attr("data-old-value");
+        span.parent().parent().attr("draggable", false);
+        const input = $('<input>', {
+          type: 'text',
+          value: oldValue,
+          'class': 'edit-input',
+          blur: function () {
+            const newValue = $(this).val();
+            if (newValue !== null && newValue !== "" && newValue != oldValue) {
+              span.text(newValue);
+              span.attr("data-old-value", newValue);
+              data.ConfigName = newValue;
+              db.put(data);
+            } else {
+              span.text(oldValue);
+              span.attr("data-old-value", oldValue);
+              $(this).remove();
+            }
+            span.parent().parent().attr("draggable", true);
+          },
+          keyup: function (e) {
+            if (e.which === 13) {
+              $(this).blur();
+            }
+          }
+        });
+        $(this).html(input);
+        input.focus().select();
       });
     }
+
     /**
      * 分享按钮方法
      */
@@ -2017,16 +2110,15 @@ $(document).ready(function () {
             }
             resolve(newArray)
             if (newArray.length === 1) {
-              storProgramConfiguration(newArray[0].data)
-                .then(() => {
-                  toastItem({
-                    toast_content: chrome.i18n.getMessage("Load") + chrome.i18n.getMessage("successful")
-                  });
-                  localStorage.options_webtitle_status = 1
-                  setTimeout(function () {
-                    window.location.reload();
-                  }, 1000); // 延迟
+              storExeButtons(newArray[0]).then(() => {
+                toastItem({
+                  toast_content: chrome.i18n.getMessage("Load") + chrome.i18n.getMessage("successful")
                 });
+                localStorage.options_webtitle_status = 1
+                setTimeout(function () {
+                  window.location.reload();
+                }, 1000); // 延迟
+              })
             }
           } else {
             reject("导入配置:无法处理数据,请查看报错!");
@@ -2114,9 +2206,12 @@ $(document).ready(function () {
       let currentLi;
       // 当开始拖拽列表项时触发的事件处理函数
       list.on('dragstart', '.Config-Box-Log-item', function (e) {
-        // 设置拖拽效果
+
+        if (e.target.tagName === 'INPUT' || !this.draggable) {
+          e.preventDefault();
+          return;
+        }
         e.originalEvent.dataTransfer.effectAllowed = 'move';
-        // 记录当前拖拽的列表项
         currentLi = $(this);
         setTimeout(() => {
           currentLi.addClass('moving');
@@ -2165,7 +2260,6 @@ $(document).ready(function () {
         });
 
       });
-
     }
 
     readBedConfig();
@@ -2835,9 +2929,6 @@ $(document).ready(function () {
       $("#StickerInput").val(result.StickerURL)
     }
   })
-  animation_button2('.Animation_button2').then(function () {
-    overlayElement.remove()
-  });
 
   chrome.storage.sync.get(["BedConfig"], function (result) {
     if (!result.BedConfig || result.BedConfig.length < 1) return;
@@ -2855,10 +2946,24 @@ $(document).ready(function () {
     dbHelper("BedConfigStore").then(result => {
       const { db } = result;
       db.put(newArray).then(() => {
-        chrome.storage.sync.remove("BedConfig");
-        window.location.reload();
+        chrome.storage.sync.remove("BedConfig", function () {
+          window.location.reload();
+        });
       });
     });
+  })
+  chrome.storage.local.get(["exeButtons"], function (result) {
+    if (!result.exeButtons || result.exeButtons.length < 1) return;
+    let exeButtons = result.exeButtons
+    dbHelper("exeButtons").then(result => {
+      // 处理获取到的配置数据
+      const { db } = result;
+      db.put(exeButtons).then(() => {
+        chrome.storage.local.remove("exeButtons", function () {
+          window.location.reload();
+        });
+      })
+    })
   })
 });
 

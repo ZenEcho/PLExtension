@@ -32,7 +32,7 @@ window.addEventListener('message', function (event) {
 })
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.AutoInsertFun) {
-        AutoInsertFun(request.AutoInsertFun,false)
+        AutoInsertFun(request.AutoInsertFun, false)
     }
 });
 
@@ -94,111 +94,84 @@ function insertIntoFocusEditor(UpUrl) {
 
 }
 
-function determineEditorType(excludedTypes = []) {
-    let currentURL = window.location.href;
-    let webScripts = document.querySelectorAll('script');
-
+function determineEditorType(excludedTypes = [], UpUrl) {
+    let currentURL = window.location.href.toLowerCase();
+    let webScripts = Array.from(document.querySelectorAll('script'));
+    let matchedEditors = [];
     function isExcluded(type) {
         return excludedTypes.includes(type);
     }
+    const scriptTypeMapping = {
+        'tinymce_5or6': 'tinymce',
+        'wangeditor': 'wangeditor',
+        'ckeditor_4': 'ckeditor4',
+        'ckeditor_5': 'ckeditor5',
+        'ckeditor_4or5': 'ckeditor',
+        'halo': 'halo',
+        'ueditor': 'ueditor'
+    };
 
-    if (!isExcluded("discuz") && (document.body.innerText.toLowerCase().includes("discuz") || document.documentElement.innerHTML.toLowerCase().indexOf('discuz') !== -1)) {
-        return "discuz";
-    }
-    if (!isExcluded("v2ex") && currentURL.includes("v2ex.com")) {
-        return "v2ex";
-    }
-    if (!isExcluded("nodeseek") && currentURL.includes("nodeseek.com")) {
-        return "nodeseek";
-    }
-    if (!isExcluded("hostevaluate") && currentURL.includes("hostevaluate.com")) {
-        return "hostevaluate";
-    }
-    if (!isExcluded("lowendtalk") && currentURL.includes("lowendtalk.com")) {
-        return "lowendtalk";
-    }
-    if (!isExcluded("typecho") && document.body.innerText.toLowerCase().includes("typecho")) {
-        return "typecho";
-    }
-    let phpbbForum = document.getElementById("phpbb");
-    if (!isExcluded("phpbb") && phpbbForum) {
-        return "phpbb";
-    }
-    let CodeMirror = document.querySelector(".CodeMirror");
-    if (!isExcluded("codeMirror_5") && CodeMirror) {
-        return "codeMirror_5";
-    }
-    let CodeMirror6 = document.querySelector(".cm-content");
-    if (!isExcluded("codeMirror_6") && CodeMirror6) {
-        return "codeMirror_6";
-    }
-    let Gutenberg = document.getElementById("wpbody-content");
-    if (!isExcluded("gutenberg") && Gutenberg) {
-        return "gutenberg";
-    }
-
-    for (let i = 0; i < webScripts.length; i++) {
-        let src = webScripts[i].getAttribute('src');
+    webScripts.forEach(script => {
+        let src = script.getAttribute('src');
         if (src) {
-            if (!isExcluded("tinymce_5or6") && src.includes('tinymce')) {
-                return "tinymce_5or6";
-            }
-            if (!isExcluded("wangeditor") && src.includes('wangeditor')) {
-                return "wangeditor";
-            }
-            if (!isExcluded("ckeditor_4") && src.includes('ckeditor4')) {
-                return "ckeditor_4";
-            }
-            if (!isExcluded("ckeditor_5") && src.includes('ckeditor5')) {
-                return "ckeditor_5";
-            }
-            if (!isExcluded("ckeditor_4or5") && src.includes('ckeditor')) {
-                return "ckeditor_4or5";
-            }
-            if (!isExcluded("halo") && src.includes('halo')) {
-                return "halo";
-            }
-            if (!isExcluded("ueditor") && src.includes('ueditor')) {
-                return "ueditor";
-            }
+            Object.entries(scriptTypeMapping).forEach(([type, keyword]) => {
+                if (!isExcluded(type) && src.includes(keyword) && !matchedEditors.includes(type)) {
+                    matchedEditors.push(type);
+                }
+            });
+        }
+    });
+
+    const editorChecks = [
+        { type: "discuz", condition: () => document.body.innerText.toLowerCase().includes("discuz") || document.documentElement.innerHTML.toLowerCase().includes('discuz') },
+        { type: "v2ex", condition: () => currentURL.includes("v2ex.com") },
+        { type: "nodeseek", condition: () => currentURL.includes("nodeseek.com") },
+        { type: "hostevaluate", condition: () => currentURL.includes("hostevaluate.com") },
+        { type: "lowendtalk", condition: () => currentURL.includes("lowendtalk.com") },
+        { type: "typecho", condition: () => document.body.innerText.toLowerCase().includes("typecho") },
+        { type: "phpbb", condition: () => !!document.getElementById("phpbb") },
+        { type: "codeMirror_5", condition: () => !!document.querySelector(".CodeMirror") },
+        { type: "codeMirror_6", condition: () => !!document.querySelector(".cm-content") },
+        { type: "gutenberg", condition: () => !!document.getElementById("wpbody-content") },
+        { type: "iframe", condition: () => matchedEditors.length < 1 && !!document.querySelector('iframe') }
+    ];
+
+    for (const check of editorChecks) {
+        if (!isExcluded(check.type) && check.condition()) {
+            matchedEditors.push(check.type);
         }
     }
 
-    if (!isExcluded("iframe")) {
-        let iframe = document.querySelector('iframe');
-        if (iframe) {
-            return "iframe";
-        }
-    }
+    return matchedEditors;
 
-    return null; // 如果没有匹配的编辑器类型
 }
 
-function insertIntoSpecificEditor(editorType, UpUrl) {
-    const editorHandlers = {
-        'discuz': (UpUrl) => handleDiscuz(UpUrl),
-        'v2ex': (UpUrl) => handleV2exReply(UpUrl),
-        'nodeseek': (UpUrl) => handleCodeMirror5(UpUrl),
-        'hostevaluate': (UpUrl) => handleHostEvaluate(UpUrl),
-        'lowendtalk': (UpUrl) => handleLowEndTalk(UpUrl),
-        'typecho': (UpUrl) => handleTypecho(UpUrl),
-        'phpbb': (UpUrl) => handlePHPBB(UpUrl),
-        'codeMirror_5': (UpUrl) => handleCodeMirror5(UpUrl),
-        'codeMirror_6': (UpUrl) => handleCodeMirror6(UpUrl),
-        'gutenberg': (UpUrl) => handleGutenberg(UpUrl),
-        'tinymce_5or6': (UpUrl) => handleTinyMCE_5or6(UpUrl),
-        'wangeditor': (UpUrl) => handleWangeditor(UpUrl),
-        'ckeditor_4': (UpUrl) => handleCKEditor4(UpUrl),
-        'ckeditor_5': (UpUrl) => handleCKEditor5(UpUrl),
-        'ckeditor_4or5': (UpUrl) => handleCKEditor(UpUrl),
-        'halo': (UpUrl) => handleHalo(UpUrl),
-        'ueditor': (UpUrl) => handleUeditor(UpUrl),
-        'iframe': (UpUrl) => handleIframe(UpUrl),
 
+async function insertIntoSpecificEditor(editorType, UpUrl) {
+    const editorHandlers = {
+        'discuz': () => handleDiscuz(UpUrl),
+        'v2ex': () => handleV2exReply(UpUrl),
+        'nodeseek': () => handleCodeMirror5(UpUrl),
+        'hostevaluate': () => handleHostEvaluate(UpUrl),
+        'lowendtalk': () => handleLowEndTalk(UpUrl),
+        'typecho': () => handleTypecho(UpUrl),
+        'phpbb': () => handlePHPBB(UpUrl),
+        'codeMirror_5': () => handleCodeMirror5(UpUrl),
+        'codeMirror_6': () => handleCodeMirror6(UpUrl),
+        'gutenberg': () => handleGutenberg(UpUrl),
+        'tinymce_5or6': () => handleScriptEditor(editorType, UpUrl),
+        'wangeditor': () => handleScriptEditor(editorType, UpUrl),
+        'ckeditor_4': () => handleScriptEditor(editorType, UpUrl),
+        'ckeditor_5': () => handleScriptEditor(editorType, UpUrl),
+        'ckeditor_4or5': () => handleScriptEditor(editorType, UpUrl),
+        'halo': () => handleHalo(UpUrl),
+        'ueditor': () => handleScriptEditor(editorType, UpUrl),
+        'iframe': () => handleIframe(UpUrl),
     };
+
     let handler = editorHandlers[editorType];
     if (handler) {
-        return handler(UpUrl);
+        return await handler()
     } else {
         return false;
     }
@@ -250,15 +223,15 @@ function getEditorTypeForCurrentDomain(callback) {
 }
 
 function attemptInsertion(UpUrl) {
-    getEditorTypeForCurrentDomain(function (savedEditorType) {
+    getEditorTypeForCurrentDomain(async function (savedEditorType) {
         if (savedEditorType) {
-            let success = insertIntoSpecificEditor(savedEditorType, UpUrl);
+            let success = await insertIntoSpecificEditor(savedEditorType, UpUrl);
             if (!success) {
                 if (confirm("发现了错误的插入类型,是否修正？")) {
                     excludedEditorTypes.push(savedEditorType);
-                    let editorType = determineEditorType(excludedEditorTypes);
+                    let editorType = determineEditorType(excludedEditorTypes, UpUrl);
                     if (editorType) {
-                        let success = insertIntoSpecificEditor(editorType, UpUrl);
+                        let success = await insertIntoSpecificEditor(editorType, UpUrl);
                         if (!success) {
                             excludedEditorTypes.push(editorType);
                             attemptInsertion(UpUrl);
@@ -271,29 +244,58 @@ function attemptInsertion(UpUrl) {
             }
             return;
         }
-        let editorType = determineEditorType(excludedEditorTypes);
-        if (editorType) {
-            let success = insertIntoSpecificEditor(editorType, UpUrl);
+        let editorType = determineEditorType(excludedEditorTypes, UpUrl);
+        console.log(editorType);
+        if (editorType.length === 1) {
+            let success = await insertIntoSpecificEditor(editorType[0], UpUrl);
             if (!success) {
                 // 如果插入失败，将该编辑器类型添加到排除列表中
-                excludedEditorTypes.push(editorType);
+                excludedEditorTypes.push(editorType[0]);
                 PLNotification({
                     type: "warning",
-                    content: "发现错误插入类型：" + editorType + "</br>错误URL:" + window.location.href,
+                    content: "发现错误插入类型：" + editorType[0] + "</br>错误URL:" + window.location.href,
                 });
                 attemptInsertion(UpUrl);
             } else {
-                saveEditorTypeForDomain(editorType);
+                saveEditorTypeForDomain(editorType[0]);
             }
-        } else {
+        }
+        if (editorType.length > 1) {
+            let buttons = editorType.map(editor => {
+                return {
+                    text: "尝试使用：" + editor + " 方法",
+                    style: "padding: 2px;width: 100%;border: none;border-radius: 10px; margin-bottom: 5px;",
+                    init: function (close) {
+                        this.addEventListener("click", function () {
+                            insertIntoSpecificEditor(editor, UpUrl)
+                            // 延迟1秒钟
+                            setTimeout(() => {
+                                if (confirm(editor + " 可以插入吗？按下确认键以后将使用该方法！\n修改插入方法：配置信息→自动插入→插入管理")) {
+                                    saveEditorTypeForDomain(editor);
+                                    close();
+                                }
+                            }, 1200);
+                        });
+                    }
+                };
+            });
+
+            let data = {
+                type: "warning",
+                content: "检测到多种编辑器,请手动选择正确的编辑器！",
+                duration: 0,
+                button: buttons
+            };
+            PLNotification(data);
+        }
+        if (editorType.length === 0) {
             PLNotification({
                 type: "error",
                 content: "找不到合适的编辑器类型，或者所有类型都失败了" + "</br>失效地址:" + window.location.href + "</br>如果需要适配请上报该错误！",
             });
         }
+
     })
-
-
 }
 function handleDiscuz(UpUrl) {
     let Discuz = document.getElementById("fastpostmessage")
@@ -420,31 +422,11 @@ function handleCodeMirror6(UpUrl) {
     return false;
 }
 function handleGutenberg(UpUrl) {
-    if (window.location.href.toLowerCase().includes("post-new.php")) {
+    if (document.querySelector('.block-editor') || document.querySelector('.editor-styles-wrapper')) {
         window.postMessage({ type: 'Gutenberg', data: UpUrl }, '*');
         return true;
     }
     return false;
-}
-function handleTinyMCE_5or6(UpUrl) {
-    window.postMessage({ type: 'TinyMCE', data: `<img src="` + UpUrl + `">` }, '*');
-    return true;
-}
-function handleWangeditor(UpUrl) {
-    window.postMessage({ type: 'wangeditor', data: `<img src="` + UpUrl + `">` }, '*');
-    return true;
-}
-function handleCKEditor4(UpUrl) {
-    window.postMessage({ type: 'ckeditor4', data: `<img src="` + UpUrl + `">` }, '*');
-    return true;
-}
-function handleCKEditor5(UpUrl) {
-    window.postMessage({ type: 'ckeditor5', data: `<img src="` + UpUrl + `">` }, '*');
-    return true;
-}
-function handleCKEditor(UpUrl) {
-    window.postMessage({ type: 'ckeditor', data: `<img src="` + UpUrl + `">` }, '*');
-    return true;
 }
 function handleHalo(UpUrl) {
     let HaloEditor_Element = document.querySelector('.ProseMirror');
@@ -454,10 +436,6 @@ function handleHalo(UpUrl) {
         return true;
     }
     return false;
-}
-function handleUeditor(UpUrl) {
-    window.postMessage({ type: 'ueditor', data: UpUrl }, '*');
-    return true;
 }
 function handleIframe(UpUrl) {
     let iframe = document.querySelector('iframe');
@@ -487,8 +465,41 @@ function handleIframe(UpUrl) {
     }
     return false;
 }
+async function handleScriptEditor(editorType, UpUrl) {
+    const messageTypes = {
+        'tinymce_5or6': 'TinyMCEResponse',
+        'wangeditor': 'WangeditorResponse',
+        'ckeditor_4': 'ckeditor4Response',
+        'ckeditor_5': 'ckeditor5Response',
+        'ckeditor_4or5': 'ckeditorResponse',
+        'ueditor': 'ueditorResponse',
+    };
 
+    function postMessageAndWaitForResponse() {
+        return new Promise((resolve, reject) => {
+            // 监听来自注入脚本的消息
+            const messageListener = (event) => {
+                if (event.source != window) return;
+                if (event.data.type === messageTypes[editorType]) {
+                    resolve(event.data);
+                    window.removeEventListener('message', messageListener);
+                }
+            };
 
+            window.addEventListener('message', messageListener);
+
+            // 发送消息到注入脚本
+            window.postMessage({ type: editorType, data: `<img src="${UpUrl}">` }, '*');
+        });
+    }
+
+    const response = await postMessageAndWaitForResponse();
+    if (response.data === "true") {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 //编辑框粘贴
 function handlePasteEventOnFocus() {

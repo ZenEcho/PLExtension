@@ -420,7 +420,7 @@
     "message": "返回路径<p class='options_return_success_tips'>(请求成功后的图片URL路径)</p>"
   },
   "options_return_success_placeholder": {
-    "message": "如:data.links.url"
+    "message": "如:data.links.url,如不需要填写null"
   },
   "custom_ReturnPrefix": {
     "message": "前缀拼接</span><p class='options_return_success_tips'>(为返回的URL添加前缀)</p>"

@@ -1458,6 +1458,7 @@ $(document).ready(function () {
                                         toastItem({
                                             toast_content: imageUrl.path + '是一个文件夹无法删除'
                                         });
+                                        deleteLoading.remove()
                                     } else {
                                         fetch(ProgramConfigurations.options_proxy_server + `https://api.github.com/repos/` + ProgramConfigurations.options_owner + `/` + ProgramConfigurations.options_repository + `/contents/` + ProgramConfigurations.options_UploadPath + imageUrl.name, {
                                             method: 'DELETE',
@@ -2119,9 +2120,9 @@ $(document).ready(function () {
                     "pr": "./icons/fileicon/pr.png",
                     "sys": "./icons/fileicon/sys.png",
                     "word": "./icons/fileicon/word.png",
+                    "dir": "./icons/fileicon/file.png",
                     "default": "./icons/fileicon/unknown.png"
                 };
-
                 const fileType = imageUrl.PLFileType || "default";
                 const iconUrl = fileTypeIcons[fileType] || fileTypeIcons["default"];
                 item.append(`<img class="FileMedia imgs" src="" PLlink="${item_imgUrl}">`);
@@ -2129,8 +2130,17 @@ $(document).ready(function () {
                     item.find(".imgs").attr("src", item_imgUrl);
                     handleLoadingIndicator(item);
                 } else {
-                    item.find(".imgs").attr("src", iconUrl).css({ height: "200px" });
+                    // 如果不是图片的常用后缀就先尝试加载图片
+                    let imgElement = item.find(".imgs");
+                    imgElement.attr("src", item_imgUrl);
+                    imgElement.on('load', function () {
+                        handleLoadingIndicator(item);
+                    });
+                    imgElement.on('error', function () {
+                        imgElement.attr("src", iconUrl).css({ height: "200px" });
+                    });
                 }
+
                 if (fileType === "video" || fileType === "music") {
                     handleVideoAndMusic(item, item_imgUrl);
                 }
@@ -2229,7 +2239,11 @@ $(document).ready(function () {
                     `);
                 if (item.attr("type") == "video" || item.attr("type") == "music") {
                     overlayElement.append(`<video src="${item_imgUrl}" controls></video>`);
-                } else if (item.attr("type") == "image") {
+                } else if (item.attr("type") == "editable") {
+                    let textarea = $(`<textarea PLlink="${item_imgUrl}"></textarea>`)
+                    overlayElement.append(textarea);
+                    loadFileTextWithWorker(textarea, item_imgUrl)
+                } else {
                     const imageElement = $('<img>');
                     overlayElement.append(loadingIndicator);
                     overlayElement.append(imageElement);
@@ -2238,17 +2252,9 @@ $(document).ready(function () {
                         loadingIndicator.remove();
                     }).catch(() => {
                         loadingIndicator.remove();
+                        imageElement.attr("src", item.find(".imgs").attr("src"))
+                        return;
                     });
-
-                } else if (item.attr("type") == "editable") {
-                    let textarea = $(`<textarea PLlink="${item_imgUrl}"></textarea>`)
-                    overlayElement.append(textarea);
-                    loadFileTextWithWorker(textarea, item_imgUrl)
-                } else {
-                    toastItem({
-                        toast_content: '不支持预览!'
-                    })
-                    return;
                 }
                 // 将容器元素添加到文档主体中
                 $('body').append(overlayElement);

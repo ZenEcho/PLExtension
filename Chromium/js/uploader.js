@@ -636,7 +636,7 @@ function popup_Uploader() {
             }
             // 监听文件添加事件
             uploader.on("addedfile", function (file) {
-                delayUpload(files);
+                delayUpload(file);
                 $(".dz-remove").remove()
             });
             break;
@@ -952,7 +952,7 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     console.log(error);
                     alert(chrome.i18n.getMessage("Body_error"));
                     PLNotification({
-                        title: chrome.i18n.getMessage("app_name")+"：",
+                        title: chrome.i18n.getMessage("app_name") + "：",
                         type: "error",
                         content: chrome.i18n.getMessage("Body_error"),
                         duration: 0,
@@ -1016,11 +1016,13 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                         callback(data, null);
                         console.log(data);
                         let options_return_success_value = data;
-                        ProgramConfigurations.options_return_success.split('.').forEach(function (prop) {
-                            if (options_return_success_value) {
-                                options_return_success_value = options_return_success_value[prop];
-                            }
-                        });
+                        if (ProgramConfigurations.options_return_success !== 'null') {
+                            ProgramConfigurations.options_return_success.split('.').forEach(function (prop) {
+                                if (options_return_success_value) {
+                                    options_return_success_value = options_return_success_value[prop];
+                                }
+                            });
+                        }
                         if (ProgramConfigurations.custom_ReturnPrefix) {
                             options_return_success_value = ProgramConfigurations.custom_ReturnPrefix + options_return_success_value
                         }

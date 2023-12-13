@@ -5,13 +5,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="popup_title">盘络上传程序</title>
+  <title data-i18n="popup_title">上传程序</title>
   <link rel="stylesheet" href="vendor/dropzone/css/dropzone.css">
   <link rel="stylesheet" href="css/popup.css">
   <link rel="stylesheet" href="css/public.css">
   <link rel="shortcut icon" href="icons/logo256.png" type="image/x-icon">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-icons.css">
+  <link rel="stylesheet" href="vendor/intro/css/introjs.min.css">
   <script defer src="vendor/IndexedDB/db.js"></script>
   <script defer src="vendor/jquery/jquery-3.6.3.min.js"></script>
   <script defer src="vendor/cos/cos-js-sdk-v5.js"></script>
@@ -20,6 +21,7 @@
   <script defer src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script defer src="vendor/dropzone/js/dropzone.js"></script>
   <script defer src="vendor/confetti/confetti.js"></script>
+  <script defer src="vendor/intro/js/intro.min.js"></script>
   <script defer src="js/public.js"></script>
   <script defer src="js/uploader.js"></script>
   <script defer src="js/popup.js"></script>
@@ -69,7 +71,7 @@
           <div id="popup_Markdown" class="urlButton" value="Markdown">Markdown</div>
           <div id="popup_MDwithlink" class="urlButton" value="MDWithLink">MD with link</div>
         </div>
-        <div class="col">
+        <div class="col" style=" width: 0px;">
           <div class="border-bottom text-center" style="display: flex; justify-content: flex-end;">
             <a class="popup-Select" target="_blank" href="https://github.com/ZenEcho/PLExtension"><i
                 class="bi bi-github"></i> GitHub</a>
@@ -84,7 +86,8 @@
           <div id="textFrame" class="textFrame">
             <div class="Upload_Return_Box">
               <div class="col">
-                <p class="p_urls" data-i18n="Upload_return_information">上传成功后URL将会显示在这里</p>
+                <p class="p_urls" data-i18n="Upload_return_information">
+                  上传成功后URL将会显示在这里上传成功后URL将会显示在这里上传成功后URL将会显示在这里上传成功后URL将会显示在这里</p>
               </div>
               <div class="text-center selector_p_urls">
                 <span data-i18n="Selected">选择</span>

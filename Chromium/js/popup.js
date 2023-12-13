@@ -244,21 +244,20 @@ $(document).ready(function () {
           $('.LinksBox').hide()
         });
         $('#textFrame').append(textFrame);
-
       }
     }
     uploader.on("complete", function (file) {
       fileDeletePreview.push(file);
       filePreviewElements.push(file.previewElement);
-
       // 实现点击预览框,.p_urls加类
       $(file.previewElement).click(function () {
-        $(".dz-preview").removeClass("IMGpreview");
+        $(".selector_p_urls").removeClass("selector_p_urls_Click");
+        $(".dz-preview").removeClass("activePreview");
         $(".dz-preview").addClass("shadow");
         let index = filePreviewElements.indexOf(file.previewElement);
         let pTag = $(".p_urls").eq(index);
-        $(".p_urls").removeClass("IMGpreview");
-        $(pTag).toggleClass("IMGpreview");
+        $(".p_urls").parent().parent().removeClass("activePreview");
+        $(pTag).parent().parent().toggleClass("activePreview");
       });
       // 默认点击
       $('div[value="' + Copy_Selected_Mode + '"]').click();
@@ -340,8 +339,10 @@ $(document).ready(function () {
               }
             }
             let options_return_success_value = res;
-            for (let property of ProgramConfigurations.options_return_success.split('.')) {
-              options_return_success_value = options_return_success_value[property];
+            if (ProgramConfigurations.options_return_success !== 'null') {
+              for (let property of ProgramConfigurations.options_return_success.split('.')) {
+                options_return_success_value = options_return_success_value[property];
+              }
             }
             if (ProgramConfigurations.custom_ReturnPrefix) {
               //前缀
@@ -357,6 +358,7 @@ $(document).ready(function () {
             }
             imageUrl = options_return_success_value
             ProgramConfigurations.options_host = ProgramConfigurations.options_apihost
+
             break;
           case 'Tencent_COS':
             //腾讯云cos拼接
@@ -422,9 +424,12 @@ $(document).ready(function () {
             })
             break;
           case 'BaiJiaHaoBed':
-            imageUrl = res.ret.https_url;
+            if (res.ret.https_url) {
+              imageUrl = res.ret.https_url;
+            }
+
             toastItem({
-              toast_content: chrome.i18n.getMessage("Upload_prompt7")
+              toast_content: res.errmsg
             })
             break;
           case 'freebufBed':
@@ -441,6 +446,7 @@ $(document).ready(function () {
             break;
         }
       } catch (error) {
+        console.log(error);
         if (!imageUrl) {
           imageUrl = chrome.i18n.getMessage("Upload_prompt4")
         }
@@ -486,7 +492,6 @@ $(document).ready(function () {
 
           break;
         case 'Chevereto':
-
           toastItem({
             toast_content: err.error.message
           })
@@ -571,46 +576,49 @@ $(document).ready(function () {
         </div>
       </div>
       `);
-        $(".Upload_Return_Box .col").click(function () {
-          $(".p_urls").removeClass("IMGpreview");
-          $(".dz-preview").addClass("shadow");
-          // 全选
-          let range = document.createRange();
-          range.selectNodeContents(this);
-          let selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          // 实现点击p标签,预览框添加类
-
-          let index = $(this).parent().index();
-          let previewElement = filePreviewElements[index];
-          $(".dz-preview").removeClass("IMGpreview");
-          $(previewElement).removeClass("shadow");
-          $(previewElement).toggleClass("IMGpreview");
-        });
-        // 实现点击复制
-        $(".copy").click(function () {
-          let $temp = $("<input>");
-          $("body").append($temp);
-          let text = $(this).parent().find('.p_urls').text();
-          $temp.val(text).select();
-          document.execCommand("copy");
-          $temp.remove();
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Copy_successful")
-          })
-        });
-
-
       })
-      $(".selector_p_urls").click(function () {
-        $(this).parent().find(".p_urls").toggleClass("IMGpreview")
-        $(this).toggleClass('selector_p_urls_Click');
+      $(".Upload_Return_Box .col").click(function () {
+        $(".selector_p_urls").removeClass("selector_p_urls_Click");
+        $(".Upload_Return_Box").removeClass("activePreview");
+        $(".dz-preview").addClass("shadow");
+        // // 全选
+        let range = document.createRange();
+        range.selectNodeContents(this);
+        let selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        // // 实现点击p标签,预览框添加类
+
         let index = $(this).parent().index();
         let previewElement = filePreviewElements[index];
+        $(".dz-preview").removeClass("activePreview");
+        $(".dz-preview").removeClass("activePreviewImg");
         $(previewElement).removeClass("shadow");
-        $(previewElement).toggleClass("IMGpreview");
-        if (!$(previewElement).hasClass("IMGpreview") && !$(previewElement).hasClass("shadow")) {
+        $(previewElement).toggleClass("activePreview");
+        $(previewElement).toggleClass("activePreviewImg");
+      });
+      // 实现点击复制
+      $(".copy").click(function () {
+        let $temp = $("<input>");
+        $("body").append($temp);
+        let text = $(this).parent().find('.p_urls').text();
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+        toastItem({
+          toast_content: chrome.i18n.getMessage("Copy_successful")
+        })
+      });
+      $(".selector_p_urls").click(function () {
+        let index = $(this).parent().index();
+        let previewElement = filePreviewElements[index];
+        $(this).parent().toggleClass("activePreview")
+        $(this).toggleClass('selector_p_urls_Click');
+        // $(".dz-preview").removeClass("activePreviewImg");
+        $(previewElement).removeClass("shadow");
+        $(previewElement).toggleClass("activePreview");
+        $(previewElement).toggleClass("activePreviewImg");
+        if (!$(previewElement).hasClass("activePreview") && !$(previewElement).hasClass("shadow")) {
           $(previewElement).addClass("shadow");
         }
       })
@@ -618,12 +626,17 @@ $(document).ready(function () {
     //全选
     $("#popup-Select-All").click(function () {
       if ($(".p_urls").length) {
-        $(".p_urls").toggleClass('IMGpreview');
+        $(".Upload_Return_Box").toggleClass('activePreview');
+        $(".selector_p_urls").toggleClass('selector_p_urls_Click');
+        $(".dropzone .dz-preview ").toggleClass("activePreviewImg");
+
         if ($(".dropzone .dz-preview ").hasClass("shadow")) {
           $(".dropzone .dz-preview ").removeClass("shadow")
-          $(".dropzone .dz-preview ").addClass("IMGpreview")
+          $(".dropzone .dz-preview ").addClass("activePreview")
+          $(".dropzone .dz-preview ").addClass("activePreviewImg")
         } else {
-          $(".dropzone .dz-preview ").removeClass("IMGpreview")
+          $(".dropzone .dz-preview ").removeClass("activePreview")
+          $(".dropzone .dz-preview ").removeClass("activePreviewImg")
           $(".dropzone .dz-preview ").addClass("shadow")
         }
       }
@@ -632,19 +645,21 @@ $(document).ready(function () {
     //取消
     $("#popup-Select-cancel").click(function () {
       if ($(".p_urls").length) {
-        $(".p_urls").removeClass("IMGpreview");
-        $(".dropzone .dz-preview ").removeClass("IMGpreview");
+        $(".Upload_Return_Box").removeClass("activePreview");
+        $(".selector_p_urls").removeClass("selector_p_urls_Click");
+        $(".dropzone .dz-preview ").removeClass("activePreview");
+        $(".dropzone .dz-preview ").removeClass("activePreviewImg");
         $(".dropzone .dz-preview ").addClass("shadow")
       }
     })
 
     //复制选中
     $("#popup-Copy-Selected").click(function () {
-      let selected_p_urls = $(".Upload_Return_Box .IMGpreview");
+      let selected_p_urls = $(".Upload_Return_Box.activePreview");
       let selected_text = [];
       if (selected_p_urls.length) {
         selected_p_urls.each(function () {
-          selected_text.push($(this).text())
+          selected_text.push($(this).find('.p_urls').text())
         })
         let tempInput = $(`<textarea>`);
         $("body").append(tempInput);
@@ -657,113 +672,113 @@ $(document).ready(function () {
       }
     })
 
-    if (!ProgramConfigurations.options_host) {
-      if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {
-        alert(chrome.i18n.getMessage("Website_domain_is_blank"));
-        window.location.href = "options.html";
-        return;
-      }
-    }
+    // if (!ProgramConfigurations.options_host) {
+    //   if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {
+    //     alert(chrome.i18n.getMessage("Website_domain_is_blank"));
+    //     window.location.href = "options.html";
+    //     return;
+    //   }
+    // }
 
-    let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
-    if (tokenRequired.includes(ProgramConfigurations.options_exe)) {
-      if (!ProgramConfigurations.options_token) {
-        alert(`${ProgramConfigurations.options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
-        window.location.href = "options.html";
-        return;
-      }
-      if (ProgramConfigurations.options_exe === "ImgURL" && !ProgramConfigurations.options_uid) {
-        alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
-        window.location.href = "options.html";
-        return;
-      }
-      if (ProgramConfigurations.options_exe == "Hellohao" && !ProgramConfigurations.options_source) {
-        alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
-        window.location.href = "options.html";
-        return;
-      }
+    // let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
+    // if (tokenRequired.includes(ProgramConfigurations.options_exe)) {
+    //   if (!ProgramConfigurations.options_token) {
+    //     alert(`${ProgramConfigurations.options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
+    //     window.location.href = "options.html";
+    //     return;
+    //   }
+    //   if (ProgramConfigurations.options_exe === "ImgURL" && !ProgramConfigurations.options_uid) {
+    //     alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
+    //     window.location.href = "options.html";
+    //     return;
+    //   }
+    //   if (ProgramConfigurations.options_exe == "Hellohao" && !ProgramConfigurations.options_source) {
+    //     alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
+    //     window.location.href = "options.html";
+    //     return;
+    //   }
 
-    }
-    switch (ProgramConfigurations.options_exe) {
-      case 'UserDiy':
-        if (!ProgramConfigurations.options_apihost) {
-          alert(chrome.i18n.getMessage("Website_domain_is_blank"));
-          window.location.href = "options.html";
-          return;
-        }
-        break;
-      case 'Tencent_COS':
-        if (!ProgramConfigurations.options_SecretId) {
-          alert(chrome.i18n.getMessage("Tencent_cos_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_SecretKey) {
-          alert(chrome.i18n.getMessage("Tencent_cos_2"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Region) {
-          alert(chrome.i18n.getMessage("Tencent_cos_3"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Bucket) {
-          alert(chrome.i18n.getMessage("Tencent_cos_4"))
-          window.location.href = "options.html";
-          return;
-        }
-        break;
-      case 'Aliyun_OSS':
-        if (!ProgramConfigurations.options_SecretId) {
-          alert(chrome.i18n.getMessage("Alibaba_oss_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_SecretKey) {
-          alert(chrome.i18n.getMessage("Alibaba_oss_2"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Bucket) {
-          alert(chrome.i18n.getMessage("Alibaba_oss_3"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Endpoint) {
-          alert(chrome.i18n.getMessage("Alibaba_oss_4"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Region) {
-          alert(chrome.i18n.getMessage("Alibaba_oss_5"))
-          window.location.href = "options.html";
-          return;
-        }
-        break;
-      case 'AWS_S3':
-        if (!ProgramConfigurations.options_SecretId) {
-          alert(chrome.i18n.getMessage("s3_oss_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_SecretKey) {
-          alert(chrome.i18n.getMessage("s3_oss_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Region) {
-          alert(chrome.i18n.getMessage("s3_oss_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        if (!ProgramConfigurations.options_Bucket) {
-          alert(chrome.i18n.getMessage("s3_oss_1"))
-          window.location.href = "options.html";
-          return;
-        }
-        break;
-    }
+    // }
+    // switch (ProgramConfigurations.options_exe) {
+    //   case 'UserDiy':
+    //     if (!ProgramConfigurations.options_apihost) {
+    //       alert(chrome.i18n.getMessage("Website_domain_is_blank"));
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     break;
+    //   case 'Tencent_COS':
+    //     if (!ProgramConfigurations.options_SecretId) {
+    //       alert(chrome.i18n.getMessage("Tencent_cos_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_SecretKey) {
+    //       alert(chrome.i18n.getMessage("Tencent_cos_2"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Region) {
+    //       alert(chrome.i18n.getMessage("Tencent_cos_3"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Bucket) {
+    //       alert(chrome.i18n.getMessage("Tencent_cos_4"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     break;
+    //   case 'Aliyun_OSS':
+    //     if (!ProgramConfigurations.options_SecretId) {
+    //       alert(chrome.i18n.getMessage("Alibaba_oss_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_SecretKey) {
+    //       alert(chrome.i18n.getMessage("Alibaba_oss_2"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Bucket) {
+    //       alert(chrome.i18n.getMessage("Alibaba_oss_3"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Endpoint) {
+    //       alert(chrome.i18n.getMessage("Alibaba_oss_4"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Region) {
+    //       alert(chrome.i18n.getMessage("Alibaba_oss_5"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     break;
+    //   case 'AWS_S3':
+    //     if (!ProgramConfigurations.options_SecretId) {
+    //       alert(chrome.i18n.getMessage("s3_oss_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_SecretKey) {
+    //       alert(chrome.i18n.getMessage("s3_oss_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Region) {
+    //       alert(chrome.i18n.getMessage("s3_oss_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     if (!ProgramConfigurations.options_Bucket) {
+    //       alert(chrome.i18n.getMessage("s3_oss_1"))
+    //       window.location.href = "options.html";
+    //       return;
+    //     }
+    //     break;
+    // }
 
 
     // 写入标题
@@ -917,7 +932,6 @@ $(document).ready(function () {
       showIntro();
     }
   });
-
   $(".title-a").click(() => {
     confetti({
       particleCount: 200,

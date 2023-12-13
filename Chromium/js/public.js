@@ -1,67 +1,3 @@
-function createAlertBox(options) {
-  options = Object.assign({
-    alert_width: "300px",
-    alert_height: "100px",
-    alert_title: "警告：",
-    alert_content: "这是一条测试内容",
-    alert_DestroyTime: '300000'
-  }, options);
-  if ($('#alert').length > 0) {
-    // 如果已经有提示框存在，则不再创建新的提示框
-    return;
-  }
-  $("body").css("overflow", "hidden");
-  $('body').append('<div id="alert" style="width:' + options.alert_width + ';height: ' + options.alert_height + ';" ></div>')
-  $('body').append('<div id="alertBG"></div>')
-  $('#alert').append('<div class="alert_title"></div><div style="line-height: ' + options.alert_height + ' ;" class="alert_content">' + options.alert_content + '</div>')
-  $('.alert_title').append('<p class="alert_title_p">' + options.alert_title + '</p><button class="alert_title_button" >X</button>')
-  setTimeout(function () {
-    $('.alert_title_button').click()
-  }, options.alert_DestroyTime);
-
-  let isDragging = false;
-  let currentX;
-  let currentY;
-  let initialX;
-  let initialY;
-  let xOffset = 0;
-  let yOffset = 0;
-
-  $('#alert').mousedown(function (e) {
-    mouse_left = parseInt($(this).css('left'));
-    mouse_top = parseInt($(this).css('top'));
-    initialX = e.clientX - mouse_left;
-    initialY = e.clientY - mouse_top;
-    isDragging = true;
-  });
-  $(document).mouseup(function (e) {
-    isDragging = false;
-  });
-
-  $(document).mousemove(function (e) {
-    if (isDragging) {
-      currentX = e.clientX - initialX;
-      currentY = e.clientY - initialY;
-      xOffset = currentX;
-      yOffset = currentY;
-      $('#alert').css({
-        top: currentY + 'px',
-        left: currentX + 'px'
-      });
-    }
-  });
-  // 点击X关闭弹窗
-  $('.alert_title_button').click(function () {
-    $("body").css("overflow", "");
-    let $alert = $(this).parent().parent();
-    let $alertBG = $("#alertBG");
-    $alert.remove();
-    $alertBG.remove();
-  });
-  $("#alertBG").click(function () {
-    $('.alert_title_button').click()
-  })
-}
 /**
  * @param {text} toast_title 标题
  * @param {text} toast_content 内容
@@ -140,7 +76,7 @@ function animation_button2(Animation_class) {
 }
 
 //读取本地数组
-var storagelocal = [
+let storagelocal = [
   "ProgramConfiguration",
   "UploadLog",
   "Browse_mode_switching_status",
@@ -148,7 +84,7 @@ var storagelocal = [
   "uploadArea",
   "FuncDomain",
 ]
-var ProgramConfigurations = {
+let ProgramConfigurations = {
   options_exe: null,
   options_proxy_server_state: null,
   options_proxy_server: null,
@@ -195,10 +131,10 @@ storagelocal.forEach(function (key) {
   window[key] = null;
 });
 
-var uploader;
-var cos
-var oss
-var s3
+let uploader;
+let cos
+let oss
+let s3
 chrome.storage.local.get(["ProgramConfiguration"], function (result) {
   if (result.ProgramConfiguration) {
     const programConfig = result.ProgramConfiguration || {};
@@ -289,7 +225,7 @@ chrome.storage.local.get(["ProgramConfiguration"], function (result) {
     }
   }
 })
-var fileTypeMap = {
+let fileTypeMap = {
   '.zip': 'compressedfile',
   '.zipx': 'compressedfile',
   '.rar': 'compressedfile',
@@ -641,7 +577,6 @@ function extensionVersion() {
     FuncDomain = result.FuncDomain || {};
     const previousVersion = result.extensionVersion;
     const currentVersion = chrome.runtime.getManifest().version;
-
     async function updateConfiguration(previousVersion, currentVersion) {
       if (previousVersion !== currentVersion) {
         // 获取并更新程序配置
@@ -681,10 +616,10 @@ function extensionVersion() {
           });
         });
 
-        // 获取并更新 BedConfig
+        // 更新 BedConfig
         await new Promise((resolve, reject) => {
           chrome.storage.sync.get(["BedConfig"], function (result) {
-            if (!result.BedConfig) resolve();
+            if (!result.BedConfig) return resolve();
             const newArray = result.BedConfig.map(item => {
               if (!item.data) {
                 return {
@@ -705,8 +640,28 @@ function extensionVersion() {
             });
           })
         });
+        // 更新 exeButtons
+        await new Promise((resolve, reject) => {
+          let filteredData = buttonsData.filter(Data => {
+            return Data.value === ProgramConfigurations.options_exe;
+          });
 
-        // 最后设置版本号
+          let indexedData = filteredData.map((item, index) => {
+            return {
+              ...item,
+              index: 1000 + index
+            };
+          });
+          dbHelper("exeButtons").then(result => {
+            // 处理获取到的配置数据
+            const { db } = result;
+            db.put(indexedData).then(() => {
+              resolve();
+            })
+          })
+        });
+
+        // // 最后设置版本号
         await new Promise((resolve, reject) => {
           chrome.storage.local.set({ extensionVersion: currentVersion }, () => {
             resolve()
@@ -813,8 +768,8 @@ async function storProgramConfiguration(data) {
           const existingData = result.ProgramConfiguration || {};
           const updatedData = { ...existingData, ...data };
           PCLocalStorage.set({ "ProgramConfiguration": updatedData }, function () {
-            resolve(true);
             localStorage.options_webtitle_status = 1
+            resolve(true);
           });
         }
       });
@@ -824,7 +779,194 @@ async function storProgramConfiguration(data) {
     }
   });
 }
+const buttonsData = [
+  { id: 'exe_Lsky', value: 'Lsky', dataI18n: 'lsky', text: '兰空图床程序' },
+  { id: 'exe_EasyImages', value: 'EasyImages', dataI18n: 'EasyImages', text: '简单图床程序' },
+  { id: 'exe_ImgURL', value: 'ImgURL', dataI18n: 'ImgURL', text: 'ImgURL图床程序' },
+  { id: 'exe_Chevereto', value: 'Chevereto', dataI18n: 'Chevereto', text: 'Chevereto图床程序' },
+  { id: 'exe_Hellohao', value: 'Hellohao', dataI18n: 'Hellohao', text: 'Hellohao图床程序' },
+  { id: 'exe_SM_MS', value: 'SM_MS', dataI18n: 'SM_MS', text: 'SM.MS图床程序' },
+  { id: 'exe_Imgur', value: 'Imgur', dataI18n: 'Imgur', text: 'Imgur图床程序' },
+  { id: 'exe_Tencent_COS', value: 'Tencent_COS', dataI18n: 'Tencent_COS', text: '腾讯云COS' },
+  { id: 'exe_Aliyun_OSS', value: 'Aliyun_OSS', dataI18n: 'Alibaba_OSS', text: '阿里云OSS' },
+  { id: 'exe_AWS_S3', value: 'AWS_S3', dataI18n: 'AWS_S3', text: 'AWS S3' },
+  { id: 'exe_GitHubUP', value: 'GitHubUP', dataI18n: 'GitHub', text: 'GitHub' },
+  { id: 'exe_Telegra_ph', value: 'Telegra_ph', dataI18n: 'Telegra_ph', text: 'Telegra.ph' },
+  // { id: 'exe_BilibliBed', value: 'BilibliBed', text: '哔哩哔哩[后端]' },
+  // { id: 'exe_toutiaoBed2', value: 'toutiaoBed2', text: '今日头条2[后端]' },
+  { id: 'exe_imgdd', value: 'imgdd', dataI18n: 'IMGDD', text: 'IMGDD图床' },
+  { id: 'exe_fiftyEight', value: 'fiftyEight', text: '58同城(免登)' },
+  { id: 'exe_freebufBed', value: 'freebufBed', text: 'freebuf[免登]' },
+  { id: 'exe_toutiaoBed', value: 'toutiaoBed', text: '今日头条[免登]' },
+  { id: 'exe_BaiJiaHaoBed', value: 'BaiJiaHaoBed', text: '百度[登录]' },
+  { id: 'exe_UserDiy', value: 'UserDiy', dataI18n: 'Custom_Upload', text: '自定义上传' }
+];
 
+function createImageHostingButton(buttonInfo) {
+  let dataI18nAttribute = buttonInfo.dataI18n ? `data-i18n="${buttonInfo.dataI18n}"` : "";
+  let button = $(`
+  <button  type="button" id="${buttonInfo.id}" class="Animation_button2" value="${buttonInfo.value}">
+    <span class="Animation_button_span" ${dataI18nAttribute}>${buttonInfo.text}</span>
+    <span class="icon">
+    <svg t="1702387568078"  viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5081" width="200" height="200"><path d="M512 1023.999431a510.406544 510.406544 0 0 0 362.040487-149.958944A510.406544 510.406544 0 0 0 1023.999431 512a510.406544 510.406544 0 0 0-149.958944-362.040487A510.406544 510.406544 0 0 0 512 0.000569a510.406544 510.406544 0 0 0-362.040487 149.958944A510.406544 510.406544 0 0 0 0.000569 512a510.406544 510.406544 0 0 0 149.958944 362.040487A510.406544 510.406544 0 0 0 512 1023.999431z" fill="#00CC52" p-id="5082"></path><path d="M455.111174 602.225678L324.665097 471.7796a56.888826 56.888826 0 0 0-80.440799 80.4408l170.666477 170.666477a56.888826 56.888826 0 0 0 80.440799 0l312.888541-312.888541a56.888826 56.888826 0 1 0-80.440799-80.4408L455.111174 602.225678z" fill="#FFFFFF" p-id="5083"></path></svg>
+    </span>
+  </button>
+  `
+  );
+  return button;
+}
+
+function loadButtonModule() {
+  let welcomeContent = $(`
+<div class="overlay">
+  <div class="content">
+      <div class="title">
+          <h2>选择程序</h1>
+      </div>
+      <div class="cardsSort">
+          <div class="cards">
+          </div>
+      </div>
+      <div class="welcomeContentButton">
+          <div class="button-borders">
+              <button class="primary-button"> 关闭 / 完成
+              </button>
+          </div>
+          <div class="cntr">
+              <input type="checkbox" id="buttonModuleSelect" class="hidden-xs-up">
+              <label for="buttonModuleSelect" class="buttonModuleSelect"></label>
+          </div>
+      </div>
+  </div>
+</div>
+`);
+  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', "pink", "lime", "teal", "indigo", "brown", "cyan", "grey", "deepOrange", "lightBlue", "lightGreen", "deepPurple"
+  ];
+  buttonsData.forEach(function (element, index) {
+    let randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+    let item = $(`
+      <div class="card ${randomColor}">
+          <p class="tip" vlaue="${element.value}">${chrome.i18n.getMessage(`${element.dataI18n}`) || element.text}</p>
+      </div>
+      `);
+    item.click(function (e) {
+      item.toggleClass("active")
+    });
+    welcomeContent.find(".cards").append(item)
+  })
+  welcomeContent.click(function (e) {
+    if (e.target.className === "overlay") {
+      if ($(".option-Buttons button").length < 1) {
+        return;
+      }
+      welcomeContent.remove();
+    }
+  })
+  welcomeContent.find(".primary-button").click(function () {
+    let actives = []
+    let active = $(".cards .active");
+    if (active.length === 0) {
+      overlayElement.remove();
+      welcomeContent.remove();
+      return;
+    }
+    active.each(function (index, element) {
+      let value = $(element).find(".tip").attr("vlaue");
+      actives.push(value)
+    })
+    let filteredData = buttonsData.filter(button => actives.includes(button.value));
+    let indexedData = filteredData.map((item, index) => {
+      return {
+        ...item, // 展开原始对象
+        index    // 添加 index 属性
+      };
+    });
+    dbHelper("exeButtons").then(result => {
+      // 处理获取到的配置数据
+      const { db } = result;
+      db.clear().then(result => {
+        db.put(indexedData).then(result => {
+          window.location.reload();
+        }).catch(error => {
+          console.error("Put failed: ", error);
+        });
+      })
+
+    }).catch(error => {
+      console.error("Error opening database:", error);
+    });
+
+  })
+  welcomeContent.find("#buttonModuleSelect").change(function () {
+    let cards = welcomeContent.find(".cards .card"); // 获取所有的.card元素
+    if (this.checked) {
+      cards.each(function () {
+        $(this).toggleClass("active"); // 为每个元素切换.active类
+      });
+    } else {
+      cards.each(function () {
+        $(this).removeClass("active"); // 为每个元素移除.active类
+      });
+    }
+  });
+
+
+  $("body").append(welcomeContent)
+  dbHelper("exeButtons").then(result => {
+    // 处理获取到的配置数据
+    const { db } = result;
+    db.getAll().then(result => {
+      result.forEach(element => {
+        welcomeContent.find(`.cards p[vlaue=` + element.value + `]`).parent().addClass("active")
+      });
+    })
+  }).catch(error => {
+    reject(error);
+  });
+}
+async function storExeButtons(data) {
+  return new Promise((resolve, reject) => {
+    let filteredData = buttonsData.filter(Data => {
+      return Data.value === data.data.options_exe;
+    });
+
+    let indexedData = filteredData.map((item, index) => {
+      return {
+        ...item,
+        index: 1000 + index
+      };
+    });
+    if (indexedData.length < 1) {
+      reject("按钮组未找到匹配的数据")
+    }
+    storProgramConfiguration(data.data)
+      .then(() => {
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+          chrome.storage.local.set({ "exeButtons": indexedData }, function () {
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+            } else {
+              resolve(true);
+            }
+          });
+        } else {
+          dbHelper("exeButtons").then(result => {
+            // 处理获取到的配置数据
+            const { db } = result;
+            db.put(indexedData).then(() => {
+              resolve(true);
+            })
+          }).catch(error => {
+            reject(error);
+          });
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
 function replaceKeywordsInText(text, keywords, replacements) {
   if (keywords.length != replacements.length) {
     return text;

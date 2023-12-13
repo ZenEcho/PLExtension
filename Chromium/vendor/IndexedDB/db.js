@@ -8,7 +8,7 @@ class IndexedDBHelper {
   }
 
   // 打开数据库
-  open(version = 1) {
+  open(version = 2) {
     return new Promise((resolve, reject) => {
       // 打开或创建数据库
       const request = indexedDB.open(this.dbName, version);
@@ -27,6 +27,10 @@ class IndexedDBHelper {
 
         if (!this.db.objectStoreNames.contains('Sticker')) {
           const Store = this.db.createObjectStore('Sticker', { keyPath: 'id', autoIncrement: true });
+          Store.createIndex("index", "index", { unique: false });
+        }
+        if (!this.db.objectStoreNames.contains('exeButtons')) {
+          const Store = this.db.createObjectStore('exeButtons', { keyPath: 'value' });
           Store.createIndex("index", "index", { unique: false });
         }
       };

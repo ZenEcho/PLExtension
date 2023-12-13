@@ -27,7 +27,7 @@ chrome.storage.local.get(storagelocal, function (result) {
     let GlobalUpload = result.FuncDomain.GlobalUpload //获取本地GlobalUpload值
 
     let uploadArea = document.createElement('PL-Extension'); //定义上传区域/侧边栏
-    uploadArea.id = 'uploadArea'; //给上传区域定义id
+    uploadArea.id = 'PL_uploadArea'; //给上传区域定义id
     uploadArea.setAttribute('title', '长按拖动');
 
 
@@ -38,7 +38,7 @@ chrome.storage.local.get(storagelocal, function (result) {
 
     let popupUrl = chrome.runtime.getURL('popup.html');
     // 创建一个iframe元素
-    let iframeBox = document.createElement('PL-IframeBox');
+    let iframeBox = document.createElement('pl-iframebox');
     let iframe = document.createElement('iframe');
     iframe.className = 'PL-iframe'
     iframeBox.appendChild(iframe);
@@ -448,24 +448,21 @@ chrome.storage.local.get(storagelocal, function (result) {
         }
         if (event.data.type === 'loadExternalConfig' && event.data.data !== null) {
             let data = event.data.data
-            storProgramConfiguration(data.data)
-                .then(() => {
-                    PLNotification({
-                        title: "导入成功",
-                        type: "success",
-                        content: "外部数据导入成功,使用时请刷新一次页面以便扩展完成初始化",
-                        duration: 10,
-                    });
-                    chrome.storage.sync.get("BedConfig").then(result => {
-                        let BedConfig = result.BedConfig || [];
-                        if (!BedConfig.some(existingData => isSameData(existingData.data, data.data))) {
-                            data.index = 1000 + BedConfig.length + 1
-                            BedConfig.push(data);
-                            chrome.storage.sync.set({ "BedConfig": BedConfig });
-                        }
-                    });
-                })
-                .catch((error) => {
+            storExeButtons(data).then(result => {
+                PLNotification({
+                    title: "导入成功",
+                    type: "success",
+                    content: "外部数据导入成功,使用时请刷新一次页面以便扩展完成初始化",
+                    duration: 10,
+                });
+                chrome.storage.sync.get("BedConfig").then(result => {
+                    let BedConfig = result.BedConfig || [];
+                    if (!BedConfig.some(existingData => isSameData(existingData.data, data.data))) {
+                        data.index = 1000 + BedConfig.length + 1
+                        BedConfig.push(data);
+                        chrome.storage.sync.set({ "BedConfig": BedConfig });
+                    }
+                }).catch((error) => {
                     PLNotification({
                         title: "导入失败",
                         type: "error",
@@ -474,6 +471,9 @@ chrome.storage.local.get(storagelocal, function (result) {
                     });
                     console.log(error);
                 });
+            })
+
+
         }
         if (event.data.type === 'insertContentIntoEditorPrompt_Click' && event.data.data === true) {
             iframeShow()
@@ -924,3 +924,4 @@ function checkForInvalidatedContext() {
 
 // 定期执行检查
 setInterval(checkForInvalidatedContext, 3000);
+

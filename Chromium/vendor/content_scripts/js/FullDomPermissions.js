@@ -20,13 +20,15 @@ window.addEventListener('message', function (event) {
         }
 
     }
-    if (event.data.type === 'TinyMCE') {
+    if (event.data.type === 'tinymce_5or6') {
         try {
             let TinyMCEs = tinymce.activeEditor;
             if (TinyMCEs) {
                 tinymce.activeEditor.execCommand('mceInsertContent', false, event.data.data);
+                window.postMessage({ type: 'TinyMCEResponse', status: 'success', data: 'true' }, '*');
             }
         } catch (error) {
+            window.postMessage({ type: 'TinyMCEResponse', status: 'error', data: 'false', "error": error }, '*');
         }
     }
     if (event.data.type === 'wangeditor') {
@@ -34,48 +36,58 @@ window.addEventListener('message', function (event) {
             let wangeditor_Element = editor.getEditableContainer()
             if (wangeditor_Element) {
                 editor.dangerouslyInsertHtml(event.data.data)
+                window.postMessage({ type: 'WangeditorResponse', status: 'success', data: 'true' }, '*');
             }
         } catch (error) {
+            window.postMessage({ type: 'WangeditorResponse', status: 'error', data: 'false', "error": error }, '*');
         }
 
     }
-    if (event.data.type === 'ckeditor') {
+    if (event.data.type === 'ckeditor_4or5') {
         try {
             let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
             if (ckeditor_Element) {
                 ckeditor_Element.insertHtml(event.data.data);
+                window.postMessage({ type: 'ckeditorResponse', status: 'success', data: 'true' }, '*');
             }
             return;
         } catch (error) {
+            window.postMessage({ type: 'ckeditorResponse', status: 'error', data: 'false', "error": error }, '*');
         }
         try {
             let ckeditor_Element = editor;
             if (ckeditor_Element) {
                 const content = ckeditor_Element.getData();
                 ckeditor_Element.setData(content + event.data.data);
+                window.postMessage({ type: 'ckeditorResponse', status: 'success', data: 'true' }, '*');
             }
             return;
         } catch (error) {
+            window.postMessage({ type: 'ckeditorResponse', status: 'error', data: 'false', "error": error }, '*');
         }
     }
-    if (event.data.type === 'ckeditor4') {
+    if (event.data.type === 'ckeditor_4') {
         try {
             let ckeditor_Element = Object.values(CKEDITOR.instances)[0];
             if (ckeditor_Element) {
                 ckeditor_Element.insertHtml(event.data.data);
+                window.postMessage({ type: 'ckeditor4Response', status: 'success', data: 'true' }, '*');
             }
         } catch (error) {
+            window.postMessage({ type: 'ckeditor4Response', status: 'error', data: 'false', "error": error }, '*');
         }
 
     }
-    if (event.data.type === 'ckeditor5') {
+    if (event.data.type === 'ckeditor_5') {
         try {
             let ckeditor_Element = editor;
             if (ckeditor_Element) {
                 const content = ckeditor_Element.getData();
                 ckeditor_Element.setData(content + event.data.data);
+                window.postMessage({ type: 'ckeditor5Response', status: 'success', data: 'true' }, '*');
             }
         } catch (error) {
+            window.postMessage({ type: 'ckeditor5Response', status: 'error', data: 'false', "error": error }, '*');
         }
 
     }
@@ -86,8 +98,10 @@ window.addEventListener('message', function (event) {
                 ueditor_Element.execCommand('insertimage', {
                     src: event.data.data,
                 });
+                window.postMessage({ type: 'ueditorResponse', status: 'success', data: 'true' }, '*');
             }
         } catch (error) {
+            window.postMessage({ type: 'ueditorResponse', status: 'error', data: 'false', "error": error }, '*');
         }
 
     }
@@ -161,7 +175,7 @@ function insertImageDiv(element, link, CssName) {
 function FullDomAutoInsert() {
     let item = document.createElement('div');
     item.className = "insertContentIntoEditorPrompt"
-    item.innerText = "😍上传扩展"
+    item.innerText = "😍上传"
     item.addEventListener('click', function () {
         window.postMessage({ type: 'insertContentIntoEditorPrompt_Click', data: true }, '*');
     });
@@ -290,6 +304,17 @@ function FullDomAutoInsert() {
             }
         }
 
+        setTimeout(function () {
+            let element = document.querySelector(".insertContentIntoEditorPrompt");
+            if (element) {
+                let parent = element.parentNode;
+                for (let i = 0; i < 2; i++) {
+                    let br = document.createElement("br");
+                    parent.insertBefore(br, element);
+                }
+            }
+
+        }, 1000);
 
     }
     //Xiuno
@@ -305,7 +330,7 @@ function FullDomAutoInsert() {
             }
         }
         if (pageText.toLowerCase().includes("回复") || pageText.toLowerCase().includes("楼主")) {
-            item.innerText = "😭上传扩展"
+            item.innerText = "😭上传"
         }
     }
     //hostevaluate

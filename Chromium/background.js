@@ -346,14 +346,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 							imageUrl = res.data.link
 							break;
 						case 'UserDiy':
-							let options_return_success_value = res;
-							options_return_success.split('.').forEach(function (prop) {
-								if (options_return_success_value) {
-									options_return_success_value = options_return_success_value[prop];
-								}
-							});
-							imageUrl = options_return_success_value
-							options_host = options_apihost
+							// 已迁移至：uploader.js/custom_uploadFile（）
 							break;
 						case 'Telegra_ph':
 							if (res.error) {

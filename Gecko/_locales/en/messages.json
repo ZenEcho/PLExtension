@@ -420,7 +420,7 @@
     "message": "Return Path<p class='options_return_success_tips'>(Path of the image URL after a successful request)</p>"
   },
   "options_return_success_placeholder": {
-    "message": "For example: data.links.url"
+    "message": "For example: data.links.url, if not required, enter 'null'."
   },
   "custom_ReturnPrefix": {
     "message": "Prefix Concatenation</span><p class='options_return_success_tips'>(Add a prefix to the returned URL)</p>"
