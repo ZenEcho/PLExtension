@@ -740,6 +740,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			'url': ('options.html')
 		});
 	}
+	if (request.getXsrfToken) {
+		getXsrfToken(request.url);
+	}
 });
 let Simulated_upload = false//模拟上传
 chrome.action.onClicked.addListener(function (tab) {
@@ -776,7 +779,20 @@ chrome.action.onClicked.addListener(function (tab) {
 	});
 
 });
-
+function getXsrfToken(url) {
+	chrome.cookies.get({ url: url, name: 'XSRF-TOKEN' }, function (cookie) {
+		if (cookie) {
+			chrome.tabs.query({ active: true }, function (tabs) {
+				TabId = tabs[0].id;
+				chrome.tabs.sendMessage(TabId, { XSRF_TOKEN: decodeURIComponent(cookie.value) }, function (response) {
+					if (chrome.runtime.lastError) {
+						return;
+					}
+				});
+			});
+		}
+	});
+}
 
 // 获取cookie #已弃用
 // 需manifest.json调用  "webRequest", "cookies"权限

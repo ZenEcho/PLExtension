@@ -672,113 +672,113 @@ $(document).ready(function () {
       }
     })
 
-    // if (!ProgramConfigurations.options_host) {
-    //   if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {
-    //     alert(chrome.i18n.getMessage("Website_domain_is_blank"));
-    //     window.location.href = "options.html";
-    //     return;
-    //   }
-    // }
+    if (!ProgramConfigurations.options_host) {
+      if (ProgramConfigurations.options_exe != "UserDiy" && ProgramConfigurations.options_exe != "Tencent_COS" && ProgramConfigurations.options_exe != "Aliyun_OSS" && ProgramConfigurations.options_exe != "AWS_S3" && ProgramConfigurations.options_exe != "GitHubUP" && ProgramConfigurations.options_exe != "imgdd") {
+        alert(chrome.i18n.getMessage("Website_domain_is_blank"));
+        window.location.href = "options.html";
+        return;
+      }
+    }
 
-    // let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
-    // if (tokenRequired.includes(ProgramConfigurations.options_exe)) {
-    //   if (!ProgramConfigurations.options_token) {
-    //     alert(`${ProgramConfigurations.options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
-    //     window.location.href = "options.html";
-    //     return;
-    //   }
-    //   if (ProgramConfigurations.options_exe === "ImgURL" && !ProgramConfigurations.options_uid) {
-    //     alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
-    //     window.location.href = "options.html";
-    //     return;
-    //   }
-    //   if (ProgramConfigurations.options_exe == "Hellohao" && !ProgramConfigurations.options_source) {
-    //     alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
-    //     window.location.href = "options.html";
-    //     return;
-    //   }
+    let tokenRequired = ['Lsky', 'EasyImages', 'ImgURL', 'SM_MS', 'Chevereto', 'Hellohao', 'Imgur'];
+    if (tokenRequired.includes(ProgramConfigurations.options_exe)) {
+      if (!ProgramConfigurations.options_token) {
+        alert(`${ProgramConfigurations.options_exe}` + chrome.i18n.getMessage("Token_is_required") + ``);
+        window.location.href = "options.html";
+        return;
+      }
+      if (ProgramConfigurations.options_exe === "ImgURL" && !ProgramConfigurations.options_uid) {
+        alert('ImgURL' + chrome.i18n.getMessage("UID_is_required"));
+        window.location.href = "options.html";
+        return;
+      }
+      if (ProgramConfigurations.options_exe == "Hellohao" && !ProgramConfigurations.options_source) {
+        alert('Hellohao' + chrome.i18n.getMessage("source_is_required"));
+        window.location.href = "options.html";
+        return;
+      }
 
-    // }
-    // switch (ProgramConfigurations.options_exe) {
-    //   case 'UserDiy':
-    //     if (!ProgramConfigurations.options_apihost) {
-    //       alert(chrome.i18n.getMessage("Website_domain_is_blank"));
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     break;
-    //   case 'Tencent_COS':
-    //     if (!ProgramConfigurations.options_SecretId) {
-    //       alert(chrome.i18n.getMessage("Tencent_cos_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_SecretKey) {
-    //       alert(chrome.i18n.getMessage("Tencent_cos_2"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Region) {
-    //       alert(chrome.i18n.getMessage("Tencent_cos_3"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Bucket) {
-    //       alert(chrome.i18n.getMessage("Tencent_cos_4"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     break;
-    //   case 'Aliyun_OSS':
-    //     if (!ProgramConfigurations.options_SecretId) {
-    //       alert(chrome.i18n.getMessage("Alibaba_oss_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_SecretKey) {
-    //       alert(chrome.i18n.getMessage("Alibaba_oss_2"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Bucket) {
-    //       alert(chrome.i18n.getMessage("Alibaba_oss_3"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Endpoint) {
-    //       alert(chrome.i18n.getMessage("Alibaba_oss_4"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Region) {
-    //       alert(chrome.i18n.getMessage("Alibaba_oss_5"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     break;
-    //   case 'AWS_S3':
-    //     if (!ProgramConfigurations.options_SecretId) {
-    //       alert(chrome.i18n.getMessage("s3_oss_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_SecretKey) {
-    //       alert(chrome.i18n.getMessage("s3_oss_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Region) {
-    //       alert(chrome.i18n.getMessage("s3_oss_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     if (!ProgramConfigurations.options_Bucket) {
-    //       alert(chrome.i18n.getMessage("s3_oss_1"))
-    //       window.location.href = "options.html";
-    //       return;
-    //     }
-    //     break;
-    // }
+    }
+    switch (ProgramConfigurations.options_exe) {
+      case 'UserDiy':
+        if (!ProgramConfigurations.options_apihost) {
+          alert(chrome.i18n.getMessage("Website_domain_is_blank"));
+          window.location.href = "options.html";
+          return;
+        }
+        break;
+      case 'Tencent_COS':
+        if (!ProgramConfigurations.options_SecretId) {
+          alert(chrome.i18n.getMessage("Tencent_cos_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_SecretKey) {
+          alert(chrome.i18n.getMessage("Tencent_cos_2"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Region) {
+          alert(chrome.i18n.getMessage("Tencent_cos_3"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Bucket) {
+          alert(chrome.i18n.getMessage("Tencent_cos_4"))
+          window.location.href = "options.html";
+          return;
+        }
+        break;
+      case 'Aliyun_OSS':
+        if (!ProgramConfigurations.options_SecretId) {
+          alert(chrome.i18n.getMessage("Alibaba_oss_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_SecretKey) {
+          alert(chrome.i18n.getMessage("Alibaba_oss_2"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Bucket) {
+          alert(chrome.i18n.getMessage("Alibaba_oss_3"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Endpoint) {
+          alert(chrome.i18n.getMessage("Alibaba_oss_4"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Region) {
+          alert(chrome.i18n.getMessage("Alibaba_oss_5"))
+          window.location.href = "options.html";
+          return;
+        }
+        break;
+      case 'AWS_S3':
+        if (!ProgramConfigurations.options_SecretId) {
+          alert(chrome.i18n.getMessage("s3_oss_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_SecretKey) {
+          alert(chrome.i18n.getMessage("s3_oss_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Region) {
+          alert(chrome.i18n.getMessage("s3_oss_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        if (!ProgramConfigurations.options_Bucket) {
+          alert(chrome.i18n.getMessage("s3_oss_1"))
+          window.location.href = "options.html";
+          return;
+        }
+        break;
+    }
 
 
     // 写入标题

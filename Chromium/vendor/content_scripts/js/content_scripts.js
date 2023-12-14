@@ -591,7 +591,7 @@ const dataWithFunctions = {
             let pathname = localStorage.getItem(getCurrentDomain())
             if (pathname !== "true") {
                 PLNotification({
-                    title: "发现：兰空图床",
+                    title: `发现：` + chrome.i18n.getMessage("app_name") + `可配置图床`,
                     type: "警告",
                     content: `点击【创建 Token】按钮，在【创建成功】页点击【添加到` + chrome.i18n.getMessage("app_name") + `】按钮，可加载到` + chrome.i18n.getMessage("app_name") + `扩展。`,
                     duration: 0,
@@ -612,12 +612,93 @@ const dataWithFunctions = {
                                                 "options_source_select": "2",
                                                 "options_token": "Bearer " + token
                                             },
-                                            "ConfigName": "兰空图床"
+                                            "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
                                         }
                                         window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
                                         this.disabled = true
                                     } catch (error) {
                                         alert("获取 Token 失败，请点击【创建 Token】按钮创建Token")
+                                        // 延迟1秒
+                                        setTimeout(function () {
+                                            PLNotification({
+                                                title: `权限调用询问`,
+                                                type: "警告",
+                                                content: `是否允许【` + chrome.i18n.getMessage("app_name") + "】调用本站的 cookie,用于一键获取token？<br>注意：本次调用将涉及您的隐私,如果您不同意调用请无视。",
+                                                duration: 0,
+                                                button: [
+                                                    {
+                                                        text: "允许并获取token",
+                                                        style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                                                        init: function () {
+                                                            let button = this
+                                                            this.addEventListener("click", function () {
+                                                                chrome.runtime.onMessage.addListener(function (request) {
+                                                                    if (request.XSRF_TOKEN) {
+                                                                        let data = {
+                                                                            "name": chrome.i18n.getMessage("app_name"),
+                                                                            "abilities": [
+                                                                                "user:profile", "image:tokens", "image:upload",
+                                                                                "image:list", "image:delete", "album:list",
+                                                                                "album:delete", "strategy:list"
+                                                                            ]
+                                                                        };
+                                                                        fetch(window.location.origin + "/user/tokens", {
+                                                                            "headers": {
+                                                                                "accept": "application/json, text/plain, */*",
+                                                                                "content-type": "application/json",
+                                                                                "x-xsrf-token": request.XSRF_TOKEN
+                                                                            },
+
+                                                                            "body": JSON.stringify(data),
+                                                                            "method": "POST",
+                                                                        })
+                                                                            .then(response => response.json())
+                                                                            .then((data) => {
+                                                                                if (data.data) {
+                                                                                    let config = {
+                                                                                        "data": {
+                                                                                            "options_album_id": "",
+                                                                                            "options_exe": "Lsky",
+                                                                                            "options_host": getCurrentDomain(),
+                                                                                            "options_permission_select": "0",
+                                                                                            "options_source_select": "2",
+                                                                                            "options_token": "Bearer " + data.data.token
+                                                                                        },
+                                                                                        "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
+                                                                                    }
+                                                                                    window.postMessage({ type: 'loadExternalConfig', data: config }, "*");
+                                                                                    button.disabled = true
+                                                                                } else {
+                                                                                    console.log(data);
+                                                                                    PLNotification({
+                                                                                        title: "添加失败",
+                                                                                        type: "error",
+                                                                                        content: "详细报错请打开,开发者控制台(F12)查看",
+                                                                                        duration: 15,
+                                                                                    });
+                                                                                }
+
+                                                                            })
+                                                                            .catch((error) => {
+                                                                                console.error('Error:', error)
+                                                                                PLNotification({
+                                                                                    title: "添加失败",
+                                                                                    type: "error",
+                                                                                    content: "详细报错请打开,开发者控制台(F12)查看",
+                                                                                    duration: 15,
+                                                                                });
+                                                                            });
+                                                                    }
+                                                                });
+                                                                chrome.runtime.sendMessage({ getXsrfToken: 'getXsrfToken', url: window.location.href });
+
+                                                            });
+
+                                                        }
+                                                    }
+                                                ]
+                                            });
+                                        }, 1000)
                                     }
                                 });
                             }
@@ -703,7 +784,7 @@ const dataWithFunctions = {
                                                             "options_source_select": "1",
                                                             "options_token": "Bearer " + data.data.token
                                                         },
-                                                        "ConfigName": window.location.hostname + chrome.i18n.getMessage("Config")
+                                                        "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
                                                     }
                                                     window.postMessage({ type: 'loadExternalConfig', data: config }, "*");
                                                     button.disabled = true
@@ -761,9 +842,55 @@ const dataWithFunctions = {
                 PLNotification({
                     title: "发现：简单图床",
                     type: "success",
-                    content: `在【API 设置】页刷新,可加载【添加到` + chrome.i18n.getMessage("app_name") + `】按钮。`,
+                    content: `在【API 设置】页刷新,可加载【添加到` + chrome.i18n.getMessage("app_name") + `】按钮。<br>或者点击【一键创建token】按钮,创建token.`,
                     duration: 0,
                     button: [
+                        {
+                            text: "一键创建token",
+                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                            init: function () {
+                                let button = this
+                                this.addEventListener("click", function () {
+                                    let data = new URLSearchParams();
+                                    let token = crypto.randomUUID().replace(/-/g, '');
+                                    data.append("add_token", token);
+                                    data.append("add_token_expired", "1000");
+                                    data.append("add_token_id", Date.now());
+                                    fetch(window.location.href, {
+                                        "headers": {
+                                            "accept": "application/json, text/plain, */*",
+                                            "content-type": "application/x-www-form-urlencoded",
+                                        },
+                                        body: data,
+                                        method: "POST",
+                                    })
+                                        .then(response => {
+                                            if (response.status === 200) {
+                                                let data = {
+                                                    "data": {
+                                                        "options_exe": "EasyImages",
+                                                        "options_host": getCurrentDomain(),
+                                                        "options_token": token
+                                                    },
+                                                    "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
+                                                }
+                                                window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
+                                                button.disabled = true;
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                            PLNotification({
+                                                title: "一键创建token请求失败",
+                                                type: "error",
+                                                content: "详细报错请打开,开发者控制台(F12)查看",
+                                                duration: 15,
+                                            });
+                                        });
+
+                                });
+                            }
+                        },
                         {
                             text: "本站不再提示",
                             style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
@@ -795,7 +922,7 @@ const dataWithFunctions = {
                                 "options_host": getCurrentDomain(),
                                 "options_token": token
                             },
-                            "ConfigName": "简单图床"
+                            "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
                         }
                         window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
                     });
@@ -833,7 +960,7 @@ const dataWithFunctions = {
                                                 "options_nsfw_select": "0",
                                                 "options_token": token
                                             },
-                                            "ConfigName": "Chevereto图床"
+                                            "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
                                         }
                                         window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
                                         this.disabled = true

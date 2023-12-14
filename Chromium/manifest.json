@@ -61,9 +61,10 @@
   "permissions": [
     "storage",
     "contextMenus",
-    "notifications"
+    "notifications",
+    "cookies"
   ],
   "host_permissions": [
-    "*://*.bilibili.com/*"
+    "<all_urls>"
   ]
 }
