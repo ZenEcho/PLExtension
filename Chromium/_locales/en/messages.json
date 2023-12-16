@@ -111,7 +111,7 @@
     "message": "The tips are provided by <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>PLExtension</a> for reference only. Please replace it when using it officially."
   },
   "save": {
-    "message": "Save"
+    "message": "Save / Run"
   },
   "Open_Method1": {
     "message": "<i class='bi bi-window'></i>Open in tab"

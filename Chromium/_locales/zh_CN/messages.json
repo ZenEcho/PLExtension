@@ -111,7 +111,7 @@
     "message": "提示由 <a href='https://github.com/ZenEcho/PLExtension/' style='color: #03a9f4;' target='_blank'>盘络上传</a> 提供,仅供参考.正式使用请替换."
   },
   "save": {
-    "message": "保存"
+    "message": "保存 / 启动"
   },
   "Open_Method1": {
     "message": "<i class='bi bi-window'></i> 标签打开"

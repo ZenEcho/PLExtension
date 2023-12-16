@@ -251,10 +251,7 @@ function attemptInsertion(UpUrl) {
             if (!success) {
                 // 如果插入失败，将该编辑器类型添加到排除列表中
                 excludedEditorTypes.push(editorType[0]);
-                PLNotification({
-                    type: "warning",
-                    content: "发现错误插入类型：" + editorType[0] + "</br>错误URL:" + window.location.href,
-                });
+                console.log("发现错误插入类型：" + editorType[0] + "</br>错误URL:" + window.location.href);
                 attemptInsertion(UpUrl);
             } else {
                 saveEditorTypeForDomain(editorType[0]);
@@ -289,10 +286,7 @@ function attemptInsertion(UpUrl) {
             PLNotification(data);
         }
         if (editorType.length === 0) {
-            PLNotification({
-                type: "error",
-                content: "找不到合适的编辑器类型，或者所有类型都失败了" + "</br>失效地址:" + window.location.href + "</br>如果需要适配请上报该错误！",
-            });
+           console.log("找不到合适的编辑器类型，或者所有类型都失败了" + "</br>失效地址:" + window.location.href + "</br>如果需要适配请上报该错误！");
         }
 
     })

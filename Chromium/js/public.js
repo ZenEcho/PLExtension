@@ -857,7 +857,7 @@ function loadButtonModule() {
   })
   welcomeContent.click(function (e) {
     if (e.target.className === "overlay") {
-      if ($(".option-Buttons button").length < 1) {
+      if ($(".sidebar .buttons button").length < 1) {
         return;
       }
       welcomeContent.remove();

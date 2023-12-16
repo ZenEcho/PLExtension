@@ -33,7 +33,7 @@
       <div class="loading-shape loading-shape-4"></div>
     </div>
   </div>
-  <div class="shadow-lg" id="header">
+  <div id="header">
     <div class="container-md ">
       <header class="py-3">
         <ul class="nav justify-content-end nav-pills ">
@@ -56,88 +56,81 @@
       </header>
     </div>
   </div>
-
-  <div class="container-md">
-    <h1 style="margin-top: 2rem; margin-bottom: 2rem;"><a class="title-a" href="#"></a></h1>
-  </div>
-  <div class="main">
-    <div class="main-left shadow-lg">
-      <div class="border-bottom Config-Box">
-        <div class="Config-Box-Left">
-          <div id="options_exe" style="padding: 0 4px;">
-            <div class="option-Buttons"></div>
-
-            <button type="button" class="add-button">
-              <span class="button__text">添加</span>
-              <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24"
-                  stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24"
-                  fill="none" class="svg">
-                  <line y2="19" y1="5" x2="12" x1="12"></line>
-                  <line y2="12" y1="12" x2="19" x1="5"></line>
-                </svg></span>
-            </button>
-          </div>
-
-        </div>
-        <div class="col Config-Box-Right">
-          <div class="border-bottom Config-Box-Right-header">
-            <div class="CorsButton" id="CorsButton">
-              <button type="button" class="css-button-rounded--black" data-i18n="Configure_CORS_Proxy">配置CORS代理</button>
-            </div>
-
-          </div>
-          <div class="row">
-            <form id="options-form">
-              <div class="options-form"></div>
-              <div class="container-fluid" style="border: none;">
-                <p class="text-bottom-Tips1"></p>
-                <p class="text-bottom-Tips2" data-i18n="Reference_Tips">提示由 <a
-                    href="https://github.com/ZenEcho/PLExtension/" style="color: #03a9f4;" target="_blank">盘络上传</a>
-                  提供,仅供参考。正式使用请替换。</p>
-                <button style=" width: 100%; " type="submit" class="css-button-rounded--sky" id="options_save"
-                  data-i18n="save">保存</button>
-              </div>
-            </form>
-
-          </div>
-
-        </div>
-      </div>
+  <div id="wrapper">
+    <span class="reduce"><i class="bi bi-arrow-left-right"></i></span>
+    <div class="sidebar">
+      <div><span><i class="bi bi-sliders"></i> 程序</span></div>
+      <hr>
+      <div class="buttons"></div>
+      <hr>
+      <button type="button" class="add-button">
+        <span class="button__text"><i class="bi bi-house-add"></i> 添加</span></span>
+        <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24"
+            stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24"
+            fill="none" class="svg">
+            <line y2="19" y1="5" x2="12" x1="12"></line>
+            <line y2="12" y1="12" x2="19" x1="5"></line>
+          </svg></span>
+      </button>
     </div>
-    <div class="main-right" style="min-width: 380px;">
 
-      <div class="Config-Box-Log Config-Bottom-Boxs shadow-lg ">
-        <div class="Config-Box-Log-haed">
-          <span style="color: white;" data-i18n="bi_clipboard_data+SettingsRecord"><i class="bi bi-clipboard-data"></i>
-            配置记录</span>
-        </div>
-        <div class="Config-Box-Log-content border-bottom">
-          <div class="Config-Box-Log-item">
+    <div id="content">
+      <div class="container-md" style="margin: 10px 0 30px 0;">
+        <h1><a class="title-a" href="#"></a></h1>
+      </div>
+      <div class="content-frame">
+        <div class="left">
+          <div class="Config-Box shadow-lg Config-Bottom-Boxs">
+            <div class="col Config-Box-Right">
+              <div class="border-bottom Config-Box-Right-header">
+                <div class="CorsButton" id="CorsButton">
+                  <button type="button" class="css-button-rounded--black"
+                    data-i18n="Configure_CORS_Proxy">配置CORS代理</button>
+                </div>
+              </div>
+              <div class="row">
+                <form id="options-form">
+                  <div class="options-form"></div>
+                  <div style="border: none;display: flex;flex-direction: column;align-items: center;">
+                    <p class="text-bottom-Tips1"></p>
+                    <p class="text-bottom-Tips2" data-i18n="Reference_Tips">提示由 <a
+                        href="https://github.com/ZenEcho/PLExtension/" style="color: #03a9f4;" target="_blank">盘络上传</a>
+                      提供,仅供参考。正式使用请替换。</p>
+                    <button style=" width: 100%; " type="submit" class="css-button-rounded--sky" id="options_save"
+                      data-i18n="save">保存</button>
+                  </div>
+                </form>
 
+              </div>
+
+            </div>
           </div>
         </div>
-        <div class="Config-Box-Log-footer text-center user-select-none mt-1">
-          <span class="px-1 btn btn-light btn-sm share-button" data-i18n="bi_send + share"><i class="bi bi-send"></i>
-            分享</span>
-          <span class="px-1 btn btn-light btn-sm import-button" data-bs-toggle="modal"
-            data-bs-target="#ImportConfigurationPopup" data-i18n="bi_plus_circle + import"><i
-              class="bi bi-plus-circle"></i> 导入</span>
-        </div>
-      </div>
+        <div class="right">
+          <div class="Config-Bottom-Boxs shadow-lg">
+            <div class="Config-Box-Log-haed">
+              <span style="color: white;" data-i18n="bi_clipboard_data+SettingsRecord"><i
+                  class="bi bi-clipboard-data"></i>
+                配置记录</span>
+            </div>
+            <div class="Config-Box-Log-content border-bottom">
+              <div class="Config-Box-Log-item">
 
-      <div class="Config-Bottom-Boxs shadow-lg" style="margin-top: 16px;">
-
-        <div class="accordion" id="accordionOtherSettings">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="OtherSettings">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                其他设置
-              </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="OtherSettings"
-              data-bs-parent="#accordionOtherSettings">
-              <div class="accordion-body">
+              </div>
+            </div>
+            <div class="Config-Box-Log-footer text-center user-select-none mt-1">
+              <span class="px-1 btn btn-light btn-sm share-button" data-i18n="bi_send + share"><i
+                  class="bi bi-send"></i>
+                分享</span>
+              <span class="px-1 btn btn-light btn-sm import-button" data-bs-toggle="modal"
+                data-bs-target="#ImportConfigurationPopup" data-i18n="bi_plus_circle + import"><i
+                  class="bi bi-plus-circle"></i> 导入</span>
+            </div>
+          </div>
+          <div class="Config-Bottom-Boxs shadow-lg" style="margin-top: 16px;">
+            <button class="collapsible-card-button">其他设置</button>
+            <div class="collapsible-card-content">
+              <div class="collapsible-card-inner">
                 <div class="one">
                   <div id="options_Open_withDiv" class="Config-Bottom-Box">
                     <div class="btn-group">
@@ -432,13 +425,13 @@
                 </div>
               </div>
             </div>
+
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
+
 
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
   </div>

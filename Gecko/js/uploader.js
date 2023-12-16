@@ -135,12 +135,14 @@ function popup_Uploader() {
         case 'Imgur':
             uploader.options.url = ProgramConfigurations.options_proxy_server + "https://" + ProgramConfigurations.options_host + "/3/upload";
             uploader.options.headers = { "Authorization": 'Client-ID ' + ProgramConfigurations.options_token };
-            if (ProgramConfigurations.options_imgur_post_mode == "video") {
+            console.log(uploader.options.headers);
+            console.log(ProgramConfigurations.options_token);
+            if (ProgramConfigurations.options_imgur_post_mode) {
                 uploader.options.acceptedFiles = ".mp4,.webm,.x-matroska,.quicktime,.x-flv,.x-msvideo,.x-ms-wmv,.mpeg"
             } else {
                 uploader.options.acceptedFiles = 'image/*';
             }
-            uploader.options.paramName = ProgramConfigurations.options_imgur_post_mode;
+            uploader.options.paramName = ProgramConfigurations.options_imgur_post_mode ? "video" : "image";
             break;
         case 'UserDiy':
             uploader.options.maxFilesize = 5000

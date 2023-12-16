@@ -1165,15 +1165,15 @@ $(document).ready(function () {
             introJs().setOptions({
               steps: [
                 {
-                  element: document.querySelector('#options_exe .option-Buttons'),
+                  element: document.querySelector('.sidebar .buttons'),
                   intro: "你需要配置【图床】,才能使用哦!",
                 },
                 {
-                  element: document.querySelector('#options_exe .add-button'),
+                  element: document.querySelector('.sidebar .add-button'),
                   intro: "点击这里可以添加更多【图床】",
                 },
                 {
-                  element: document.querySelector('.Config-Box-Log.Config-Bottom-Boxs .Config-Box-Log-footer'),
+                  element: document.querySelector('.right .Config-Bottom-Boxs'),
                   intro: "如果你有配置信息,可以在此处导入",
                 },
               ],
@@ -1193,17 +1193,17 @@ $(document).ready(function () {
       $('.options-form').empty().append(prog.html);
       $("#Object_Storage_cors").remove()
       $("#putBucketACL").remove()
-      $("#options_exe .option-Buttons button").removeClass('active');
+      $(".sidebar .buttons button").removeClass('active');
       prog.init();
-      $(`#options_exe .option-Buttons button[value=${programId}]`).addClass("active");
+      $(`.sidebar .buttons button[value=${programId}]`).addClass("active");
       $('#options-form').hide().slideDown('slow');
       $(".options-form input[name='requestMethod'][value='" + ProgramConfigurations.requestMethod + "']").prop('checked', true);
       $('textarea').on('input', function () {
         this.style.height = (this.scrollHeight) + 'px'; // 根据内容的滚动高度来设置文本域的高度
       });
-      
+
       $("#options_Headers, #options_Body").change(function () {
-        validateAndSetBoxShadow(this); 
+        validateAndSetBoxShadow(this);
       });
       if (prog.config) {
         chrome.storage.local.get(['ProgramConfiguration'], function (result) {
@@ -1236,6 +1236,18 @@ $(document).ready(function () {
         $(selector).css('box-shadow', '#dc3545a3 0 0 0 0.25em');
       }
     }
+    // 折叠面板
+    function initializeCollapsibleCards() {
+      $(".collapsible-card-button").click(function () {
+        $(this).toggleClass("collapsible-card-active");
+        var content = $(this).next(".collapsible-card-content");
+        if (content.css("max-height") !== "0px") {
+          content.css("max-height", "0px");
+        } else {
+          content.css("max-height", content.prop('scrollHeight') + "px");
+        }
+      });
+    }
 
     dbHelper("exeButtons").then(result => {
       // 处理获取到的配置数据
@@ -1243,18 +1255,36 @@ $(document).ready(function () {
       db.getSortedByIndex().then(exeButtons => {
         if (exeButtons.length > 0) {
           $.each(exeButtons, function (index, buttonInfo) {
-            $('#options_exe .option-Buttons').append(createImageHostingButton(buttonInfo));
+            $('.sidebar .buttons').append(createImageHostingButton(buttonInfo));
           });
           animation_button2('.Animation_button2').then(function () {
             overlayElement.remove()
           });
+
           i18n();
           initializeProgramOptions(ProgramConfigurations.options_exe)
-          $(`#options_exe .option-Buttons button[value=${ProgramConfigurations.options_exe}] span`).addClass("selected");
+          $(`.sidebar .buttons button[value=${ProgramConfigurations.options_exe}] span`).addClass("selected");
           // 按钮点击事件委托
-          $('#options_exe .option-Buttons button').on('click', function () {
+          $('.sidebar .buttons button').on('click', function () {
             const progId = $(this).attr("id").replace("exe_", "");
             initializeProgramOptions(progId);
+            console.log(localStorage.firstRun);
+            if (localStorage.firstRun !== "true") {
+              setTimeout(() => {
+                introJs().setOptions({
+                  steps: [
+                    {
+                      element: document.querySelector('.Config-Box.Config-Bottom-Boxs'),
+                      intro: "填写完信息后点击【保存】按钮,才能使用扩展进行上传！",
+                    }
+                  ],
+                  nextLabel: ' >',
+                  prevLabel: '< ',
+                  doneLabel: '好的',
+                  showBullets: false,
+                }).start();
+              }, 1000);
+            }
           });
         } else {
           loadButtonModule()
@@ -1288,6 +1318,7 @@ $(document).ready(function () {
             }).start();
           }, 100);
         }
+        initializeCollapsibleCards();
       })
 
     }).catch(error => {
@@ -1692,29 +1723,9 @@ $(document).ready(function () {
      * 实现imgur上传方式如图片还是视频
      */
     function options_imgur_post_modeFn() {
-      $('#options_imgur_post_mode').click(function () {
-        if ($('#options_imgur_post_mode').is(':checked')) {
-          storProgramConfiguration({ 'options_imgur_post_mode': 1 })
-          // 开启
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Video_upload_mode"),
-          })
-
-        } else {
-          storProgramConfiguration({ 'options_imgur_post_mode': 0 })
-          // 关闭
-          toastItem({
-            toast_content: chrome.i18n.getMessage("Image_upload_mode"),
-          })
-        }
-      });
-
-      // 判断模式
-      chrome.storage.local.get(["options_imgur_post_mode"], function (result) {
-        if (result.options_imgur_post_mode == 1) {
-          $('#options_imgur_post_mode').attr('checked', true);
-        }
-      })
+      if (ProgramConfigurations.options_imgur_post_mode) {
+        $('#options_imgur_post_mode').attr('checked', true);
+      }
     }
     // 保存配置
     $("#options-form").submit(function (event) {
@@ -1722,7 +1733,7 @@ $(document).ready(function () {
       SaveFunction()
     });
     function SaveFunction() {
-      let optionsExe = $("#options_exe .option-Buttons button.active");
+      let optionsExe = $(".sidebar .buttons button.active");
       if (optionsExe.length) {
         let proxyServer = $('#options_proxy_server');
         let FormData = new Object;
@@ -1736,7 +1747,6 @@ $(document).ready(function () {
         if ($('#exe_Telegra_ph').hasClass('active')) {
           FormData['options_host'] = "telegra.ph"
         }
-
         $(".options-form input").each(function () {
           if (this.type === "radio") {
             if ($(this).is(':checked')) {
@@ -1748,16 +1758,12 @@ $(document).ready(function () {
             FormData[this.id] = $(this).val()
           }
         });
-
-
         $(".options-form select").each(function () {
           FormData[this.id] = $(this).val()
         });
-
         $(".options-form textarea").each(function () {
           FormData[this.id] = $(this).val()
         });
-
         if ($("#options_UploadPath")) {
           let PathString = $("#options_UploadPath").val()
           if (!PathString) {
@@ -1807,12 +1813,16 @@ $(document).ready(function () {
           FormData['options_host'] = "www.toutiao.com"
         }
         localStorage.options_webtitle_status = 1
+        if (localStorage.firstRun !== "true") {
+          localStorage.firstRun = "true"
+        }
         toastItem({
           toast_content: chrome.i18n.getMessage("Successfully_saved_1")
         })
         FormData["options_exe"] = optionsExe.attr("value")
         storProgramConfiguration(FormData)
         storeBedConfig(FormData);
+
       } else {
         toastItem({
           toast_content: chrome.i18n.getMessage("select_upload_program")
@@ -2964,6 +2974,32 @@ $(document).ready(function () {
         });
       })
     })
-  })
+  });
+
+
+  $('#wrapper .reduce').click(function (event) {
+    let $sidebar = $('.sidebar');
+    let $this = $(this);
+    if ($sidebar.hasClass("reduce-active") || $sidebar.css("display") == "none") {
+      $this.html('<i class="bi bi-arrow-bar-left"></i>');
+      $this.removeClass("reduce-active");
+      $sidebar.removeClass("reduce-active");
+      $sidebar.css({
+        'display': 'block',
+      });
+      $this.css({
+        'left': '176px',
+        'background-color': 'transparent',
+      });
+    } else {
+      $this.html('<i class="bi bi-arrow-bar-right"></i>');
+      $this.addClass("reduce-active");
+      $this.css({
+        'left': '0',
+        'background-color': '#adb5bd',
+      });
+      $sidebar.addClass("reduce-active");
+    };
+  });
 });
 
