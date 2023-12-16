@@ -408,13 +408,13 @@
     "message": "Headers</span><p class='options_Headers_tips'>(Custom request headers, leave empty if not needed)</p>"
   },
   "options_Headers_floatingTextarea": {
-    "message": "Use JSON format such as: {'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
+    "message": "Use JSON format such as: {&quot;Accept&quot;:&quot;application/json&quot;,&quot;Authorization&quot;:&quot;Bearer 1|1bJbwlb5&quot;}"
   },
   "options_Body": {
     "message": "Body</span><p class='options_Body_tips'>(Custom Body, leave empty if not needed)</p>"
   },
   "options_Body_floatingTextarea": {
-    "message": "Use JSON format such as: {'mail':'123@qq.com','password':'123456'}"
+    "message": "Use JSON format such as: {&quot;mail&quot;:&quot;123@qq.com&quot;,&quot;password&quot;:&quot;123456&quot;}"
   },
   "options_return_success": {
     "message": "Return Path<p class='options_return_success_tips'>(Path of the image URL after a successful request)</p>"

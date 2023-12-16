@@ -408,13 +408,13 @@
     "message": "Headers</span><p class='options_Headers_tips'>(自定义请求头,不需要可以留空)</p>"
   },
   "options_Headers_floatingTextarea": {
-    "message": "使用JSON格式 如：{'Accept':'application/json','Authorization':'Bearer 1|1bJbwlb5'}"
+    "message": "使用JSON格式 如：{&quot;Accept&quot;:&quot;application/json&quot;,&quot;Authorization&quot;:&quot;Bearer 1|1bJbwlb5&quot;}"
   },
   "options_Body": {
     "message": "Body</span><p class='options_Body_tips'>(自定义Body,不需要可以留空)</p>"
   },
   "options_Body_floatingTextarea": {
-    "message": "使用JSON格式 如：{'mail':'123@qq.com','password':'123456'}"
+    "message": "使用JSON格式 如：{&quot;mail&quot;:&quot;123@qq.com&quot;,&quot;password&quot;:&quot;123456&quot;}"
   },
   "options_return_success": {
     "message": "返回路径<p class='options_return_success_tips'>(请求成功后的图片URL路径)</p>"
