@@ -1098,6 +1098,7 @@ $(document).ready(function () {
           <div class="alert alert-secondary" role="alert">
             <h4 class="alert-heading">` + chrome.i18n.getMessage("Program_selection_instructions_1") + `</h4>
             <p>` + chrome.i18n.getMessage("Program_selection_instructions_2") + `</p>
+            <div class="firefox-alert"></div>
             <hr>
             <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
           <!-- 按钮 -->
@@ -1114,21 +1115,21 @@ $(document).ready(function () {
           <div class="carousel-inner">
             <div class="carousel-item active">
               <img src="https://cdn-us.imgs.moe/2023/07/04/64a414574dba6.gif">
-              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;position: initial;;">
                 <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
                 <p>` + chrome.i18n.getMessage("You_know_what_1") + `</p>
               </div>
             </div>
             <div class="carousel-item">
               <img src="https://cdn-us.imgs.moe/2023/07/04/64a4145276e67.gif" loading="lazy">
-              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;position: initial;;">
                 <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
                 <p>` + chrome.i18n.getMessage("You_know_what_2") + `</p>
               </div>
             </div>
             <div class="carousel-item">
               <img src="https://cdn-us.imgs.moe/2023/07/04/64a414475a4ec.gif" loading="lazy">
-              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;">
+              <div class="carousel-caption d-none d-md-block" style="color: #fb06ff;position: initial;;">
                 <h1>` + chrome.i18n.getMessage("You_know_what") + `</h1>
                 <p>` + chrome.i18n.getMessage("You_know_what_3") + `</p>
               </div>
@@ -1151,12 +1152,13 @@ $(document).ready(function () {
         `,
         init: function () {
           if (window.navigator.userAgent.indexOf('Firefox') > -1) {
-            $("#carouselExampleCaptions").prepend(`<button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>`)
-            $("#carouselExampleCaptions").prepend(`
-                <div class="alert alert-warning" role="alert">
+            let $alert = $(`
+            <div class="alert alert-warning" role="alert">
                 ` + chrome.i18n.getMessage("Firefox_browser_access_permissions_warning") + `
                 </div>
-                `)
+            <button type="button" id="firefox-permission-toggle" class="css-button-rounded--sky"style="margin-bottom: 1em;">` + chrome.i18n.getMessage("Firefox_browser_access_permissions") + `</button>
+            `)
+            $(".alert .firefox-alert").append($alert)
             $("#firefox-permission-toggle").click(() => {
               browser.runtime.openOptionsPage();
             })
