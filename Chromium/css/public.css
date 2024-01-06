@@ -1,6 +1,6 @@
 body{padding:0px;margin:0px;min-width:500px}
 .container-md{transition:max-width 1s ease-in-out}
-#header{z-index:9990;background-color:#0f62fe;position:sticky;top:0}
+#header{z-index:10;background-color:#0f62fe;position:sticky;top:0}
 #header .nav .nav-item a{color:#eee}
 #header .nav .nav-item a:hover{transform: scale3d(1.1, 1.1, 1.1);color:white}
 .title-a{text-shadow:2px 2px #03a9f4;text-decoration:none}
@@ -10,13 +10,13 @@ h1{text-align:center;background:-webkit-linear-gradient(135deg,#0eaf6d,#ff6ac6 2
 }h1:hover{-webkit-animation:flowCss 4s infinite linear}
 .box-shadow{box-shadow:0 1px 6px rgba(0,0,0,0.1),0 2px 4px rgba(0,0,0,0.06)}
 .em1{padding:1em;margin:1em}
-#alert{z-index:999;width:100%;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:transparent;color:black;font-size:1rem;text-align:center}
+#alert{z-index:10;width:100%;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:transparent;color:black;font-size:1rem;text-align:center}
 .alert_title{width:100%;text-align:center;line-height:2rem;background-color:#03a9f4}
 .alert_title_p{font-size:1.5rem;margin:0;padding:0;width:100%;vertical-align:middle;color:white;user-select:none}
 .alert_title_button{width:2rem;float:right;margin-top:-2rem;border:none;background-color:#ff5722;height:2rem;color:white}
 .alert_title_button:hover{background-color:#ff9800}
 .alert_content{font-size:1rem;width:100%;height:100%;overflow:hidden;vertical-align:middle;background-color:white;user-select:none}
-#alertBG{z-index:998;margin:0;padding:0;position:absolute;top:0%;width:999%;height:999%;background:rgb(0 0 0 / 50%)}
+#alertBG{z-index:10;margin:0;padding:0;position:absolute;top:0%;width:999%;height:999%;background:rgb(0 0 0 / 50%)}
 .Animation_button{border:none;cursor:pointer;position:relative}
 .Animation_button_span{display:block}
 .Animation_button::before,.Animation_button::after{content:"";width:0;height:2px;position:absolute;transition:all .2s linear;background:-webkit-linear-gradient(180deg,#00CCFF,#0099FF 50%,#00CCFF)}
@@ -69,7 +69,7 @@ h1{text-align:center;background:-webkit-linear-gradient(135deg,#0eaf6d,#ff6ac6 2
 .loading-shape-2{background-color:#c5523f;right:0;animation:animationloading-shape2 0.5s ease infinite alternate}
 .loading-shape-3{background-color:#499255;bottom:0;animation:animationloading-shape3 0.5s ease infinite alternate}
 .loading-shape-4{background-color:#f2b736;right:0;bottom:0;animation:animationloading-shape4 0.5s ease infinite alternate}
-.overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:9991}
+.overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:10}
 @keyframes animationContainer{0%{transform:rotate(0)}
 100%{transform:rotate(360deg)}
 }@keyframes animationloading-shape1{0%{transform:translate(0,0)}

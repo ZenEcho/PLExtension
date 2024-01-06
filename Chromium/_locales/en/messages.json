@@ -695,9 +695,6 @@
   "Successfully_saved_2": {
     "message": "Save successful. Please refresh the page for the changes to take effect."
   },
-  "select_upload_program": {
-    "message": "Please select an upload program"
-  },
   "Unable_configure_CORS_proxy": {
     "message": "Unable to configure CORS proxy. Please visit the official website for related configurations"
   },

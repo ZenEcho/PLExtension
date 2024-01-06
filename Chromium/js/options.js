@@ -1167,7 +1167,7 @@ $(document).ready(function () {
             introJs().setOptions({
               steps: [
                 {
-                  element: document.querySelector('.sidebar .buttons'),
+                  element: document.querySelector('.sidebar'),
                   intro: "你需要配置【图床】,才能使用哦!",
                 },
                 {
@@ -1268,9 +1268,8 @@ $(document).ready(function () {
           $(`.sidebar .buttons button[value=${ProgramConfigurations.options_exe}] span`).addClass("selected");
           // 按钮点击事件委托
           $('.sidebar .buttons button').on('click', function () {
-            const progId = $(this).attr("id").replace("exe_", "");
+            const progId = $(this).attr("value");
             initializeProgramOptions(progId);
-            console.log(localStorage.firstRun);
             if (localStorage.firstRun !== "true") {
               setTimeout(() => {
                 introJs().setOptions({
@@ -1333,21 +1332,21 @@ $(document).ready(function () {
       $("#Object_Storage_cors").click(function () {
         switch (ProgramConfigurations.options_exe) {
           case 'Tencent_COS':
-            if ($('#exe_Tencent_COS').hasClass('active')) {
+            if ($('.buttons button[value="Tencent_COS"]').hasClass('active')) {
               setCosBucketCors();
             } else {
               disableCorsButton();
             }
             break;
           case 'Aliyun_OSS':
-            if ($('#exe_Aliyun_OSS').hasClass('active')) {
+            if ($('.buttons button[value="Aliyun_OSS"]').hasClass('active')) {
               setOssBucketCors();
             } else {
               disableCorsButton();
             }
             break;
           case 'AWS_S3':
-            if ($('#exe_AWS_S3').hasClass('active')) {
+            if ($('.buttons button[value="AWS_S3"]').hasClass('active')) {
               setS3BucketCors();
             } else {
               disableCorsButton();
@@ -1531,7 +1530,7 @@ $(document).ready(function () {
         $('#putBucketACL li').attr("aria-disabled", true)
         switch (ProgramConfigurations.options_exe) {
           case 'Tencent_COS':
-            if ($('#exe_Tencent_COS').hasClass('active')) {
+            if ($('.buttons button[value="Tencent_COS"]').hasClass('active')) {
               async function cos_getBucketAcl() {
                 try {
                   const result = await cos.getBucketAcl({ Bucket: ProgramConfigurations.options_Bucket, Region: ProgramConfigurations.options_Region });
@@ -1556,7 +1555,7 @@ $(document).ready(function () {
             }
             break;
           case 'Aliyun_OSS':
-            if ($('#exe_Aliyun_OSS').hasClass('active')) {
+            if ($('.buttons button[value="Aliyun_OSS"]').hasClass('active')) {
               async function oss_getBucketAcl() {
                 try {
                   const result = await oss.getBucketACL(ProgramConfigurations.options_Bucket)
@@ -1746,9 +1745,6 @@ $(document).ready(function () {
           })
           return;
         }
-        if ($('#exe_Telegra_ph').hasClass('active')) {
-          FormData['options_host'] = "telegra.ph"
-        }
         $(".options-form input").each(function () {
           if (this.type === "radio") {
             if ($(this).is(':checked')) {
@@ -1784,36 +1780,39 @@ $(document).ready(function () {
             FormData['options_UploadPath'] = PathString
           }
         }
-        if ($('#exe_Lsky').hasClass('active')) {
-          let string = $("#options_token").val()
-          let pattern = /^Bearer\s/;
-          if (pattern.test(string)) {
-            FormData['options_token'] = $("#options_token").val()
-          } else {
-            FormData['options_token'] = `Bearer ` + string
-          }
+        switch ($('.buttons button.active').attr('value')) {
+          case 'Lsky':
+            let string = $("#options_token").val()
+            let pattern = /^Bearer\s/;
+            if (pattern.test(string)) {
+              FormData['options_token'] = $("#options_token").val()
+            } else {
+              FormData['options_token'] = `Bearer ` + string
+            }
+            break;
+          case 'Telegra_ph':
+            FormData['options_host'] = "telegra.ph"
+            break;
+          case 'Imgur':
+            FormData['options_imgur_post_mode'] = $('#options_imgur_post_mode').is(':checked')
+            break;
+          case 'UserDiy':
+            FormData['options_host'] = $("#options_apihost").val()
+            break;
+          case 'fiftyEight':
+            FormData['options_host'] = "cn.58.com"
+            break;
+          case 'BaiJiaHaoBed':
+            FormData['options_host'] = "baijiahao.baidu.com"
+            break;
+          case 'freebufBed':
+            FormData['options_host'] = "www.freebuf.com"
+            break;
+          case 'toutiaoBed':
+            FormData['options_host'] = "www.toutiao.com"
+            break;
         }
-        if ($('#exe_Imgur').hasClass('active')) {
-          FormData['options_imgur_post_mode'] = $('#options_imgur_post_mode').is(':checked')
-        }
-        if ($('#exe_UserDiy').hasClass('active')) {
-          FormData['options_host'] = $("#options_apihost").val()
-        }
-        if ($('#exe_fiftyEight').hasClass('active')) {
-          FormData['options_host'] = "cn.58.com"
-        }
-        // if ($('#exe_BilibliBed').hasClass('active')) {
-        //   chrome.runtime.sendMessage({ exe_BilibliBed: "save" });
-        // }
-        if ($('#exe_BaiJiaHaoBed').hasClass('active')) {
-          FormData['options_host'] = "baijiahao.baidu.com"
-        }
-        if ($('#exe_freebufBed').hasClass('active')) {
-          FormData['options_host'] = "www.freebuf.com"
-        }
-        if ($('#exe_toutiaoBed').hasClass('active') || $('#exe_toutiaoBed2').hasClass('active')) {
-          FormData['options_host'] = "www.toutiao.com"
-        }
+
         localStorage.options_webtitle_status = 1
         if (localStorage.firstRun !== "true") {
           localStorage.firstRun = "true"
@@ -1826,9 +1825,18 @@ $(document).ready(function () {
         storeBedConfig(FormData);
 
       } else {
-        toastItem({
-          toast_content: chrome.i18n.getMessage("select_upload_program")
-        })
+        introJs().setOptions({
+          steps: [
+            {
+              element: document.querySelector('.sidebar'),
+              intro: "你需要配置【图床】,才能使用哦!",
+            }
+          ],
+          nextLabel: ' >',
+          prevLabel: '< ',
+          doneLabel: '好的',
+          showBullets: false,
+        }).start();
       }
     }
     function sortObjectProperties(obj) {
@@ -1923,6 +1931,7 @@ $(document).ready(function () {
             attachEventHandlers(item, e, db);
           });
           attachShareButtonHandler(BedConfig);
+          attachStore()
           DragSort(BedConfig, db); //拖拽api
         });
 
@@ -1941,6 +1950,7 @@ $(document).ready(function () {
       $(".BedConfigDel").off("click");
       $(".BedConfigName span").off("dblclick");
       $(".Config-Box-Log-footer .share-button").off("click"); //分享配置
+      $(".Config-Box-Log-footer .store-button").off("click"); //商店按钮
       $("#ImportConfigurationPopup .replace").off("click");
       $("#ImportConfigurationPopup .append").off("click");
     }
@@ -1948,9 +1958,16 @@ $(document).ready(function () {
      * 配置项元素
      */
     function createConfigItem(data, index) {
+      let icon
+      if (data.icon) {
+        icon = `<img src="${data.icon}" class="icon">`
+      } else {
+        icon = createIconMarkup(data)
+      }
       const item = $(`
           <div class="Config-Box-Log-item" data-index="${index}"  draggable="true">
-            <div class="BedConfigName" title="${data.data.options_exe}">
+            <span class="icon" title="${data.data.options_exe}">${icon}</span>
+            <div class="BedConfigName">
               <span data-old-value="${data.ConfigName}" title="` + chrome.i18n.getMessage("DoubleClickToEdit") + `">${data.ConfigName}</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2082,6 +2099,348 @@ $(document).ready(function () {
         });
       });
     }
+  
+    function attachStore() {
+      $(".Config-Box-Log-footer .store-button").click(function () {
+        let Module = createFrameworkModule()
+        let isComposing = false
+        Module.find('.content').append(`
+        <div class="title">
+          <h2 class="border-bottom text-black fw-bold p-2">在线商店</h1>
+        </div>
+        <form class="search my-2">
+          <button>
+              <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
+                  aria-labelledby="search">
+                  <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                      stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+          </button>
+          <input class="input" placeholder="输入配置名称" required="" type="text">
+          <div id="autocomplete-list" class="autocomplete-items"></div>
+          <button class="reset" type="reset">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+          </button>
+        </form>
+        <div class="cards store">
+          <div class="loading">
+            <div class="loading-shape loading-shape-1"></div>
+            <div class="loading-shape loading-shape-2"></div>
+            <div class="loading-shape loading-shape-3"></div>
+            <div class="loading-shape loading-shape-4"></div>
+          </div>
+        </div>
+        <div id="demo-laypage-normal-1"></div>
+        `)
+        $("body").append(Module)
+        Module.find('.content').css("width", "80%");
+        Module.find('.content').css("height", "auto");
+        Module.find('.content').css("background", "#f4f4f4");
+        Module.find('.content').css("max-width", "1440px");
+        Module.find('.content').css("min-height", "650px");
+        Module.find('.content .cards').css("max-height", "550px");
+        Module.click(function (e) {
+          if (e.target.className === "overlay") {
+            Module.remove();
+          }
+        })
+        Module.find(".search").on('submit', function (event) {
+          event.preventDefault();
+        });
+        Module.find(".search").on('reset', function (event) {
+          $("#autocomplete-list").empty();
+          loadStore($(".overlay .content"))
+          $('.content .pagination').twbsPagination('destroy');
+        });
+        // 使用防抖的 storeSearch 函数
+        const debouncedStoreSearch = debounce(function (inputValue, secondParameter) {
+          storeSearch(inputValue, secondParameter);
+        }, 500); // 设置500毫秒的延迟
+
+        Module.find(".input").on('input', function () {
+          let inputValue = $(this).val().toLowerCase();
+          $("#autocomplete-list").empty(); // 清空现有列表
+          if (isComposing) { return; }
+          debouncedStoreSearch(inputValue);
+        });
+        Module.find(".input").on('compositionstart', function () {
+          isComposing = true
+        })
+        Module.find(".input").on('compositionend', function () {
+          isComposing = false
+          debouncedStoreSearch($(this).val().toLowerCase());
+
+        })
+        Module.find(".input").keydown(function (e) {
+          if (e.keyCode == 13) {
+            debouncedStoreSearch($(this).val().toLowerCase(), "search", "hidden");
+            $("#autocomplete-list").empty();
+          }
+        });
+        loadStore(Module, null)
+      })
+      function loadStore(Module, page = 1) {
+        const body = {
+          page: page
+        };
+        fetch('http://127.0.0.1:3199/plextension/store/configs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            createElement(Module, data);
+            initPagination(data, Module)
+          })
+          .catch((error) => console.error('Error:', error));
+      }
+      function initPagination(response, Module) {
+        layui.use(function () {
+          layui.laypage.render({
+            elem: 'demo-laypage-normal-1',
+            count: response.total,
+            limit: response.data.length,
+            jump: function (obj, first) {
+
+              if (!first) {
+                fetch('http://127.0.0.1:3199/plextension/store/configs', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    page: obj.curr
+                  })
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log(data);
+                    createElement(Module, data);
+                  })
+                  .catch((error) => console.error('Error:', error));
+              }
+
+            }
+          });
+        });
+        // $('.content .pagination').twbsPagination({
+        //   totalPages: totalPages,
+        //   visiblePages: 5,
+        //   onPageClick: function (event, page) {
+        //     if (is === false) {
+        //       loadStore(Module, page, false);
+        //     }
+        //     is = false
+        //   },
+        //   first: chrome.i18n.getMessage("first"),
+        //   prev: null,
+        //   next: null,
+        //   last: chrome.i18n.getMessage("last"),
+        // });
+      }
+      // 元素生成
+      function createElement(Module, data) {
+        Module.find(".store").empty();
+
+        if (data.status === false) {
+          Module.find(".store").append(`
+          <p class="text-black">${data.message}</p>
+          `)
+          return;
+        }
+        data.data.forEach(function (element, index) {
+          let item = $(`
+          <div class="plextension-card">
+            <div class="plextension-header">
+                <img src="${element.icon}" alt="Icon">
+            </div>
+            <div class="plextension-content">
+                <h2>${element.ConfigName}</h2>
+                <p>${element.description}</p>
+                <div class="author-info">
+                    <img src="${element.author_avatar}" alt="Author Avatar">
+                    <div>
+                        <a href="${element.author_website}" target="_blank">作者: ${element.author_name}</a>
+                    </div>
+                </div>
+                <div class="plextension-links">
+                    <a href="${element.url}" target="_blank">
+                        配置站点
+                    </a>
+                    <a href="mailto:${element.author_email}">
+                        联系作者
+                    </a>
+                </div>
+                <button class="plextension-button">使用配置</button>
+              </div>
+            </div>
+            `);
+          item.find(".plextension-button").click(function (e) {
+            let data = { ...element }
+            delete data.id;
+            const sortedData = sortObjectProperties(data);
+            //遍历配置信息
+            storExeButtons(sortedData).then(result => {
+              // 记录配置
+              dbHelper("BedConfigStore").then(result => {
+                const { db } = result;
+                db.getAll().then(BedConfig => {
+                  let existingData = BedConfig.find(Data => isSameData(Data.data, sortedData.data));
+                  if (existingData) {
+                    sortedData.id = existingData.id;
+                    if (confirm("此项配置与【" + existingData.ConfigName + "】配置相同，是否更新？")) {
+                      db.put(sortedData).then(() => {
+                        toastItem({
+                          toast_content: "配置使用成功！"
+                        });
+                        setTimeout(() => {
+                          window.location.reload();
+                        }, 1000);
+                      })
+                    }
+
+                  } else {
+                    // 没有相同数据，添加新的数据项
+                    sortedData.id = generateUniqueId();
+                    db.put(sortedData).then(() => {
+                      toastItem({
+                        toast_content: "配置使用成功！"
+                      });
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 1000);
+                    })
+                  }
+
+                })
+              });
+            })
+          });
+
+          Module.find(".store").append(item)
+        })
+      }
+
+      function storeSearch(inputValue, searchType = "autocomplete", searchPages = 1) {
+        if (!inputValue) { return; }
+        fetch(`http://127.0.0.1:3199/plextension/store/configs?` + searchType + "=" + inputValue + '&page=' + searchPages, {
+          method: 'GET',
+        })
+          .then(response => response.json())
+          .then(response => {
+            console.log(response);
+            let attribute;
+            let [field, value] = inputValue.split(':').map(s => s.trim());
+            if (inputValue.includes(':')) {
+              attribute = field
+            } else {
+              attribute = 'ConfigName'
+            }
+            if (searchType == "autocomplete") {
+              $.each(response.data, function (i, item) {
+                console.log(item[attribute]);
+                const attributeValue = item[attribute];
+                let $listItem = $("<div>").text(inputValue.includes(':') ? attribute + ":" + attributeValue : attributeValue);
+                $listItem.attr("title", attributeValue);
+                $listItem.on("click", function () {
+                  console.log(value);
+                  console.log(attribute + ":" + attributeValue);
+                  $("#autocomplete-list").parent().find(".input").val(inputValue.includes(':') ? attribute + ":" + attributeValue : attributeValue);
+                  $("#autocomplete-list").empty();
+                  storeSearch($("#autocomplete-list").parent().find(".input").val(), "search");
+                });
+                $("#autocomplete-list").append($listItem);
+              });
+            }
+            if (searchType == "search") {
+              createElement($(".overlay .content"), response)
+              if (!response.status) {
+                return;
+              }
+              layui.use(function () {
+                layui.laypage.render({
+                  elem: 'demo-laypage-normal-1',
+                  count: response.total,
+                  limit: response.data.length,
+                  jump: function (obj, first) {
+                    if (!first) {
+                      fetch(`http://127.0.0.1:3199/plextension/store/configs?` + searchType + "=" + inputValue + '&page=' + obj.curr, {
+                        method: 'GET',
+                      })
+                        .then(response => response.json())
+                        .then(data => {
+                          createElement($(".overlay .content"), data)
+                        })
+                        .catch((error) => console.error('Error:', error));
+                    }
+                  }
+                });
+              });
+            }
+          })
+          .catch((error) => {
+            $(".overlay .content .store").empty();
+            $(".overlay .content .store").append(`
+             <p class="text-black">错误：${error}</p>
+            `)
+            console.error(error);
+          });
+
+      }
+      layui.use(function () {
+        let layer = layui.layer;
+        let util = layui.util;
+        util.on('lay-on', {
+          store: function () {
+            layer.open({
+              type: 1,
+              area: ['80%', '650px'],
+              title: ['在线商店', 'font-size: 24px;'],
+              shade: 0.6,
+              shadeClose: true, // 点击遮罩区域，关闭弹层
+              anim: 0,
+              closeBtn: 0,
+              content: `
+              <form class="search my-2">
+                <button>
+                    <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
+                        aria-labelledby="search">
+                        <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                            stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <input class="input" placeholder="输入配置名称" required="" type="text">
+                <div id="autocomplete-list" class="autocomplete-items"></div>
+                <button class="reset" type="reset">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+              </form>
+              <div class="cards store"></div>
+              `
+              ,
+              success: function (layero, index, that) {
+                // layer.load(2);
+                loadStore(layero, null)
+              }
+            });
+          },
+  
+        });
+      
+      });
+
+    }
+
     /**
      * 导入配置 内容判定
      */
@@ -2304,13 +2663,12 @@ $(document).ready(function () {
 
     // 开启配置CORS 按钮
     $('#CorsButton').click(function () {
-      if ($('#exe_Tencent_COS').hasClass('active') || $('#exe_Aliyun_OSS').hasClass('active') || $('#exe_AWS_S3').hasClass('active')) {
+      if ($('.buttons button[value="Tencent_COS"]').hasClass('active') || $('.buttons button[value="Aliyun_OSS"]').hasClass('active') || $('.buttons button[value="AWS_S3"]').hasClass('active')) {
         toastItem({
           toast_content: chrome.i18n.getMessage("Unable_configure_CORS_proxy")
         });
         return;
       }
-
       if ($('#CorsButton button').is(".css-button-rounded--red")) {
         Close_CORS_Element();
         toastItem({
@@ -2630,11 +2988,11 @@ $(document).ready(function () {
       }
       $("#Sidebar_area").attr("disabled", false)
     })
-    document.addEventListener("keydown", function (event) {
-      // 检查是否按下了Ctrl键和S键
-      if (event.ctrlKey && event.key === "s") {
+    $('#options-form').keydown(function (event) {
+      // 检查是否同时按下了 Ctrl 键和 S 键
+      if (event.ctrlKey && event.key === 's') {
         event.preventDefault(); // 阻止浏览器默认的保存页面行为
-        SaveFunction()
+        SaveFunction();
       }
     });
   })//chrome get
@@ -3005,3 +3363,10 @@ $(document).ready(function () {
   });
 });
 
+chrome.storage.local.get(["browser_Open_with"], function (result) {
+  browser_Open_with = result.browser_Open_with
+  if (browser_Open_with == 3) {
+    document.body.style.height = "100%"
+    document.querySelector("#content").style.overflow = "inherit";
+  }
+});
