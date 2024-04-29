@@ -286,7 +286,7 @@ function attemptInsertion(UpUrl) {
             PLNotification(data);
         }
         if (editorType.length === 0) {
-           console.log("找不到合适的编辑器类型，或者所有类型都失败了" + "</br>失效地址:" + window.location.href + "</br>如果需要适配请上报该错误！");
+            console.log("找不到合适的编辑器类型，或者所有类型都失败了" + "</br>失效地址:" + window.location.href + "</br>如果需要适配请上报该错误！");
         }
 
     })
@@ -432,33 +432,37 @@ function handleHalo(UpUrl) {
     return false;
 }
 function handleIframe(UpUrl) {
-    let iframe = document.querySelector('iframe');
-    if (iframe) {
-        let iframeStyles = window.getComputedStyle(iframe);
-        if (iframeStyles.display === 'none') {
-            let textarea = document.querySelector('textarea')
-            let textareaStyles = window.getComputedStyle(textarea);
-            if (textareaStyles.display != 'none') {
-                textarea.value += '[img]' + UpUrl + '[/img]';
+    let iframes = document.querySelectorAll('iframe:not(.PL-iframe)');
+    for (let iframe of iframes) {
+        try {
+            let iframeStyles = window.getComputedStyle(iframe);
+            if (iframeStyles.display === 'none') {
+                let textarea = document.querySelector('textarea');
+                let textareaStyles = window.getComputedStyle(textarea);
+                if (textareaStyles.display != 'none') {
+                    textarea.value += '[img]' + UpUrl + '[/img]';
+                    return true;
+                }
+            }
+
+            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
+            if (editableElement) {
+                // 创建图片元素并设置属性
+                let imgElement = document.createElement('img');
+                imgElement.src = UpUrl;
+                imgElement.alt = '图片';
+                // 插入图片元素
+                editableElement.appendChild(imgElement);
                 return true;
             }
+        } catch (error) {
+            return false;
         }
-
-        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        let editableElement = iframeDocument.querySelector('[contenteditable="true"]');
-        if (editableElement) {
-            // 创建图片元素并设置属性
-            let imgElement = document.createElement('img');
-            imgElement.src = UpUrl;
-            imgElement.alt = '图片';
-            // 插入图片元素
-            editableElement.appendChild(imgElement);
-            return true;
-        }
-        return false;
     }
     return false;
 }
+
 async function handleScriptEditor(editorType, UpUrl) {
     const messageTypes = {
         'tinymce_5or6': 'TinyMCEResponse',

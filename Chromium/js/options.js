@@ -2202,34 +2202,34 @@ $(document).ready(function () {
           .catch((error) => console.error('Error:', error));
       }
       function initPagination(response, Module) {
-        layui.use(function () {
-          layui.laypage.render({
-            elem: 'demo-laypage-normal-1',
-            count: response.total,
-            limit: response.data.length,
-            jump: function (obj, first) {
+        // layui.use(function () {
+        //   layui.laypage.render({
+        //     elem: 'demo-laypage-normal-1',
+        //     count: response.total,
+        //     limit: response.data.length,
+        //     jump: function (obj, first) {
 
-              if (!first) {
-                fetch('http://127.0.0.1:3199/plextension/store/configs', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    page: obj.curr
-                  })
-                })
-                  .then(response => response.json())
-                  .then(data => {
-                    console.log(data);
-                    createElement(Module, data);
-                  })
-                  .catch((error) => console.error('Error:', error));
-              }
+        //       if (!first) {
+        //         fetch('http://127.0.0.1:3199/plextension/store/configs', {
+        //           method: 'POST',
+        //           headers: {
+        //             'Content-Type': 'application/json'
+        //           },
+        //           body: JSON.stringify({
+        //             page: obj.curr
+        //           })
+        //         })
+        //           .then(response => response.json())
+        //           .then(data => {
+        //             console.log(data);
+        //             createElement(Module, data);
+        //           })
+        //           .catch((error) => console.error('Error:', error));
+        //       }
 
-            }
-          });
-        });
+        //     }
+        //   });
+        // });
         // $('.content .pagination').twbsPagination({
         //   totalPages: totalPages,
         //   visiblePages: 5,
@@ -2364,25 +2364,25 @@ $(document).ready(function () {
               if (!response.status) {
                 return;
               }
-              layui.use(function () {
-                layui.laypage.render({
-                  elem: 'demo-laypage-normal-1',
-                  count: response.total,
-                  limit: response.data.length,
-                  jump: function (obj, first) {
-                    if (!first) {
-                      fetch(`http://127.0.0.1:3199/plextension/store/configs?` + searchType + "=" + inputValue + '&page=' + obj.curr, {
-                        method: 'GET',
-                      })
-                        .then(response => response.json())
-                        .then(data => {
-                          createElement($(".overlay .content"), data)
-                        })
-                        .catch((error) => console.error('Error:', error));
-                    }
-                  }
-                });
-              });
+              // layui.use(function () {
+              //   layui.laypage.render({
+              //     elem: 'demo-laypage-normal-1',
+              //     count: response.total,
+              //     limit: response.data.length,
+              //     jump: function (obj, first) {
+              //       if (!first) {
+              //         fetch(`http://127.0.0.1:3199/plextension/store/configs?` + searchType + "=" + inputValue + '&page=' + obj.curr, {
+              //           method: 'GET',
+              //         })
+              //           .then(response => response.json())
+              //           .then(data => {
+              //             createElement($(".overlay .content"), data)
+              //           })
+              //           .catch((error) => console.error('Error:', error));
+              //       }
+              //     }
+              //   });
+              // });
             }
           })
           .catch((error) => {
@@ -2394,50 +2394,50 @@ $(document).ready(function () {
           });
 
       }
-      layui.use(function () {
-        let layer = layui.layer;
-        let util = layui.util;
-        util.on('lay-on', {
-          store: function () {
-            layer.open({
-              type: 1,
-              area: ['80%', '650px'],
-              title: ['在线商店', 'font-size: 24px;'],
-              shade: 0.6,
-              shadeClose: true, // 点击遮罩区域，关闭弹层
-              anim: 0,
-              closeBtn: 0,
-              content: `
-              <form class="search my-2">
-                <button>
-                    <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
-                        aria-labelledby="search">
-                        <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
-                            stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-                <input class="input" placeholder="输入配置名称" required="" type="text">
-                <div id="autocomplete-list" class="autocomplete-items"></div>
-                <button class="reset" type="reset">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-              </form>
-              <div class="cards store"></div>
-              `
-              ,
-              success: function (layero, index, that) {
-                // layer.load(2);
-                loadStore(layero, null)
-              }
-            });
-          },
+      // layui.use(function () {
+      //   let layer = layui.layer;
+      //   let util = layui.util;
+      //   util.on('lay-on', {
+      //     store: function () {
+      //       layer.open({
+      //         type: 1,
+      //         area: ['80%', '650px'],
+      //         title: ['在线商店', 'font-size: 24px;'],
+      //         shade: 0.6,
+      //         shadeClose: true, // 点击遮罩区域，关闭弹层
+      //         anim: 0,
+      //         closeBtn: 0,
+      //         content: `
+      //         <form class="search my-2">
+      //           <button>
+      //               <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
+      //                   aria-labelledby="search">
+      //                   <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+      //                       stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+      //               </svg>
+      //           </button>
+      //           <input class="input" placeholder="输入配置名称" required="" type="text">
+      //           <div id="autocomplete-list" class="autocomplete-items"></div>
+      //           <button class="reset" type="reset">
+      //               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+      //                   stroke="currentColor" stroke-width="2">
+      //                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+      //               </svg>
+      //           </button>
+      //         </form>
+      //         <div class="cards store"></div>
+      //         `
+      //         ,
+      //         success: function (layero, index, that) {
+      //           // layer.load(2);
+      //           loadStore(layero, null)
+      //         }
+      //       });
+      //     },
   
-        });
+      //   });
       
-      });
+      // });
 
     }
 
