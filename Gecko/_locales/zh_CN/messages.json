@@ -48,7 +48,7 @@
     "message": "宽:不支持,高:不支持"
   },
   "options_title": {
-    "message": "盘络上传程序配置——盘络上传程序"
+    "message": "上传配置"
   },
   "Upload_page": {
     "message": "<i class='bi bi-upload'></i> 上传页面"
@@ -69,7 +69,7 @@
     "message": "简单图床"
   },
   "ImgURL": {
-    "message": "ImgURL图床"
+    "message": "ImgURL"
   },
   "Chevereto": {
     "message": "Chevereto"
@@ -694,9 +694,6 @@
   },
   "Successfully_saved_2": {
     "message": "保存成功,刷新页面生效"
-  },
-  "select_upload_program": {
-    "message": "请选择上传程序"
   },
   "Unable_configure_CORS_proxy": {
     "message": "无法配置CORS代理,请前往官网进行相关配置"

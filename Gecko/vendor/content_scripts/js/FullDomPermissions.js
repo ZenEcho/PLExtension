@@ -487,7 +487,7 @@ function FullDomAutoInsert() {
                 success = "iframe";
             }
         } catch (error) {
-            console.error(error)
+            console.error("找不到编辑框",error)
         }
     }
     return success;

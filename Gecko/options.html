@@ -12,13 +12,16 @@
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-icons.css">
   <link rel="stylesheet" href="vendor/intro/css/introjs.min.css">
+  <!-- <link rel="stylesheet" href="vendor/layui/css/layui.css"> -->
   <script defer src="vendor/IndexedDB/db.js"></script>
   <script defer src="vendor/jquery/jquery-3.6.3.min.js"></script>
   <script defer src="vendor/cos/cos-js-sdk-v5.js"></script>
   <script defer src="vendor/oss/aliyun-oss-sdk.min.js"></script>
   <script defer src="vendor/s3/aws-sdk.min.js"></script>
+  <script defer src="vendor/UploadLog/jquery.twbsPagination.min.js"></script>
   <script defer src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script defer src="vendor/intro/js/intro.min.js"></script>
+  <!-- <script defer src="vendor/layui/js/layui.js"></script> -->
   <script defer src="js/public.js"></script>
   <script defer src="js/options.js"></script>
   <script defer src="_locales/language.js"></script>
@@ -59,18 +62,33 @@
   <div id="wrapper">
     <span class="reduce"><i class="bi bi-arrow-left-right"></i></span>
     <div class="sidebar">
-      <div><span><i class="bi bi-sliders"></i> 程序</span></div>
+      <div style=" display: flex; flex-direction: row; align-items: center; ">
+        <svg t="1703828985261" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="19530"
+          width="24" height="24">
+          <path
+            d="M384 896H64V576h320v320m0 64c38.4 0 64-25.6 64-64V576c0-38.4-25.6-64-64-64H64c-38.4 0-64 25.6-64 64v320c0 38.4 25.6 64 64 64h320z"
+            p-id="19531" fill="#1296db"></path>
+          <path
+            d="M960 896V576c0-38.4-25.6-64-64-64H576c-38.4 0-64 25.6-64 64v320c0 38.4 25.6 64 64 64h320c38.4 0 64-25.6 64-64z"
+            fill="#1296db" p-id="19532"></path>
+          <path
+            d="M384 384H64V64h320v320m0 64c38.4 0 64-25.6 64-64V64c0-38.4-25.6-64-64-64H64C25.6 0 0 25.6 0 64v320c0 38.4 25.6 64 64 64h320zM896 384H576V64h320v320m0 64c38.4 0 64-25.6 64-64V64c0-38.4-25.6-64-64-64H576c-38.4 0-64 25.6-64 64v320c0 38.4 25.6 64 64 64h320z"
+            p-id="19533" fill="#1296db"></path>
+        </svg>
+        <span style="margin-left: 4px;font-weight: bold;">程序</span>
+      </div>
       <hr>
       <div class="buttons"></div>
       <hr>
       <button type="button" class="add-button">
-        <span class="button__text"><i class="bi bi-house-add"></i> 添加</span></span>
+        <span class="button__text"> 添加</span>
         <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24"
             stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24"
             fill="none" class="svg">
             <line y2="19" y1="5" x2="12" x1="12"></line>
             <line y2="12" y1="12" x2="19" x1="5"></line>
-          </svg></span>
+          </svg>
+        </span>
       </button>
     </div>
 
@@ -125,10 +143,20 @@
               <span class="px-1 btn btn-light btn-sm import-button" data-bs-toggle="modal"
                 data-bs-target="#ImportConfigurationPopup" data-i18n="bi_plus_circle + import"><i
                   class="bi bi-plus-circle"></i> 导入</span>
+              <!-- <span class="px-1 btn btn-light btn-sm store-button">
+                <svg t="1703923705991" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                  xmlns="http://www.w3.org/2000/svg" p-id="11298" width="16" height="16">
+                  <path
+                    d="M954.393689 486.469534l-0.686638 0c-12.847609-233.459123-206.825532-419.442978-443.425182-419.442978-244.88536 0-444.116937 199.2326-444.116937 444.11796 0 244.881267 199.230554 444.11182 444.116937 444.11182 244.87922 0 444.110797-199.230554 444.110797-444.11182 0-7.686053-0.196475-15.32708-0.584308-22.917966L954.393689 486.469534zM133.620253 670.664649c-20.203134-45.630247-31.872918-95.331205-32.783661-147.187247l149.923568 0c0.415462 52.483328 5.799076 102.237499 15.438621 148.039661L140.183739 671.517063 133.620253 670.664649zM522.615779 301.420981 522.615779 104.037495l-3.165086-1.36509c72.194252 9.844206 140.828422 89.218998 180.866301 198.748576L522.615779 301.420981zM712.405309 338.429873c13.33675 46.076408 21.698185 96.252181 23.50432 148.039661L522.615779 486.469534 522.615779 338.429873 712.405309 338.429873zM485.605863 103.310947l0 198.111057L319.439356 301.422004C355.426989 194.099696 416.442644 115.572202 485.605863 103.310947zM485.605863 338.429873l0 148.039661L285.99464 486.469534c2.227738-51.738361 10.053983-101.926414 22.338774-148.039661L485.605863 338.429873zM251.29535 486.469534 101.93767 486.469534c3.980661-52.02898 18.043958-102.143355 40.190351-148.039661l129.105427 0C260.119319 384.294456 253.228375 434.136631 251.29535 486.469534zM285.376563 523.477402l200.230324 0L485.606887 671.517063 304.672024 671.517063C292.826232 625.425306 285.915845 575.352887 285.376563 523.477402zM485.605863 708.524932l0 208.085222c-69.969585-18.518772-134.104277-99.099019-170.09191-208.085222L485.605863 708.524932zM522.615779 920.448576 522.615779 708.524932l184.212512 0C669.565619 829.42242 600.75851 915.840628 522.615779 920.448576zM522.615779 671.517063 522.615779 523.477402l213.471906 0c-1.218758 51.758828-7.944949 101.857852-19.11229 148.039661L522.615779 671.517063zM769.797437 523.477402l149.928684 0c-0.862647 52.178383-11.979846 102.176101-31.397081 148.039661l-133.971247 0C763.998361 625.714901 769.382998 575.960731 769.797437 523.477402zM769.262248 486.469534c-1.933025-52.331879-8.823969-102.175077-19.937075-148.039661L876.148627 338.429873c23.269983 45.896306 38.175461 96.009657 42.399669 148.039661L769.262248 486.469534zM855.012238 301.420981 739.183186 301.420981c-22.285562-72.507384-55.711859-132.844587-96.890724-174.137039C729.395262 160.310126 804.862048 222.909859 855.012238 301.420981zM384.27706 121.440863c-43.940768 41.34157-79.541591 103.97712-102.902648 179.981141L162.274874 301.422004C213.143425 218.003106 291.867394 152.545278 384.27706 121.440863zM152.848177 708.524932l122.2943 0c21.618367 78.83244 56.549947 143.574976 100.562347 186.930413C282.002722 861.058954 201.997574 793.811364 152.848177 708.524932zM639.005602 901.045667c46.76714-43.283806 83.842547-110.22645 106.408495-192.520735l124.977409 0C820.87065 798.700721 737.902006 868.711238 639.005602 901.045667z"
+                    fill="#2A2B2B" p-id="11299"></path>
+                </svg>
+                商店
+              </span>
+              <button type="button" class="layui-btn layui-btn-primary" lay-on="store">Page</button> -->
             </div>
           </div>
-          <div class="Config-Bottom-Boxs shadow-lg" style="margin-top: 16px;">
-            <button class="collapsible-card-button">其他设置</button>
+          <div class="Config-Bottom-Boxs shadow-lg">
+            <button class="collapsible-card-button"><i class="bi bi-gear"></i>其他设置</button>
             <div class="collapsible-card-content">
               <div class="collapsible-card-inner">
                 <div class="one">
