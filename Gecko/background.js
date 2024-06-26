@@ -512,8 +512,7 @@ function Fetch_Upload(imgUrl, data, MethodName, callback) {
 			options_exe === "Tencent_COS" ||
 			options_exe === "Aliyun_OSS" ||
 			options_exe === "AWS_S3" ||
-			options_exe === "GitHubUP" ||
-			options_exe === "fiftyEight") {
+			options_exe === "GitHubUP") {
 			const menuData = {
 				url: imgUrl,
 				Metho: MethodName
@@ -743,6 +742,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	if (request.getXsrfToken) {
 		getXsrfToken(request.url);
 	}
+	if (request.action === 'getInadexDbData') {
+		getAllDataFromIndexedDB('PLExtension', 'Uploads').then(data => {
+			sendResponse(data);
+		}).catch(error => {
+			console.error('Error:', error);
+			sendResponse(null);
+		});
+		return true; // 保持消息通道打开，等待异步响应
+	}
 });
 let Simulated_upload = false//模拟上传
 chrome.action.onClicked.addListener(function (tab) {
@@ -791,6 +799,34 @@ function getXsrfToken(url) {
 				});
 			});
 		}
+	});
+}
+
+
+
+function getAllDataFromIndexedDB(dbName, storeName) {
+	return new Promise((resolve, reject) => {
+		let request = indexedDB.open(dbName);
+
+		request.onerror = function (event) {
+			console.error("Database error: " + event.target.errorCode);
+			reject(event.target.errorCode);
+		};
+
+		request.onsuccess = function (event) {
+			let db = event.target.result;
+			let transaction = db.transaction(storeName, "readonly");
+			let store = transaction.objectStore(storeName);
+			let getAllRequest = store.getAll();
+
+			getAllRequest.onerror = function (event) {
+				reject(event.target.errorCode);
+			};
+
+			getAllRequest.onsuccess = function (event) {
+				resolve(getAllRequest.result);
+			};
+		};
 	});
 }
 

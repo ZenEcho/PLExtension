@@ -758,18 +758,6 @@ $(document).ready(function () {
         }
       },
     ];
-    const fiftyEightCustomFormGroup = [
-      {
-        additionalElement: [
-          ` <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">58同城接口</h4>
-            <p>无需配置,保存即可使用</p>
-            <hr>
-            <p class="mb-0">` + chrome.i18n.getMessage("Telegra_ph_3") + `</p>
-          </div>`
-        ]
-      },
-    ];
     const BilibliBedCustomFormGroup = [
       {
         additionalElement: [
@@ -1047,13 +1035,6 @@ $(document).ready(function () {
         init: function () {
           $('#options_host').val("imgdd.com")
           $('#options_host').attr("disabled", true)
-        },
-      },
-      fiftyEight: {
-        needUid: 15,
-        html: createFormGroups(fiftyEightCustomFormGroup),
-        init: function () {
-          // 默认初始化代码
         },
       },
       BilibliBed: {
@@ -1798,9 +1779,6 @@ $(document).ready(function () {
             break;
           case 'UserDiy':
             FormData['options_host'] = $("#options_apihost").val()
-            break;
-          case 'fiftyEight':
-            FormData['options_host'] = "cn.58.com"
             break;
           case 'BaiJiaHaoBed':
             FormData['options_host'] = "baijiahao.baidu.com"
