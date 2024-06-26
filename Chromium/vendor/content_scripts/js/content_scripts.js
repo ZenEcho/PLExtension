@@ -339,7 +339,6 @@ chrome.storage.local.get(storagelocal, function (result) {
             request.Aliyun_OSS_contextMenus,
             request.AWS_S3_contextMenus,
             request.GitHubUP_contextMenus,
-            request.fiftyEight_contextMenus
         ];
         for (const menu of contextMenus) {
             if (menu) {
@@ -984,12 +983,366 @@ const dataWithFunctions = {
                 });
             }
         }
+    },
+    "16best": {
+        "url": "111666.best",
+        "element": "#root",
+        "function": function () {
+            function openDatabase(dbName, storeName, upgradeCallback) {
+                return new Promise((resolve, reject) => {
+                    let request = indexedDB.open(dbName);
+
+                    request.onerror = function (event) {
+                        console.error("Database error: " + event.target.errorCode);
+                        reject(event.target.errorCode);
+                    };
+
+                    request.onsuccess = function (event) {
+                        resolve(event.target.result);
+                    };
+
+                    request.onupgradeneeded = function (event) {
+                        let db = event.target.result;
+                        upgradeCallback(db, storeName);
+                    };
+                });
+            }
+
+            function getAllDataFromIndexedDB(dbName, storeName) {
+                return openDatabase(dbName, storeName, (db, storeName) => {
+                    if (!db.objectStoreNames.contains(storeName)) {
+                        db.createObjectStore(storeName, { keyPath: 'id' });
+                    }
+                }).then(db => {
+                    return new Promise((resolve, reject) => {
+                        let transaction = db.transaction(storeName, "readonly");
+                        let store = transaction.objectStore(storeName);
+                        let getAllRequest = store.getAll();
+
+                        getAllRequest.onerror = function (event) {
+                            console.error("Get all request error: " + event.target.errorCode);
+                            reject(event.target.errorCode);
+                        };
+
+                        getAllRequest.onsuccess = function (event) {
+                            resolve(getAllRequest.result);
+                        };
+                    });
+                });
+            }
+
+            function addMultipleDataToIndexedDB(dbName, storeName, dataArray) {
+                return new Promise((resolve, reject) => {
+                    // 打开数据库
+                    openDatabase(dbName, storeName, (db, storeName) => {
+                        if (!db.objectStoreNames.contains(storeName)) {
+                            let objectStore = db.createObjectStore(storeName, { keyPath: 'id' }); // 指定 id 作为 keyPath
+                            objectStore.createIndex('url', 'url', { unique: false });
+                            objectStore.createIndex('token', 'token', { unique: false });
+                            objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    }).then(db => {
+                        // 创建一个包含所有添加操作的 Promise 数组
+                        const addPromises = dataArray.map(data => {
+                            return new Promise((resolve, reject) => {
+                                let transaction = db.transaction(storeName, "readwrite");
+                                let store = transaction.objectStore(storeName);
+
+                                let addRequest = store.put(data);
+
+                                addRequest.onerror = function (event) {
+                                    console.error("Add request error: " + event.target.errorCode);
+                                    reject(event.target.errorCode);
+                                };
+
+                                addRequest.onsuccess = function (event) {
+                                    resolve(addRequest.result);
+                                };
+                            });
+                        });
+
+                        // 使用 Promise.all 等待所有添加操作完成
+                        Promise.all(addPromises)
+                            .then(results => resolve(results))
+                            .catch(error => reject(error));
+                    }).catch(error => reject(error));
+                });
+            }
+            // 清空对象存储的函数
+            function clearObjectStore(dbName, storeName) {
+                return openDatabase(dbName, storeName, (db, storeName) => {
+                    if (!db.objectStoreNames.contains(storeName)) {
+                        db.createObjectStore(storeName, { keyPath: 'id' }); // 如果对象存储不存在，则创建
+                    }
+                }).then(db => {
+                    return new Promise((resolve, reject) => {
+                        let transaction = db.transaction(storeName, "readwrite");
+                        let store = transaction.objectStore(storeName);
+
+                        let clearRequest = store.clear();
+
+                        clearRequest.onerror = function (event) {
+                            console.error("Clear request error: " + event.target.errorCode);
+                            reject(event.target.errorCode);
+                        };
+
+                        clearRequest.onsuccess = function (event) {
+                            resolve(event.target.result);
+                        };
+                    });
+                });
+            }
+
+            let pathname = localStorage.getItem(getCurrentDomain())
+            if (pathname !== "true") {
+
+                getAllDataFromIndexedDB('image-hosting', 'config')
+                    .then(data => {
+                        data.forEach(item => {
+                            if (item.key == 'token') {
+                                PLNotification({
+                                    title: "发现：16图床",
+                                    type: "警告",
+                                    content: `点击【添加到` + chrome.i18n.getMessage("app_name") + `】按钮，可在` + chrome.i18n.getMessage("app_name") + "中使用。",
+                                    duration: 0,
+                                    button: [
+                                        {
+                                            text: "添加到" + chrome.i18n.getMessage("app_name"),
+                                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                                            init: function () {
+                                                this.addEventListener("click", function () {
+                                                    try {
+                                                        let data = {
+                                                            "data": {
+                                                                "Keyword_replacement1": "",
+                                                                "Keyword_replacement2": "",
+                                                                "custom_Base64Upload": false,
+                                                                "custom_Base64UploadRemovePrefix": false,
+                                                                "custom_BodyStringify": false,
+                                                                "custom_BodyUpload": false,
+                                                                "custom_KeywordReplacement": false,
+                                                                "custom_ReturnAppend": "",
+                                                                "custom_ReturnPrefix": "https://i.111666.best",
+                                                                "open_json_button": false,
+                                                                "options_Body": "",
+                                                                "options_Headers": `{"Auth-Token":"` + item.value + `"}`,
+                                                                "options_UploadPath": "",
+                                                                "options_apihost": "https://i.111666.best/image",
+                                                                "options_exe": "UserDiy",
+                                                                "options_host": "https://i.111666.best/image",
+                                                                "options_parameter": "image",
+                                                                "options_return_success": "src",
+                                                                "requestMethod": "POST"
+                                                            },
+                                                            "ConfigName": getCurrentDomain() + chrome.i18n.getMessage("Config")
+                                                        }
+                                                        console.log(data);
+
+                                                        window.postMessage({ type: 'loadExternalConfig', data: data }, "*");
+                                                        this.disabled = true
+                                                    } catch (error) {
+                                                        alert("获取 Token 失败，请点击【重新生成密钥】按钮")
+                                                    }
+                                                });
+                                            }
+                                        },
+                                        {
+                                            text: "本站不再提示",
+                                            style: "padding: 2px;width: 100%;border: none;border-radius: 10px;",
+                                            init: function (close) {
+                                                this.addEventListener("click", function () {
+                                                    localStorage.setItem(getCurrentDomain(), "true");
+                                                    close();
+                                                });
+                                            }
+                                        }
+                                    ]
+                                });
+                            }
+                        });
+                    })
+                    .catch(error => {
+
+                    });
+            }
+            function convertTimestampToDate(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleString();
+            }
+            function convertDateToTimestamp(dateString) {
+                const timestamp = Date.parse(dateString);
+                if (!isNaN(timestamp)) {
+                    return timestamp;
+                } else {
+                    throw new Error('Invalid date string');
+                }
+            }
+            if (document.querySelector(".navbar-end") !== null) {
+                let button = document.createElement("button");
+                button.className = "button is-primary is-small";
+                button.style = "margin-left: 10px;";
+                button.innerHTML = "与" + chrome.i18n.getMessage("app_name") + "同步历史";
+                button.addEventListener("click", function () {
+                    PLNotification({
+                        title: "数据同步",
+                        type: "警告",
+                        content: `选择你要同步的对象`,
+                        duration: 0,
+                        button: [
+                            {
+                                text: getCurrentDomain() + "同步到" + chrome.i18n.getMessage("app_name"),
+                                style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                                init: function () {
+                                    this.addEventListener("click", function () {
+                                        console.log("同步到盘络");
+                                        chrome.storage.local.get('UploadLog', function (result) {
+                                            UploadLog = result.UploadLog || [];
+                                            if (!Array.isArray(UploadLog)) {
+                                                UploadLog = [];
+                                            }
+                                            getAllDataFromIndexedDB('image-hosting', 'images')
+                                                .then(data => {
+                                                    data.forEach(item => {
+                                                        UploadLog.push({
+                                                            key: item.id,
+                                                            url: "https://i.111666.best" + item.url,
+                                                            uploadExe: "UserDiy",
+                                                            upload_domain_name: getCurrentDomain(),
+                                                            original_file_name: item.url,
+                                                            file_size: 0,
+                                                            img_file_size: "宽:不支持,高:不支持",
+                                                            uploadTime: convertTimestampToDate(item.timestramp),
+                                                            token: item.token,
+                                                        });
+                                                    });
+                                                    chrome.storage.local.set({ 'UploadLog': UploadLog }, function () {
+                                                        PLNotification({
+                                                            title: "数据同步成功",
+                                                            type: "成功",
+                                                            content: "数据同步成功啦！",
+                                                            duration: 0,
+                                                        });
+                                                    })
+                                                })
+                                        });
+                                    });
+                                }
+                            },
+                            {
+                                text: chrome.i18n.getMessage("app_name") + "同步到" + getCurrentDomain(),
+                                style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                                init: function () {
+                                    this.addEventListener("click", function () {
+
+                                        chrome.runtime.sendMessage({ action: 'getInadexDbData' }, function (response) {
+                                            if (response) {
+
+                                                const filteredData = response.filter(data =>
+                                                    data.uploadExe === "UserDiy" && data.upload_domain_name === "111666.best"
+                                                ).map(data => ({
+                                                    "id": data.key,
+                                                    "url": data.original_file_name,
+                                                    "token": data.token,
+                                                    "timestramp": convertDateToTimestamp(data.uploadTime)
+                                                }));
+                                                addMultipleDataToIndexedDB('image-hosting', 'images', filteredData)
+                                                    .then(results => {
+                                                        PLNotification({
+                                                            title: "数据同步成功",
+                                                            type: "成功",
+                                                            content: "数据同步成功啦！",
+                                                            duration: 0,
+                                                        });
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error adding data:', error);
+                                                        PLNotification({
+                                                            title: "数据同步失败",
+                                                            type: "失败",
+                                                            content: "详细错误信息，查看控制台！",
+                                                            duration: 0,
+                                                        });
+                                                        //刷新当页面
+                                                        window.location.reload();
+                                                    });
+
+
+                                            } else {
+                                                console.error('No data received');
+                                            }
+                                        });
+
+
+                                    });
+                                }
+                            },
+                            {
+                                text: "清空" + getCurrentDomain() + "数据",
+                                style: "padding: 2px;width: 100%;border: none;border-radius: 10px;margin-bottom: 5px;",
+                                init: function () {
+                                    this.addEventListener("click", function () {
+                                        clearObjectStore('image-hosting', 'images')
+                                            .then(result => {
+                                                PLNotification({
+                                                    title: "数据删除成功",
+                                                    type: "成功",
+                                                    content: "数据删除成功！",
+                                                    duration: 0,
+                                                });
+                                                window.location.reload();
+                                            })
+                                            .catch(error => {
+                                                console.error('Error clearing object store:', error);
+                                            });
+                                    });
+                                }
+                            }
+                        ]
+                    });
+                });
+                document.querySelector(".navbar-end").appendChild(button);
+
+
+                // document.querySelector(".navbar-end .btn-ghost").addEventListener("click", function () {
+                //     const spanElements = this.querySelectorAll('span');
+                //     spanElements.forEach(span => {
+                //         if (span.textContent.trim() === "历史图片") {
+                //             // 延迟1秒
+                //             setTimeout(() => {
+                //                 let DeleteButton = document.querySelectorAll(".card-actions.justify-end");
+
+                //                 DeleteButton.forEach(element => {
+                //                     let figureElement = element.parentNode.parentNode.querySelector("figure > div");
+                //                     if (figureElement) {
+                //                         let backgroundImage = figureElement.style.backgroundImage;
+                //                         let url = backgroundImage.match(/url\("(.*?)"\)/)[1];
+                //                         let cleanedUrl = url.replace('blob:', '');
+                //                         console.log('Cleaned URL:', cleanedUrl);
+                //                     }
+                //                     let button = document.createElement('button');
+                //                     button.className = 'btn btn-outline btn-error btn-xs';
+                //                     button.textContent = '强制删除';
+                //                     element.appendChild(button);
+                //                 });
+                //             }, 1000);
+
+                //         }
+                //     });
+                // });
+            }
+
+        }
     }
 };
 
 // 检查当前页面的函数
 function checkAndExecute() {
-    const currentPath = window.location.pathname;
+    const specialHostnames = ["111666.best"]; // 配置包含所有特殊域名
+
+    let currentPath = specialHostnames.includes(window.location.hostname)
+        ? window.location.hostname
+        : window.location.pathname;
+
 
     for (const key in dataWithFunctions) {
         if (dataWithFunctions.hasOwnProperty(key)) {

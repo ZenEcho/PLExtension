@@ -411,12 +411,6 @@ $(document).ready(function () {
           case 'imgdd':
             imageUrl = res.url
             break;
-          case 'fiftyEight':
-            if (res && res.indexOf("n_v2") > -1) {
-              let index = parseInt(Math.random() * 8) + 1;
-              imageUrl = "https://pic" + index + ".58cdn.com.cn/nowater/webim/big/" + res;
-            }
-            break;
           case 'BilibliBed':
             imageUrl = res.data.image_url
             toastItem({

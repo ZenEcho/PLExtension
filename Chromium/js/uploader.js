@@ -577,71 +577,6 @@ function popup_Uploader() {
             uploader.options.paramName = 'image';
             uploader.options.acceptedFiles = '.jpeg,.jpg,.png,.gif,.bmp,.webp';
             break;
-        case 'fiftyEight':
-            uploader.options.autoProcessQueue = false
-            uploader.options.maxFilesize = 5
-            uploader.options.url = ProgramConfigurations.options_proxy_server + "https://upload.58cdn.com.cn/json";
-            uploader.options.headers = { "Accept": "application/json" };
-            delayUpload = async function (file) {
-                if (file.size > uploader.options.maxFilesize * 1024 * 1024) {
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    file.dataURL = event.target.result;
-                    // 发送数据到服务器
-                    let dataToSend = {
-                        "Pic-Size": "0*0",
-                        "Pic-Encoding": "base64",
-                        "Pic-Path": "/nowater/webim/big/",
-                        "Pic-Data": file.dataURL.split(",")[1], // 获取Base64编码部分
-                    };
-                    // 执行上传逻辑
-                    $.ajax({
-                        url: "https://upload.58cdn.com.cn/json",
-                        type: "POST",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        xhr: function () {
-                            const xhr = new window.XMLHttpRequest();
-                            xhr.upload.addEventListener("progress", function (evt) {
-                                if (evt.lengthComputable) {
-                                    const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                                    file.upload.progress = percentComplete;
-                                    file.status = Dropzone.UPLOADING;
-                                    uploader.emit("uploadprogress", file, percentComplete, 100);
-                                }
-                            }, false);
-                            return xhr;
-                        },
-                        data: JSON.stringify(dataToSend),
-                        success: function (result) {
-                            if (result) {
-                                file.status = Dropzone.SUCCESS;
-                                uploader.emit("success", file, result);
-                                uploader.emit("complete", file, result);
-                            } else {
-                                uploader.emit("error", file, "上传失败,可能是达到了上限");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            if (xhr) {
-                                uploader.emit("error", file, xhr);
-                                return;
-                            }
-                        }
-                    });
-                };
-                reader.readAsDataURL(file);
-
-            }
-            // 监听文件添加事件
-            uploader.on("addedfile", function (file) {
-                delayUpload(file);
-                $(".dz-remove").remove()
-            });
-            break;
         case 'BilibliBed':
             // uploader.options.url = ProgramConfigurations.options_proxy_server + "http://127.0.0.1:3000/Bed.Bilibli";
             // uploader.options.headers = {
@@ -768,11 +703,11 @@ function content_scripts_CheckUploadModel(event, Simulated_upload, EditPasteUplo
     function filesUP(files) {
         chrome.storage.local.get(["ProgramConfiguration"], function (result) {
             ProgramConfigurations = result.ProgramConfiguration
-            if (ProgramConfigurations.options_exe === "Tencent_COS" || ProgramConfigurations.options_exe === 'Aliyun_OSS' || ProgramConfigurations.options_exe === 'AWS_S3' || ProgramConfigurations.options_exe === 'GitHubUP' || ProgramConfigurations.options_exe === 'fiftyEight' || ProgramConfigurations.options_exe === 'UserDiy') {
+            if (ProgramConfigurations.options_exe === "Tencent_COS" || ProgramConfigurations.options_exe === 'Aliyun_OSS' || ProgramConfigurations.options_exe === 'AWS_S3' || ProgramConfigurations.options_exe === 'GitHubUP' ||  ProgramConfigurations.options_exe === 'UserDiy') {
                 function processFile(fileIndex) {
                     if (fileIndex < files.length) {
                         let file = files[fileIndex];
-                        if (ProgramConfigurations.options_exe == 'GitHubUP' || ProgramConfigurations.options_exe === 'fiftyEight') {
+                        if (ProgramConfigurations.options_exe == 'GitHubUP') {
                             // 需要转码的
                             let reader = new FileReader();
                             reader.onload = function () {
@@ -857,7 +792,6 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                 Aliyun_OSS: Oos_uploadFile,
                 AWS_S3: S3_uploadFile,
                 GitHubUP: GitHub_uploadFile,
-                fiftyEight: fiftyEight_uploadFile
             };
             if (ProgramConfigurations.options_exe in uploadFunctions) {
                 uploadFunctions[ProgramConfigurations.options_exe](imgUrl);
@@ -899,13 +833,6 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     let reader = new FileReader();
                     reader.onload = function () {
                         GitHub_uploadFile(btoa(reader.result), blob, imgUrl);
-                    };
-                    reader.readAsBinaryString(blob, null, imgUrl);
-                }
-                if (ProgramConfigurations.options_exe == "fiftyEight") {
-                    let reader = new FileReader();
-                    reader.onload = function () {
-                        fiftyEight_uploadFile(btoa(reader.result), blob, imgUrl);
                     };
                     reader.readAsBinaryString(blob, null, imgUrl);
                 }
@@ -1332,56 +1259,6 @@ function content_scripts_HandleUploadWithMode(imgUrl, MethodName, callback, Simu
                     })
             }
 
-        }
-        function fiftyEight_uploadFile(btoa, files, imgUrl) {
-            const file = files || btoa.file
-            const blob = btoa.btoa
-
-            let date = new Date();
-            const imageExtension = getImageFileExtension(imgUrl, file)
-            let UrlImgNema = ProgramConfigurations.options_exe + `_` + MethodName + `_` + (Math.floor(date.getTime() / 1000)) + "." + imageExtension;
-            chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 1 } });
-            let dataToSend = {
-                "Pic-Size": "0*0",
-                "Pic-Encoding": "base64",
-                "Pic-Path": "/nowater/webim/big/",
-                "Pic-Data": blob, // 获取Base64编码部分
-            };
-            fetch(ProgramConfigurations.options_proxy_server + `https://upload.58cdn.com.cn/json`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToSend),
-            })
-                .then(response => response.text())
-                .then(res => {
-                    if (res && res.indexOf("n_v2") > -1) {
-                        UrlImgNema = res
-                        let index = parseInt(Math.random() * 8) + 1;
-                        imageUrl = "https://pic" + index + ".58cdn.com.cn/nowater/webim/big/" + res;
-                        callback(res, null);
-                        chrome.storage.local.get(["FuncDomain"], function (result) {
-                            if (result.FuncDomain.AutoCopy == "on") {
-                                window.postMessage({ type: 'AutoCopy', data: imageUrl }, '*');
-                            }
-                        });
-                        LocalStorage({
-                            "file": {
-                                "name": UrlImgNema,
-                                "file": file,
-                            },
-                            "url": imageUrl,
-                            "MethodName": MethodName,
-                        })
-                    }
-                }).catch(error => {
-                    console.log(error)
-                    callback(null, new Error(chrome.i18n.getMessage("Upload_prompt3")));
-                    chrome.runtime.sendMessage({ Loudspeaker: chrome.i18n.getMessage("Upload_prompt4") });
-                    chrome.runtime.sendMessage({ "Progress_bar": { "filename": UrlImgNema, "status": 0 } });
-                    return;
-                })
         }
     })
 }
