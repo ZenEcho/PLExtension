@@ -1,4 +1,37 @@
 $(document).ready(function () {
+    // 创建一个全局遮罩层
+    const globalMask = document.createElement('div');
+    globalMask.id = 'globalMask';
+    globalMask.style.position = 'fixed';
+    globalMask.style.top = '0';
+    globalMask.style.left = '0';
+    globalMask.style.width = '100%';
+    globalMask.style.height = '100%';
+    globalMask.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    globalMask.style.zIndex = '9999';
+    globalMask.style.display = 'block'; // 初始时隐藏遮罩层
+    // 遮罩被点击就隐藏
+    globalMask.addEventListener('click', hideGlobalMask);
+    document.body.appendChild(globalMask);
+    //遮罩显示内容：盘络上传2.0已上线.请前往GitHub下载最新版本使用全部功能。
+    globalMask.innerHTML = `
+<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; text-align: center; max-width: 80%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+  <h2 style="margin-bottom: 15px;">盘络上传2.0已上线</h2>
+  <p style="margin-bottom: 20px;">请前往GitHub查看最新版本。</p>
+  <a href="https://github.com/ZenEcho/GioPic" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">前往下载</a>
+</div>
+`;
+
+
+
+
+
+    function showGlobalMask() {
+        globalMask.style.display = 'block';
+    }
+    function hideGlobalMask() {
+        globalMask.style.display = 'none';
+    }
     chrome.storage.local.get(storagelocal, function (result) {
         if (result.ProgramConfiguration) {
             const programConfig = result.ProgramConfiguration || {};
