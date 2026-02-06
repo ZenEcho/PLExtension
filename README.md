@@ -5,7 +5,7 @@
 
  # 盘络上传扩展程序
 
- **<p align="center">盘络上传扩展2.0已发布 前往https://github.com/ZenEcho/GioPic 查看更多</p>**
+ **<p align="center">盘络上传扩展2.0已发布 前往[https://github.com/ZenEcho/GioPic](https://github.com/ZenEcho/GioPic_Web_Extension/) 查看更多</p>**
 
 -------------
 
